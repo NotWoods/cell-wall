@@ -1,0 +1,23 @@
+{
+  "name": "smart-dorm",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Code for my 'smart home' dorm room projects",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "broadcast": "PyBeacon -u https://tigeroakes.com"
+  },
+  "repository": "NotWoods/smart-dorm",
+  "author": "Tiger Oakes",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/NotWoods/smart-dorm/issues"
+  },
+  "dependencies": {
+    "adbkit": "^2.10.0",
+    "node-dash-button": "^0.6.1"
+  },
+  "homepage": "https://github.com/NotWoods/smart-dorm#readme",
+  "os": ["linux"]
+}
