@@ -16,8 +16,14 @@
   },
   "dependencies": {
     "adbkit": "^2.10.0",
-    "node-dash-button": "^0.6.1"
+    "chalk": "^2.0.1",
+    "express": "^4.15.3",
+    "ip": "^1.1.5",
+    "node-dash-button": "^0.6.1",
+    "node-fetch": "^1.7.1"
   },
   "homepage": "https://github.com/NotWoods/smart-dorm#readme",
-  "os": ["linux"]
+  "os": [
+    "linux"
+  ]
 }
