@@ -18,16 +18,23 @@ async function getCellWallDevices() {
 }
 
 /**
+ * Runs a shell command on every device
+ * @param {string} command
+ * @param {string[]|Promise<string[]>} [devices] - list of devices
+ */
+async function allShell(command, devices = getCellWallDevices()) {
+	const deviceList = await devices;
+	await Promise.all(deviceList.map(id => adb.shell(id, command)));
+}
+
+/**
  * Triggers a button on every connected android device, or only on specified
  * devices.
  * @param {number} keycode - number of the key to use
  * @param {string[]|Promise<string[]>} [devices] - list of devices
  */
-async function triggerButton(keycode, devices = getCellWallDevices()) {
-	const deviceList = await devices;
-	const shellCommand = `input keyevent ${keycode}`;
-
-	await Promise.all(deviceList.map(id => adb.shell(id, shellCommand)));
+async function triggerButton(keycode, devices) {
+	return allShell(`input keyevent ${keycode}`);
 }
 
 /**
@@ -38,10 +45,28 @@ async function powerAll() {
 	console.log(chalk.green('Toggled power on CellWall devices'));
 }
 
+/**
+ * Docks every phone
+ * @param {string[]|Promise<string[]>} [devices] - list of devices
+ */
+async function dockAll(devices) {
+	return allShell(`am broadcast -a android.intent.action.DOCK_EVENT --ei android.intent.extra.DOCK_STATE 1`);
+}
+/**
+ * Docks every phone
+ * @param {string[]|Promise<string[]>} [devices] - list of devices
+ */
+async function undockAll(devices) {
+	return allShell(`am broadcast -a android.intent.action.DOCK_EVENT --ei android.intent.extra.DOCK_STATE 0`);
+}
+
 
 module.exports = {
 	adb,
 	getCellWallDevices,
+	allShell,
 	triggerButton,
 	powerAll,
+	dockAll,
+	undockAll,
 };
