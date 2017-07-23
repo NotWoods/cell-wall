@@ -49,14 +49,14 @@ async function powerAll() {
  * Docks every phone
  * @param {string[]|Promise<string[]>} [devices] - list of devices
  */
-async function dockAll(devices) {
+function dockAll(devices) {
 	return allShell(`am broadcast -a android.intent.action.DOCK_EVENT --ei android.intent.extra.DOCK_STATE 1`);
 }
 /**
  * Docks every phone
  * @param {string[]|Promise<string[]>} [devices] - list of devices
  */
-async function undockAll(devices) {
+function undockAll(devices) {
 	return allShell(`am broadcast -a android.intent.action.DOCK_EVENT --ei android.intent.extra.DOCK_STATE 0`);
 }
 
