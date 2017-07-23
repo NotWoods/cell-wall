@@ -1,6 +1,6 @@
 'use strict';
 const { stringify } = require('querystring');
-const fetch = require('fetch');
+const fetch = require('node-fetch');
 const { autoremote } = require('../secret.json');
 
 /**

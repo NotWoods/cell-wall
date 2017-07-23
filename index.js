@@ -3,12 +3,12 @@
 //const ip = require('ip');
 const chalk = require('chalk');
 
-const app = express();
+//const app = express();
 const { getButton } = require('./utils/dash-button');
 const { sendAutoRemoteMessage } = require('./utils/autoremote');
 
 getButton('doorbell').on('detected', () => {
-	console.log(chalk.orange('Doorbell dash button pressed'));
+	console.log(chalk.keyword('orange')('Doorbell dash button pressed'));
 	sendAutoRemoteMessage('doorbell');
 });
 /*

@@ -1,5 +1,5 @@
 'use strict';
-const fetch = require('fetch');
+const fetch = require('node-fetch');
 const { ifttt_maker } = require('../secret.json');
 
 /**
