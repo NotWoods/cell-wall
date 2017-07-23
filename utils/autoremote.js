@@ -1,7 +1,7 @@
 'use strict';
 const { stringify } = require('querystring');
 const fetch = require('fetch');
-const { autoremote } = require('./secret.json');
+const { autoremote } = require('../secret.json');
 
 /**
  * Send a message to Tasker on Android via AutoRemote

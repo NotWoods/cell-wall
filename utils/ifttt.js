@@ -1,6 +1,6 @@
 'use strict';
 const fetch = require('fetch');
-const { ifttt_maker } = require('./secret.json');
+const { ifttt_maker } = require('../secret.json');
 
 /**
  * Trigger a fetch event to the IFTTT maker channel. Triggers the event with
