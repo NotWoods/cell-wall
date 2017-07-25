@@ -3,8 +3,28 @@
 <head>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.4.3/css/bulma.css">
+	<title>Smart Dorm</title>
 </head>
-<body>
+<body class="container">
+	<header class="navbar">
+		<div class="navbar-brand">
+			<strong class="navbar-item">Smart Dorm</strong>
 
+			<a class="navbar-item" href="https://github.com/NotWoods/smart-dorm" target="_blank">
+				GitHub
+			</a>
+		</div>
+	</header>
+	<div>
+		<button class="button is-light" data-action="/cmd/doorbell">Trigger doorbell</button>
+	</form>
 </body>
+<script>
+	'use strict';
+	document.getElementsByTagName('button').forEach(button => {
+		button.onclick = () => {
+			//
+		}
+	});
+</script>
 </html>
