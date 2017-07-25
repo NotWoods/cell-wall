@@ -1,5 +1,5 @@
 'use strict';
-const createDashButton = require('node-dash-button');
+let createDashButton;
 const secret = require('../secret.json');
 
 /**
@@ -7,6 +7,13 @@ const secret = require('../secret.json');
  * @param {string} name
  */
 function getButton(name) {
+	try {
+		if (!createDashButton) createDashButton = require('node-dash-button');
+	} catch (err) {
+		createDashButton = new Error('Could not load node-dash-button');
+	}
+	if (createDashButton instanceof Error) throw createDashButton;
+
 	if (secret.dash_buttons[name]) {
 		return createDashButton(secret.dash_buttons[name]);
 	} else {

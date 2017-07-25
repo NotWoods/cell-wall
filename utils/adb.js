@@ -22,7 +22,7 @@ async function getCellWallDevices(client = adbkit.createClient()) {
  * @param {ADBKit} [client] adbkit client
  */
 async function multiShell(command, devices, client = adbkit.createClient()) {
-	const deviceList = devices || getCellWallDevices(client);
+	const deviceList = devices || await getCellWallDevices(client);
 	await Promise.all(deviceList.map(id => client.shell(id, command)));
 }
 
@@ -37,6 +37,24 @@ async function triggerButton(keycode, devices, client) {
 	return multiShell(`input keyevent ${keycode}`, devices, client);
 }
 
+class ADBDevices {
+	constructor(client = adbkit.createClient()) {
+		this.adb = client;
+		this.devices = [];
+
+		this.refreshDevices();
+		this.adb.trackDevices().then(tracker => tracker.on('changeSet', () => {
+			this.refreshDevices();
+		}));
+	}
+
+	async refreshDevices() {
+		this.devices = await getCellWallDevices(this.adb);
+	}
+
+	getDevices() { return [...this.devices]; }
+	[Symbol.iterator]() { return this.devices[Symbol.iterator](); }
+}
 
 module.exports = {
 	getCellWallDevices,

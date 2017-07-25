@@ -10,7 +10,7 @@ const { ifttt_maker } = require('../secret.json');
  * @returns {Promise<Response>}
  */
 function triggerEventIFTTT(eventName, bodyParams) {
-	const url = `https://maker.ifttt.com/trigger/${event}/with/key/${ifttt_maker}`;
+	const url = `https://maker.ifttt.com/trigger/${eventName}/with/key/${ifttt_maker}`;
 
 	let init;
 	if (bodyParams) {
