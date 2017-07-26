@@ -1,4 +1,5 @@
 'use strict';
+const { inspect } = require('util');
 const adbkit = require('adbkit');
 const chalk = require('chalk');
 
@@ -7,7 +8,7 @@ class ADBDevices {
 		this.adb = client;
 		this.devices = [];
 
-		this.refreshDevices();
+		this.ready = this.refreshDevices();
 		this.adb.trackDevices().then(tracker => tracker.on('changeSet', () => {
 			this.refreshDevices();
 		}));
@@ -17,7 +18,8 @@ class ADBDevices {
 		this.devices = await this.adb.listDevicesWithPaths();
 
 		console.log(chalk.gray('Refreshed ADB devices:'))
-		this.devices.forEach(device => console.log(chalk.gray('  ' + device)));
+		this.devices
+			.forEach(device => console.log(chalk.gray('  ' + inspect(device))));
 	}
 
 	*[Symbol.iterator]() {
@@ -35,7 +37,10 @@ let deviceTracker;
  * @returns {Promise<string[]>}
  */
 async function getCellWallDevices() {
-	if (!deviceTracker) deviceTracker = new ADBDevices();
+	if (!deviceTracker) {
+		deviceTracker = new ADBDevices();
+		await deviceTracker.ready;
+	}
 	return [...deviceTracker];
 }
 
