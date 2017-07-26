@@ -5,18 +5,8 @@ const chalk = require('chalk');
 
 const app = express();
 const { getButton } = require('./utils/dash-button');
+const { wrapForExpress } = require('./utils/express');
 const { doorbellRung, toggleCellWallPower } = require('./actions');
-
-console.log(chalk.gray('Starting program...'));
-
-function wrapForExpress(func) {
-	return (req, res) => func()
-		.then(() => res.sendStatus(200))
-		.catch(err => {
-			console.error(`500: ${String(err)}`);
-			res.sendStatus(500);
-		});
-}
 
 app.use(express.static('public'));
 app.use('/gallery', express.static('gallery'));

@@ -1,0 +1,116 @@
+<TaskerData sr="" dvi="1" tv="5.0u1m">
+	<Profile sr="prof3" ve="2">
+		<cdate>1500835849770</cdate>
+		<edate>1500835849770</edate>
+		<id>3</id>
+		<mid0>2</mid0>
+		<Event sr="con0" ve="2">
+			<code>1015828216</code>
+			<pri>0</pri>
+			<Bundle sr="arg0">
+				<Vals sr="val">
+					<com.twofortyfouram.locale.intent.extra.BLURB>doorbell</com.twofortyfouram.locale.intent.extra.BLURB>
+					<com.twofortyfouram.locale.intent.extra.BLURB-type>java.lang.String</com.twofortyfouram.locale.intent.extra.BLURB-type>
+					<commparamsvar>&lt;null&gt;</commparamsvar>
+					<commparamsvar-type>java.lang.String</commparamsvar-type>
+					<message>doorbell</message>
+					<message-type>java.lang.String</message-type>
+					<messagecaseinsensitive>false</messagecaseinsensitive>
+					<messagecaseinsensitive-type>java.lang.Boolean</messagecaseinsensitive-type>
+					<messageexact>false</messageexact>
+					<messageexact-type>java.lang.Boolean</messageexact-type>
+					<messageregex>false</messageregex>
+					<messageregex-type>java.lang.Boolean</messageregex-type>
+					<messagevar>&lt;null&gt;</messagevar>
+					<messagevar-type>java.lang.String</messagevar-type>
+					<net.dinglisch.android.tasker.EXTRA_NSR_DEPRECATED>true</net.dinglisch.android.tasker.EXTRA_NSR_DEPRECATED>
+					<net.dinglisch.android.tasker.EXTRA_NSR_DEPRECATED-type>java.lang.Boolean</net.dinglisch.android.tasker.EXTRA_NSR_DEPRECATED-type>
+					<net.dinglisch.android.tasker.RELEVANT_VARIABLES>&lt;StringArray sr=""&gt;&lt;_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES0&gt;%err
+Error Code
+Only available if you select &amp;lt;b&amp;gt;Continue Task After Error&amp;lt;/b&amp;gt; and the action ends in error&lt;/_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES0&gt;&lt;_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES1&gt;%errmsg
+Error Message
+Only available if you select &amp;lt;b&amp;gt;Continue Task After Error&amp;lt;/b&amp;gt; and the action ends in error&lt;/_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES1&gt;&lt;_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES2&gt;%armessage
+The whole received AutoRemote message.
+The whole received AutoRemote message.&lt;/_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES2&gt;&lt;_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES3&gt;%arpar()
+Single words to the left of =:=
+Single words to the left of =:=&lt;/_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES3&gt;&lt;_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES4&gt;%arcomm
+Whole of the text to the right of =:=
+Whole of the text to the right of =:=&lt;/_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES4&gt;&lt;_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES5&gt;%artime
+Current Time
+&lt;/_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES5&gt;&lt;_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES6&gt;%arfiles()
+Files
+&lt;/_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES6&gt;&lt;_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES7&gt;%arsenderbtmac
+Sender Bluetooth Mac Address
+&lt;/_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES7&gt;&lt;_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES8&gt;%arsenderid
+Sender Id
+&lt;/_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES8&gt;&lt;_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES9&gt;%arsenderlocalip
+Sender Local IP
+&lt;/_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES9&gt;&lt;_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES10&gt;%arsendername
+Sender Name
+&lt;/_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES10&gt;&lt;_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES11&gt;%arsenderpublicip
+Sender Public IP
+&lt;/_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES11&gt;&lt;_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES12&gt;%arsendertype
+Sender Type
+&lt;/_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES12&gt;&lt;_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES13&gt;%arvia
+Way the message was sent (BT, Wifi, GCM)
+&lt;/_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES13&gt;&lt;/StringArray&gt;</net.dinglisch.android.tasker.RELEVANT_VARIABLES>
+					<net.dinglisch.android.tasker.RELEVANT_VARIABLES-type>[Ljava.lang.String;</net.dinglisch.android.tasker.RELEVANT_VARIABLES-type>
+					<net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS>messagevar tempvar commparamsvar message target plugininstanceid plugintypeid </net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS>
+					<net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS-type>java.lang.String</net.dinglisch.android.tasker.extras.VARIABLE_REPLACE_KEYS-type>
+					<net.dinglisch.android.tasker.subbundled>true</net.dinglisch.android.tasker.subbundled>
+					<net.dinglisch.android.tasker.subbundled-type>java.lang.Boolean</net.dinglisch.android.tasker.subbundled-type>
+					<plugininstanceid>141d720f-954e-4a5e-a2a9-c8bea577f882</plugininstanceid>
+					<plugininstanceid-type>java.lang.String</plugininstanceid-type>
+					<plugintypeid>com.joaomgcd.autoremote.IntentRemoteEvent</plugintypeid>
+					<plugintypeid-type>java.lang.String</plugintypeid-type>
+					<tempvar>&lt;null&gt;</tempvar>
+					<tempvar-type>java.lang.String</tempvar-type>
+				</Vals>
+			</Bundle>
+			<Str sr="arg1" ve="3">com.joaomgcd.autoremote</Str>
+			<Str sr="arg2" ve="3">com.joaomgcd.autoremote.activity.ActivityConfigConditionTaskerEvent</Str>
+		</Event>
+	</Profile>
+	<Project sr="proj0" ve="2">
+		<cdate>1500835713597</cdate>
+		<mdate>1500869493654</mdate>
+		<name>Base</name>
+		<pids>3</pids>
+		<tids>2,4</tids>
+		<Img sr="icon" ve="2">
+			<nme>mw_action_home</nme>
+		</Img>
+	</Project>
+	<Task sr="task2">
+		<cdate>1500835762883</cdate>
+		<edate>1500869481007</edate>
+		<id>2</id>
+		<nme>Doorbell</nme>
+		<pri>100</pri>
+		<Action sr="act0" ve="7">
+			<code>192</code>
+			<Int sr="arg0" val="1"/>
+			<Str sr="arg1" ve="3">Hello</Str>
+			<Int sr="arg2" val="5"/>
+		</Action>
+	</Task>
+	<Task sr="task4">
+		<cdate>1500869488730</cdate>
+		<edate>1500869493654</edate>
+		<id>4</id>
+		<nme>Rear Photo</nme>
+		<Action sr="act0" ve="7">
+			<code>101</code>
+			<Int sr="arg0" val="0"/>
+			<Str sr="arg1" ve="3">%DATE %TIME</Str>
+			<Int sr="arg2" val="2"/>
+			<Int sr="arg3" val="1"/>
+			<Int sr="arg4" val="0"/>
+			<Str sr="arg5" ve="3">2592x1944</Str>
+			<Int sr="arg6" val="0"/>
+			<Int sr="arg7" val="0"/>
+			<Int sr="arg8" val="1"/>
+			<Int sr="arg9" val="0"/>
+		</Action>
+	</Task>
+</TaskerData>
