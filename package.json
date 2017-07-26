@@ -6,7 +6,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "broadcast": "PyBeacon -u https://tigeroakes.com"
+    "broadcast": "PyBeacon -u https://tigeroakes.com",
+    "start": "node index.js",
+    "self-update": "git pull"
   },
   "repository": "NotWoods/smart-dorm",
   "author": "Tiger Oakes",

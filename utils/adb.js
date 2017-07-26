@@ -44,7 +44,7 @@ async function getCellWallDevices() {
  * @param {string} command
  * @param {string[]} [devices] - list of devices
  */
-async function multiShell(command, devices) {
+async function multiShell(command, devices, client = adbkit.createClient()) {
 	const deviceList = devices || await getCellWallDevices();
 	await Promise.all(deviceList.map(id => client.shell(id, command)));
 }

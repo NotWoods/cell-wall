@@ -24,7 +24,7 @@ app.use('/gallery', express.static('gallery'));
 app.get('/cmd/doorbell', wrapForExpress(doorbellRung));
 app.get('/cmd/cellwall-power', wrapForExpress(toggleCellWallPower));
 try {
-	getButton('doorbell').on('detected', doolbellRung);
+	getButton('doorbell').on('detected', doorbellRung);
 	getButton('cellwall_power').on('detected', toggleCellWallPower);
 } catch (err) {
 	if (process.platform !== 'win32') {
