@@ -28,11 +28,8 @@ try {
 	getButton('cellwall_power').on('detected', toggleCellWallPower);
 } catch (err) {
 	if (process.platform !== 'win32') {
-		console.warn(`
-Can't listen for dash buttons.
-	Do you have sudo permissions?
-	Check if the node-dash-buttons package is installed`
-		);
+		console.warn('Can\'t listen for dash buttons. Do you have sudo permissions?');
+		console.warn(err);
 	}
 }
 

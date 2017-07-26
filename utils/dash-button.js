@@ -10,14 +10,19 @@ function getButton(name) {
 	try {
 		if (!createDashButton) createDashButton = require('node-dash-button');
 	} catch (err) {
-		createDashButton = new Error('Could not load node-dash-button');
+		createDashButton = err;
 	}
-	if (createDashButton instanceof Error) throw createDashButton;
+
+	if (createDashButton instanceof Error) {
+		throw createDashButton;
+	}
 
 	if (secret.dash_buttons[name]) {
 		return createDashButton(secret.dash_buttons[name]);
 	} else {
-		throw new Error(`${name} does not exist in secret.json under 'dash_buttons'`);
+		throw new TypeError(
+			`${name} does not exist in secret.json under 'dash_buttons'`
+		);
 	}
 }
 
