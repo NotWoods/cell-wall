@@ -6,10 +6,13 @@ const chalk = require('chalk');
 const app = express();
 const { getButton } = require('./utils/dash-button');
 const { wrapForExpress } = require('./utils/express');
+const { devicesTurnedOn } = require('./status');
 const { doorbellRung, toggleCellWallPower } = require('./actions');
 
 app.use(express.static('public'));
 app.use('/gallery', express.static('gallery'));
+
+app.get('/status/devices-on', wrapForExpress(devicesTurnedOn));
 
 app.get('/cmd/doorbell', wrapForExpress(doorbellRung));
 app.get('/cmd/cellwall-power', wrapForExpress(toggleCellWallPower));

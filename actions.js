@@ -1,9 +1,12 @@
 'use strict';
 const chalk = require('chalk');
+const adbkit = require('adbkit');
 const { sendAutoRemoteMessage } = require('./utils/autoremote');
 const { triggerEventIFTTT } = require('./utils/ifttt');
-const { triggerButton } = require('./utils/adb');
+const { ADBDevices, triggerButton } = require('./utils/adb');
 const { timeString } = require('./utils/time');
+
+const adb = adbkit.createClient();
 
 async function doorbellRung() {
 	const icon = chalk.yellow('[d] ');
@@ -22,7 +25,8 @@ async function doorbellRung() {
 async function toggleCellWallPower() {
 	const icon = chalk.green('[w] ');
 	console.log(icon + timeString() + ' - toggling power on CelLWall');
-	await triggerButton(26);
+	const devices = await ADBDevices.getReadyInstance();
+	await triggerButton(26, [...devices], adb);
 	console.log(icon + 'power toggling complete');
 }
 

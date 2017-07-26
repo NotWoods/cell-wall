@@ -22,7 +22,8 @@
     "express": "^4.15.3",
     "ip": "^1.1.5",
     "moment": "^2.18.1",
-    "node-fetch": "^1.7.1"
+    "node-fetch": "^1.7.1",
+    "stream-snitch": "0.0.3"
   },
   "optionalDependencies": {
     "node-dash-button": "^0.6.1"

@@ -2,6 +2,7 @@
 const { inspect } = require('util');
 const adbkit = require('adbkit');
 const chalk = require('chalk');
+const StreamSnitch = require('stream-snitch');
 
 class ADBDevices {
 	constructor(client = adbkit.createClient()) {
@@ -14,6 +15,17 @@ class ADBDevices {
 		}));
 	}
 
+	static getInstance() {
+		if (!ADBDevices.instance) ADBDevices.instance = new ADBDevices();
+		return ADBDevices.instance;
+	}
+
+	static async getReadyInstance() {
+		const instance = await ADBDevices.getInstance();
+		await instance.ready;
+		return instance;
+	}
+
 	async refreshDevices() {
 		this.devices = await this.adb.listDevicesWithPaths();
 
@@ -24,12 +36,11 @@ class ADBDevices {
 
 	*[Symbol.iterator]() {
 		for (const device of this.devices) {
-			if (device.type === 'device') yield device.path;
+			if (device.type === 'device') yield device;
 		}
 	}
 }
 
-let deviceTracker;
 /**
  * Returns a list of device paths from ADB. (looks like `usb:xxx`)
  * Since one of my phones doesn't have a serial number for some reason,
@@ -37,11 +48,8 @@ let deviceTracker;
  * @returns {Promise<string[]>}
  */
 async function getCellWallDevices() {
-	if (!deviceTracker) {
-		deviceTracker = new ADBDevices();
-		await deviceTracker.ready;
-	}
-	return [...deviceTracker];
+	const tracker = ADBDevices.getReadyInstance();
+	return [...tracker];
 }
 
 /**
@@ -51,7 +59,7 @@ async function getCellWallDevices() {
  */
 async function multiShell(command, devices, client = adbkit.createClient()) {
 	const deviceList = devices || await getCellWallDevices();
-	await Promise.all(deviceList.map(id => client.shell(id, command)));
+	await Promise.all(deviceList.map(({ path }) => client.shell(id, command)));
 }
 
 /**
@@ -60,8 +68,33 @@ async function multiShell(command, devices, client = adbkit.createClient()) {
  * @param {number} keycode - number of the key to use
  * @param {string[]} [devices] - list of devices
  */
-async function triggerButton(keycode, devices) {
-	return multiShell(`input keyevent ${keycode}`, devices);
+async function triggerButton(keycode, devices, client) {
+	return multiShell(`input keyevent ${keycode}`, devices, client);
+}
+
+/**
+ * Checks if an android device is on
+ * @param {string} serial - device identifier
+ * @param {adbkit.Client} client
+ * @returns {Promise<boolean>}
+ */
+function checkIfOn(serial, client = adbkit.createClient()) {
+	return client.shell(serial, 'dumpsys power')
+		.then(powerState => new Promise(resolve => {
+			const snitch = new StreamSnitch(/mWakefulness=(\w+)/);
+			snitch.on('match', wakefulness => {
+				powerState.destroy();
+				snitch.destroy();
+				resolve(wakefulness);
+			})
+		}))
+		.then(wakefulness => {
+			switch (wakefulness) {
+				case 'Awake': return true;
+				default:
+					return false;
+			}
+		});
 }
 
 module.exports = {
