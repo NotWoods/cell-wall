@@ -3,103 +3,83 @@ const { inspect } = require('util');
 const adbkit = require('adbkit');
 const chalk = require('chalk');
 const StreamSnitch = require('stream-snitch');
+const logger = require('./logger');
 
-class ADBDevices {
+class ADBHelper {
 	constructor(client = adbkit.createClient()) {
-		this.adb = client;
+		this.client = client;
 		this.devices = [];
 
 		this.ready = this.refreshDevices();
-		this.adb.trackDevices().then(tracker => tracker.on('changeSet', () => {
-			this.refreshDevices();
-		}));
-	}
+		this.isReady = false;
 
-	static getInstance() {
-		if (!ADBDevices.instance) ADBDevices.instance = new ADBDevices();
-		return ADBDevices.instance;
-	}
-
-	static async getReadyInstance() {
-		const instance = await ADBDevices.getInstance();
-		await instance.ready;
-		return instance;
+		this.client.trackDevices()
+			.then(tracker =>
+				tracker.on('changeSet', () => {
+					this.refreshDevices();
+				})
+			);
 	}
 
 	async refreshDevices() {
-		this.devices = await this.adb.listDevicesWithPaths();
+		this.devices = await this.client.listDevicesWithPaths();
+		this.isReady = true;
 
-		console.log(chalk.gray('Refreshed ADB devices:'))
-		this.devices
-			.forEach(device => console.log(chalk.gray('  ' + inspect(device))));
+		let log = 'Refreshed ADB devices:\n';
+		log += (await this.map(d => `    ${inspect(device)}`)).join('\n');
+		logger('android', log);
 	}
 
-	*[Symbol.iterator]() {
-		for (const device of this.devices) {
-			if (device.type === 'device') yield device;
+	/** @returns {Device[]} */
+	getDevices() {
+		if (!this.isReady) {
+			throw new Error('ADBHelper has not yet started');
 		}
+		return this.devices.filter(d => d.type === 'device');
 	}
-}
 
-/**
- * Returns a list of device paths from ADB. (looks like `usb:xxx`)
- * Since one of my phones doesn't have a serial number for some reason,
- * this allows the devices to be identified anyways.
- * @returns {Promise<string[]>}
- */
-async function getCellWallDevices() {
-	const tracker = ADBDevices.getReadyInstance();
-	return [...tracker];
-}
+	/**
+	 * @param {(Device, int, Device[]) => Promise<T>} callback
+	 * @returns {Promise<Array<T>>}
+	 */
+	map(callback) {
+		return Promise.all(this.getDevices().map(callback));
+	}
 
-/**
- * Runs a shell command on every device
- * @param {string} command
- * @param {string[]} [devices] - list of devices
- */
-async function multiShell(command, devices, client = adbkit.createClient()) {
-	const deviceList = devices || await getCellWallDevices();
-	await Promise.all(deviceList.map(({ path }) => client.shell(path, command)));
-}
+	forEach(callback) {
+		return this.map(callback).then(() => {});
+	}
 
-/**
- * Triggers a button on every connected android device, or only on specified
- * devices.
- * @param {number} keycode - number of the key to use
- * @param {string[]} [devices] - list of devices
- */
-async function triggerButton(keycode, devices, client) {
-	return multiShell(`input keyevent ${keycode}`, devices, client);
-}
+	/**
+	 * Triggers a button on every connected android device, or only on specified
+	 * devices.
+	 * @param {number} keycode - number of the key to use
+	 * @returns {Promise<void>}
+	 */
+	triggerButton(keycode) {
+		const command = `input keyevent ${keycode}`;
+		return this.forEach(d => this.client.shell(d.path, command));
+	}
 
-/**
- * Checks if an android device is on
- * @param {string} serial - device identifier
- * @param {adbkit.Client} client
- * @returns {Promise<boolean>}
- */
-function checkIfOn(serial, client = adbkit.createClient()) {
-	return client.shell(serial, 'dumpsys power')
-		.then(powerState => new Promise(resolve => {
+	/**
+	 * Checks if an android device is on
+	 * @param {string} serial - device identifier
+	 * @returns {Promise<boolean>}
+	 */
+	async checkIfOn(serial) {
+		const powerState = await this.client.shell(serial, 'dumpsys power');
+
+		const wakefulness = await new Promise(resolve => {
 			const snitch = new StreamSnitch(/mWakefulness=(\w+)/);
 			snitch.on('match', wakefulness => {
 				powerState.destroy();
 				snitch.destroy();
 				resolve(wakefulness);
 			})
-		}))
-		.then(wakefulness => {
-			switch (wakefulness) {
-				case 'Awake': return true;
-				default:
-					return false;
-			}
 		});
+
+		return wakefulness == 'Awake';
+	}
 }
 
-module.exports = {
-	ADBDevices,
-	getCellWallDevices,
-	multiShell,
-	triggerButton,
-};
+module.exports = ADBHelper;

@@ -1,33 +1,41 @@
 'use strict';
-const chalk = require('chalk');
-const adbkit = require('adbkit');
 const { sendAutoRemoteMessage } = require('./utils/autoremote');
 const { triggerEventIFTTT } = require('./utils/ifttt');
-const { ADBDevices, triggerButton } = require('./utils/adb');
-const { timeString } = require('./utils/time');
+const ADBHelper = require('./utils/adb');
+const logger = require('./utils/logger');
 
-const adb = adbkit.createClient();
+const adb = new ADBHelper();
 
 async function doorbellRung() {
-	const icon = chalk.yellow('[d] ');
-	console.log(icon + timeString() + ' - doorbell activated');
+	logger('doorbell', 'doorbell activated');
 
 	const [autoRemoteRequest, iftttRequest] = await Promise.all([
 		sendAutoRemoteMessage('doorbell'),
-		triggerEventIFTTT('doorbell', { value1: new Date().toISOString() })
+		triggerEventIFTTT('doorbell')
 	]);
 
-	console.log(icon + 'doorbell notifications sent');
+	logger('doorbell', 'doorbell notifications sent');
 
 	return { autoRemoteRequest, iftttRequest };
 }
 
 async function toggleCellWallPower() {
-	const icon = chalk.green('[w] ');
-	console.log(icon + timeString() + ' - toggling power on CelLWall');
-	const devices = await ADBDevices.getReadyInstance();
-	await triggerButton(26, [...devices], adb);
-	console.log(icon + 'power toggling complete');
+	logger('cellwall', 'toggling power on CellWall');
+
+	await adb.triggerButton(26);
+
+	logger('cellwall', 'power toggling complete');
+}
+
+async function devicesTurnedOn() {
+	const powerStates = await adb.map(d => checkIfOn(d.path));
+	const devices = adb.getDevices();
+
+	let status = {};
+	for (let i = 0; i < devices.length; i++) {
+		status[devices[i].path] = powerStates[i];
+	}
+	return status;
 }
 
 module.exports = {

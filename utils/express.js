@@ -7,7 +7,7 @@ function wrapForExpress(func) {
 			if (data) {
 				res.json(data);
 			} else {
-				res.sendStatus(200);
+				res.sendStatus(204);
 			}
 		} catch (err) {
 			console.error(`500: ${String(err)}`);
