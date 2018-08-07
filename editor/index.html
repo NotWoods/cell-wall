@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CellWall Editor</title>
+    <style>
+        body {
+            text-align: center;
+        }
+
+        .board {
+            position: relative;
+            margin: 16px auto;
+
+            background: #43A047 no-repeat;
+            background-size: cover;
+            border: 4px solid #1B5E20;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+        }
+
+        .board.preview {
+            background-image: url('preview.jpg');
+        }
+
+        .display {
+            display: block;
+            height: 30px;
+            width: 30px;
+            position: absolute;
+
+            background: #eee;
+            border: 0;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+            transition: box-shadow 0.2s ease, opacity 0.2s ease;
+        }
+
+        .display.selected {
+            box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+        }
+
+        .preview .display {
+            opacity: 0.7;
+        }
+    </style>
+    <script defer src="node_modules/interactjs/dist/interact.min.js"></script>
+    <script defer src="editor.js"></script>
+</head>
+
+<body>
+    <form id="options">
+        <label>
+            Board width
+            <input type="number" name="width" value="500">
+        </label>
+        <label>
+            Board height
+            <input type="number" name="height" value="500">
+        </label>
+        <label>
+            <input type="checkbox" name="preview"> Show preview
+        </label>
+        <fieldset>
+            <label>
+                X
+                <input type="number" name="x">
+            </label>
+            <label>
+                Y
+                <input type="number" name="y">
+            </label>
+            <select name="display"></select>
+        </fieldset>
+    </form>
+    <section class="board" id="cellwall-board">
+    </section>
+</body>
+
+</html>
