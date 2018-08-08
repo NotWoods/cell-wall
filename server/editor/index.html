@@ -32,8 +32,13 @@
 
             background: #eee;
             border: 0;
+            cursor: move;
             box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
-            transition: box-shadow 0.2s ease, opacity 0.2s ease;
+            transition: box-shadow 0.2s ease, opacity 0.2s ease, transform 0.3s ease;
+        }
+
+        .display.dragging {
+            transition: none;
         }
 
         .display.selected {
@@ -44,19 +49,21 @@
             opacity: 0.7;
         }
     </style>
-    <script defer src="node_modules/interactjs/dist/interact.min.js"></script>
-    <script defer src="editor.js"></script>
+    <script defer src="../node_modules/interactjs/dist/interact.min.js"></script>
+    <script defer src="editor-ui.js"></script>
+    <script defer src="../node_modules/socket.io-client/dist/socket.io.js"></script>
+    <script defer src="connection.js"></script>
 </head>
 
 <body>
     <form id="options">
         <label>
             Board width
-            <input type="number" name="width" value="500">
+            <input type="number" name="width">
         </label>
         <label>
             Board height
-            <input type="number" name="height" value="500">
+            <input type="number" name="height">
         </label>
         <label>
             <input type="checkbox" name="preview"> Show preview

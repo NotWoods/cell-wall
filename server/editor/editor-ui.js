@@ -1,7 +1,6 @@
 // @ts-check
 "use strict";
 
-const board = document.getElementById("cellwall-board");
 const form = /** @type {HTMLFormElement} */ (document.getElementById(
   "options"
 ));
@@ -22,6 +21,40 @@ const DRAGGABLE_OPTIONS = {
   autoScroll: true
 };
 
+class Board {
+  constructor() {
+    this.element = document.getElementById("cellwall-board");
+  }
+
+  /**
+   * @param {HTMLElement} element
+   */
+  add(element) {
+    this.element.appendChild(element);
+  }
+
+  /**
+   * Change the width or height of the board
+   * @param {'width' | 'height'} dim
+   * @param {number} value
+   */
+  setDimension(dim, value) {
+    this.element.style[dim] = `${value}px`;
+  }
+
+  /**
+   * Toggles a background image on the board
+   * @param {boolean} value
+   */
+  showPreview(value) {
+    if (value) {
+      this.element.classList.add("preview");
+    } else {
+      this.element.classList.remove("preview");
+    }
+  }
+}
+
 /**
  * Displays correspond to a screen on the CellWall. This class holds a UI
  * representation of a display, where the element size and position correspond
@@ -40,12 +73,12 @@ class Display {
     option.textContent = id;
 
     displaySelect.appendChild(option);
-    board.appendChild(displayElement);
 
     interact(displayElement)
       .draggable(DRAGGABLE_OPTIONS)
-      .on("dragmove", Display.onDragMove);
-    displayElement.addEventListener("mousedown", Display.onMouseDown);
+      .on("dragmove", Display.onDragMove)
+      .on("dragstart", Display.onDragStart)
+      .on("dragend", Display.onDragEnd);
 
     this.element = displayElement;
     Display.lookup.set(displayElement, this);
@@ -82,12 +115,19 @@ class Display {
   /**
    * Listener called when the display is clicked on. Adds the selected class
    * and updates the select element with this display's ID.
-   * @param {MouseEvent} event
+   * @param {interact.InteractEvent} event
    */
-  static onMouseDown(event) {
+  static onDragStart(event) {
     const display = Display.get(event.target);
     displaySelect.value = display.element.id;
     Display.select(display);
+    display.element.classList.add("dragging");
+  }
+
+  static onDragEnd(event) {
+    const display = Display.get(event.target);
+    display.dispatchMoveEvent();
+    display.element.classList.remove("dragging");
   }
 
   /**
@@ -129,8 +169,30 @@ class Display {
 
     xInput.value = xs;
     yInput.value = ys;
+  }
 
+  dispatchMoveEvent() {
     this.element.dispatchEvent(new CustomEvent("move", { bubbles: true }));
+  }
+
+  destroy() {
+    // Remove <option> from select
+    const option = displaySelect.querySelector(
+      `option[value=${this.element.id}]`
+    );
+    option.remove();
+
+    // Remove interact.js listeners
+    // @ts-ignore
+    interact(this.element).unset();
+
+    // Destroy element
+    this.element.remove();
+  }
+
+  toJSON() {
+    const { x, y } = this.getPosition();
+    return { id: this.element.id, x, y };
   }
 }
 /**
@@ -141,29 +203,11 @@ Display.lookup = new WeakMap();
 /** @type {Display | null} Display that currently has the `.selected` class */
 Display.selected = null;
 
-// TODO: Tell server when a display is moved
-board.addEventListener("move", event => {
-  const display = Display.get(event.target);
-  const { x, y } = display.getPosition();
-  console.log(display, x, y);
-});
 // When an input in the form is changed, update the UI accordingly
 form.addEventListener("change", event => {
   const input =
     /** @type {HTMLInputElement|HTMLSelectElement} */ (event.target);
   switch (input.name) {
-    // Adjust width and height of the CellWall board
-    case "width":
-    case "height":
-      board.style[input.name] = `${input.value}px`;
-      break;
-    case "preview":
-      const { checked } = /** @type {HTMLInputElement} */ (input);
-      if (checked) {
-        board.classList.add("preview");
-      } else {
-        board.classList.remove("preview");
-      }
     // Change the selected display
     case "display":
       Display.select(Display.get(displaySelect.value));
@@ -175,19 +219,8 @@ form.addEventListener("change", event => {
         const pos = Display.selected.getPosition();
         pos[input.name] = parseFloat(input.value);
         Display.selected.setPosition(pos.x, pos.y);
+        Display.selected.dispatchMoveEvent();
       }
       break;
   }
 });
-
-// Call change listeners for the default values
-for (const element of form.elements) {
-  if (element.tagName === "INPUT" || element.tagName === "SELECT") {
-    element.dispatchEvent(new Event("change", { bubbles: true }));
-  }
-}
-
-// Demo elements
-new Display("red");
-new Display("blue");
-new Display("yellow");
