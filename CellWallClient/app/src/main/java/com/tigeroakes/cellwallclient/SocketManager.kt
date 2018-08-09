@@ -1,11 +1,14 @@
 package com.tigeroakes.cellwallclient
 
 import android.content.SharedPreferences
+import android.view.MotionEvent
+import androidx.core.content.edit
 import io.socket.client.IO
 import io.socket.client.Socket
+import org.json.JSONObject
 
 object SocketManager {
-    private val ADDRESS_KEY = "address"
+    const val ADDRESS_KEY = "address"
 
     private var socket: Socket? = null
 
@@ -32,9 +35,8 @@ object SocketManager {
      * so that future runs of the program can re-use it.
      */
     fun createSocket(address: String, sharedPrefs: SharedPreferences): Socket {
-        with (sharedPrefs.edit()) {
+        sharedPrefs.edit {
             putString(ADDRESS_KEY, address)
-            apply()
         }
         return buildSocket(address)
     }
@@ -44,4 +46,12 @@ object SocketManager {
      * saved address. If there was no address saved, returns null.
      */
     fun getSocket(sharedPrefs: SharedPreferences) = socket ?: buildSocketFromPrefs(sharedPrefs)
+
+    fun Socket.emitTouch(event: MotionEvent) {
+        val touchObj = JSONObject()
+        touchObj.put("x", event.rawX)
+        touchObj.put("y", event.rawY)
+        touchObj.put("action", event.action)
+        this.emit("touch", touchObj)
+    }
 }

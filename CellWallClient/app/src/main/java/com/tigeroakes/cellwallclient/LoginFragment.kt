@@ -3,50 +3,29 @@ package com.tigeroakes.cellwallclient
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.annotation.TargetApi
-import androidx.appcompat.app.AppCompatActivity
-import android.app.LoaderManager.LoaderCallbacks
+import android.content.Context
 import android.content.Intent
-import android.database.Cursor
-import android.os.AsyncTask
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.preference.PreferenceManager.getDefaultSharedPreferences
+import android.support.v4.app.Fragment
 import android.text.TextUtils
+import android.view.LayoutInflater
 import android.view.View
-import android.view.inputmethod.EditorInfo
-import android.widget.TextView
-
+import android.view.ViewGroup
 import android.webkit.URLUtil
-import com.tigeroakes.cellwallclient.SocketManager.createSocket
-import io.socket.client.IO
-import io.socket.client.Socket
+import androidx.lifecycle.ViewModelProviders
+import com.tigeroakes.cellwallclient.viewmodels.LoginViewModel
+import java.nio.file.Paths
+import okhttp3.Request
 
-import kotlinx.android.synthetic.main.activity_login.*
-import kotlinx.coroutines.experimental.Deferred
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.async
-import org.jetbrains.anko.coroutines.experimental.bg
-import kotlin.coroutines.experimental.suspendCoroutine
-
-/**
- * A login screen that offers login via email/password.
- */
-class LoginActivity : AppCompatActivity() {
+class LoginFragment : Fragment() {
     private var connectingSocket = false
+    private lateinit var viewModel: LoginViewModel
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_login)
-        // Set up the login form.
-        address.setOnEditorActionListener(TextView.OnEditorActionListener { _, id, _ ->
-            if (id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL) {
-                attemptLogin()
-                return@OnEditorActionListener true
-            }
-            false
-        })
-
-        connect_button.setOnClickListener { attemptLogin() }
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_login, container, false)
     }
 
     /**
@@ -60,7 +39,7 @@ class LoginActivity : AppCompatActivity() {
         }
 
         // Reset errors.
-        address.error = null
+        viewModel.clearError()
 
         // Store values at the time of the login attempt.
         val addressStr = address.text.toString()
@@ -69,10 +48,10 @@ class LoginActivity : AppCompatActivity() {
 
         // Check for a valid address
         if (TextUtils.isEmpty(addressStr)) {
-            address.error = getString(R.string.error_field_required)
+            viewModel.setErrorText(getString(R.string.error_field_required))
             cancel = true
         } else if (!isUrlValid(addressStr)) {
-            address.error = getString(R.string.error_invalid_address)
+            viewModel.setErrorText(getString(R.string.error_invalid_address))
             cancel = true
         }
 
@@ -84,18 +63,31 @@ class LoginActivity : AppCompatActivity() {
             // Show a progress spinner, and start connecting with a socket
             showProgress(true)
             connectingSocket = true
-            val sharedPrefs = getDefaultSharedPreferences(this)
-            val socket = createSocket(addressStr, sharedPrefs)
-            socket.on(Socket.EVENT_CONNECT) {
-                showProgress(false)
-                startActivity(Intent(this, MainActivity::class.java))
+
+            val url = Paths.get(addressStr, "cell")
+            val request = Request.Builder()
+                    .url(url.toString())
+                    .build()
+
+            val response = OKHttpClient().newCall(request).execute()
+            if (response.isSuccessful()) {
+                // Save the new address
+                getDefaultSharedPreferences(getActivity()).edit(commit = true) {
+                    putString(SERVER_ADDRESS_KEY, addressStr)
+                }
+
+                // Open the main activity
+                getActivity()
+                        .supportFragmentManager.beginTransaction()
+                        .replace(R.id.container, StartFragment.newInstance())
+                        .commitNow()
+            } else {
                 connectingSocket = false
-            }.on(Socket.EVENT_CONNECT_ERROR) {
-                connectingSocket = false
                 showProgress(false)
-                address.error = getString(R.string.error_incorrect_address)
+
+                viewModel.setErrorText(getString(R.string.error_incorrect_address))
+                address.requestFocus()
             }
-            socket.connect()
         }
     }
 
@@ -137,5 +129,14 @@ class LoginActivity : AppCompatActivity() {
             login_progress.visibility = if (show) View.VISIBLE else View.GONE
             login_form.visibility = if (show) View.GONE else View.VISIBLE
         }
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        viewModel = ViewModelProviders.of(this).get(LoginViewModel::class.java)
+    }
+
+    companion object {
+        fun newInstance() = LoginFragment()
     }
 }
