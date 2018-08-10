@@ -1,0 +1,8 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "checkJs": false,
+    "target": "esnext"
+  },
+  "include": ["connection.js", "editor.js"]
+}

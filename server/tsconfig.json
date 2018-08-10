@@ -1,8 +1,13 @@
 {
   "compilerOptions": {
-    "allowJs": true,
-    "checkJs": true,
-    "target": "esnext"
+    "target": "esnext",
+    "module": "commonjs",
+    "strict": true,
+    "esModuleInterop": false,
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "outDir": "dist"
   },
-  "include": ["**/*", "node_modules/interactjs/index.d.ts"]
+  "include": ["src/**/*"],
+  "exclude": ["editor/**/*"]
 }

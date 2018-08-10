@@ -4,7 +4,9 @@
   "description": "Server for the CellWall",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "start": "node dist/index.js"
   },
   "author": "Tiger Oakes",
   "license": "UNLICENSED",
@@ -17,6 +19,7 @@
   "devDependencies": {
     "@types/express": "^4.16.0",
     "@types/socket.io": "^1.4.36",
-    "@types/socket.io-client": "^1.4.32"
+    "@types/socket.io-client": "^1.4.32",
+    "typescript": "^3.0.1"
   }
 }
