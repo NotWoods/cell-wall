@@ -12,14 +12,16 @@ import android.view.ViewGroup
 import android.webkit.URLUtil
 import androidx.core.content.edit
 import androidx.lifecycle.Observer
+import com.tigeroakes.cellwallclient.rest.CellWallServerService
 import okhttp3.OkHttpClient
 
 import com.tigeroakes.cellwallclient.R
 import com.tigeroakes.cellwallclient.SERVER_ADDRESS_KEY
 import kotlinx.android.synthetic.main.login_fragment.*
-import okhttp3.Request
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.io.IOException
-import java.net.URI
 
 /**
  * The login screen is responsible for letting the user set the address of the CellWall server
@@ -27,7 +29,7 @@ import java.net.URI
  * server at the "/is-cellwall-server" path. If the server returns a 204 status, then the
  * new address is saved and the onServerVerified method is called.
  */
-class LoginFragment : Fragment() {
+class LoginFragment : Fragment(), Callback<Unit>, Observer<String> {
     companion object {
         private val client = OkHttpClient()
         fun newInstance() = LoginFragment()
@@ -68,10 +70,40 @@ class LoginFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(LoginViewModel::class.java)
-        viewModel.getErrorText().observe(this, Observer { errorText ->
-            address_layout.error = errorText
-            address_layout.isErrorEnabled = TextUtils.isEmpty(errorText)
-        })
+        viewModel.getErrorText().observe(this, this)
+    }
+
+    /**
+     * Called when the error text in the view model changes.
+     * Used to display the current error, if any.
+     */
+    override fun onChanged(errorText: String) {
+        address_layout.error = errorText
+        address_layout.isErrorEnabled = TextUtils.isEmpty(errorText)
+    }
+
+    /**
+     * Called when the /is-cellwall-server request fails
+     */
+    override fun onFailure(call: Call<Unit>?, error: Throwable?) {
+        val errorText = when (error) {
+            is IOException -> getString(R.string.error_incorrect_address)
+            is IllegalArgumentException -> getString(R.string.error_connection_failed)
+            else -> error.toString()
+        }
+        viewModel.setErrorText(errorText)
+        address.requestFocus()
+    }
+
+    /**
+     * Called when the /is-cellwall-server request succeeds.
+     */
+    override fun onResponse(call: Call<Unit>?, response: Response<Unit>?) {
+        val addressStr = address.text.toString()
+        sharedPrefs.edit {
+            putString(SERVER_ADDRESS_KEY, addressStr)
+        }
+        callback.onServerVerified(addressStr)
     }
 
     private fun attemptLogin() {
@@ -115,21 +147,8 @@ class LoginFragment : Fragment() {
      * @param address Address to check
      */
     private fun testAddress(address: String) {
-        val url = URI(address).resolve("is-cellwall-server").toString()
-        val request = Request.Builder().url(url).build()
-
-        client.newCall(request).execute().use {
-            if (it.isSuccessful) {
-                // Save the new address
-                sharedPrefs.edit(commit = true) {
-                    putString(SERVER_ADDRESS_KEY, address)
-                }
-
-                // Open the main fragment
-                callback.onServerVerified(address)
-            } else {
-                throw IllegalArgumentException()
-            }
-        }
+        CellWallServerService.create(address)
+                .isServer()
+                .enqueue(this)
     }
 }

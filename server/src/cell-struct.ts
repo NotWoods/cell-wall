@@ -67,4 +67,5 @@ export const text = (text: string) => createState(CellMode.TEXT, { text });
  */
 export const image = (src: string) => createState(CellMode.IMAGE, { src });
 
-export const button = () => createState(CellMode.BUTTON, {});
+export const button = (backgroundColor: string) =>
+  createState(CellMode.BUTTON, { backgroundColor });

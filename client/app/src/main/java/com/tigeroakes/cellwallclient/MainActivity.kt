@@ -1,5 +1,6 @@
 package com.tigeroakes.cellwallclient
 
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.preference.PreferenceManager.getDefaultSharedPreferences
@@ -40,7 +41,9 @@ class MainActivity : AppCompatActivity(), LoginFragment.OnServerVerifiedListener
     override fun onServerVerified(serverAddress: String) {
         setFragment(MainFragment.newInstance())
 
-        viewModel.getMode(serverAddress).observe(this, this)
+        viewModel
+                .getMode(Installation.id(getDefaultSharedPreferences(this)), serverAddress)
+                .observe(this, this)
     }
 
     /**

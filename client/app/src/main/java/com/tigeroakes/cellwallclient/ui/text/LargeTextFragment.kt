@@ -2,14 +2,21 @@ package com.tigeroakes.cellwallclient.ui.text
 
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
+import android.preference.PreferenceManager.getDefaultSharedPreferences
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
+import com.tigeroakes.cellwallclient.Installation
 
 import com.tigeroakes.cellwallclient.R
+import com.tigeroakes.cellwallclient.SERVER_ADDRESS_KEY
+import com.tigeroakes.cellwallclient.rest.CellWallServerService
+import com.tigeroakes.cellwallclient.rest.Data
+import kotlinx.android.synthetic.main.large_text_fragment.*
 
-class LargeTextFragment : Fragment() {
+class LargeTextFragment : Fragment(), Observer<Data.Text> {
 
     companion object {
         fun newInstance() = LargeTextFragment()
@@ -25,7 +32,15 @@ class LargeTextFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(LargeTextViewModel::class.java)
-        // TODO: Use the ViewModel
+
+        val sharedPrefs = getDefaultSharedPreferences(context)
+        viewModel.getText(
+                Installation.id(sharedPrefs),
+                CellWallServerService.create(sharedPrefs.getString(SERVER_ADDRESS_KEY, null)!!)
+        ).observe(this, this)
     }
 
+    override fun onChanged(data: Data.Text) {
+        large_text.text = data.text
+    }
 }

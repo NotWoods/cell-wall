@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 class MainViewModel : ViewModel() {
     private var mode: ModeLiveData? = null
 
-    fun getMode(address: String): LiveData<CellMode> = mode ?: address.let {
-        ModeLiveData(it).also { mode = it }
+    fun getMode(id: String, address: String): LiveData<CellMode> {
+        return mode ?: ModeLiveData(id, address).also { mode = it }
     }
 }

@@ -64,7 +64,7 @@ app.get("/", (req, res) => {
   res.sendFile(__dirname + "/index.html");
 });
 
-app.get("/:id/:mode", (req, res) => {
+app.get("/data/:mode/:id", (req, res) => {
   const { id, mode } = req.params;
   const cell = wall.cells.get(id);
   if (cell == null) {

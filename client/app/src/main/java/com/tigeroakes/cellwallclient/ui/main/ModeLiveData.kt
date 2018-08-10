@@ -7,7 +7,7 @@ import io.socket.client.Socket
 import io.socket.emitter.Emitter
 import java.net.URI
 
-class ModeLiveData(address: String) : LiveData<CellMode>(), Emitter.Listener {
+class ModeLiveData(id: String, address: String) : LiveData<CellMode>(), Emitter.Listener {
     private var socket: Socket
 
     init {
@@ -16,7 +16,7 @@ class ModeLiveData(address: String) : LiveData<CellMode>(), Emitter.Listener {
         // Include the display size in the connection
         val display = Resources.getSystem().displayMetrics
         val options = IO.Options()
-        options.query = "width=${display.widthPixels}&height=${display.heightPixels}"
+        options.query = "width=${display.widthPixels}&height=${display.heightPixels}&id=$id"
 
         socket = IO.socket(uri, options)
         socket.on("cell-update", this)
