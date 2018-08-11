@@ -1,25 +1,23 @@
 package com.tigeroakes.cellwallclient.ui.text
 
-import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
-import android.preference.PreferenceManager.getDefaultSharedPreferences
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import com.tigeroakes.cellwallclient.Installation
-
+import androidx.lifecycle.ViewModelProviders
 import com.tigeroakes.cellwallclient.R
-import com.tigeroakes.cellwallclient.SERVER_ADDRESS_KEY
-import com.tigeroakes.cellwallclient.rest.CellWallServerService
-import com.tigeroakes.cellwallclient.rest.Data
 import kotlinx.android.synthetic.main.large_text_fragment.*
 
-class LargeTextFragment : Fragment(), Observer<Data.Text> {
+class LargeTextFragment : Fragment(), Observer<String> {
 
     companion object {
-        fun newInstance() = LargeTextFragment()
+        private const val ARG_TEXT = "text"
+
+        fun newInstance(text: String) = LargeTextFragment().apply {
+            arguments = Bundle().apply { putString(ARG_TEXT, text) }
+        }
     }
 
     private lateinit var viewModel: LargeTextViewModel
@@ -33,14 +31,14 @@ class LargeTextFragment : Fragment(), Observer<Data.Text> {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(LargeTextViewModel::class.java)
 
-        val sharedPrefs = getDefaultSharedPreferences(context)
-        viewModel.getText(
-                Installation.id(sharedPrefs),
-                CellWallServerService.create(sharedPrefs.getString(SERVER_ADDRESS_KEY, null)!!)
-        ).observe(this, this)
+        arguments?.run {
+            getString(ARG_TEXT)?.let { viewModel.setText(it) }
+        }
+
+        viewModel.getText().observe(this, this)
     }
 
-    override fun onChanged(data: Data.Text) {
-        large_text.text = data.text
+    override fun onChanged(text: String?) {
+        large_text.text = text
     }
 }

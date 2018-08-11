@@ -1,22 +1,19 @@
 package com.tigeroakes.cellwallclient.ui.login
 
 import android.content.Context
-import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.preference.PreferenceManager.getDefaultSharedPreferences
 import android.text.TextUtils
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.URLUtil
 import androidx.core.content.edit
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import com.tigeroakes.cellwallclient.rest.CellWallServerService
-import okhttp3.OkHttpClient
-
+import androidx.lifecycle.ViewModelProviders
 import com.tigeroakes.cellwallclient.R
 import com.tigeroakes.cellwallclient.SERVER_ADDRESS_KEY
+import com.tigeroakes.cellwallclient.rest.CellWallServerService
 import kotlinx.android.synthetic.main.login_fragment.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -31,7 +28,6 @@ import java.io.IOException
  */
 class LoginFragment : Fragment(), Callback<Unit>, Observer<String> {
     companion object {
-        private val client = OkHttpClient()
         fun newInstance() = LoginFragment()
     }
 
@@ -107,37 +103,19 @@ class LoginFragment : Fragment(), Callback<Unit>, Observer<String> {
     }
 
     private fun attemptLogin() {
-        // Reset errors.
-        viewModel.clearError()
-
         // Store values at the time of the login attempt.
         val addressStr = address.text.toString()
 
-        var cancel = false
-
-        // Check for a valid address
-        if (TextUtils.isEmpty(addressStr)) {
-            viewModel.setErrorText(getString(R.string.error_field_required))
-            cancel = true
-        } else if (!URLUtil.isValidUrl(addressStr)) {
-            viewModel.setErrorText(getString(R.string.error_invalid_address))
-            cancel = true
+        val isValid = viewModel.validateAddress(addressStr) {
+            getString(it)
         }
 
-        if (cancel) {
+        if (isValid) {
+            testAddress(addressStr)
+        } else {
             // There was an error; don't attempt login and focus the
             // form field with an error.
             address.requestFocus()
-        } else {
-            try {
-                testAddress(addressStr)
-            } catch (e: IOException) {
-                viewModel.setErrorText(getString(R.string.error_incorrect_address))
-                address.requestFocus()
-            } catch (e: IllegalArgumentException) {
-                viewModel.setErrorText(getString(R.string.error_connection_failed))
-                address.requestFocus()
-            }
         }
     }
 

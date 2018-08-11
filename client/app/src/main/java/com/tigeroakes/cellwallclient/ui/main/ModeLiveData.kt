@@ -2,12 +2,16 @@ package com.tigeroakes.cellwallclient.ui.main
 
 import android.content.res.Resources
 import androidx.lifecycle.LiveData
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
+import com.tigeroakes.cellwallclient.rest.Data
 import io.socket.client.IO
 import io.socket.client.Socket
 import io.socket.emitter.Emitter
+import org.json.JSONObject
 import java.net.URI
 
-class ModeLiveData(id: String, address: String) : LiveData<CellMode>(), Emitter.Listener {
+class ModeLiveData(id: String, address: String) : LiveData<Data.State>(), Emitter.Listener {
     private var socket: Socket
 
     init {
@@ -26,8 +30,19 @@ class ModeLiveData(id: String, address: String) : LiveData<CellMode>(), Emitter.
      * Called by the socket when this Cell should change the displayed content
      */
     override fun call(vararg args: Any?) {
-        val mode = args[0] as String
-        value = CellMode.valueOf(mode)
+        val mode = CellMode.valueOf(args[0] as String)
+        val json = args[0] as JSONObject
+        val data = json.run {
+            when (mode) {
+                CellMode.CONFIGURE -> Data.Configure(getString("backgroundColor"), getString("icon"))
+                CellMode.TEXT -> Data.Text(getString("text"))
+                CellMode.IMAGE -> Data.Image(getString("src"))
+                CellMode.BUTTON -> Data.Button(getString("backgroundColor"))
+                else -> Data.Blank()
+            }
+        }
+
+        value = Data.State(mode, data)
     }
 
     /**

@@ -6,7 +6,7 @@ import { join } from "path";
 import { createWall } from "./wall-class";
 import express = require("express");
 import SocketIO = require("socket.io");
-import { CellMode } from "./cell-struct";
+import { CellMode, CellState } from "./cell-struct";
 
 const app = express();
 const http = new Server(app);
@@ -16,7 +16,7 @@ const cell = io.of("/cell");
 const editor = io.of("/edit");
 
 interface CellSocket extends SocketIO.Socket {
-  emit(event: "cell-update", mode: CellMode): boolean;
+  emit(event: "cell-update", mode: CellMode, data: CellState["data"]): boolean;
 }
 
 interface EditorSocket extends SocketIO.Socket {
@@ -111,7 +111,7 @@ cell.on("connection", (socket: CellSocket) => {
   const height = parseInt(query.height, 10) || 0;
   const cell = wall.createCell(socket.id, width, height);
 
-  socket.emit("cell-update", cell.state.mode);
+  socket.emit("cell-update", cell.state.mode, cell.state.data);
 
   socket.on("disconnect", () => wall.removeCell(socket.id));
 });
