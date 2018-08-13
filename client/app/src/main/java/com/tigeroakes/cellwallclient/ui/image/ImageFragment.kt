@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
 
@@ -18,7 +19,7 @@ class ImageFragment : Fragment(), Observer<String> {
         private const val ARG_IMAGE_SRC = "image_src"
 
         fun newInstance(src: String) = ImageFragment().apply {
-            arguments = Bundle().apply { putString(ARG_IMAGE_SRC, src) }
+            arguments = bundleOf(ARG_IMAGE_SRC to src)
         }
     }
 

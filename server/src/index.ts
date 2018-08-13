@@ -17,6 +17,12 @@ const editor = io.of("/edit");
 
 interface CellSocket extends SocketIO.Socket {
   emit(event: "cell-update", mode: CellMode, data: CellState["data"]): boolean;
+
+  on(
+    event: "touch",
+    listener: (x: number, y: number, action: string) => void
+  ): this;
+  on(event: "disconnect", listener: () => void): this;
 }
 
 interface EditorSocket extends SocketIO.Socket {
@@ -61,7 +67,8 @@ app.get("/is-cellwall-server", (req, res) => {
 });
 
 app.get("/", (req, res) => {
-  res.sendFile(__dirname + "/index.html");
+  console.log("root");
+  res.sendStatus(200);
 });
 
 app.get("/data/:mode/:id", (req, res) => {

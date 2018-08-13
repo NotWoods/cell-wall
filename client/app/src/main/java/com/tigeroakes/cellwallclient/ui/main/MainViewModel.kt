@@ -1,13 +1,14 @@
 package com.tigeroakes.cellwallclient.ui.main
 
-import androidx.lifecycle.LiveData
+import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
-import com.tigeroakes.cellwallclient.rest.Data
+import com.tigeroakes.cellwallclient.CellState
+import com.tigeroakes.cellwallclient.socket.SocketListLiveData
+import org.json.JSONObject
 
 class MainViewModel : ViewModel() {
-    private var mode: ModeLiveData? = null
-
-    fun getMode(id: String, address: String): LiveData<Data.State> {
-        return mode ?: ModeLiveData(id, address).also { mode = it }
+    val stateRawData = SocketListLiveData()
+    val state = Transformations.map(stateRawData) {
+        CellState.from(it[0] as String, it[1] as JSONObject)
     }
 }

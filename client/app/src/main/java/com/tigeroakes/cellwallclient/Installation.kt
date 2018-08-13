@@ -4,9 +4,16 @@ import android.content.SharedPreferences
 import androidx.core.content.edit
 import java.util.UUID.randomUUID
 
+/**
+ * Holds installation-specific data.
+ */
 object Installation {
-    var sID: String? = null
+    private var sID: String? = null
 
+    /**
+     * Returns an identifier that is unique to this installation of the app.
+     * @param sharedPrefs Preferences where the ID will be stored
+     */
     fun id(sharedPrefs: SharedPreferences): String {
         return sID ?: (
                     sharedPrefs.getString(INSTALLATION_ID_KEY, null) ?: newId(sharedPrefs)

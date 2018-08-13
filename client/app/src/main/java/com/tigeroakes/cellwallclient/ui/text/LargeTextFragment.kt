@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -16,7 +17,7 @@ class LargeTextFragment : Fragment(), Observer<String> {
         private const val ARG_TEXT = "text"
 
         fun newInstance(text: String) = LargeTextFragment().apply {
-            arguments = Bundle().apply { putString(ARG_TEXT, text) }
+            arguments = bundleOf(ARG_TEXT to text)
         }
     }
 

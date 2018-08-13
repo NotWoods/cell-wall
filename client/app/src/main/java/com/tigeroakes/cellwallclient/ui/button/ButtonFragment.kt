@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 
 import com.tigeroakes.cellwallclient.R
 
@@ -15,9 +16,7 @@ class ButtonFragment : Fragment() {
         private const val ARG_BACKGROUND_COLOR = "background_color"
 
         fun newInstance(backgroundColor: String) = ButtonFragment().apply {
-            arguments = Bundle().apply {
-                putString(ARG_BACKGROUND_COLOR, backgroundColor)
-            }
+            arguments = bundleOf(ARG_BACKGROUND_COLOR to backgroundColor)
         }
     }
 

@@ -1,23 +1,27 @@
 package com.tigeroakes.cellwallclient
 
+import android.net.Uri
 import android.os.Bundle
 import android.preference.PreferenceManager.getDefaultSharedPreferences
 import android.text.TextUtils
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import com.tigeroakes.cellwallclient.rest.Data
+import com.tigeroakes.cellwallclient.socket.BoundSocket
 import com.tigeroakes.cellwallclient.ui.button.ButtonFragment
 import com.tigeroakes.cellwallclient.ui.image.ImageFragment
 import com.tigeroakes.cellwallclient.ui.login.LoginFragment
-import com.tigeroakes.cellwallclient.ui.main.CellMode
 import com.tigeroakes.cellwallclient.ui.main.MainFragment
 import com.tigeroakes.cellwallclient.ui.main.MainViewModel
 import com.tigeroakes.cellwallclient.ui.text.LargeTextFragment
+import io.socket.client.IO
+import kotlinx.android.synthetic.main.main_activity.*
 
-class MainActivity : AppCompatActivity(), LoginFragment.OnServerVerifiedListener, Observer<Data.State> {
+class MainActivity : AppCompatActivity(), LoginFragment.OnServerVerifiedListener, Observer<CellState> {
     private lateinit var viewModel: MainViewModel
+    private var socket: BoundSocket? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,14 +29,15 @@ class MainActivity : AppCompatActivity(), LoginFragment.OnServerVerifiedListener
         viewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
 
         if (savedInstanceState == null) {
-            val serverAddress: String? = getDefaultSharedPreferences(this)
+            val serverAddress = getDefaultSharedPreferences(this)
                     .getString(SERVER_ADDRESS_KEY, null)
+                    ?.toUri()
 
             // If there is no server address, show the login page
-            if (TextUtils.isEmpty(serverAddress)) {
+            if (serverAddress == null) {
                 setFragment(LoginFragment.newInstance())
             } else {
-                onServerVerified(serverAddress!!)
+                onServerVerified(serverAddress)
             }
         }
     }
@@ -42,32 +47,32 @@ class MainActivity : AppCompatActivity(), LoginFragment.OnServerVerifiedListener
      * Switches to the Main fragment then starts the socket to listen for new data sent from the
      * server.
      */
-    override fun onServerVerified(serverAddress: String) {
+    override fun onServerVerified(serverAddress: Uri) {
         setFragment(MainFragment.newInstance())
 
-        val id = Installation.id(getDefaultSharedPreferences(this))
-
-        viewModel
-                .getMode(id, serverAddress)
-                .observe(this, this)
+        viewModel.state.observe(this, this)
+        socket = SocketFactory
+                .build(getDefaultSharedPreferences(this), serverAddress)
+                .apply { on("cell-update", viewModel.stateRawData) }
+                .also { container.setOnTouchListener(TouchEmitter(it)) }
     }
 
     /**
      * Called when the display mode changes. The UI reacts by displaying a different fragment
      * depending on the mode.
      */
-    override fun onChanged(state: Data.State?) {
-        when (state?.mode) {
-            CellMode.TEXT -> LargeTextFragment.newInstance((state.data as Data.Text).text)
-            CellMode.IMAGE -> ImageFragment.newInstance((state.data as Data.Image).src)
-            CellMode.BUTTON -> ButtonFragment.newInstance((state.data as Data.Button).backgroundColor)
+    override fun onChanged(state: CellState) {
+        setFragment(when (state) {
+            is CellState.Text -> LargeTextFragment.newInstance(state.text)
+            is CellState.Image -> ImageFragment.newInstance(state.src)
+            is CellState.Button -> ButtonFragment.newInstance(state.backgroundColor)
             else -> MainFragment.newInstance()
-        }.let { setFragment(it) }
+        })
     }
 
     private fun setFragment(fragmentToOpen: Fragment) {
         supportFragmentManager.beginTransaction()
                 .replace(R.id.container, fragmentToOpen)
-                .commitNow()
+                .commit()
     }
 }
