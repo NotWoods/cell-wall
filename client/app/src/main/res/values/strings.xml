@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name_main">CellWall</string>
+    <string name="app_name_subtitle">Client</string>
     <string name="app_name">CellWall Client</string>
+    <string name="action_reconnect">Reconnect</string>
+    <string name="action_login">Connect to new server</string>
+
     <string name="prompt_address">Address</string>
     <string name="address_hint">HTML Address of your CellWall Server.</string>
     <string name="action_connect">Connect to server</string>

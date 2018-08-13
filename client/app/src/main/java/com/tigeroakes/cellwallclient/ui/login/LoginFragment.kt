@@ -54,11 +54,7 @@ class LoginFragment : Fragment(), Observer<String> {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.login_fragment, container, false)
-        // If a URL was previous set, use it as the default value
-        getDefaultSharedPreferences(activity)
-                .getString(SERVER_ADDRESS_KEY, null)?.let { address.setText(it) }
-        return view
+        return inflater.inflate(R.layout.login_fragment, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -68,6 +64,10 @@ class LoginFragment : Fragment(), Observer<String> {
 
         // Set click listener
         connect_button.setOnClickListener { attemptLogin() }
+
+        // If a URL was previous set, use it as the default value
+        getDefaultSharedPreferences(activity)
+                .getString(SERVER_ADDRESS_KEY, null)?.let { address.setText(it) }
     }
 
     /**
