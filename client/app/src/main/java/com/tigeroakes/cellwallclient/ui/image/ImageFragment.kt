@@ -2,6 +2,7 @@ package com.tigeroakes.cellwallclient.ui.image
 
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
+import android.preference.PreferenceManager.getDefaultSharedPreferences
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +12,7 @@ import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
 
 import com.tigeroakes.cellwallclient.R
+import com.tigeroakes.cellwallclient.getImageUri
 import kotlinx.android.synthetic.main.image_fragment.*
 
 class ImageFragment : Fragment(), Observer<String> {
@@ -42,6 +44,7 @@ class ImageFragment : Fragment(), Observer<String> {
     }
 
     override fun onChanged(imageSrc: String?) {
-        Glide.with(this).load(imageSrc).into(image)
+        val sharedPrefs = getDefaultSharedPreferences(context)
+        Glide.with(this).load(getImageUri(sharedPrefs, imageSrc)).into(image)
     }
 }

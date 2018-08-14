@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.core.os.bundleOf
 
 import com.tigeroakes.cellwallclient.R
+import kotlinx.android.synthetic.main.button_fragment.*
 
 class ButtonFragment : Fragment() {
 

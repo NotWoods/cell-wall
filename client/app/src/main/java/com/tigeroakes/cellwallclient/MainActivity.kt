@@ -9,8 +9,12 @@ import android.preference.PreferenceManager.getDefaultSharedPreferences
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
+import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
+import androidx.core.view.marginBottom
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
@@ -23,31 +27,56 @@ import com.tigeroakes.cellwallclient.ui.main.MainFragment
 import com.tigeroakes.cellwallclient.ui.main.MainViewModel
 import com.tigeroakes.cellwallclient.ui.text.LargeTextFragment
 import kotlinx.android.synthetic.main.main_activity.*
+import android.view.WindowManager
+import android.os.Build
 
-class MainActivity : AppCompatActivity(), LoginFragment.OnServerVerifiedListener, Observer<CellState> {
-    private val hideHandler = Handler()
-    @SuppressLint("InlinedApi")
-    private val hidePart2Runnable = Runnable {
-        viewModel.hideSystemUi()
-    }
-    private val showPart2Runnable = Runnable {
-        // Delayed display of UI elements
-        viewModel.showAppBar()
-    }
-    private val hideRunnable = Runnable { hide() }
+
+
+class MainActivity : AppCompatActivity(), LoginFragment.OnServerVerifiedListener, Observer<BoundSocket.Companion.Status> {
     private lateinit var viewModel: MainViewModel
-    private lateinit var action_reconnect: MenuItem
     private var socket: BoundSocket? = null
 
+    @SuppressLint("InlinedApi")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.main_activity)
-        setSupportActionBar(toolbar)
-
-        container.setOnClickListener { hide() }
 
         viewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
+
+        val resourceId = resources
+                .getIdentifier("navigation_bar_height", "dimen", "android")
+
+        if (resourceId > 0) {
+            val navBarHeight = resources.getDimensionPixelSize(resourceId)
+            val params = fab_container.layoutParams as CoordinatorLayout.LayoutParams
+            params.bottomMargin = navBarHeight
+            fab_container.layoutParams = params
+            fab_container.requestLayout()
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            window.setFlags(
+                    WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+                    WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
+            )
+        }
+
+        container.systemUiVisibility =
+                View.SYSTEM_UI_FLAG_LOW_PROFILE or
+                View.SYSTEM_UI_FLAG_FULLSCREEN or
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
+                View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY or
+                View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
+                View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+
+        action_reconnect.setOnClickListener {
+            socket?.connectSocket()
+        }
+        action_reconnect.setOnLongClickListener {
+            setFragment(LoginFragment.newInstance())
+            true
+        }
 
         if (savedInstanceState == null) {
             val serverAddress = getDefaultSharedPreferences(this)
@@ -63,44 +92,6 @@ class MainActivity : AppCompatActivity(), LoginFragment.OnServerVerifiedListener
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.menu_main, menu)
-        action_reconnect = menu.findItem(R.id.action_reconnect)
-        return true
-    }
-
-    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
-        super.onPrepareOptionsMenu(menu)
-        action_reconnect.setIcon(when (socket?.getStatus()?.value) {
-            BoundSocket.Companion.Status.CONNECTED -> R.drawable.ic_connected
-            BoundSocket.Companion.Status.CONNECTING -> R.drawable.ic_connecting
-            else -> R.drawable.ic_disconnected
-        })
-
-        return true
-    }
-
-    override fun onPostCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
-        super.onPostCreate(savedInstanceState, persistentState)
-
-        // Trigger the initial hide() shortly after the activity has been
-        // created, to briefly hint to the user that UI controls
-        // are available.
-        delayedHide(100)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
-        R.id.action_login -> {
-            setFragment(LoginFragment.newInstance())
-            true
-        }
-        R.id.action_reconnect -> {
-            socket?.connectSocket()
-            true
-        }
-        else -> super.onOptionsItemSelected(item)
-    }
-
     /**
      * Called once the user successfully logs in to the server.
      * Switches to the Main fragment then starts the socket to listen for new data sent from the
@@ -109,18 +100,13 @@ class MainActivity : AppCompatActivity(), LoginFragment.OnServerVerifiedListener
     override fun onServerVerified(serverAddress: Uri) {
         setFragment(MainFragment.newInstance())
 
-        viewModel.state.observe(this, this)
-        viewModel.getSystemUiVisibility().observe(this, Observer {
-            container.systemUiVisibility = it
-        })
-        viewModel.getAppBarVisible().observe(this, Observer {
-            if (it == true) {
-                supportActionBar?.show()
-                fullscreen_content_controls.visibility = View.VISIBLE
-            } else {
-                supportActionBar?.hide()
-                fullscreen_content_controls.visibility = View.GONE
-            }
+        viewModel.state.observe(this, Observer {
+            setFragment(when (it) {
+                is CellState.Text -> LargeTextFragment.newInstance(it.text)
+                is CellState.Image -> ImageFragment.newInstance(it.src)
+                is CellState.Button -> ButtonFragment.newInstance(it.backgroundColor)
+                else -> MainFragment.newInstance()
+            })
         })
         socket = SocketFactory
                 .build(getDefaultSharedPreferences(this), serverAddress)
@@ -128,7 +114,7 @@ class MainActivity : AppCompatActivity(), LoginFragment.OnServerVerifiedListener
                 .also { socket ->
                     container.setOnTouchListener(TouchEmitter(socket))
                     socket.getStatus().also { data ->
-                        data.observe(this, Observer { invalidateOptionsMenu() })
+                        data.observe(this, this)
                     }
                 }
     }
@@ -137,53 +123,19 @@ class MainActivity : AppCompatActivity(), LoginFragment.OnServerVerifiedListener
      * Called when the display mode changes. The UI reacts by displaying a different fragment
      * depending on the mode.
      */
-    override fun onChanged(state: CellState) {
-        setFragment(when (state) {
-            is CellState.Text -> LargeTextFragment.newInstance(state.text)
-            is CellState.Image -> ImageFragment.newInstance(state.src)
-            is CellState.Button -> ButtonFragment.newInstance(state.backgroundColor)
-            else -> MainFragment.newInstance()
-        })
+    override fun onChanged(state: BoundSocket.Companion.Status) {
+        val resource = when (state) {
+            BoundSocket.Companion.Status.CONNECTED -> R.drawable.ic_connected
+            BoundSocket.Companion.Status.CONNECTING -> R.drawable.ic_connecting
+            else -> R.drawable.ic_disconnected
+        }
+        val drawable = ContextCompat.getDrawable(this, resource)
+        action_reconnect.setImageDrawable(drawable)
     }
 
     private fun setFragment(fragmentToOpen: Fragment) {
         supportFragmentManager.beginTransaction()
                 .replace(R.id.container, fragmentToOpen)
                 .commit()
-    }
-
-    private fun hide() {
-        // Hide UI first
-        viewModel.hideAppBar()
-
-        // Schedule a runnable to display UI elements after a delay
-        hideHandler.removeCallbacks(showPart2Runnable)
-        hideHandler.postDelayed(hidePart2Runnable, UI_ANIMATION_DELAY.toLong())
-    }
-
-    @SuppressLint("InlinedApi")
-    private fun show() {
-        viewModel.showSystemUi()
-
-        // Schedule a runnable to display UI elements after a delay
-        hideHandler.removeCallbacks(hidePart2Runnable)
-        hideHandler.postDelayed(showPart2Runnable, UI_ANIMATION_DELAY.toLong())
-    }
-
-    /**
-     * Schedules a call to hide() in [delayMillis], canceling any
-     * previously scheduled calls.
-     */
-    private fun delayedHide(delayMillis: Int) {
-        hideHandler.removeCallbacks(hideRunnable)
-        hideHandler.postDelayed(hideRunnable, delayMillis.toLong())
-    }
-
-    companion object {
-        /**
-         * Some older devices needs a small delay between UI widget updates
-         * and a change of the status and navigation bar.
-         */
-        private const val UI_ANIMATION_DELAY = 300
     }
 }
