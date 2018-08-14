@@ -1,6 +1,11 @@
+import { EventEmitter } from "events";
 import { createCell, Cell, CellState } from "./cell-struct";
 
-class Wall {
+/**
+ * Used to manage the wall dimensions and the
+ * devices the wall holds.
+ */
+export class Wall extends EventEmitter {
   width = 0;
   height = 0;
   showingPreview = false;
@@ -47,7 +52,10 @@ class Wall {
    */
   updateState(id: string, state: CellState) {
     const cell = this.cells.get(id);
-    if (cell) cell.state = state;
+    if (cell) {
+      cell.state = state;
+      this.emit("cell-update", id, state);
+    }
   }
 
   [Symbol.iterator]() {
@@ -67,39 +75,4 @@ class Wall {
       this.moveCell(cell.id, cell.x, cell.y);
     }
   }
-}
-
-/**
- * Creates an instance of the Wall class, which is used to manage the
- * wall dimensions and the devices it holds.
- * @param {SocketIO.Namespace} editorIo Socket namespace for editor clients.
- * @param {SocketIO.Namespace} cellIo Socket namespace for cell display clients.
- */
-export function createWall(
-  editorIo: SocketIO.Namespace,
-  cellIo: SocketIO.Namespace
-) {
-  class EmitterWall extends Wall {
-    createCell(id: string, width: number, height: number) {
-      const cell = super.createCell(id, width, height);
-      editorIo.emit("add-cell", cell);
-      return cell;
-    }
-
-    removeCell(id: string) {
-      super.removeCell(id);
-      editorIo.emit("delete-cell", id);
-    }
-
-    /**
-     * @param id
-     * @param state
-     */
-    updateState(id: string, state: CellState) {
-      super.updateState(id, state);
-      cellIo.to(id).emit("cell-update", state.mode);
-    }
-  }
-
-  return new EmitterWall();
 }

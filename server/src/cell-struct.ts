@@ -35,7 +35,7 @@ export function createCell(id: string, width: number, height: number): Cell {
     height,
     x: 0,
     y: 0,
-    state: blank()
+    state: image("/editor/preview.jpg")
   };
 }
 

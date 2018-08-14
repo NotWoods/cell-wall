@@ -1,12 +1,10 @@
-// @ts-check
-"use strict";
-
 import { Server } from "http";
 import { join } from "path";
-import { createWall } from "./wall-class";
+import { Wall } from "./wall-class";
 import express = require("express");
 import SocketIO = require("socket.io");
 import { CellMode, CellState } from "./cell-struct";
+import { serveModules } from "./static";
 
 const app = express();
 const http = new Server(app);
@@ -48,19 +46,14 @@ interface EditorSocket extends SocketIO.Socket {
   broadcast: EditorSocket;
 }
 
-const wall = createWall(editor, cell);
+const wall = new Wall().on("cell-update", (id, state) =>
+  cell.to(id).emit("cell-update", state.mode, state.data)
+);
 wall.createCell("red", 32, 40);
 wall.createCell("blue", 50, 40);
 
-app.use("/editor", express.static(join(__dirname, "../editor")));
-app.use(
-  "/node_modules/interactjs/dist",
-  express.static(join(__dirname, "../node_modules/interactjs/dist"))
-);
-app.use(
-  "/node_modules/socket.io-client/dist",
-  express.static(join(__dirname, "../node_modules/socket.io-client/dist"))
-);
+app.use("/", express.static(join(__dirname, "../public")));
+serveModules(app, ["interactjs/dist", "socket.io-client/dist"]);
 
 app.get("/is-cellwall-server", (req, res) => {
   res.sendStatus(204);
@@ -117,10 +110,14 @@ cell.on("connection", (socket: CellSocket) => {
   const width = parseInt(query.width, 10) || 0;
   const height = parseInt(query.height, 10) || 0;
   const cell = wall.createCell(socket.id, width, height);
+  editor.emit("add-cell", cell);
 
   socket.emit("cell-update", cell.state.mode, cell.state.data);
 
-  socket.on("disconnect", () => wall.removeCell(socket.id));
+  socket.on("disconnect", () => {
+    wall.removeCell(socket.id);
+    editor.emit("delete-cell", socket.id);
+  });
 });
 
 http.listen(3000, () => {
