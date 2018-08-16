@@ -1,22 +1,22 @@
 package com.tigeroakes.cellwallclient
 
+import android.animation.LayoutTransition
 import android.annotation.SuppressLint
+import android.content.res.ColorStateList
+import android.graphics.drawable.Drawable
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.os.PersistableBundle
 import android.preference.PreferenceManager.getDefaultSharedPreferences
-import android.view.Menu
-import android.view.MenuItem
+import android.util.TypedValue
 import android.view.View
-import android.widget.FrameLayout
+import android.view.WindowManager
+import androidx.annotation.ColorInt
 import androidx.appcompat.app.AppCompatActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
-import androidx.core.view.marginBottom
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.tigeroakes.cellwallclient.socket.BoundSocket
@@ -27,9 +27,6 @@ import com.tigeroakes.cellwallclient.ui.main.MainFragment
 import com.tigeroakes.cellwallclient.ui.main.MainViewModel
 import com.tigeroakes.cellwallclient.ui.text.LargeTextFragment
 import kotlinx.android.synthetic.main.main_activity.*
-import android.view.WindowManager
-import android.os.Build
-
 
 
 class MainActivity : AppCompatActivity(), LoginFragment.OnServerVerifiedListener, Observer<BoundSocket.Companion.Status> {
@@ -49,11 +46,15 @@ class MainActivity : AppCompatActivity(), LoginFragment.OnServerVerifiedListener
 
         if (resourceId > 0) {
             val navBarHeight = resources.getDimensionPixelSize(resourceId)
-            val params = fab_container.layoutParams as CoordinatorLayout.LayoutParams
-            params.bottomMargin = navBarHeight
-            fab_container.layoutParams = params
+
+            val lp = fab_container.layoutParams as CoordinatorLayout.LayoutParams
+            fab_container.layoutParams = lp.apply {
+                bottomMargin = navBarHeight
+            }
             fab_container.requestLayout()
         }
+
+        fab_container.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             window.setFlags(
@@ -96,11 +97,17 @@ class MainActivity : AppCompatActivity(), LoginFragment.OnServerVerifiedListener
      * Called once the user successfully logs in to the server.
      * Switches to the Main fragment then starts the socket to listen for new data sent from the
      * server.
+     * TODO: Handle changing the address and building a new socket
      */
     override fun onServerVerified(serverAddress: Uri) {
         setFragment(MainFragment.newInstance())
 
-        viewModel.state.observe(this, Observer {
+        val newSocket = SocketFactory.build(getDefaultSharedPreferences(this), serverAddress)
+
+        lifecycle.addObserver(newSocket)
+
+        newSocket.getStatus().observe(this, this)
+        viewModel.getState(newSocket).observe(this, Observer {
             setFragment(when (it) {
                 is CellState.Text -> LargeTextFragment.newInstance(it.text)
                 is CellState.Image -> ImageFragment.newInstance(it.src)
@@ -108,15 +115,8 @@ class MainActivity : AppCompatActivity(), LoginFragment.OnServerVerifiedListener
                 else -> MainFragment.newInstance()
             })
         })
-        socket = SocketFactory
-                .build(getDefaultSharedPreferences(this), serverAddress)
-                .apply { on("cell-update", viewModel.stateRawData) }
-                .also { socket ->
-                    container.setOnTouchListener(TouchEmitter(socket))
-                    socket.getStatus().also { data ->
-                        data.observe(this, this)
-                    }
-                }
+
+        socket = newSocket
     }
 
     /**
@@ -124,18 +124,41 @@ class MainActivity : AppCompatActivity(), LoginFragment.OnServerVerifiedListener
      * depending on the mode.
      */
     override fun onChanged(state: BoundSocket.Companion.Status) {
-        val resource = when (state) {
-            BoundSocket.Companion.Status.CONNECTED -> R.drawable.ic_connected
-            BoundSocket.Companion.Status.CONNECTING -> R.drawable.ic_connecting
-            else -> R.drawable.ic_disconnected
+        val resource: Int
+        @ColorInt val tint: Int
+        val showProgress: Boolean
+        when (state) {
+            BoundSocket.Companion.Status.CONNECTED -> {
+                resource = R.drawable.ic_connected
+                tint = R.color.colorPrimary
+                showProgress = false
+            }
+            BoundSocket.Companion.Status.CONNECTING -> {
+                resource = R.drawable.ic_connecting
+                tint = R.color.colorAccent
+                showProgress = true
+            }
+            else -> {
+                val typedValue = TypedValue()
+                theme.resolveAttribute(R.attr.colorError, typedValue, true)
+
+                resource = R.drawable.ic_disconnected
+                tint = typedValue.data
+                showProgress = false
+            }
         }
         val drawable = ContextCompat.getDrawable(this, resource)
-        action_reconnect.setImageDrawable(drawable)
+        action_reconnect.apply {
+            setImageDrawable(drawable)
+            supportBackgroundTintList = ColorStateList.valueOf(tint)
+        }
+        fab_reconnecting.visibility = if (showProgress) View.VISIBLE else View.INVISIBLE
     }
 
     private fun setFragment(fragmentToOpen: Fragment) {
         supportFragmentManager.beginTransaction()
                 .replace(R.id.container, fragmentToOpen)
+                .setCustomAnimations(R.animator.fade_in, R.animator.fade_out)
                 .commit()
     }
 }

@@ -61,6 +61,11 @@ class BoundSocket(uri: Uri, options: IO.Options) : LifecycleObserver {
         return this
     }
 
+    fun off(event: String, fn: Emitter.Listener): BoundSocket {
+        socket.off(event, fn)
+        return this
+    }
+
     companion object {
         enum class Status {
             DISCONNECTED,

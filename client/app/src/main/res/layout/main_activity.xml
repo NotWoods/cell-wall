@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/background_light"
+    android:animateLayoutChanges="true"
     tools:context=".MainActivity">
 
     <!-- The primary full-screen view. This can be replaced with whatever view
@@ -21,16 +22,28 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:fitsSystemWindows="true">
+        android:fitsSystemWindows="true"
+        android:animateLayoutChanges="true"
+        android:clipToPadding="false"
+        android:padding="8dp">
+
+        <ProgressBar
+            android:id="@+id/fab_reconnecting"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:indeterminate="true"
+            android:indeterminateOnly="true"
+            android:visibility="invisible" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/action_reconnect"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
+            android:layout_gravity="center_vertical|center_horizontal"
             android:clickable="true"
             android:focusable="true"
-            app:backgroundTint="@color/colorPrimary"
+            app:backgroundTint="?attr/colorError"
             app:fabSize="normal"
             app:srcCompat="@drawable/ic_disconnected" />
 

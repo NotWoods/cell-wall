@@ -9,6 +9,7 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.core.content.edit
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -68,6 +69,15 @@ class LoginFragment : Fragment(), Observer<String> {
         // If a URL was previous set, use it as the default value
         getDefaultSharedPreferences(activity)
                 .getString(SERVER_ADDRESS_KEY, null)?.let { address.setText(it) }
+
+        val resourceId = resources.getIdentifier("status_bar_height", "dimen", "android")
+        if (resourceId > 0) {
+            val statusBarHeight = resources.getDimensionPixelSize(resourceId)
+            status_bar_padding.layoutParams = status_bar_padding.layoutParams.apply {
+                height = statusBarHeight
+            }
+            status_bar_padding.requestLayout()
+        }
     }
 
     /**
