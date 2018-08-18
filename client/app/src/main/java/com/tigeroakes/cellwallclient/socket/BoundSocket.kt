@@ -3,13 +3,11 @@ package com.tigeroakes.cellwallclient.socket
 import android.net.Uri
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import androidx.lifecycle.*
+import com.tigeroakes.cellwallclient.ui.ReconnectButton.Companion.Status
 import io.socket.client.IO
 import io.socket.client.Socket
 import io.socket.emitter.Emitter
-import org.json.JSONObject
-import java.net.URI
 
 class BoundSocket(uri: Uri, options: IO.Options) : LifecycleObserver {
     private val mainHandler = Handler(Looper.getMainLooper())
@@ -64,13 +62,5 @@ class BoundSocket(uri: Uri, options: IO.Options) : LifecycleObserver {
     fun off(event: String, fn: Emitter.Listener): BoundSocket {
         socket.off(event, fn)
         return this
-    }
-
-    companion object {
-        enum class Status {
-            DISCONNECTED,
-            CONNECTING,
-            CONNECTED
-        }
     }
 }

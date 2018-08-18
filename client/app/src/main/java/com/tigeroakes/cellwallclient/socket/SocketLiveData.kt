@@ -1,7 +1,5 @@
 package com.tigeroakes.cellwallclient.socket
 
-import android.os.Handler
-import android.os.Looper
 import androidx.lifecycle.LiveData
 import io.socket.emitter.Emitter
 
@@ -13,12 +11,8 @@ class SocketLiveData(
         private val event: String,
         private val socket: BoundSocket
 ) : LiveData<Array<out Any?>>(), Emitter.Listener {
-    private val mainHandler = Handler(Looper.getMainLooper())
-
     override fun call(vararg args: Any?) {
-        mainHandler.post {
-            value = args
-        }
+        postValue(args)
     }
 
     override fun onActive() {

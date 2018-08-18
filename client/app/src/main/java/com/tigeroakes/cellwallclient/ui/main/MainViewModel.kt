@@ -12,10 +12,11 @@ class MainViewModel : ViewModel() {
     private var stateRawData: SocketLiveData? = null
     private var state: LiveData<CellState>? = null
 
-    fun getState(socket: BoundSocket) = state ?: Transformations.map(getRawState(socket)) { args ->
-        CellState.from(args[0] as String, args[1] as JSONObject)
-    }.also { state = it }
+    fun getState(socket: BoundSocket): LiveData<CellState> =
+            state ?: Transformations.map(getRawState(socket)) { args ->
+                CellState.from(args[0] as String, args[1] as JSONObject)
+            }.also { state = it }
 
-    private fun getRawState(socket: BoundSocket)
-            = stateRawData ?: SocketLiveData("cell-update", socket).also { stateRawData = it }
+    private fun getRawState(socket: BoundSocket) =
+            stateRawData ?: SocketLiveData("cell-update", socket).also { stateRawData = it }
 }

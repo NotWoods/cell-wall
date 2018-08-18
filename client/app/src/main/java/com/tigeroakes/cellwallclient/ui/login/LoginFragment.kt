@@ -9,17 +9,16 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import androidx.core.content.edit
+import androidx.core.os.bundleOf
+import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.tigeroakes.cellwallclient.R
 import com.tigeroakes.cellwallclient.SERVER_ADDRESS_KEY
+import com.tigeroakes.cellwallclient.util.getSystemDimension
 import kotlinx.android.synthetic.main.login_fragment.*
-import okhttp3.*
-import java.io.IOException
-import java.net.URI
 
 /**
  * The login screen is responsible for letting the user set the address of the CellWall server
@@ -29,7 +28,11 @@ import java.net.URI
  */
 class LoginFragment : Fragment(), Observer<String> {
     companion object {
-        fun newInstance() = LoginFragment()
+        private const val ARG_AS_CHILD = "as_child"
+
+        fun newInstance(asChild: Boolean) = LoginFragment().apply {
+            arguments = bundleOf(ARG_AS_CHILD to asChild)
+        }
     }
 
     interface OnServerVerifiedListener {
@@ -70,13 +73,16 @@ class LoginFragment : Fragment(), Observer<String> {
         getDefaultSharedPreferences(activity)
                 .getString(SERVER_ADDRESS_KEY, null)?.let { address.setText(it) }
 
-        val resourceId = resources.getIdentifier("status_bar_height", "dimen", "android")
-        if (resourceId > 0) {
-            val statusBarHeight = resources.getDimensionPixelSize(resourceId)
-            status_bar_padding.layoutParams = status_bar_padding.layoutParams.apply {
-                height = statusBarHeight
+        val statusBarHeight = resources.getSystemDimension("status_bar_height")
+        status_bar_padding.updateLayoutParams {
+            height = statusBarHeight
+        }
+        status_bar_padding.requestLayout()
+
+        arguments?.run {
+            getString(ARG_AS_CHILD)?.let {
+                // TODO: Show up button
             }
-            status_bar_padding.requestLayout()
         }
     }
 
@@ -98,16 +104,15 @@ class LoginFragment : Fragment(), Observer<String> {
     private fun attemptLogin() {
         // Store values at the time of the login attempt.
         val addressStr = address.text.toString()
-        viewModel.attemptLogin(
-                addressStr,
-                Handler(context?.mainLooper),
-                getString = this::getString,
-                onSuccess = {
-                    getDefaultSharedPreferences(activity).edit {
-                        putString(SERVER_ADDRESS_KEY, it.toString())
-                    }
-                    callback.onServerVerified(it)
+        val mainHandler = Handler(context?.mainLooper)
+
+        viewModel.attemptLogin(addressStr, this::getString) {
+            mainHandler.post {
+                getDefaultSharedPreferences(activity).edit {
+                    putString(SERVER_ADDRESS_KEY, it.toString())
                 }
-        )
+                callback.onServerVerified(it)
+            }
+        }
     }
 }

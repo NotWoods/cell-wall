@@ -12,7 +12,7 @@ import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
 
 import com.tigeroakes.cellwallclient.R
-import com.tigeroakes.cellwallclient.getImageUri
+import com.tigeroakes.cellwallclient.util.getImageUri
 import kotlinx.android.synthetic.main.image_fragment.*
 
 class ImageFragment : Fragment(), Observer<String> {
