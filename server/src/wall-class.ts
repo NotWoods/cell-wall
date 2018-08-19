@@ -58,8 +58,30 @@ export class Wall extends EventEmitter {
     }
   }
 
+  center() {
+    const centerX = this.width / 2;
+    const centerY = this.height / 2;
+
+    let shortestDistanceSquared = Infinity;
+    let closestCell: Cell | null = null;
+    for (const cell of this) {
+      const distanceSquared =
+        Math.pow(cell.x - centerX, 2) + Math.pow(cell.y - centerY, 2);
+      if (distanceSquared < shortestDistanceSquared) {
+        shortestDistanceSquared = distanceSquared;
+        closestCell = cell;
+      }
+    }
+
+    return closestCell;
+  }
+
   [Symbol.iterator]() {
     return this.cells.values();
+  }
+
+  get length() {
+    return this.cells.size;
   }
 
   toJSON() {

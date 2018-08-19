@@ -1,4 +1,4 @@
-import { static as serveStatic, Express } from "express";
+import { static as serveStatic, Express, Handler } from "express";
 import { join } from "path";
 
 export function serveModules(app: Express, folders: string[]) {
