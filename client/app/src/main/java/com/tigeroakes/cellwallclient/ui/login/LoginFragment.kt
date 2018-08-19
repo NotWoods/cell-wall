@@ -9,6 +9,7 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.StringRes
 import androidx.core.content.edit
 import androidx.core.os.bundleOf
 import androidx.core.view.updateLayoutParams
@@ -26,7 +27,7 @@ import kotlinx.android.synthetic.main.login_fragment.*
  * server at the "/is-cellwall-server" path. If the server returns a 204 status, then the
  * new address is saved and the onServerVerified method is called.
  */
-class LoginFragment : Fragment(), Observer<String> {
+class LoginFragment : Fragment(), Observer<Int> {
     companion object {
         private const val ARG_AS_CHILD = "as_child"
 
@@ -64,7 +65,7 @@ class LoginFragment : Fragment(), Observer<String> {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(LoginViewModel::class.java)
-        viewModel.getErrorText().observe(this, this)
+        viewModel.getErrorTextResource().observe(this, this)
 
         // Set click listener
         connect_button.setOnClickListener { attemptLogin() }
@@ -73,6 +74,7 @@ class LoginFragment : Fragment(), Observer<String> {
         getDefaultSharedPreferences(activity)
                 .getString(SERVER_ADDRESS_KEY, null)?.let { address.setText(it) }
 
+        // Set up an element with equal height to the status bar
         val statusBarHeight = resources.getSystemDimension("status_bar_height")
         status_bar_padding.updateLayoutParams {
             height = statusBarHeight
@@ -90,8 +92,10 @@ class LoginFragment : Fragment(), Observer<String> {
      * Called when the error text in the view model changes.
      * Used to display the current error, if any.
      */
-    override fun onChanged(errorText: String?) {
+    override fun onChanged(@StringRes errorTextResource: Int?) {
+        val errorText = errorTextResource?.let { getString(it) }
         val isError = !TextUtils.isEmpty(errorText)
+
         address_layout.error = errorText
         address_layout.isErrorEnabled = isError
         if (isError) address.requestFocus()
@@ -106,7 +110,7 @@ class LoginFragment : Fragment(), Observer<String> {
         val addressStr = address.text.toString()
         val mainHandler = Handler(context?.mainLooper)
 
-        viewModel.attemptLogin(addressStr, this::getString) {
+        viewModel.attemptLogin(addressStr) {
             mainHandler.post {
                 getDefaultSharedPreferences(activity).edit {
                     putString(SERVER_ADDRESS_KEY, it.toString())

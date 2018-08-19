@@ -7,6 +7,7 @@ import android.util.TypedValue
 import android.view.View
 import android.widget.FrameLayout
 import androidx.annotation.ColorInt
+import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import com.tigeroakes.cellwallclient.R
 import kotlinx.android.synthetic.main.reconnect_button.view.*
@@ -16,20 +17,49 @@ import kotlinx.android.synthetic.main.reconnect_button.view.*
  */
 class ReconnectButton : FrameLayout {
     companion object {
-        enum class Status {
-            DISCONNECTED,
-            CONNECTING,
-            CONNECTED
+        enum class Status(val value: Int) {
+            DISCONNECTED(0),
+            CONNECTING(1),
+            CONNECTED(2);
+
+            companion object {
+                private val map = Status.values().associateBy(Status::value)
+                fun fromInt(type: Int) = map[type] ?: Status.DISCONNECTED
+            }
         }
     }
 
-    constructor(context: Context) : super(context)
-    constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
-    constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(context, attrs, defStyle)
-
     init {
         inflate(context, R.layout.reconnect_button, this)
+    }
+
+    constructor(context: Context) : super(context) {
         setStatus(Status.DISCONNECTED)
+    }
+    constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
+        readAttributes(attrs, 0, 0)
+    }
+    constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(context, attrs, defStyle) {
+        readAttributes(attrs, defStyle, 0)
+    }
+    @RequiresApi(21)
+    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes) {
+        readAttributes(attrs, defStyleAttr, defStyleRes)
+    }
+
+    private fun readAttributes(attrs: AttributeSet, defStyleAttr: Int, defStyleRes: Int) {
+        context.theme.obtainStyledAttributes(
+                attrs,
+                R.styleable.ReconnectButton,
+                defStyleAttr,
+                defStyleRes).run {
+            try {
+                val statusInt = getInteger(R.styleable.ReconnectButton_status, 0)
+                setStatus(Status.fromInt(statusInt))
+            } finally {
+                recycle()
+            }
+        }
     }
 
     override fun setOnClickListener(listener: OnClickListener?) {
@@ -66,7 +96,7 @@ class ReconnectButton : FrameLayout {
         }
 
         val drawable = ContextCompat.getDrawable(context, resource)
-        action_reconnect.apply {
+        action_reconnect.run {
             setImageDrawable(drawable)
             supportBackgroundTintList = ColorStateList.valueOf(tint)
         }

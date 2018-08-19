@@ -1,22 +1,54 @@
 package com.tigeroakes.cellwallclient.ui.main
 
+import android.net.Uri
+import android.view.View
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.Transformations
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.tigeroakes.cellwallclient.CellState
-import com.tigeroakes.cellwallclient.socket.BoundSocket
-import com.tigeroakes.cellwallclient.socket.SocketLiveData
-import org.json.JSONObject
+import com.tigeroakes.cellwallclient.socket.SocketListener
+import com.tigeroakes.cellwallclient.socket.SocketServiceLifecycleObserver
+import com.tigeroakes.cellwallclient.ui.ReconnectButton.Companion.Status
 
-class MainViewModel : ViewModel() {
-    private var stateRawData: SocketLiveData? = null
-    private var state: LiveData<CellState>? = null
+class MainViewModel(id: String) : ViewModel(), SocketListener {
+    val socketLifecycleObserver = SocketServiceLifecycleObserver(id)
+    private var cellState = MutableLiveData<CellState>()
+    private val socketStatus = MutableLiveData<Status>()
 
-    fun getState(socket: BoundSocket): LiveData<CellState> =
-            state ?: Transformations.map(getRawState(socket)) { args ->
-                CellState.from(args[0] as String, args[1] as JSONObject)
-            }.also { state = it }
+    init {
+        cellState.value = CellState.Blank()
+        socketStatus.value = Status.DISCONNECTED
+    }
 
-    private fun getRawState(socket: BoundSocket) =
-            stateRawData ?: SocketLiveData("cell-update", socket).also { stateRawData = it }
+    fun getCellState(): LiveData<CellState> = cellState
+    fun getSocketStatus(): LiveData<Status> = socketStatus
+    val onReconnectClick = View.OnClickListener {
+        if (socketStatus.value == Status.DISCONNECTED) {
+            socketLifecycleObserver.connectWhenInForeground()
+        }
+    }
+
+    fun setAddress(address: Uri) {
+        socketLifecycleObserver.setAddress(address)
+    }
+
+    override fun onConnect() {
+        socketStatus.value = Status.CONNECTED
+    }
+
+    override fun onConnecting() {
+        socketStatus.value = Status.CONNECTING
+    }
+
+    override fun onDisconnect() {
+        socketStatus.value = Status.DISCONNECTED
+    }
+
+    override fun onConnectError(error: Throwable) {
+        socketStatus.value = Status.DISCONNECTED
+    }
+
+    override fun onCellUpdate(state: CellState) {
+        cellState.value = state
+    }
 }
