@@ -7,8 +7,10 @@ import android.util.TypedValue
 import android.view.View
 import android.widget.FrameLayout
 import androidx.annotation.ColorInt
+import androidx.annotation.DrawableRes
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import com.tigeroakes.cellwallclient.R
 import kotlinx.android.synthetic.main.reconnect_button.view.*
 
@@ -71,18 +73,18 @@ class ReconnectButton : FrameLayout {
     }
 
     fun setStatus(status: Status) {
-        val resource: Int
+        @DrawableRes val resource: Int
         @ColorInt val tint: Int
         val showProgress: Boolean
         when (status) {
             Status.CONNECTED -> {
                 resource = R.drawable.ic_connected
-                tint = R.color.colorPrimary
+                tint = ResourcesCompat.getColor(resources, R.color.colorPrimary, context.theme)
                 showProgress = false
             }
             Status.CONNECTING -> {
                 resource = R.drawable.ic_connecting
-                tint = R.color.colorAccent
+                tint = ResourcesCompat.getColor(resources, R.color.colorAccent, context.theme)
                 showProgress = true
             }
             else -> {

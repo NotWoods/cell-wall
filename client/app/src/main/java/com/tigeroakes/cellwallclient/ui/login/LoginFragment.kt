@@ -82,7 +82,7 @@ class LoginFragment : Fragment(), Observer<Int> {
         status_bar_padding.requestLayout()
 
         arguments?.run {
-            getString(ARG_AS_CHILD)?.let {
+            getBoolean(ARG_AS_CHILD)?.let {
                 // TODO: Show up button
             }
         }

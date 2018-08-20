@@ -16,6 +16,7 @@ import java.util.concurrent.TimeoutException
 object SocketService {
     private const val EVENT_CELL_UPDATE = "cell-update"
 
+    private var serverAddress: Uri? = null
     private var socket: Socket? = null
     private var socketListener: SocketListener? = null
 
@@ -26,17 +27,26 @@ object SocketService {
      */
     fun connect(address: Uri, id: String) {
         // Remove old socket, if any
-        socket?.apply {
-            disconnect()
-            off()
-            Unit
+        if (serverAddress != address) {
+            socket?.apply {
+                disconnect()
+                off()
+                Unit
+            }
+
+            // Create new socket and attach listeners
+            socket = IO.socket(buildAddress(address), buildOptions(id))
+            socketListener?.let { addListeners() }
+            serverAddress = address
         }
 
-        // Create and connect new socket, then add listeners for important events
-        socket = IO.socket(buildAddress(address), buildOptions(id)).apply {
-            connect()
+        // Connect to server
+        socket?.apply {
+            if (!connected()) {
+                socketListener?.onConnecting()
+                connect()
+            }
         }
-        socketListener?.onConnecting()
     }
 
     /**
@@ -53,16 +63,10 @@ object SocketService {
      */
     fun setListener(listener: SocketListener?) {
         socketListener = listener
-        socket?.apply {
-            if (listener != null) {
-                on(Socket.EVENT_CONNECT, onConnect)
-                on(Socket.EVENT_DISCONNECT, onDisconnect)
-                on(Socket.EVENT_CONNECT_ERROR, onConnectError)
-                on(Socket.EVENT_CONNECT_TIMEOUT, onConnectTimeout)
-                on(EVENT_CELL_UPDATE, onCellUpdate)
-            } else {
-                off()
-            }
+        if (listener != null) {
+            addListeners()
+        } else {
+            socket?.apply { off() }
         }
     }
 
@@ -87,6 +91,16 @@ object SocketService {
                 .appendQueryParameter("height", display.heightPixels.toString())
                 .build()
                 .query
+    }
+
+    private fun addListeners() {
+        socket?.apply {
+            on(Socket.EVENT_CONNECT, onConnect)
+            on(Socket.EVENT_DISCONNECT, onDisconnect)
+            on(Socket.EVENT_CONNECT_ERROR, onConnectError)
+            on(Socket.EVENT_CONNECT_TIMEOUT, onConnectTimeout)
+            on(EVENT_CELL_UPDATE, onCellUpdate)
+        }
     }
 
     private val onConnect = Emitter.Listener {

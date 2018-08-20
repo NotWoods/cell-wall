@@ -80,6 +80,7 @@ export function createSocketsAndWall(io: Server) {
     socket.emit("cell-update", cell.state.mode, cell.state.data);
 
     socket.on("disconnect", () => {
+      console.log("cell disconnected");
       wall.removeCell(socket.id);
       editor.emit("delete-cell", socket.id);
     });

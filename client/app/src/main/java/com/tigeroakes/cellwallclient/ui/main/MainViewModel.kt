@@ -1,12 +1,14 @@
 package com.tigeroakes.cellwallclient.ui.main
 
 import android.net.Uri
+import android.util.Log
 import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.tigeroakes.cellwallclient.CellState
 import com.tigeroakes.cellwallclient.socket.SocketListener
+import com.tigeroakes.cellwallclient.socket.SocketService
 import com.tigeroakes.cellwallclient.socket.SocketServiceLifecycleObserver
 import com.tigeroakes.cellwallclient.ui.ReconnectButton.Companion.Status
 
@@ -33,22 +35,26 @@ class MainViewModel(id: String) : ViewModel(), SocketListener {
     }
 
     override fun onConnect() {
-        socketStatus.value = Status.CONNECTED
+        Log.d("SOCKET", "Connected")
+        socketStatus.postValue(Status.CONNECTED)
     }
 
     override fun onConnecting() {
-        socketStatus.value = Status.CONNECTING
+        Log.d("SOCKET", "Connecting")
+        socketStatus.postValue(Status.CONNECTING)
     }
 
     override fun onDisconnect() {
-        socketStatus.value = Status.DISCONNECTED
+        Log.d("SOCKET", "Disconnected")
+        socketStatus.postValue(Status.DISCONNECTED)
     }
 
     override fun onConnectError(error: Throwable) {
-        socketStatus.value = Status.DISCONNECTED
+        Log.d("SOCKET", "Connection error")
+        socketStatus.postValue(Status.DISCONNECTED)
     }
 
     override fun onCellUpdate(state: CellState) {
-        cellState.value = state
+        cellState.postValue(state)
     }
 }

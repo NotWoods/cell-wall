@@ -17,7 +17,6 @@ app.use(json());
 serveModules(app, ["interactjs/dist", "socket.io-client/dist"]);
 
 app.get("/", (req, res) => {
-  console.log("root");
   res.sendStatus(200);
 });
 

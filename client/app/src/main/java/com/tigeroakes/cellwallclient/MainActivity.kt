@@ -79,6 +79,10 @@ class MainActivity : AppCompatActivity(), LoginFragment.OnServerVerifiedListener
         viewModel.setAddress(serverAddress)
     }
 
+    /**
+     * Hides the status bar and navigation bar, additionally padding the reconnect button so it
+     * appears above the hidden action bar area.
+     */
     @SuppressLint("InlinedApi")
     private fun goFullscreen() {
         container.systemUiVisibility =
