@@ -22,7 +22,8 @@
         android:minHeight="?attr/actionBarSize"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:subtitle="@string/app_name_subtitle"
-        app:title="@string/app_name_main" />
+        app:title="@string/app_name_main"
+        app:navigationIcon="?homeAsUpIndicator" />
 
     <ProgressBar
         android:id="@+id/progressBar"

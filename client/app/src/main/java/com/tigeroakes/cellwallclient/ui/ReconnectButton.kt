@@ -104,4 +104,12 @@ class ReconnectButton : FrameLayout {
         }
         fab_reconnecting.visibility = if (showProgress) View.VISIBLE else View.INVISIBLE
     }
+
+    fun showIf(value: Boolean) {
+        if (value) {
+            action_reconnect.show()
+        } else {
+            action_reconnect.hide()
+        }
+    }
 }

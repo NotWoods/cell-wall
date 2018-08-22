@@ -45,6 +45,9 @@ class MainActivity : AppCompatActivity(), LoginFragment.OnServerVerifiedListener
         viewModel.getCellState().observe(this, Observer {
             setFragment(cellStateToFragment(it))
         })
+        viewModel.getShowingLogin().observe(this, Observer {
+            reconnect_button.showIf(it != true)
+        })
         lifecycle.addObserver(viewModel.socketLifecycleObserver)
         SocketService.setListener(viewModel)
 
@@ -77,6 +80,7 @@ class MainActivity : AppCompatActivity(), LoginFragment.OnServerVerifiedListener
     override fun onServerVerified(serverAddress: Uri) {
         setFragment(MainFragment.newInstance())
         viewModel.setAddress(serverAddress)
+        viewModel.setShowingLogin(false)
     }
 
     /**
@@ -105,7 +109,12 @@ class MainActivity : AppCompatActivity(), LoginFragment.OnServerVerifiedListener
     }
 
     private fun openLogin(asChild: Boolean = false) {
-        setFragment(LoginFragment.newInstance(asChild))
+        viewModel.setShowingLogin(true)
+        supportFragmentManager.transaction {
+            replace(R.id.container, LoginFragment.newInstance(asChild))
+            if (asChild) addToBackStack(null)
+            setCustomAnimations(R.animator.fade_in, R.animator.fade_out)
+        }
     }
 
     private fun setFragment(fragmentToOpen: Fragment) {

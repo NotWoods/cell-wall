@@ -14,8 +14,9 @@ import com.tigeroakes.cellwallclient.ui.ReconnectButton.Companion.Status
 
 class MainViewModel(id: String) : ViewModel(), SocketListener {
     val socketLifecycleObserver = SocketServiceLifecycleObserver(id)
-    private var cellState = MutableLiveData<CellState>()
+    private val cellState = MutableLiveData<CellState>()
     private val socketStatus = MutableLiveData<Status>()
+    private val showingLogin = MutableLiveData<Boolean>()
 
     init {
         cellState.value = CellState.Blank()
@@ -24,6 +25,8 @@ class MainViewModel(id: String) : ViewModel(), SocketListener {
 
     fun getCellState(): LiveData<CellState> = cellState
     fun getSocketStatus(): LiveData<Status> = socketStatus
+    fun getShowingLogin(): LiveData<Boolean> = showingLogin
+
     val onReconnectClick = View.OnClickListener {
         if (socketStatus.value == Status.DISCONNECTED) {
             socketLifecycleObserver.connectWhenInForeground()
@@ -32,6 +35,10 @@ class MainViewModel(id: String) : ViewModel(), SocketListener {
 
     fun setAddress(address: Uri) {
         socketLifecycleObserver.setAddress(address)
+    }
+
+    fun setShowingLogin(value: Boolean) {
+        showingLogin.value = value
     }
 
     override fun onConnect() {

@@ -81,9 +81,12 @@ class LoginFragment : Fragment(), Observer<Int> {
         }
         status_bar_padding.requestLayout()
 
+        toolbar.setNavigationOnClickListener {
+            fragmentManager?.popBackStack()
+        }
         arguments?.run {
-            getBoolean(ARG_AS_CHILD)?.let {
-                // TODO: Show up button
+            if (!getBoolean(ARG_AS_CHILD)) {
+                toolbar.navigationIcon = null
             }
         }
     }
