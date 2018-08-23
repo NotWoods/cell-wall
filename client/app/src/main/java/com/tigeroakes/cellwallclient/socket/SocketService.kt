@@ -2,7 +2,8 @@ package com.tigeroakes.cellwallclient.socket
 
 import android.content.res.Resources
 import android.net.Uri
-import com.tigeroakes.cellwallclient.CellState
+import com.tigeroakes.cellwallclient.data.CellState
+import com.tigeroakes.cellwallclient.socket.ServerUris.withSocketNamespace
 import io.socket.client.IO
 import io.socket.client.Socket
 import io.socket.emitter.Emitter
@@ -35,7 +36,7 @@ object SocketService {
             }
 
             // Create new socket and attach listeners
-            socket = IO.socket(buildAddress(address), buildOptions(id))
+            socket = IO.socket(withSocketNamespace(address).toString(), buildOptions(id))
             socketListener?.let { addListeners() }
             serverAddress = address
         }
@@ -69,13 +70,6 @@ object SocketService {
             socket?.apply { off() }
         }
     }
-
-    /**
-     * Appends "/cell" to the given URL
-     * @returns String representing entire URL
-     */
-    private fun buildAddress(base: Uri) =
-            base.buildUpon().appendPath("cell").build().toString()
 
     /**
      * Creates a socket.io options object with a query string that includes the device screen size

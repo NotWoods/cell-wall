@@ -106,7 +106,7 @@ class LoginFragment : Fragment(), Observer<Int> {
 
     /**
      * Tests to ensure that an address in the input points to a CellWall server
-     * If it finds a server, {@link MainFragment} is opened.
+     * If it finds a server, {@link BlankFragment} is opened.
      */
     private fun attemptLogin() {
         // Store values at the time of the login attempt.

@@ -1,7 +1,9 @@
-package com.tigeroakes.cellwallclient
+package com.tigeroakes.cellwallclient.data
 
 import android.content.SharedPreferences
+import androidx.annotation.VisibleForTesting
 import androidx.core.content.edit
+import com.tigeroakes.cellwallclient.INSTALLATION_ID_KEY
 import java.util.UUID.randomUUID
 
 /**
@@ -26,5 +28,10 @@ object Installation {
             putString(INSTALLATION_ID_KEY, id)
         }
         return id
+    }
+
+    @VisibleForTesting
+    fun resetId() {
+        sID = null
     }
 }

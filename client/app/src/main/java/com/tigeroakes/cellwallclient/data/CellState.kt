@@ -1,4 +1,4 @@
-package com.tigeroakes.cellwallclient
+package com.tigeroakes.cellwallclient.data
 
 import org.json.JSONObject
 
@@ -7,7 +7,11 @@ import org.json.JSONObject
  */
 sealed class CellState {
     /** Empty state */
-    class Blank : CellState()
+    class Blank : CellState() {
+        override fun equals(other: Any?) = other is Blank
+        override fun hashCode() = 0
+        override fun toString() = "Blank()"
+    }
     /**
      * Used when configuring Cell positions on the Wall. Cells display basic identifiers to help
      * the user see which displays they correspond to in the editor. They may instead display parts

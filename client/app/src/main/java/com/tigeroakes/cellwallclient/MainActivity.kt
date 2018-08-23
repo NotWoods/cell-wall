@@ -16,11 +16,13 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.transaction
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import com.tigeroakes.cellwallclient.data.CellState
+import com.tigeroakes.cellwallclient.data.Installation
 import com.tigeroakes.cellwallclient.socket.SocketService
 import com.tigeroakes.cellwallclient.ui.button.ButtonFragment
 import com.tigeroakes.cellwallclient.ui.image.ImageFragment
 import com.tigeroakes.cellwallclient.ui.login.LoginFragment
-import com.tigeroakes.cellwallclient.ui.main.MainFragment
+import com.tigeroakes.cellwallclient.ui.blank.BlankFragment
 import com.tigeroakes.cellwallclient.ui.main.MainViewModel
 import com.tigeroakes.cellwallclient.ui.main.MainViewModelFactory
 import com.tigeroakes.cellwallclient.ui.text.LargeTextFragment
@@ -78,7 +80,7 @@ class MainActivity : AppCompatActivity(), LoginFragment.OnServerVerifiedListener
      * server.
      */
     override fun onServerVerified(serverAddress: Uri) {
-        setFragment(MainFragment.newInstance())
+        setFragment(BlankFragment.newInstance())
         viewModel.setAddress(serverAddress)
         viewModel.setShowingLogin(false)
     }
@@ -129,7 +131,7 @@ class MainActivity : AppCompatActivity(), LoginFragment.OnServerVerifiedListener
             is CellState.Text -> LargeTextFragment.newInstance(state.text)
             is CellState.Image -> ImageFragment.newInstance(state.src)
             is CellState.Button -> ButtonFragment.newInstance(state.backgroundColor)
-            else -> MainFragment.newInstance()
+            else -> BlankFragment.newInstance()
         }
     }
 }
