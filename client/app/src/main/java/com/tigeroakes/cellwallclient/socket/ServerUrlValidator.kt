@@ -5,6 +5,7 @@ import android.webkit.URLUtil.guessUrl
 import android.webkit.URLUtil.isNetworkUrl
 import androidx.annotation.AnyThread
 import androidx.annotation.UiThread
+import androidx.annotation.VisibleForTesting
 import androidx.annotation.WorkerThread
 import androidx.core.net.toUri
 import com.tigeroakes.cellwallclient.socket.ServerUris.withPingPath
@@ -21,6 +22,11 @@ object ServerUrlValidator {
 
     private val client = OkHttpClient()
 
+    fun guessUri(serverUrl: String): Uri? {
+        val guessedUrl = guessUrl(serverUrl)
+        return if (isNetworkUrl(guessedUrl)) guessedUrl.toUri() else null
+    }
+
     /**
      * Tests to ensure that an address points to a CellWall server by making a HTTP request.
      * @param serverUrl Address to check. Will try to format the human entered URL.
@@ -31,13 +37,7 @@ object ServerUrlValidator {
                  @WorkerThread onSuccess: (serverUri: Uri) -> Unit,
                  @WorkerThread @UiThread onFailure: (reason: Reason) -> Unit) {
         if (serverUrl == null || serverUrl.isEmpty()) return onFailure(Reason.BLANK)
-
-        val guessedUrl = guessUrl(serverUrl)
-        val serverUri = if (isNetworkUrl(guessedUrl)) {
-            guessedUrl.toUri()
-        } else {
-            return onFailure(Reason.BAD_FORMAT)
-        }
+        val serverUri = guessUri(serverUrl) ?: return onFailure(Reason.BAD_FORMAT)
 
         val request = Request.Builder()
                 .url(withPingPath(serverUri).toString())
