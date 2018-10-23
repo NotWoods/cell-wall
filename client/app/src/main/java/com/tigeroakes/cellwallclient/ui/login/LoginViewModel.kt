@@ -8,7 +8,13 @@ import androidx.lifecycle.ViewModel
 import com.tigeroakes.cellwallclient.R
 import com.tigeroakes.cellwallclient.socket.ServerUrlValidator
 
-class LoginViewModel : ViewModel() {
+interface LoginViewModel {
+    val errorTextResource: LiveData<Int>
+
+    fun attemptLogin(address: String, onSuccess: (address: Uri) -> Unit)
+}
+
+class LoginViewModelImpl : LoginViewModel, ViewModel() {
     companion object {
         val reasonToStringRes = mapOf(
                 ServerUrlValidator.Reason.BLANK to R.string.error_field_required,
@@ -18,11 +24,9 @@ class LoginViewModel : ViewModel() {
         )
     }
 
-    private val errorTextResource = MutableLiveData<@StringRes Int>()
+    override val errorTextResource = MutableLiveData<@StringRes Int>()
 
-    fun getErrorTextResource(): LiveData<Int> = errorTextResource
-
-    fun attemptLogin(address: String, onSuccess: (address: Uri) -> Unit) {
+    override fun attemptLogin(address: String, onSuccess: (address: Uri) -> Unit) {
         // Reset errors.
         errorTextResource.value = null
 

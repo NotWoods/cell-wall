@@ -30,13 +30,13 @@ class LargeTextFragment : Fragment(), Observer<String> {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(LargeTextViewModel::class.java)
+        viewModel = ViewModelProviders.of(this).get(LargeTextViewModelImpl::class.java)
 
         arguments?.run {
             getString(ARG_TEXT)?.let { viewModel.setText(it) }
         }
 
-        viewModel.getText().observe(this, this)
+        viewModel.text.observe(this, this)
     }
 
     override fun onChanged(text: String?) {

@@ -7,20 +7,16 @@ import org.json.JSONObject
  */
 sealed class CellState {
     /** Empty state */
-    class Blank : CellState() {
-        override fun equals(other: Any?) = other is Blank
-        override fun hashCode() = 0
-        override fun toString() = "Blank()"
-    }
+    object Blank : CellState()
     /**
      * Used when configuring Cell positions on the Wall. Cells display basic identifiers to help
      * the user see which displays they correspond to in the editor. They may instead display parts
      * of a whole image to check if the positions are set correctly.
      */
-    data class Configure(val backgroundColor: String, val icon: String): CellState()
-    data class Text(val text: String): CellState()
-    data class Image(val src: String): CellState()
-    data class Button(val backgroundColor: String): CellState()
+    data class Configure(val backgroundColor: String, val icon: String) : CellState()
+    data class Text(val text: String) : CellState()
+    data class Image(val src: String) : CellState()
+    data class Button(val backgroundColor: String) : CellState()
 
     companion object {
         /**
@@ -37,7 +33,7 @@ sealed class CellState {
                     "TEXT" -> Text(getString("text"))
                     "IMAGE" -> Image(getString("src"))
                     "BUTTON" -> Button(getString("backgroundColor"))
-                    else -> Blank()
+                    else -> Blank
                 }
             }
     }

@@ -64,8 +64,8 @@ class LoginFragment : Fragment(), Observer<Int> {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(LoginViewModel::class.java)
-        viewModel.getErrorTextResource().observe(this, this)
+        viewModel = ViewModelProviders.of(this).get(LoginViewModelImpl::class.java)
+        viewModel.errorTextResource.observe(this, this)
 
         // Set click listener
         connect_button.setOnClickListener { attemptLogin() }

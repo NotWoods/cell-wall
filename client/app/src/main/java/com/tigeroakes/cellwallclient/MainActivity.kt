@@ -25,6 +25,7 @@ import com.tigeroakes.cellwallclient.ui.login.LoginFragment
 import com.tigeroakes.cellwallclient.ui.blank.BlankFragment
 import com.tigeroakes.cellwallclient.ui.main.MainViewModel
 import com.tigeroakes.cellwallclient.ui.main.MainViewModelFactory
+import com.tigeroakes.cellwallclient.ui.main.MainViewModelImpl
 import com.tigeroakes.cellwallclient.ui.text.LargeTextFragment
 import com.tigeroakes.cellwallclient.util.getSystemDimension
 import kotlinx.android.synthetic.main.main_activity.*
@@ -40,14 +41,14 @@ class MainActivity : AppCompatActivity(), LoginFragment.OnServerVerifiedListener
         val sharedPrefs = getDefaultSharedPreferences(this)
         val id = Installation.id(sharedPrefs)
 
-        viewModel = ViewModelProviders.of(this, MainViewModelFactory(id)).get(MainViewModel::class.java)
-        viewModel.getSocketStatus().observe(this, Observer {
+        viewModel = ViewModelProviders.of(this, MainViewModelFactory(id)).get(MainViewModelImpl::class.java)
+        viewModel.socketStatus.observe(this, Observer {
             reconnect_button.setStatus(it)
         })
-        viewModel.getCellState().observe(this, Observer {
+        viewModel.cellState.observe(this, Observer {
             setFragment(cellStateToFragment(it))
         })
-        viewModel.getShowingLogin().observe(this, Observer {
+        viewModel.showingLogin.observe(this, Observer {
             reconnect_button.showIf(it != true)
         })
         lifecycle.addObserver(viewModel.socketLifecycleObserver)

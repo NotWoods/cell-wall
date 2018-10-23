@@ -35,13 +35,12 @@ class ImageFragment : Fragment(), Observer<String> {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(ImageViewModel::class.java)
+        viewModel = ViewModelProviders.of(this).get(ImageViewModelImpl::class.java)
+        viewModel.imageSrc.observe(this, this)
 
-        arguments?.run {
-            getString(ARG_IMAGE_SRC)?.let { viewModel.setImageSrc(it) }
+        arguments?.getString(ARG_IMAGE_SRC)?.let {
+            viewModel.setImageSrc(it)
         }
-
-        viewModel.getImageSrc().observe(this, this)
     }
 
     override fun onChanged(imageSrc: String?) {

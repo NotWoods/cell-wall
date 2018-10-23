@@ -11,32 +11,35 @@ import com.tigeroakes.cellwallclient.socket.SocketListener
 import com.tigeroakes.cellwallclient.socket.SocketServiceLifecycleObserver
 import com.tigeroakes.cellwallclient.ui.ReconnectButton.Companion.Status
 
-class MainViewModel(id: String) : ViewModel(), SocketListener {
-    val socketLifecycleObserver = SocketServiceLifecycleObserver(id)
-    private val cellState = MutableLiveData<CellState>()
-    private val socketStatus = MutableLiveData<Status>()
-    private val showingLogin = MutableLiveData<Boolean>()
+interface MainViewModel : SocketListener {
+    val socketLifecycleObserver: SocketServiceLifecycleObserver
+    val cellState: LiveData<CellState>
+    val socketStatus: LiveData<Status>
+    val showingLogin: LiveData<Boolean>
 
-    init {
-        cellState.value = CellState.Blank()
-        socketStatus.value = Status.DISCONNECTED
-    }
+    val onReconnectClick: View.OnClickListener
 
-    fun getCellState(): LiveData<CellState> = cellState
-    fun getSocketStatus(): LiveData<Status> = socketStatus
-    fun getShowingLogin(): LiveData<Boolean> = showingLogin
+    fun setAddress(address: Uri)
+    fun setShowingLogin(value: Boolean)
+}
 
-    val onReconnectClick = View.OnClickListener {
+class MainViewModelImpl(id: String) : ViewModel(), MainViewModel {
+    override val socketLifecycleObserver = SocketServiceLifecycleObserver(id)
+    override val cellState = MutableLiveData<CellState>().apply { value = CellState.Blank }
+    override val socketStatus = MutableLiveData<Status>().apply { value = Status.DISCONNECTED }
+    override val showingLogin = MutableLiveData<Boolean>().apply { value = false }
+
+    override val onReconnectClick = View.OnClickListener {
         if (socketStatus.value == Status.DISCONNECTED) {
             socketLifecycleObserver.connectWhenInForeground()
         }
     }
 
-    fun setAddress(address: Uri) {
+    override fun setAddress(address: Uri) {
         socketLifecycleObserver.setAddress(address)
     }
 
-    fun setShowingLogin(value: Boolean) {
+    override fun setShowingLogin(value: Boolean) {
         showingLogin.value = value
     }
 

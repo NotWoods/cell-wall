@@ -4,14 +4,16 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-class LargeTextViewModel : ViewModel() {
-    private val text: MutableLiveData<String> by lazy {
-        MutableLiveData<String>()
-    }
+interface LargeTextViewModel {
+    val text: LiveData<String>
 
-    fun getText(): LiveData<String> = text
+    fun setText(value: String)
+}
 
-    fun setText(value: String) {
+class LargeTextViewModelImpl : LargeTextViewModel, ViewModel() {
+    override val text = MutableLiveData<String>()
+
+    override fun setText(value: String) {
         text.value = value
     }
 }

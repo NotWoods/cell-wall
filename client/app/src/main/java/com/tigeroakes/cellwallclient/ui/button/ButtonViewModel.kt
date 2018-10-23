@@ -1,6 +1,6 @@
 package com.tigeroakes.cellwallclient.ui.button
 
-import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModel
 
 class ButtonViewModel : ViewModel() {
     // TODO: Implement the ViewModel

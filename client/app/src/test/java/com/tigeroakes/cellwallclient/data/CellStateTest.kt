@@ -7,16 +7,9 @@ import org.junit.Test
 
 class CellStateTest {
     @Test
-    fun blank() {
-        Assert.assertEquals(CellState.Blank(), CellState.Blank())
-        Assert.assertEquals(0, CellState.Blank().hashCode())
-        Assert.assertEquals("Blank()", CellState.Blank().toString())
-    }
-
-    @Test
     fun from_unknown() {
-        Assert.assertEquals(CellState.Blank(), CellState.from("BLANK", JSONObject()))
-        Assert.assertEquals(CellState.Blank(), CellState.from("ABC", JSONObject()))
+        Assert.assertEquals(CellState.Blank, CellState.from("BLANK", JSONObject()))
+        Assert.assertEquals(CellState.Blank, CellState.from("ABC", JSONObject()))
     }
 
     @Test
