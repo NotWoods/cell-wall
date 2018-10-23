@@ -1,4 +1,4 @@
-package com.tigeroakes.cellwallclient.data
+package com.tigeroakes.cellwallclient.device
 
 import android.content.SharedPreferences
 import androidx.annotation.VisibleForTesting

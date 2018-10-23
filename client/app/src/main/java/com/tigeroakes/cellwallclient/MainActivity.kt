@@ -11,13 +11,12 @@ import android.view.WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.net.toUri
-import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.transaction
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.tigeroakes.cellwallclient.data.CellState
-import com.tigeroakes.cellwallclient.data.Installation
+import com.tigeroakes.cellwallclient.device.Installation
 import com.tigeroakes.cellwallclient.socket.SocketService
 import com.tigeroakes.cellwallclient.ui.button.ButtonFragment
 import com.tigeroakes.cellwallclient.ui.image.ImageFragment
@@ -27,7 +26,7 @@ import com.tigeroakes.cellwallclient.ui.main.MainViewModel
 import com.tigeroakes.cellwallclient.ui.main.MainViewModelFactory
 import com.tigeroakes.cellwallclient.ui.main.MainViewModelImpl
 import com.tigeroakes.cellwallclient.ui.text.LargeTextFragment
-import com.tigeroakes.cellwallclient.util.getSystemDimension
+import com.tigeroakes.cellwallclient.device.getSystemDimension
 import kotlinx.android.synthetic.main.main_activity.*
 
 

@@ -12,13 +12,12 @@ import android.view.ViewGroup
 import androidx.annotation.StringRes
 import androidx.core.content.edit
 import androidx.core.os.bundleOf
-import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.tigeroakes.cellwallclient.R
 import com.tigeroakes.cellwallclient.SERVER_ADDRESS_KEY
-import com.tigeroakes.cellwallclient.util.getSystemDimension
+import com.tigeroakes.cellwallclient.device.getSystemDimension
 import kotlinx.android.synthetic.main.login_fragment.*
 
 /**

@@ -1,4 +1,4 @@
-package com.tigeroakes.cellwallclient.util
+package com.tigeroakes.cellwallclient.device
 
 import android.os.Build
 
