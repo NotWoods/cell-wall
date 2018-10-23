@@ -1,4 +1,6 @@
 */node_modules
 */secret.json
 */homeassistant/deps
-server/dist
+server/src/**/*.js
+server/src/**/*.js.map
+server/.env

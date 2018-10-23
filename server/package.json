@@ -2,25 +2,31 @@
   "name": "cell-wall-server",
   "version": "1.0.0",
   "description": "Server for the CellWall",
-  "main": "index.js",
+  "main": "src/server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest --forceExit --coverage --verbose",
     "build": "tsc",
-    "start": "node dist/index.js"
+    "start": "node src/server.js"
   },
   "author": "Tiger Oakes",
   "license": "UNLICENSED",
   "dependencies": {
     "body-parser": "^1.18.3",
+    "dotenv": "^6.1.0",
     "express": "^4.16.3",
+    "express-validator": "^5.3.0",
     "interactjs": "^1.3.4",
     "socket.io": "^2.1.1",
     "socket.io-client": "^2.1.1"
   },
   "devDependencies": {
+    "@types/dotenv": "^4.0.3",
     "@types/express": "^4.16.0",
+    "@types/jest": "^23.3.7",
     "@types/socket.io": "^1.4.36",
     "@types/socket.io-client": "^1.4.32",
+    "jest": "^23.6.0",
+    "ts-jest": "^23.10.4",
     "typescript": "^3.0.1"
   }
 }

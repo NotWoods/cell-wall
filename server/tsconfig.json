@@ -5,8 +5,7 @@
     "strict": true,
     "esModuleInterop": false,
     "moduleResolution": "node",
-    "sourceMap": true,
-    "outDir": "dist"
+    "sourceMap": true
   },
   "include": ["src/**/*"],
   "exclude": ["public/**/*"]
