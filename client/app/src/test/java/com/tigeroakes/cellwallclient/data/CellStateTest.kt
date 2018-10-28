@@ -1,5 +1,6 @@
 package com.tigeroakes.cellwallclient.data
 
+import com.tigeroakes.cellwallclient.model.CellState
 import org.json.JSONException
 import org.json.JSONObject
 import org.junit.Assert

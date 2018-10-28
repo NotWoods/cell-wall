@@ -12,10 +12,12 @@ export const getWall = (req: Request, res: Response) => {
 
 /**
  * GET /wall/actions
- * Returns the serialized version of the wall.
+ * Return list of actions that can be manually triggered.
  */
 export const getActions = (req: Request, res: Response) => {
-  res.json(actions);
+  res.json(
+    Object.entries(actions).map(([id, details]) => ({ id, ...details }))
+  );
 };
 
 /**

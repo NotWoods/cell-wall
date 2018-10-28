@@ -1,4 +1,4 @@
-package com.tigeroakes.cellwallclient.data
+package com.tigeroakes.cellwallclient.model
 
 import org.json.JSONObject
 

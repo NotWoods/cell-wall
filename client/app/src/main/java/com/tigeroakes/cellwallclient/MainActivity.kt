@@ -15,7 +15,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.transaction
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import com.tigeroakes.cellwallclient.data.CellState
+import com.tigeroakes.cellwallclient.model.CellState
 import com.tigeroakes.cellwallclient.device.Installation
 import com.tigeroakes.cellwallclient.socket.SocketService
 import com.tigeroakes.cellwallclient.ui.button.ButtonFragment

@@ -12,4 +12,11 @@
     <string name="error_incorrect_address">Could not find a CellWall server at this URL</string>
     <string name="error_field_required">This field is required</string>
     <string name="error_connection_failed">Could not connect</string>
+
+    <string name="debug_info">
+        UUID: %1$s&lt;br/>
+        Device name: %2$s&lt;br/>
+        Density: %3$ddp&lt;br/>
+        Display: %4$dx%5$d
+    </string>
 </resources>

@@ -1,7 +1,7 @@
 package com.tigeroakes.cellwallclient.socket
 
 import androidx.annotation.WorkerThread
-import com.tigeroakes.cellwallclient.data.CellState
+import com.tigeroakes.cellwallclient.model.CellState
 
 interface SocketListener {
     @WorkerThread

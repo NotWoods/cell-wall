@@ -6,7 +6,7 @@ import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.tigeroakes.cellwallclient.data.CellState
+import com.tigeroakes.cellwallclient.model.CellState
 import com.tigeroakes.cellwallclient.socket.SocketListener
 import com.tigeroakes.cellwallclient.socket.SocketServiceLifecycleObserver
 import com.tigeroakes.cellwallclient.ui.ReconnectButton.Companion.Status
