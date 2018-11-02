@@ -3,9 +3,7 @@ package com.tigeroakes.cellwallclient.socket
 import android.net.Uri
 import android.webkit.URLUtil.guessUrl
 import android.webkit.URLUtil.isNetworkUrl
-import androidx.annotation.AnyThread
 import androidx.annotation.UiThread
-import androidx.annotation.VisibleForTesting
 import androidx.annotation.WorkerThread
 import androidx.core.net.toUri
 import com.tigeroakes.cellwallclient.socket.ServerUris.withPingPath

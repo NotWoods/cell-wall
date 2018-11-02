@@ -1,6 +1,7 @@
-package com.tigeroakes.cellwallclient.data
+package com.tigeroakes.cellwallclient.data.rest
 
 import androidx.lifecycle.LiveData
+import com.tigeroakes.cellwallclient.data.Resource
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -22,7 +23,8 @@ class RetrofitLiveData<T>(
     }
 
     override fun onFailure(call: Call<T>, t: Throwable) {
-        postValue(Resource.error(t.message ?: "", null))
+        postValue(Resource.error(t.message
+                ?: "", null))
     }
 
     override fun onResponse(call: Call<T>, response: Response<T>) {

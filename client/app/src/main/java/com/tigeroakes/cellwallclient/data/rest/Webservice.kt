@@ -1,4 +1,4 @@
-package com.tigeroakes.cellwallclient.data
+package com.tigeroakes.cellwallclient.data.rest
 
 import com.tigeroakes.cellwallclient.model.*
 import retrofit2.Call
