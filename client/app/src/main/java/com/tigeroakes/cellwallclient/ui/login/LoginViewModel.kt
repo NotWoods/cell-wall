@@ -18,7 +18,7 @@ interface LoginViewModel {
 class LoginViewModelImpl(application: Application) : LoginViewModel, AndroidViewModel(application) {
     private val addressInput = MutableLiveData<String>()
     private val loginAttempt = Transformations.switchMap(addressInput) { url ->
-        CellWallRepository.attemptLogin(url, application::getString)
+        CellWallRepository.attemptToConnect(url, application::getString)
     }
 
     override val isLoading: LiveData<Boolean> = Transformations.map(loginAttempt) {

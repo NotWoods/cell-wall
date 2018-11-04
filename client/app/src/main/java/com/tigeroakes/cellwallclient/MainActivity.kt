@@ -15,6 +15,7 @@ import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.transaction
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import com.tigeroakes.cellwallclient.data.PreferenceManager
 import com.tigeroakes.cellwallclient.device.getSystemDimension
 import com.tigeroakes.cellwallclient.model.CellState
 import com.tigeroakes.cellwallclient.ui.blank.BlankFragment
@@ -37,10 +38,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_activity)
 
-        val sharedPrefs = getDefaultSharedPreferences(this)
-        val serverAddress = sharedPrefs
-                .getString(SERVER_ADDRESS_KEY, null)
-                ?.toUri()
+        val prefs = PreferenceManager(getDefaultSharedPreferences(this))
+        val serverAddress = prefs.serverAddress?.toUri()
 
         // If there is no server address, show the login page
         serverAddress ?: return openLogin()
@@ -101,7 +100,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun CellState.toFragment() = cellStateToFragment(this)
-
     companion object {
         private fun cellStateToFragment(state: CellState) = when (state) {
             is CellState.Text -> LargeTextFragment.newInstance(state.text)

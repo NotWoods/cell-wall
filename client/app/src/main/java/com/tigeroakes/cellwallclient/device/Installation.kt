@@ -2,8 +2,7 @@ package com.tigeroakes.cellwallclient.device
 
 import android.content.SharedPreferences
 import androidx.annotation.VisibleForTesting
-import androidx.core.content.edit
-import com.tigeroakes.cellwallclient.INSTALLATION_ID_KEY
+import com.tigeroakes.cellwallclient.data.PreferenceManager
 import java.util.UUID.randomUUID
 
 /**
@@ -17,17 +16,13 @@ object Installation {
      * @param sharedPrefs Preferences where the ID will be stored
      */
     fun id(sharedPrefs: SharedPreferences): String {
-        return sID ?: (
-                    sharedPrefs.getString(INSTALLATION_ID_KEY, null) ?: newId(sharedPrefs)
-                ).also { sID = it }
+        val prefs = PreferenceManager(sharedPrefs)
+        return sID ?: prefs.installationId ?: newId(prefs)
     }
 
-    private fun newId(sharedPrefs: SharedPreferences): String {
-        val id = randomUUID().toString()
-        sharedPrefs.edit {
-            putString(INSTALLATION_ID_KEY, id)
-        }
-        return id
+    private fun newId(prefs: PreferenceManager) = randomUUID().toString().also { id ->
+        prefs.installationId = id
+        sID = id
     }
 
     @VisibleForTesting

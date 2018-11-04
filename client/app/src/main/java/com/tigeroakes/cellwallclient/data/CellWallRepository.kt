@@ -23,9 +23,14 @@ object CellWallRepository {
     private val webservice = ServiceGenerator.createService(Webservice::class.java)
 
     /**
-     * Validate the given URL
+     * Validate the given URL.
+     * @param address URL to try connecting to.
+     * @param getString Function to turn resource into string.
      */
-    fun attemptLogin(address: String, getString: (Int) -> String): LiveData<Resource<URI>> {
+    fun attemptToConnect(
+            address: String,
+            getString: (Int) -> String
+    ): LiveData<Resource<URI>> {
         val result = MutableLiveData<Resource<URI>>()
         val url: URI
         try {
@@ -67,10 +72,10 @@ object CellWallRepository {
             widthPixels: Int,
             heightPixels: Int
     ): LiveData<Resource<Unit>> {
-        return RetrofitLiveData(webservice.putCell(
+        return webservice.putCell(
                 uuid,
                 RegisterCellRequest(deviceName, density, widthPixels, heightPixels)
-        ))
+        ).toLiveData()
     }
 
     /**
@@ -81,13 +86,13 @@ object CellWallRepository {
     /**
      * Get a list of possible actions for the user to trigger.
      */
-    fun listActions(): LiveData<Resource<List<Action>>> = RetrofitLiveData(webservice.getActions())
+    fun listActions(): LiveData<Resource<List<Action>>> = webservice.getActions().toLiveData()
 
     /**
      * Trigger a specific action
      */
     fun triggerAction(action: Action): LiveData<Resource<Unit>> {
-        return RetrofitLiveData(webservice.postAction(ActionRequest(action.id)))
+        return webservice.postAction(ActionRequest(action.id)).toLiveData()
     }
 
     /**
