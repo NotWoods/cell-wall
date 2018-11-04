@@ -4,10 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tigeroakes.cellwallclient.data.rest.*
 import com.tigeroakes.cellwallclient.data.socket.StateLiveData
-import com.tigeroakes.cellwallclient.model.Action
-import com.tigeroakes.cellwallclient.model.ActionRequest
-import com.tigeroakes.cellwallclient.model.CellState
-import com.tigeroakes.cellwallclient.model.RegisterCellRequest
+import com.tigeroakes.cellwallclient.model.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -21,7 +18,7 @@ import java.util.*
  * You can consider it to be a mediator between different data sources,
  * such as web services, sockets, and caches.
  */
-class CellWallRepostiory(private val uuid: UUID) {
+object CellWallRepository {
     private var serverAddress: URI = URI("")
     private val webservice = ServiceGenerator.createService(Webservice::class.java)
 
@@ -64,6 +61,7 @@ class CellWallRepostiory(private val uuid: UUID) {
      * Register this device to the Wall.
      */
     fun register(
+            uuid: UUID,
             deviceName: String,
             density: Int,
             widthPixels: Int,
@@ -97,5 +95,19 @@ class CellWallRepostiory(private val uuid: UUID) {
      */
     fun sendButtonTouch() {
         // TODO
+    }
+
+    /**
+     * Prepend the server address to an image URL.
+     * No effect if the src doesn't start with "/".
+     */
+    fun addImageHost(imageSrc: String): URI {
+        val path = imageSrc.removePrefix("/")
+        val startsWithSlash = path != imageSrc
+        return if (startsWithSlash) {
+            serverAddress.resolve(path)
+        } else {
+            URI(imageSrc)
+        }
     }
 }

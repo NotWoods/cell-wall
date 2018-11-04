@@ -11,7 +11,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.StringRes
 import androidx.core.content.edit
+import androidx.core.net.toUri
 import androidx.core.os.bundleOf
+import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -26,7 +28,7 @@ import kotlinx.android.synthetic.main.login_fragment.*
  * server at the "/is-cellwall-server" path. If the server returns a 204 status, then the
  * new address is saved and the onServerVerified method is called.
  */
-class LoginFragment : Fragment(), Observer<Int> {
+class LoginFragment : Fragment() {
     companion object {
         private const val ARG_AS_CHILD = "as_child"
 
@@ -64,10 +66,31 @@ class LoginFragment : Fragment(), Observer<Int> {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(LoginViewModelImpl::class.java)
-        viewModel.errorTextResource.observe(this, this)
+        // Display current error, if any
+        viewModel.errorText.observe(this, Observer { error ->
+            val isError = !error.isNullOrEmpty()
+
+            address_layout.error = error
+            address_layout.isErrorEnabled = !error.isNullOrEmpty()
+            if (isError) { // TODO: Use Event
+                address.requestFocus()
+            }
+        })
+        viewModel.savedAddress.observe(this, Observer { urlEvent ->
+            urlEvent.getContentIfNotHandled()?.let { url ->
+                getDefaultSharedPreferences(activity).edit {
+                    putString(SERVER_ADDRESS_KEY, url.toString())
+                }
+                callback.onServerVerified(url.toString().toUri())
+            }
+        })
 
         // Set click listener
-        connect_button.setOnClickListener { attemptLogin() }
+        connect_button.setOnClickListener {
+            // Tests to ensure that an address in the input points to a CellWall server
+            // f it finds a server, BlankFragment is opened.
+            viewModel.attemptLogin(address.text.toString())
+        }
 
         // If a URL was previous set, use it as the default value
         getDefaultSharedPreferences(activity)
@@ -86,38 +109,6 @@ class LoginFragment : Fragment(), Observer<Int> {
         arguments?.run {
             if (!getBoolean(ARG_AS_CHILD)) {
                 toolbar.navigationIcon = null
-            }
-        }
-    }
-
-    /**
-     * Called when the error text in the view model changes.
-     * Used to display the current error, if any.
-     */
-    override fun onChanged(@StringRes errorTextResource: Int?) {
-        val errorText = errorTextResource?.let { getString(it) }
-        val isError = !TextUtils.isEmpty(errorText)
-
-        address_layout.error = errorText
-        address_layout.isErrorEnabled = isError
-        if (isError) address.requestFocus()
-    }
-
-    /**
-     * Tests to ensure that an address in the input points to a CellWall server
-     * If it finds a server, {@link BlankFragment} is opened.
-     */
-    private fun attemptLogin() {
-        // Store values at the time of the login attempt.
-        val addressStr = address.text.toString()
-        val mainHandler = Handler(context?.mainLooper)
-
-        viewModel.attemptLogin(addressStr) {
-            mainHandler.post {
-                getDefaultSharedPreferences(activity).edit {
-                    putString(SERVER_ADDRESS_KEY, it.toString())
-                }
-                callback.onServerVerified(it)
             }
         }
     }

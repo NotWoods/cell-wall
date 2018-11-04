@@ -1,4 +1,4 @@
-package com.tigeroakes.cellwallclient.data
+package com.tigeroakes.cellwallclient.model
 
 /**
  * A generic class that contains data and status about loading this data.

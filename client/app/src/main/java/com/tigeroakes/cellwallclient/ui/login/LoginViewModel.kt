@@ -1,37 +1,49 @@
 package com.tigeroakes.cellwallclient.ui.login
 
+import android.app.Application
 import android.net.Uri
 import androidx.annotation.StringRes
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import com.tigeroakes.cellwallclient.R
-import com.tigeroakes.cellwallclient.socket.ServerUrlValidator
+import androidx.lifecycle.*
+import com.tigeroakes.cellwallclient.data.CellWallRepository
+import com.tigeroakes.cellwallclient.model.Event
+import com.tigeroakes.cellwallclient.model.Resource
+import java.net.URI
+import kotlin.math.log
 
 interface LoginViewModel {
-    val errorTextResource: LiveData<Int>
+    val isLoading: LiveData<Boolean>
+    val errorText: LiveData<String?>
+    val savedAddress: LiveData<Event<URI>>
 
-    fun attemptLogin(address: String, onSuccess: (address: Uri) -> Unit)
+    fun attemptLogin(address: String)
 }
 
-class LoginViewModelImpl : LoginViewModel, ViewModel() {
-    companion object {
-        val reasonToStringRes = mapOf(
-                ServerUrlValidator.Reason.BLANK to R.string.error_field_required,
-                ServerUrlValidator.Reason.BAD_FORMAT to R.string.error_invalid_address,
-                ServerUrlValidator.Reason.PATH_DOES_NOT_EXIST to R.string.error_incorrect_address,
-                ServerUrlValidator.Reason.PATH_RETURNED_ERROR to R.string.error_connection_failed
-        )
+class LoginViewModelImpl(application: Application) : LoginViewModel, AndroidViewModel(application) {
+    private val addressInput = MutableLiveData<String>()
+    private val loginAttempt = Transformations.switchMap(addressInput) { url ->
+        CellWallRepository.attemptLogin(url, application::getString)
     }
 
-    override val errorTextResource = MutableLiveData<@StringRes Int>()
+    override val isLoading: LiveData<Boolean> = Transformations.map(loginAttempt) {
+        it.status == Resource.Status.LOADING
+    }
+    override val errorText: LiveData<String?> = Transformations.map(loginAttempt) {
+        it.message
+    }
+    override val savedAddress = MediatorLiveData<Event<URI>>().apply {
+        // Default to a handled event with a blank URI.
+        val blankEvent = Event(URI("")).apply { getContentIfNotHandled() }
+        value = blankEvent
 
-    override fun attemptLogin(address: String, onSuccess: (address: Uri) -> Unit) {
-        // Reset errors.
-        errorTextResource.value = null
+        addSource(loginAttempt) { res ->
+            // Only update when successful.
+            if (res.status === Resource.Status.SUCCESS) {
+                value = Event(res.data!!)
+            }
+        }
+    }
 
-        ServerUrlValidator.validate(address,
-                onSuccess = onSuccess,
-                onFailure = { errorTextResource.postValue(reasonToStringRes[it]) })
+    override fun attemptLogin(address: String) {
+        addressInput.value = address
     }
 }
