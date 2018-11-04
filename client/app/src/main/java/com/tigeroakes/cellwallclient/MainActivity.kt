@@ -1,7 +1,7 @@
 package com.tigeroakes.cellwallclient
 
 import android.annotation.SuppressLint
-import android.net.Uri
+import android.content.Intent
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES
 import android.os.Bundle
@@ -11,26 +11,26 @@ import android.view.WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.net.toUri
-import androidx.fragment.app.Fragment
+import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.transaction
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import com.tigeroakes.cellwallclient.device.getSystemDimension
 import com.tigeroakes.cellwallclient.model.CellState
-import com.tigeroakes.cellwallclient.device.Installation
-import com.tigeroakes.cellwallclient.socket.SocketService
+import com.tigeroakes.cellwallclient.ui.blank.BlankFragment
 import com.tigeroakes.cellwallclient.ui.button.ButtonFragment
 import com.tigeroakes.cellwallclient.ui.image.ImageFragment
-import com.tigeroakes.cellwallclient.ui.login.LoginFragment
-import com.tigeroakes.cellwallclient.ui.blank.BlankFragment
+import com.tigeroakes.cellwallclient.ui.login.LoginActivity
 import com.tigeroakes.cellwallclient.ui.main.MainViewModel
-import com.tigeroakes.cellwallclient.ui.main.MainViewModelFactory
 import com.tigeroakes.cellwallclient.ui.main.MainViewModelImpl
 import com.tigeroakes.cellwallclient.ui.text.LargeTextFragment
-import com.tigeroakes.cellwallclient.device.getSystemDimension
 import kotlinx.android.synthetic.main.main_activity.*
 
 
-class MainActivity : AppCompatActivity(), LoginFragment.OnServerVerifiedListener {
+/**
+ * Switches between different fragments to represent the current Cell state.
+ */
+class MainActivity : AppCompatActivity() {
     private lateinit var viewModel: MainViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,51 +38,41 @@ class MainActivity : AppCompatActivity(), LoginFragment.OnServerVerifiedListener
         setContentView(R.layout.main_activity)
 
         val sharedPrefs = getDefaultSharedPreferences(this)
-        val id = Installation.id(sharedPrefs)
-
-        viewModel = ViewModelProviders.of(this, MainViewModelFactory(id)).get(MainViewModelImpl::class.java)
-        viewModel.socketStatus.observe(this, Observer {
-            reconnect_button.setStatus(it)
-        })
-        viewModel.cellState.observe(this, Observer {
-            setFragment(cellStateToFragment(it))
-        })
-        viewModel.showingLogin.observe(this, Observer {
-            reconnect_button.showIf(it != true)
-        })
-        lifecycle.addObserver(viewModel.socketLifecycleObserver)
-        SocketService.setListener(viewModel)
-
-        reconnect_button.run {
-            setOnClickListener(viewModel.onReconnectClick)
-            setOnLongClickListener {
-                openLogin(true)
-                true
-            }
-        }
-        goFullscreen()
-
         val serverAddress = sharedPrefs
                 .getString(SERVER_ADDRESS_KEY, null)
                 ?.toUri()
 
         // If there is no server address, show the login page
-        if (serverAddress == null) {
-            openLogin()
-        } else {
-            onServerVerified(serverAddress)
+        serverAddress ?: return openLogin()
+
+        viewModel = ViewModelProviders.of(this).get(MainViewModelImpl::class.java)
+
+        reconnect_button.apply {
+            setOnClickListener {}
+            setOnLongClickListener {
+                openLogin()
+                true
+            }
         }
+
+        viewModel.socketStatus.observe(this, Observer {
+            reconnect_button.setStatus(it)
+        })
+        viewModel.cellState.observe(this, Observer {
+            it.getContentIfNotHandled()?.let { state ->
+                supportFragmentManager.transaction {
+                    replace(R.id.container, state.toFragment())
+                    setCustomAnimations(R.animator.fade_in, R.animator.fade_out)
+                }
+            }
+        })
+
+        goFullscreen()
     }
 
-    /**
-     * Called once the user successfully logs in to the server.
-     * Switches to the Main fragment then starts the socket to listen for new data sent from the
-     * server.
-     */
-    override fun onServerVerified(serverAddress: Uri) {
-        setFragment(BlankFragment.newInstance())
-        viewModel.setAddress(serverAddress)
-        viewModel.setShowingLogin(false)
+    private fun openLogin() {
+        val loginIntent = Intent(this, LoginActivity::class.java)
+        startActivity(loginIntent)
     }
 
     /**
@@ -110,21 +100,7 @@ class MainActivity : AppCompatActivity(), LoginFragment.OnServerVerifiedListener
         }
     }
 
-    private fun openLogin(asChild: Boolean = false) {
-        viewModel.setShowingLogin(true)
-        supportFragmentManager.transaction {
-            replace(R.id.container, LoginFragment.newInstance(asChild))
-            if (asChild) addToBackStack(null)
-            setCustomAnimations(R.animator.fade_in, R.animator.fade_out)
-        }
-    }
-
-    private fun setFragment(fragmentToOpen: Fragment) {
-        supportFragmentManager.transaction {
-            replace(R.id.container, fragmentToOpen)
-            setCustomAnimations(R.animator.fade_in, R.animator.fade_out)
-        }
-    }
+    private fun CellState.toFragment() = cellStateToFragment(this)
 
     companion object {
         private fun cellStateToFragment(state: CellState) = when (state) {

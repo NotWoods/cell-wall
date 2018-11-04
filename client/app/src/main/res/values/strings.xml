@@ -2,6 +2,8 @@
     <string name="app_name_main">CellWall</string>
     <string name="app_name_subtitle">Client</string>
     <string name="app_name">CellWall Client</string>
+    <string name="title_activity_login">Connect to server</string>
+
     <string name="action_reconnect">Reconnect</string>
     <string name="action_login">Connect to new server</string>
 
@@ -13,10 +15,8 @@
     <string name="error_field_required">This field is required</string>
     <string name="error_connection_failed">Could not connect</string>
 
-    <string name="debug_info">
-        UUID: %1$s&lt;br/>
-        Device name: %2$s&lt;br/>
-        Density: %3$ddp&lt;br/>
-        Display: %4$dx%5$d
-    </string>
+    <string name="debug_uuid">UUID: %1$s</string>
+    <string name="debug_device_name">Device name: %1$s</string>
+    <string name="debug_density">Density: %1$ddp</string>
+    <string name="debug_display">Display: %1$dx%2$d</string>
 </resources>
