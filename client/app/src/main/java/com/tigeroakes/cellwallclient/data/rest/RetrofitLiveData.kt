@@ -37,5 +37,3 @@ class RetrofitLiveData<T>(
         }
     }
 }
-
-fun <T> Call<T>.toLiveData() = RetrofitLiveData(this)

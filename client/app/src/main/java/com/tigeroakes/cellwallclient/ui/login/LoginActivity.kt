@@ -3,16 +3,15 @@ package com.tigeroakes.cellwallclient.ui.login
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.os.Bundle
-import android.preference.PreferenceManager
+import android.preference.PreferenceManager.getDefaultSharedPreferences
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.edit
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.tigeroakes.cellwallclient.R
-import com.tigeroakes.cellwallclient.SERVER_ADDRESS_KEY
+import com.tigeroakes.cellwallclient.data.PreferenceManager
 import kotlinx.android.synthetic.main.login_activity.*
 
 /**
@@ -38,10 +37,8 @@ class LoginActivity : AppCompatActivity() {
 
         connect_button.setOnClickListener { attemptLogin() }
 
-        val prefs = PreferenceManager.getDefaultSharedPreferences(this)
-        prefs.getString(SERVER_ADDRESS_KEY, null)?.let {
-            address.setText(it)
-        }
+        val prefs = PreferenceManager(getDefaultSharedPreferences(this))
+        address.setText(prefs.serverAddress)
 
         viewModel.errorText.observe(this, Observer {
             address.error = it.peekContent()
@@ -52,9 +49,7 @@ class LoginActivity : AppCompatActivity() {
         })
         viewModel.savedAddress.observe(this, Observer { urlEvent ->
             urlEvent.getContentIfNotHandled()?.let { url ->
-                prefs.edit {
-                    putString(SERVER_ADDRESS_KEY, url.toString())
-                }
+                prefs.serverAddress = url.toString()
                 // TODO pass string in activity result
                 // maybe just move address storage to Repository
                 finish()
