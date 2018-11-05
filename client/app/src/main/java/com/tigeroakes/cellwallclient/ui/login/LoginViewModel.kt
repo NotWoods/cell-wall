@@ -1,8 +1,11 @@
 package com.tigeroakes.cellwallclient.ui.login
 
 import android.app.Application
+import android.preference.PreferenceManager.getDefaultSharedPreferences
 import androidx.lifecycle.*
 import com.tigeroakes.cellwallclient.data.CellWallRepository
+import com.tigeroakes.cellwallclient.device.getCellInfo
+import com.tigeroakes.cellwallclient.model.CellInfo
 import com.tigeroakes.cellwallclient.model.Event
 import com.tigeroakes.cellwallclient.model.Resource
 import java.net.URI
@@ -11,6 +14,8 @@ interface LoginViewModel {
     val isLoading: LiveData<Boolean>
     val errorText: LiveData<Event<String?>>
     val savedAddress: LiveData<Event<URI>>
+
+    val cellInfo: LiveData<CellInfo>
 
     fun attemptLogin(address: String)
 }
@@ -35,9 +40,14 @@ class LoginViewModelImpl(application: Application) : LoginViewModel, AndroidView
         addSource(loginAttempt) { res ->
             // Only update when successful.
             if (res.status === Resource.Status.SUCCESS) {
-                value = Event(res.data!!)
+                val url = res.data!!
+                value = Event(url)
             }
         }
+    }
+
+    override val cellInfo = MutableLiveData<CellInfo>().apply {
+        value = getCellInfo(application.resources, getDefaultSharedPreferences(application))
     }
 
     override fun attemptLogin(address: String) {

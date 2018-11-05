@@ -3,6 +3,9 @@ package com.tigeroakes.cellwallclient.data
 import android.content.SharedPreferences
 import androidx.core.content.edit
 
+const val SERVER_ADDRESS_KEY = "address"
+const val INSTALLATION_ID_KEY = "install_id"
+
 /**
  * Provides typed getters and setters for SharedPreference values.
  * Setters are async by default.
@@ -19,9 +22,4 @@ class PreferenceManager(private val prefs: SharedPreferences) {
         set(value) = prefs.edit {
             putString(INSTALLATION_ID_KEY, value)
         }
-
-    companion object {
-        private const val SERVER_ADDRESS_KEY = "address"
-        private const val INSTALLATION_ID_KEY = "install_id"
-    }
 }

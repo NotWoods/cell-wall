@@ -1,6 +1,9 @@
 package com.tigeroakes.cellwallclient.model
 
-data class RegisterCellRequest(
+import java.util.*
+
+data class CellInfo(
+        val uuid: UUID,
         val deviceName: String,
         val density: Int,
         val widthPixels: Int,

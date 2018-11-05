@@ -9,7 +9,6 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.net.URI
-import java.util.*
 
 /**
  * This repository handles data operations related to the CellWall.
@@ -65,17 +64,8 @@ object CellWallRepository {
     /**
      * Register this device to the Wall.
      */
-    fun register(
-            uuid: UUID,
-            deviceName: String,
-            density: Int,
-            widthPixels: Int,
-            heightPixels: Int
-    ): LiveData<Resource<Unit>> {
-        return webservice.putCell(
-                uuid,
-                RegisterCellRequest(deviceName, density, widthPixels, heightPixels)
-        ).toLiveData()
+    fun register(info: CellInfo): LiveData<Resource<Unit>> {
+        return webservice.putCell(info.uuid, info).toLiveData()
     }
 
     /**

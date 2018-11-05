@@ -1,10 +1,10 @@
 package com.tigeroakes.cellwallclient.ui.login
 
 import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
 import android.os.Bundle
 import android.preference.PreferenceManager.getDefaultSharedPreferences
 import android.view.View
+import android.view.ViewPropertyAnimator
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -26,7 +26,7 @@ class LoginActivity : AppCompatActivity() {
 
         viewModel = ViewModelProviders.of(this).get(LoginViewModelImpl::class.java)
 
-        // Set up the login form.
+        // Login when the enter is pressed
         address.setOnEditorActionListener(TextView.OnEditorActionListener { _, id, _ ->
             if (id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL) {
                 attemptLogin()
@@ -35,35 +35,44 @@ class LoginActivity : AppCompatActivity() {
             false
         })
 
+        // Login when the connect button is pressed
         connect_button.setOnClickListener { attemptLogin() }
 
         val prefs = PreferenceManager(getDefaultSharedPreferences(this))
-        address.setText(prefs.serverAddress)
+        address.setText(prefs.serverAddress) // Auto-fill with pre-existing serverAddress
 
+        viewModel.isLoading.observe(this, Observer {
+            // Show the loading bar when communicating with the server.
+            showProgress(it)
+        })
         viewModel.errorText.observe(this, Observer {
+            // Show error, if any.
             address.error = it.peekContent()
 
+            // When error updates and is not-null, focus on the address input.
             it.getContentIfNotHandled()?.let {
                 address.requestFocus()
             }
         })
         viewModel.savedAddress.observe(this, Observer { urlEvent ->
             urlEvent.getContentIfNotHandled()?.let { url ->
+                // When saved URL updates, update preferences and exit this activity.
                 prefs.serverAddress = url.toString()
-                // TODO pass string in activity result
-                // maybe just move address storage to Repository
                 finish()
             }
         })
-        viewModel.isLoading.observe(this, Observer {
-            showProgress(it)
+
+        viewModel.cellInfo.observe(this, Observer { info ->
+            // Update the debug text
+            debug_uuid.text = getString(R.string.debug_uuid, info.uuid)
+            debug_device_name.text = getString(R.string.debug_device_name, info.deviceName)
+            debug_density.text = getString(R.string.debug_density, info.density)
+            debug_display.text = getString(R.string.debug_display, info.widthPixels, info.heightPixels)
         })
     }
 
     /**
      * Attempts to connect to the server specified by the login form.
-     * If there are form errors (invalid email, missing fields, etc.), the
-     * errors are presented and no actual login attempt is made.
      */
     private fun attemptLogin() {
         viewModel.attemptLogin(address.text.toString())
@@ -78,21 +87,36 @@ class LoginActivity : AppCompatActivity() {
         login_form.visibility = if (show) View.GONE else View.VISIBLE
         login_form.animate()
                 .setDuration(shortAnimTime)
-                .alpha((if (show) 0 else 1).toFloat())
-                .setListener(object : AnimatorListenerAdapter() {
-                    override fun onAnimationEnd(animation: Animator) {
-                        login_form.visibility = if (show) View.GONE else View.VISIBLE
-                    }
-                })
+                .alpha(if (show) 0f else 1f)
+                .setListener {
+                    login_form.visibility = if (show) View.GONE else View.VISIBLE
+                }
 
         login_progress.visibility = if (show) View.VISIBLE else View.GONE
         login_progress.animate()
                 .setDuration(shortAnimTime)
-                .alpha((if (show) 1 else 0).toFloat())
-                .setListener(object : AnimatorListenerAdapter() {
-                    override fun onAnimationEnd(animation: Animator) {
-                        login_progress.visibility = if (show) View.VISIBLE else View.GONE
-                    }
-                })
+                .alpha(if (show) 1f else 0f)
+                .setListener {
+                    login_progress.visibility = if (show) View.VISIBLE else View.GONE
+                }
+    }
+
+    /**
+     * Add a listener to this ViewPropertyAnimator using the provided actions.
+     * Based on Android KTX Animator.addListener function.
+     */
+    private inline fun ViewPropertyAnimator.setListener(
+            crossinline onEnd: (animator: Animator) -> Unit = {},
+            crossinline onStart: (animator: Animator) -> Unit = {},
+            crossinline onCancel: (animator: Animator) -> Unit = {},
+            crossinline onRepeat: (animator: Animator) -> Unit = {}
+    ): ViewPropertyAnimator {
+        val listener = object : Animator.AnimatorListener {
+            override fun onAnimationRepeat(animator: Animator) = onRepeat(animator)
+            override fun onAnimationEnd(animator: Animator) = onEnd(animator)
+            override fun onAnimationCancel(animator: Animator) = onCancel(animator)
+            override fun onAnimationStart(animator: Animator) = onStart(animator)
+        }
+        return setListener(listener)
     }
 }

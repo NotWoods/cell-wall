@@ -1,27 +1,26 @@
-package com.tigeroakes.cellwallclient.data
+package com.tigeroakes.cellwallclient.model
 
-import com.tigeroakes.cellwallclient.model.CellState
 import org.json.JSONException
 import org.json.JSONObject
-import org.junit.Assert
+import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class CellStateTest {
     @Test
     fun from_unknown() {
-        Assert.assertEquals(CellState.Blank, CellState.from("BLANK", JSONObject()))
-        Assert.assertEquals(CellState.Blank, CellState.from("ABC", JSONObject()))
+        assertEquals(CellState.Blank, CellState.from("BLANK", JSONObject()))
+        assertEquals(CellState.Blank, CellState.from("ABC", JSONObject()))
     }
 
     @Test
     fun from_configure() {
-        Assert.assertEquals(
+        assertEquals(
                 CellState.Configure("#FFFFFF", "star"),
                 CellState.from("CONFIGURE", JSONObject().apply {
                     put("backgroundColor", "#FFFFFF")
                     put("icon", "star")
                 }))
-        Assert.assertEquals(
+        assertEquals(
                 CellState.Configure("#FF0000", "square"),
                 CellState.from("CONFIGURE", JSONObject().apply {
                     put("backgroundColor", "#FF0000")
@@ -37,7 +36,7 @@ class CellStateTest {
 
     @Test
     fun from_text() {
-        Assert.assertEquals(
+        assertEquals(
                 CellState.Text("Hello world!"),
                 CellState.from("TEXT", JSONObject().apply {
                     put("text", "Hello world!")
@@ -52,12 +51,12 @@ class CellStateTest {
 
     @Test
     fun from_image() {
-        Assert.assertEquals(
+        assertEquals(
                 CellState.Image("http://example.com/img.png"),
                 CellState.from("IMAGE", JSONObject().apply {
                     put("src", "http://example.com/img.png")
                 }))
-        Assert.assertEquals(
+        assertEquals(
                 CellState.Image("/some/sub_path"),
                 CellState.from("IMAGE", JSONObject().apply {
                     put("src", "/some/sub_path")
@@ -72,7 +71,7 @@ class CellStateTest {
 
     @Test
     fun from_button() {
-        Assert.assertEquals(
+        assertEquals(
                 CellState.Button("#FFFF00"),
                 CellState.from("BUTTON", JSONObject().apply {
                     put("backgroundColor", "#FFFF00")

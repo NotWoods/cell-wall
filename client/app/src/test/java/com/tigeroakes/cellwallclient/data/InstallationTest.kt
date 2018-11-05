@@ -1,7 +1,6 @@
 package com.tigeroakes.cellwallclient.data
 
 import android.content.SharedPreferences
-import com.tigeroakes.cellwallclient.INSTALLATION_ID_KEY
 import com.tigeroakes.cellwallclient.device.Installation
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -34,14 +33,15 @@ class InstallationTest {
         `when`(mockSharedPreferences.getString(INSTALLATION_ID_KEY, null))
                 .thenReturn(null)
 
-        val id = UUID.fromString(Installation.id(mockSharedPreferences))
+        val id = Installation.id(mockSharedPreferences)
         verify(mockEditor).putString(INSTALLATION_ID_KEY, id.toString())
     }
 
     @Test
     fun id_get() {
-        val id = UUID.randomUUID().toString()
-        `when`(mockSharedPreferences.getString(INSTALLATION_ID_KEY, null)).thenReturn(id)
+        val id = UUID.randomUUID()
+        `when`(mockSharedPreferences.getString(INSTALLATION_ID_KEY, null))
+                .thenReturn(id.toString())
 
         assertEquals(id, Installation.id(mockSharedPreferences))
     }
