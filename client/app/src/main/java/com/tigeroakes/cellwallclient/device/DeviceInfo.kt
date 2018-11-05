@@ -1,9 +1,6 @@
-package com.tigeroakes.cellwallclient.device
+package com.tigeroakes.cellwallclient.util
 
-import android.content.SharedPreferences
-import android.content.res.Resources
 import android.os.Build
-import com.tigeroakes.cellwallclient.model.CellInfo
 
 /**
  * Returns manufacturer name followed by model name.
@@ -20,16 +17,4 @@ fun deviceName(): String {
     } else {
         manufacturer.capitalize() + " " + model.capitalize()
     }
-}
-
-fun getCellInfo(resources: Resources, sharedPrefs: SharedPreferences): CellInfo {
-    val metrics = resources.displayMetrics
-
-    return CellInfo(
-            uuid = Installation.id(sharedPrefs),
-            deviceName = deviceName(),
-            density = metrics.densityDpi,
-            widthPixels = metrics.widthPixels,
-            heightPixels = metrics.heightPixels
-    )
 }
