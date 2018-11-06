@@ -47,7 +47,7 @@ class LoginActivity : AppCompatActivity() {
         })
         viewModel.errorText.observe(this, Observer {
             // Show error, if any.
-            address.error = it.peekContent()
+            address_container.error = it.peekContent()
 
             // When error updates and is not-null, focus on the address input.
             it.getContentIfNotHandled()?.let {

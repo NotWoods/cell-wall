@@ -7,7 +7,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 object ServiceGenerator {
     var apiBaseUrl: String = "http://10.0.2.2/"
 
-    private val httpClient = OkHttpClient.Builder()
+    private val httpClient: OkHttpClient = OkHttpClient.Builder()
             .addInterceptor { chain ->
                 val original = chain.request()
 
@@ -28,7 +28,7 @@ object ServiceGenerator {
             .client(httpClient)
             .build()
 
-    fun <S> createService(serviceClass: Class<S>): S {
-        return retrofit.create(serviceClass)
-    }
+    fun <S> createService(serviceClass: Class<S>): S = retrofit.create(serviceClass)
+
+    fun createValidator() = ServerUrlValidator(httpClient)
 }

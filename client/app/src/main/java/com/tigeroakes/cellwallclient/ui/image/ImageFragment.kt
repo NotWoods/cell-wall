@@ -1,19 +1,16 @@
 package com.tigeroakes.cellwallclient.ui.image
 
 import android.os.Bundle
-import android.preference.PreferenceManager.getDefaultSharedPreferences
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.net.toUri
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.bumptech.glide.Glide
 import com.tigeroakes.cellwallclient.R
-import com.tigeroakes.cellwallclient.SERVER_ADDRESS_KEY
-import com.tigeroakes.cellwallclient.socket.ServerUris.addImageHost
+import com.tigeroakes.cellwallclient.data.CellWallRepository
 import kotlinx.android.synthetic.main.image_fragment.*
 
 class ImageFragment : Fragment(), Observer<String> {
@@ -44,9 +41,7 @@ class ImageFragment : Fragment(), Observer<String> {
     }
 
     override fun onChanged(imageSrc: String?) {
-        val sharedPrefs = getDefaultSharedPreferences(context)
-        val serverAddress = sharedPrefs.getString(SERVER_ADDRESS_KEY, null)!!.toUri()
-
-        Glide.with(this).load(addImageHost(imageSrc, serverAddress)).into(image)
+        val imageUrl = imageSrc?.let { CellWallRepository.addImageHost(it) }
+        Glide.with(this).load(imageUrl).into(image)
     }
 }

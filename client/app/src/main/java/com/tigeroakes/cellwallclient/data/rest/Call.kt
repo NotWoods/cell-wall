@@ -2,8 +2,8 @@ package com.tigeroakes.cellwallclient.data.rest
 
 import retrofit2.Call
 import retrofit2.Callback
-import retrofit2.HttpException
 import retrofit2.Response
+import java.io.IOException
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
@@ -17,15 +17,6 @@ import kotlin.coroutines.suspendCoroutine
  */
 fun <T> Call<T>.toLiveData() = RetrofitLiveData(this)
 
-suspend fun <T> Call<T>.await(): T {
-    val response = this.awaitResponse()
-    if (response.isSuccessful) {
-        return response.body() ?: throw NullPointerException("Response body is null: $response")
-    } else {
-        throw HttpException(response)
-    }
-}
-
 suspend fun <T> Call<T>.awaitResponse(): Response<T> = suspendCoroutine { continuation ->
     this.enqueue(object : Callback<T> {
         override fun onResponse(call: Call<T>, response: Response<T>) {
@@ -34,6 +25,18 @@ suspend fun <T> Call<T>.awaitResponse(): Response<T> = suspendCoroutine { contin
 
         override fun onFailure(call: Call<T>, t: Throwable) {
             continuation.resumeWithException(t)
+        }
+    })
+}
+
+suspend fun okhttp3.Call.awaitResponse(): okhttp3.Response = suspendCoroutine { continuation ->
+    this.enqueue(object : okhttp3.Callback {
+        override fun onResponse(call: okhttp3.Call, response: okhttp3.Response) {
+            continuation.resume(response)
+        }
+
+        override fun onFailure(call: okhttp3.Call, e: IOException) {
+            continuation.resumeWithException(e)
         }
     })
 }

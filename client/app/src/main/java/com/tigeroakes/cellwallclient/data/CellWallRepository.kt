@@ -1,13 +1,11 @@
 package com.tigeroakes.cellwallclient.data
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import com.tigeroakes.cellwallclient.data.rest.*
+import com.tigeroakes.cellwallclient.data.rest.ServiceGenerator
+import com.tigeroakes.cellwallclient.data.rest.Webservice
+import com.tigeroakes.cellwallclient.data.rest.toLiveData
 import com.tigeroakes.cellwallclient.data.socket.StateLiveData
 import com.tigeroakes.cellwallclient.model.*
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import java.net.URI
 
 /**
@@ -20,45 +18,17 @@ import java.net.URI
 object CellWallRepository {
     private var serverAddress: URI = URI("")
     private val webservice = ServiceGenerator.createService(Webservice::class.java)
+    private val validator = ServiceGenerator.createValidator()
 
     /**
      * Validate the given URL.
      * @param address URL to try connecting to.
-     * @param getString Function to turn resource into string.
      */
-    fun attemptToConnect(
-            address: String,
-            getString: (Int) -> String
-    ): LiveData<Resource<URI>> {
-        val result = MutableLiveData<Resource<URI>>()
-        val url: URI
-        try {
-            url = guessUri(address)
-            ServiceGenerator.apiBaseUrl = url.toString()
-        } catch (err: ServerUrlValidationException) {
-            val reason = getString(err.reason.stringRes)
-            result.value = Resource.error(reason, null)
-            return result
-        }
-
-        result.value = Resource.loading(null)
-        webservice.isCellWall().enqueue(object : Callback<Unit> {
-            override fun onResponse(call: Call<Unit>, response: Response<Unit>) {
-                result.postValue(if (response.isSuccessful) {
-                    serverAddress = url
-                    Resource.success(url)
-                } else {
-                    val errReason = Reason.PATH_RETURNED_ERROR
-                    Resource.error(getString(errReason.stringRes), null as URI?)
-                })
-            }
-
-            override fun onFailure(call: Call<Unit>, t: Throwable) {
-                val errReason = Reason.PATH_DOES_NOT_EXIST
-                result.postValue(Resource.error(getString(errReason.stringRes), null as URI?))
-            }
-        })
-        return result
+    suspend fun attemptToConnect(address: String): URI {
+        val url = validator.validate(address)
+        ServiceGenerator.apiBaseUrl = url.toString()
+        serverAddress = url
+        return url
     }
 
     /**

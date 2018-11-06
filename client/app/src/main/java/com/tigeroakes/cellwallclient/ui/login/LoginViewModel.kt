@@ -4,10 +4,15 @@ import android.app.Application
 import android.preference.PreferenceManager.getDefaultSharedPreferences
 import androidx.lifecycle.*
 import com.tigeroakes.cellwallclient.data.CellWallRepository
+import com.tigeroakes.cellwallclient.data.rest.ServerUrlValidator
 import com.tigeroakes.cellwallclient.device.getCellInfo
 import com.tigeroakes.cellwallclient.model.CellInfo
 import com.tigeroakes.cellwallclient.model.Event
 import com.tigeroakes.cellwallclient.model.Resource
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import java.net.URI
 
 interface LoginViewModel {
@@ -21,10 +26,16 @@ interface LoginViewModel {
 }
 
 class LoginViewModelImpl(application: Application) : LoginViewModel, AndroidViewModel(application) {
-    private val addressInput = MutableLiveData<String>()
-    private val loginAttempt = Transformations.switchMap(addressInput) { url ->
-        CellWallRepository.attemptToConnect(url, application::getString)
+    private val viewModelJob = Job()
+    private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
+
+    // Destroy viewModelJob and any running tasks when the ViewModel is killed
+    override fun onCleared() {
+        super.onCleared()
+        viewModelJob.cancel()
     }
+
+    private val loginAttempt = MutableLiveData<Resource<URI>>()
 
     override val isLoading: LiveData<Boolean> = Transformations.map(loginAttempt) {
         it.status == Resource.Status.LOADING
@@ -50,7 +61,20 @@ class LoginViewModelImpl(application: Application) : LoginViewModel, AndroidView
         value = getCellInfo(application.resources, getDefaultSharedPreferences(application))
     }
 
+    /**
+     * Try logging in to the server by pinging it and ensuring it responds.
+     */
     override fun attemptLogin(address: String) {
-        addressInput.value = address
+        loginAttempt.value = Resource.loading(null)
+        uiScope.launch {
+            try {
+                val url = CellWallRepository.attemptToConnect(address)
+                loginAttempt.value = Resource.success(url)
+            } catch (err: ServerUrlValidator.ValidationException) {
+                val message = getApplication<Application>().getString(err.reason.stringRes)
+                loginAttempt.value = Resource.error(message, null)
+                return@launch
+            }
+        }
     }
 }
