@@ -1,7 +1,6 @@
 package com.tigeroakes.cellwallclient.ui.login
 
-import android.app.Application
-import android.preference.PreferenceManager.getDefaultSharedPreferences
+import android.content.res.Resources
 import androidx.lifecycle.*
 import com.tigeroakes.cellwallclient.data.CellWallRepository
 import com.tigeroakes.cellwallclient.data.rest.ServerUrlValidator
@@ -14,18 +13,23 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.net.URI
+import java.util.*
 
 interface LoginViewModel {
     val isLoading: LiveData<Boolean>
     val errorText: LiveData<Event<String?>>
     val savedAddress: LiveData<Event<URI>>
 
+    val uuid: UUID
     val cellInfo: LiveData<CellInfo>
 
     fun attemptLogin(address: String)
 }
 
-class LoginViewModelImpl(application: Application) : LoginViewModel, AndroidViewModel(application) {
+class LoginViewModelImpl(
+        private val repository: CellWallRepository,
+        private val resources: Resources
+) : ViewModel(), LoginViewModel {
     private val viewModelJob = Job()
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
@@ -57,8 +61,10 @@ class LoginViewModelImpl(application: Application) : LoginViewModel, AndroidView
         }
     }
 
+    override val uuid
+        get() = repository.id
     override val cellInfo = MutableLiveData<CellInfo>().apply {
-        value = getCellInfo(application.resources, getDefaultSharedPreferences(application))
+        value = getCellInfo(resources)
     }
 
     /**
@@ -68,10 +74,10 @@ class LoginViewModelImpl(application: Application) : LoginViewModel, AndroidView
         loginAttempt.value = Resource.loading(null)
         uiScope.launch {
             try {
-                val url = CellWallRepository.attemptToConnect(address)
+                val url = repository.attemptToConnect(address)
                 loginAttempt.value = Resource.success(url)
             } catch (err: ServerUrlValidator.ValidationException) {
-                val message = getApplication<Application>().getString(err.reason.stringRes)
+                val message = resources.getString(err.reason.stringRes)
                 loginAttempt.value = Resource.error(message, null)
                 return@launch
             }

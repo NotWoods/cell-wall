@@ -57,3 +57,19 @@ putCell.checks = [
   check("widthPixels").isNumeric(),
   check("heightPixels").isNumeric()
 ];
+
+export const connectCell = (socket: Socket) => {
+  console.log("cell connected");
+  const { uuid } = socket.handshake.query;
+
+  wall.connectedCells.add(uuid);
+  const cell = wall.knownCells.get(uuid);
+  if (cell != null) {
+    socket.emit("cell-update", cell.state);
+  }
+
+  socket.on("disconnect", () => {
+    console.log("cell disconnected");
+    wall.connectedCells.delete(uuid);
+  });
+};

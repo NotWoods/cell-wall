@@ -1,6 +1,5 @@
 package com.tigeroakes.cellwallclient.device
 
-import android.content.SharedPreferences
 import android.content.res.Resources
 import android.os.Build
 import com.tigeroakes.cellwallclient.model.CellInfo
@@ -22,10 +21,9 @@ fun deviceName(): String {
     }
 }
 
-fun getCellInfo(resources: Resources, sharedPrefs: SharedPreferences): CellInfo {
+fun getCellInfo(resources: Resources): CellInfo {
     val metrics = resources.displayMetrics
     return CellInfo(
-            uuid = Installation.id(sharedPrefs),
             deviceName = deviceName(),
             density = metrics.densityDpi,
             widthPixels = metrics.widthPixels,

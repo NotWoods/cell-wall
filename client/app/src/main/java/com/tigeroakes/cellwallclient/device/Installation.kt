@@ -1,6 +1,5 @@
 package com.tigeroakes.cellwallclient.device
 
-import android.content.SharedPreferences
 import androidx.annotation.VisibleForTesting
 import com.tigeroakes.cellwallclient.data.PreferenceManager
 import java.util.*
@@ -14,10 +13,9 @@ object Installation {
 
     /**
      * Returns an identifier that is unique to this installation of the app.
-     * @param sharedPrefs Preferences where the ID will be stored
+     * @param prefs Preferences where the ID will be stored
      */
-    fun id(sharedPrefs: SharedPreferences): UUID {
-        val prefs = PreferenceManager(sharedPrefs)
+    fun id(prefs: PreferenceManager): UUID {
         return sID ?: prefs.installationId?.toUUID().also { sID = it } ?: newId(prefs)
     }
 

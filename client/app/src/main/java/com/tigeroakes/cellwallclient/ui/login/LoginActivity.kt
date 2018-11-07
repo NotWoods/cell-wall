@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.tigeroakes.cellwallclient.R
+import com.tigeroakes.cellwallclient.data.CellWallRepositoryImpl
 import com.tigeroakes.cellwallclient.data.PreferenceManager
 import kotlinx.android.synthetic.main.login_activity.*
 
@@ -24,7 +25,11 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.login_activity)
 
-        viewModel = ViewModelProviders.of(this).get(LoginViewModelImpl::class.java)
+        val factory = LoginViewModelFactory(
+                CellWallRepositoryImpl.getInstance(getDefaultSharedPreferences(this)),
+                resources
+        )
+        viewModel = ViewModelProviders.of(this, factory).get(LoginViewModelImpl::class.java)
 
         // Login when the enter is pressed
         address.setOnEditorActionListener(TextView.OnEditorActionListener { _, id, _ ->
@@ -62,9 +67,9 @@ class LoginActivity : AppCompatActivity() {
             }
         })
 
+        debug_uuid.text = getString(R.string.debug_uuid, viewModel.uuid)
         viewModel.cellInfo.observe(this, Observer { info ->
             // Update the debug text
-            debug_uuid.text = getString(R.string.debug_uuid, info.uuid)
             debug_device_name.text = getString(R.string.debug_device_name, info.deviceName)
             debug_density.text = getString(R.string.debug_density, info.density)
             debug_display.text = getString(R.string.debug_display, info.widthPixels, info.heightPixels)
@@ -82,10 +87,12 @@ class LoginActivity : AppCompatActivity() {
      * Shows the progress UI and hides the login form.
      */
     private fun showProgress(show: Boolean) {
+        val animDelay = 200L
         val shortAnimTime = resources.getInteger(android.R.integer.config_shortAnimTime).toLong()
 
         login_form.visibility = if (show) View.GONE else View.VISIBLE
         login_form.animate()
+                .setStartDelay(animDelay)
                 .setDuration(shortAnimTime)
                 .alpha(if (show) 0f else 1f)
                 .setListener {
@@ -94,6 +101,7 @@ class LoginActivity : AppCompatActivity() {
 
         login_progress.visibility = if (show) View.VISIBLE else View.GONE
         login_progress.animate()
+                .setStartDelay(animDelay)
                 .setDuration(shortAnimTime)
                 .alpha(if (show) 1f else 0f)
                 .setListener {

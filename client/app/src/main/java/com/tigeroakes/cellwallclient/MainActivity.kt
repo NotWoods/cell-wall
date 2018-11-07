@@ -10,12 +10,11 @@ import android.view.View
 import android.view.WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.net.toUri
 import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.transaction
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import com.tigeroakes.cellwallclient.data.PreferenceManager
+import com.tigeroakes.cellwallclient.data.CellWallRepositoryImpl
 import com.tigeroakes.cellwallclient.device.getSystemDimension
 import com.tigeroakes.cellwallclient.model.CellState
 import com.tigeroakes.cellwallclient.ui.blank.BlankFragment
@@ -23,6 +22,7 @@ import com.tigeroakes.cellwallclient.ui.button.ButtonFragment
 import com.tigeroakes.cellwallclient.ui.image.ImageFragment
 import com.tigeroakes.cellwallclient.ui.login.LoginActivity
 import com.tigeroakes.cellwallclient.ui.main.MainViewModel
+import com.tigeroakes.cellwallclient.ui.main.MainViewModelFactory
 import com.tigeroakes.cellwallclient.ui.main.MainViewModelImpl
 import com.tigeroakes.cellwallclient.ui.text.LargeTextFragment
 import kotlinx.android.synthetic.main.main_activity.*
@@ -38,13 +38,15 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_activity)
 
-        val prefs = PreferenceManager(getDefaultSharedPreferences(this))
-        val serverAddress = prefs.serverAddress?.toUri()
+        val factory = MainViewModelFactory(
+                CellWallRepositoryImpl.getInstance(getDefaultSharedPreferences(this))
+        )
+        viewModel = ViewModelProviders.of(this, factory).get(MainViewModelImpl::class.java)
 
         // If there is no server address, show the login page
-        serverAddress ?: return openLogin()
-
-        viewModel = ViewModelProviders.of(this).get(MainViewModelImpl::class.java)
+        if (!viewModel.isUrlSaved) {
+            return openLogin()
+        }
 
         reconnect_button.apply {
             setOnClickListener {}

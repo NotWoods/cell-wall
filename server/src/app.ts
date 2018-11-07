@@ -24,6 +24,10 @@ app.use(json());
 app.use(express.static(join(__dirname, "../public"), { maxAge: 36000 }));
 homeController.serveModules(app, ["interactjs/dist", "socket.io-client/dist"]);
 
+// SocketIO configuration
+const cell = io.of("/cell");
+const edit = io.of("/edit");
+
 /**
  * Primary app routes.
  */
@@ -34,5 +38,7 @@ app.get("/wall/actions", wallController.getActions);
 app.get("/wall/action", wallController.postAction);
 app.get("/cell/:uuid", cellController.getState.checks, cellController.getState);
 app.put("cell/:uuid", cellController.putCell.checks, cellController.putCell);
+
+cell.on("connection", cellController.connectCell);
 
 export default server;
