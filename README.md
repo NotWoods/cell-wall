@@ -8,6 +8,8 @@ more.
 
 CellWall is my project to repurpose a batch of old hand-me-down cell phones into a useful display in my dorm room. It uses WebSockets to let each phone connect to a server and receive data about what to display.
 
+![](finished.jpg)
+
 ## Getting Started
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
