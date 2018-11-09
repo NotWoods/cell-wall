@@ -1,6 +1,7 @@
 package com.tigeroakes.cellwallclient.data
 
 import android.content.SharedPreferences
+import com.tigeroakes.cellwallclient.data.prefs.INSTALLATION_ID_KEY
 import com.tigeroakes.cellwallclient.device.Installation
 import org.junit.Assert.assertEquals
 import org.junit.Before

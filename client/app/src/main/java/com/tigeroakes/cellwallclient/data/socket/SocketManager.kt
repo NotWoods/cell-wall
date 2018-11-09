@@ -1,12 +1,37 @@
 package com.tigeroakes.cellwallclient.data.socket
 
 import com.tigeroakes.cellwallclient.model.CellState
+import io.socket.client.Socket.*
+import org.json.JSONObject
 import java.net.URI
 
 class SocketManager(val address: URI) {
     private val socket: Socket = SocketIo(address)
 
-    private val wrappers = ListenerWrappers<CellState>()
+    private val wrappers = ListenerWrappers {
+        CellState.from(it as JSONObject)
+    }
+
+    init {
+        socket.on(EVENT_CONNECT) {
+            System.out.println(it)
+        }
+        socket.on(EVENT_MESSAGE) {
+            System.out.println(it)
+        }
+        socket.on(EVENT_CONNECT_ERROR) { err ->
+            System.out.println(err)
+        }
+        socket.on(EVENT_RECONNECT) {
+            System.out.println(it)
+        }
+        socket.on(EVENT_CONNECT_TIMEOUT) {
+            System.out.println(it)
+        }
+    }
+
+    val connected
+        get() = socket.connected
 
     /**
      * Listen for changes to CellState
@@ -48,31 +73,4 @@ class SocketManager(val address: URI) {
     companion object {
         private const val STATE_UPDATE_EVENT = "cell-update"
     }
-}
-
-/**
- * Used to make functions that cast from Any to T,
- * and keep track of them.
- */
-private class ListenerWrappers<T> : Iterable<(T) -> Unit> {
-    private val wrappers = mutableMapOf<(T) -> Unit, (Any) -> Unit>()
-
-    fun isEmpty() = wrappers.isEmpty()
-
-    @Suppress("UNCHECKED_CAST")
-    fun makeWrapper(listener: (T) -> Unit): (Any) -> Unit {
-        val wrapper: (Any) -> Unit = {
-            listener(it as T)
-        }
-        wrappers[listener] = wrapper
-        return wrapper
-    }
-
-    fun deleteWrapper(listener: (T) -> Unit): ((Any) -> Unit)? {
-        return wrappers[listener]?.also {
-            wrappers.remove(listener)
-        }
-    }
-
-    override fun iterator() = wrappers.keys.iterator()
 }

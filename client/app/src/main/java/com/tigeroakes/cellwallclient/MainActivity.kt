@@ -17,12 +17,12 @@ import androidx.lifecycle.ViewModelProviders
 import com.tigeroakes.cellwallclient.data.CellWallRepositoryImpl
 import com.tigeroakes.cellwallclient.device.getSystemDimension
 import com.tigeroakes.cellwallclient.model.CellState
+import com.tigeroakes.cellwallclient.ui.RepositoryViewModelFactory
 import com.tigeroakes.cellwallclient.ui.blank.BlankFragment
 import com.tigeroakes.cellwallclient.ui.button.ButtonFragment
 import com.tigeroakes.cellwallclient.ui.image.ImageFragment
 import com.tigeroakes.cellwallclient.ui.login.LoginActivity
 import com.tigeroakes.cellwallclient.ui.main.MainViewModel
-import com.tigeroakes.cellwallclient.ui.main.MainViewModelFactory
 import com.tigeroakes.cellwallclient.ui.main.MainViewModelImpl
 import com.tigeroakes.cellwallclient.ui.text.LargeTextFragment
 import kotlinx.android.synthetic.main.main_activity.*
@@ -38,27 +38,13 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_activity)
 
-        val factory = MainViewModelFactory(
-                CellWallRepositoryImpl.getInstance(getDefaultSharedPreferences(this))
+        val factory = RepositoryViewModelFactory(
+                CellWallRepositoryImpl.getInstance(getDefaultSharedPreferences(applicationContext))
         )
         viewModel = ViewModelProviders.of(this, factory).get(MainViewModelImpl::class.java)
 
-        // If there is no server address, show the login page
-        if (!viewModel.isUrlSaved) {
-            return openLogin()
-        }
+        setupFloatingActionButton()
 
-        reconnect_button.apply {
-            setOnClickListener {}
-            setOnLongClickListener {
-                openLogin()
-                true
-            }
-        }
-
-        viewModel.socketStatus.observe(this, Observer {
-            reconnect_button.setStatus(it)
-        })
         viewModel.cellState.observe(this, Observer {
             it.getContentIfNotHandled()?.let { state ->
                 supportFragmentManager.transaction {
@@ -68,12 +54,30 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
+        // If there is no server address, show the login page
+        if (!viewModel.isUrlSaved) {
+            return openLogin()
+        }
+
         goFullscreen()
     }
 
     private fun openLogin() {
         val loginIntent = Intent(this, LoginActivity::class.java)
         startActivity(loginIntent)
+    }
+
+    private fun setupFloatingActionButton() {
+        reconnect_button.apply {
+            setOnClickListener {}
+            setOnLongClickListener {
+                openLogin()
+                true
+            }
+        }
+        viewModel.socketStatus.observe(this, Observer {
+            reconnect_button.setStatus(it)
+        })
     }
 
     /**

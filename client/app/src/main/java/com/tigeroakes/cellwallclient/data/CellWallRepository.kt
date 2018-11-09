@@ -2,16 +2,24 @@ package com.tigeroakes.cellwallclient.data
 
 import android.content.SharedPreferences
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
+import com.tigeroakes.cellwallclient.data.prefs.PreferenceManager
+import com.tigeroakes.cellwallclient.data.prefs.SERVER_ADDRESS_KEY
+import com.tigeroakes.cellwallclient.data.prefs.getStringLiveData
 import com.tigeroakes.cellwallclient.data.rest.*
 import com.tigeroakes.cellwallclient.data.socket.StateLiveData
 import com.tigeroakes.cellwallclient.device.Installation
 import com.tigeroakes.cellwallclient.model.*
+import retrofit2.HttpException
 import java.net.URI
 import java.util.*
 
 interface CellWallRepository {
     val id: UUID
     val isUrlSaved: Boolean
+
+    val serverAddress: LiveData<String?>
 
     /**
      * Validate the given URL.
@@ -63,13 +71,15 @@ class CellWallRepositoryImpl private constructor(
 ) : CellWallRepository {
     private val prefs = PreferenceManager(sharedPrefs)
     private val webservice = ServiceGenerator.createService(Webservice::class.java)
-    private var serverAddress: URI? = prefs.serverAddress?.let { URI(it) }
+
+    override val serverAddress: LiveData<String?> =
+            sharedPrefs.getStringLiveData(SERVER_ADDRESS_KEY)
 
     override val id: UUID
         get() = Installation.id(prefs)
 
     override val isUrlSaved: Boolean
-        get() = serverAddress != null
+        get() = serverAddress.value != null
 
     override suspend fun attemptToConnect(address: String): URI {
         val lastUrl = ServiceGenerator.apiBaseUrl
@@ -84,7 +94,6 @@ class CellWallRepositoryImpl private constructor(
         }
 
         if (res.isSuccessful) {
-            serverAddress = url
             prefs.serverAddress = url.toString()
             return url
         } else {
@@ -95,10 +104,25 @@ class CellWallRepositoryImpl private constructor(
 
     override suspend fun register(info: CellInfo) {
         val res = webservice.putCell(id, info).awaitResponse()
+        if (!res.isSuccessful) {
+            throw HttpException(res)
+        }
     }
 
-    override fun getState(): LiveData<CellState> = StateLiveData().also { state ->
-        serverAddress?.let { state.setAddress(it) }
+    override fun getState(): LiveData<CellState> {
+        return Transformations.switchMap(serverAddress) {
+            // If null address, just return a null LiveData.
+            val host = URI(it ?: return@switchMap MutableLiveData<CellState>())
+            var query = "uuid=$id"
+            if (!host.query.isNullOrEmpty()) {
+                query = "${host.query}&$query"
+            }
+
+            val address = host
+                    .resolve(SOCKET_PATH)
+                    .resolve("?$query")
+            StateLiveData(address)
+        }
     }
 
     override fun listActions(): LiveData<Resource<List<Action>>> =
@@ -106,6 +130,9 @@ class CellWallRepositoryImpl private constructor(
 
     override suspend fun triggerAction(action: Action) {
         val res = webservice.postAction(ActionRequest(action.id)).awaitResponse()
+        if (!res.isSuccessful) {
+            throw HttpException(res)
+        }
     }
 
     override fun sendButtonTouch() {
@@ -116,13 +143,15 @@ class CellWallRepositoryImpl private constructor(
         val path = imageSrc.removePrefix("/")
         val startsWithSlash = path != imageSrc
         return if (startsWithSlash) {
-            serverAddress!!.resolve(path)
+            URI(serverAddress.value!!).resolve(path)
         } else {
             URI(imageSrc)
         }
     }
 
     companion object {
+        private const val SOCKET_PATH = "./cell"
+
         @Volatile private var instance: CellWallRepository? = null
 
         fun getInstance(sharedPrefs: SharedPreferences) =

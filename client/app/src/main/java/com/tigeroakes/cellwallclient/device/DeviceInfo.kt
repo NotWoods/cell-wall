@@ -1,7 +1,7 @@
 package com.tigeroakes.cellwallclient.device
 
-import android.content.res.Resources
 import android.os.Build
+import android.util.DisplayMetrics
 import com.tigeroakes.cellwallclient.model.CellInfo
 
 /**
@@ -21,8 +21,7 @@ fun deviceName(): String {
     }
 }
 
-fun getCellInfo(resources: Resources): CellInfo {
-    val metrics = resources.displayMetrics
+fun getCellInfo(metrics: DisplayMetrics): CellInfo {
     return CellInfo(
             deviceName = deviceName(),
             density = metrics.densityDpi,

@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import com.tigeroakes.cellwallclient.data.CellWallRepository
 import com.tigeroakes.cellwallclient.model.CellState
 import com.tigeroakes.cellwallclient.model.Event
-import com.tigeroakes.cellwallclient.ui.ReconnectButton.Companion.Status
+import com.tigeroakes.cellwallclient.ui.main.ReconnectButton.Companion.Status
 
 interface MainViewModel {
     val isUrlSaved: Boolean

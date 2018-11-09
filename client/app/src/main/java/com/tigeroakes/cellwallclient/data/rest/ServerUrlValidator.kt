@@ -20,8 +20,10 @@ object ServerUrlValidator {
             throw ValidationException(Reason.BLANK)
         }
 
-        return if (URLUtil.isNetworkUrl(serverUrl)) {
-            URI(serverUrl)
+        var url = serverUrl
+        return if (URLUtil.isNetworkUrl(url)) {
+            if (!url.endsWith("/")) url += "/"
+            URI(url)
         } else {
             throw ValidationException(Reason.BAD_FORMAT)
         }

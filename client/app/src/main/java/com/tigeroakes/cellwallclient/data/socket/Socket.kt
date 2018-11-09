@@ -1,5 +1,7 @@
 package com.tigeroakes.cellwallclient.data.socket
 
+typealias Listener = (Array<Any>) -> Unit
+
 interface Socket {
     val connected: Boolean
 
@@ -7,9 +9,9 @@ interface Socket {
 
     fun disconnect()
 
-    fun emit(event: String, arg: Any)
+    fun emit(event: String, arg: Array<Any>)
 
-    fun on(event: String, listener: (Any) -> Unit)
+    fun on(event: String, listener: Listener)
 
-    fun off(event: String, listener: (Any) -> Unit)
+    fun off(event: String, listener: Listener)
 }

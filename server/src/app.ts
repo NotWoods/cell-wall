@@ -37,7 +37,7 @@ app.get("/wall", wallController.getWall);
 app.get("/wall/actions", wallController.getActions);
 app.get("/wall/action", wallController.postAction);
 app.get("/cell/:uuid", cellController.getState.checks, cellController.getState);
-app.put("cell/:uuid", cellController.putCell.checks, cellController.putCell);
+app.put("/cell/:uuid", cellController.putCell.checks, cellController.putCell);
 
 cell.on("connection", cellController.connectCell);
 

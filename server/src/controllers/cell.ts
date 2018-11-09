@@ -47,6 +47,12 @@ export const putCell = (req: Request, res: Response) => {
   };
   wall.knownCells.set(uuid, cell);
 
+  console.info(
+    `${existingCell != null ? "Updated" : "Added"} cell,`,
+    uuid,
+    cell
+  );
+
   // Respond with 201 if new cell was created
   res.status(existingCell != null ? 200 : 201).json(cell);
 };
@@ -59,8 +65,8 @@ putCell.checks = [
 ];
 
 export const connectCell = (socket: Socket) => {
-  console.log("cell connected");
   const { uuid } = socket.handshake.query;
+  console.log("cell connected", uuid);
 
   wall.connectedCells.add(uuid);
   const cell = wall.knownCells.get(uuid);

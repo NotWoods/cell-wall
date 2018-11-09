@@ -17,15 +17,15 @@ class SocketIo(address: URI) : Socket {
         socketInternal.disconnect()
     }
 
-    override fun emit(event: String, arg: Any) {
+    override fun emit(event: String, arg: Array<Any>) {
         socketInternal.emit(event, arg)
     }
 
-    override fun on(event: String, listener: (Any) -> Unit) {
+    override fun on(event: String, listener: Listener) {
         socketInternal.on(event, listener)
     }
 
-    override fun off(event: String, listener: (Any) -> Unit) {
+    override fun off(event: String, listener: Listener) {
         socketInternal.off(event, listener)
     }
 }

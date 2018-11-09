@@ -1,6 +1,9 @@
 package com.tigeroakes.cellwallclient.data
 
 import com.tigeroakes.cellwallclient.MockSharedPreference
+import com.tigeroakes.cellwallclient.data.prefs.INSTALLATION_ID_KEY
+import com.tigeroakes.cellwallclient.data.prefs.PreferenceManager
+import com.tigeroakes.cellwallclient.data.prefs.SERVER_ADDRESS_KEY
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Before

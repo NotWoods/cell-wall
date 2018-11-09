@@ -12,7 +12,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.tigeroakes.cellwallclient.R
 import com.tigeroakes.cellwallclient.data.CellWallRepositoryImpl
-import com.tigeroakes.cellwallclient.data.PreferenceManager
+import com.tigeroakes.cellwallclient.device.getCellInfo
+import com.tigeroakes.cellwallclient.ui.RepositoryViewModelFactory
 import kotlinx.android.synthetic.main.login_activity.*
 
 /**
@@ -25,62 +26,23 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.login_activity)
 
-        val factory = LoginViewModelFactory(
-                CellWallRepositoryImpl.getInstance(getDefaultSharedPreferences(this)),
-                resources
+        val factory = RepositoryViewModelFactory(
+                CellWallRepositoryImpl.getInstance(getDefaultSharedPreferences(applicationContext))
         )
         viewModel = ViewModelProviders.of(this, factory).get(LoginViewModelImpl::class.java)
 
-        // Login when the enter is pressed
-        address.setOnEditorActionListener(TextView.OnEditorActionListener { _, id, _ ->
-            if (id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL) {
-                attemptLogin()
-                return@OnEditorActionListener true
-            }
-            false
-        })
+        setupAddressInput()
 
-        // Login when the connect button is pressed
-        connect_button.setOnClickListener { attemptLogin() }
+        setupLoadingBar()
 
-        val prefs = PreferenceManager(getDefaultSharedPreferences(this))
-        address.setText(prefs.serverAddress) // Auto-fill with pre-existing serverAddress
-
-        viewModel.isLoading.observe(this, Observer {
-            // Show the loading bar when communicating with the server.
-            showProgress(it)
-        })
-        viewModel.errorText.observe(this, Observer {
-            // Show error, if any.
-            address_container.error = it.peekContent()
-
-            // When error updates and is not-null, focus on the address input.
-            it.getContentIfNotHandled()?.let {
-                address.requestFocus()
-            }
-        })
-        viewModel.savedAddress.observe(this, Observer { urlEvent ->
-            urlEvent.getContentIfNotHandled()?.let { url ->
-                // When saved URL updates, update preferences and exit this activity.
-                prefs.serverAddress = url.toString()
-                finish()
-            }
-        })
-
-        debug_uuid.text = getString(R.string.debug_uuid, viewModel.uuid)
-        viewModel.cellInfo.observe(this, Observer { info ->
-            // Update the debug text
-            debug_device_name.text = getString(R.string.debug_device_name, info.deviceName)
-            debug_density.text = getString(R.string.debug_density, info.density)
-            debug_display.text = getString(R.string.debug_display, info.widthPixels, info.heightPixels)
-        })
+        setupDebugText()
     }
 
     /**
      * Attempts to connect to the server specified by the login form.
      */
     private fun attemptLogin() {
-        viewModel.attemptLogin(address.text.toString())
+        viewModel.attemptLogin(address.text.toString(), getCellInfo(resources.displayMetrics))
     }
 
     /**
@@ -107,6 +69,54 @@ class LoginActivity : AppCompatActivity() {
                 .setListener {
                     login_progress.visibility = if (show) View.VISIBLE else View.GONE
                 }
+    }
+
+    private fun setupLoadingBar() {
+        viewModel.isLoading.observe(this, Observer {
+            // Show the loading bar when communicating with the server.
+            showProgress(it)
+        })
+    }
+
+    private fun setupAddressInput() {
+        // Login when the enter is pressed
+        address.setOnEditorActionListener(TextView.OnEditorActionListener { _, id, _ ->
+            if (id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL) {
+                attemptLogin()
+                return@OnEditorActionListener true
+            }
+            false
+        })
+
+        // Login when the connect button is pressed
+        connect_button.setOnClickListener { attemptLogin() }
+
+        address.setText(viewModel.savedAddress.value!!.peekContent())
+
+        viewModel.savedAddress.observe(this, Observer { urlEvent ->
+            urlEvent.getContentIfNotHandled()?.let {
+                // When saved URL updates, exit this activity.
+                finish()
+            }
+        })
+        viewModel.errorResource.observe(this, Observer {
+            // Show error, if any.
+            address_container.error = it.peekContent()?.let(this::getString)
+
+            // When error updates and is not-null, focus on the address input.
+            it.getContentIfNotHandled()?.let {
+                address.requestFocus()
+            }
+        })
+    }
+
+    /** Update the debug text */
+    private fun setupDebugText() {
+        val info = getCellInfo(resources.displayMetrics)
+        debug_uuid.text = getString(R.string.debug_uuid, viewModel.uuid)
+        debug_device_name.text = getString(R.string.debug_device_name, info.deviceName)
+        debug_density.text = getString(R.string.debug_density, info.density)
+        debug_display.text = getString(R.string.debug_display, info.widthPixels, info.heightPixels)
     }
 
     /**

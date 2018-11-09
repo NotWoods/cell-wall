@@ -23,9 +23,11 @@ sealed class CellState {
          * Return the CellState object corresponding to the given mode.
          * CellState fields are populated using the provided JSON data.
          */
-        fun from(mode: String, json: JSONObject): CellState =
-            json.run {
-                return when (mode) {
+        fun from(json: JSONObject): CellState {
+            val mode = json.getString("type")
+            val data = json.getJSONObject("data")
+            return data.run {
+                when (mode) {
                     "CONFIGURE" -> Configure(
                             getString("backgroundColor"),
                             getString("icon")
@@ -36,5 +38,6 @@ sealed class CellState {
                     else -> Blank
                 }
             }
+        }
     }
 }

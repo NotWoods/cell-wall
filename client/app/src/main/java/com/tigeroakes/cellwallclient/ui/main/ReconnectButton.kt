@@ -1,4 +1,4 @@
-package com.tigeroakes.cellwallclient.ui
+package com.tigeroakes.cellwallclient.ui.main
 
 import android.content.Context
 import android.content.res.ColorStateList
@@ -26,7 +26,7 @@ class ReconnectButton : FrameLayout {
 
             companion object {
                 private val map = Status.values().associateBy(Status::value)
-                fun fromInt(type: Int) = map[type] ?: Status.DISCONNECTED
+                fun fromInt(type: Int) = map[type] ?: DISCONNECTED
             }
         }
     }

@@ -6,7 +6,16 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.net.URI
 
 object ServiceGenerator {
-    var apiBaseUrl: URI = URI("http://10.0.2.2/")
+    var apiBaseUrl: URI = URI("http://10.0.2.2:3000/")
+    private val port: Int
+        get() {
+            if (apiBaseUrl.port > -1) return apiBaseUrl.port
+            return when (apiBaseUrl.scheme) {
+                "http" -> 80
+                "https" -> 443
+                else -> throw Exception("Invalid scheme ${apiBaseUrl.scheme}")
+            }
+        }
 
     private val httpClient: OkHttpClient = OkHttpClient.Builder()
             .addInterceptor { chain ->
@@ -15,7 +24,7 @@ object ServiceGenerator {
                 val url = original.url().newBuilder()
                         .scheme(apiBaseUrl.scheme)
                         .host(apiBaseUrl.host)
-                        .port(apiBaseUrl.port)
+                        .port(port)
                         .build()
                 val request = original.newBuilder()
                         .url(url)

@@ -1,4 +1,4 @@
-package com.tigeroakes.cellwallclient.data
+package com.tigeroakes.cellwallclient.data.prefs
 
 import android.content.SharedPreferences
 import androidx.core.content.edit

@@ -1,7 +1,7 @@
 package com.tigeroakes.cellwallclient.device
 
 import androidx.annotation.VisibleForTesting
-import com.tigeroakes.cellwallclient.data.PreferenceManager
+import com.tigeroakes.cellwallclient.data.prefs.PreferenceManager
 import java.util.*
 import java.util.UUID.randomUUID
 
