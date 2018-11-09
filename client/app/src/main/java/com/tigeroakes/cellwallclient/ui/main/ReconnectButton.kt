@@ -14,9 +14,6 @@ import androidx.core.content.res.ResourcesCompat
 import com.tigeroakes.cellwallclient.R
 import kotlinx.android.synthetic.main.reconnect_button.view.*
 
-/**
- * TODO: document your custom view class.
- */
 class ReconnectButton : FrameLayout {
     companion object {
         enum class Status(val value: Int) {
@@ -97,9 +94,8 @@ class ReconnectButton : FrameLayout {
             }
         }
 
-        val drawable = ContextCompat.getDrawable(context, resource)
         action_reconnect.run {
-            setImageDrawable(drawable)
+            setImageResource(resource)
             supportBackgroundTintList = ColorStateList.valueOf(tint)
         }
         fab_reconnecting.visibility = if (showProgress) View.VISIBLE else View.INVISIBLE

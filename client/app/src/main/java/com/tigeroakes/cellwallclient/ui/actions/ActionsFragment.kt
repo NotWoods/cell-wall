@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tigeroakes.cellwallclient.R
-import com.tigeroakes.cellwallclient.ui.actions.dummy.DummyContent
+import com.tigeroakes.cellwallclient.ui.text.LargeTextViewModel
 
 /**
  * A fragment representing a list of Items.
@@ -18,17 +18,18 @@ class ActionsFragment : Fragment() {
         fun newInstance() = ActionsFragment()
     }
 
+    private lateinit var viewModel: LargeTextViewModel
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.actions_fragment, container, false)
+        val view = inflater.inflate(R.layout.actions_fragment, container, false) as RecyclerView
 
         // Set the adapter
-        if (view is RecyclerView) {
-            with(view) {
-                layoutManager = LinearLayoutManager(context)
-                adapter = ActionRecyclerViewAdapter(DummyContent.ITEMS)
-            }
+        with(view) {
+            layoutManager = LinearLayoutManager(context)
+            adapter = ActionRecyclerViewAdapter()
         }
+
         return view
     }
 }
