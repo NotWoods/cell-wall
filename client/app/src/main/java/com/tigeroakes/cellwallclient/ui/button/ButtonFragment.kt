@@ -2,13 +2,17 @@ package com.tigeroakes.cellwallclient.ui.button
 
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
+import android.preference.PreferenceManager
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
+import androidx.lifecycle.Observer
 
 import com.tigeroakes.cellwallclient.R
+import com.tigeroakes.cellwallclient.data.CellWallRepositoryImpl
+import com.tigeroakes.cellwallclient.ui.RepositoryViewModelFactory
 import kotlinx.android.synthetic.main.button_fragment.*
 
 class ButtonFragment : Fragment() {
@@ -30,13 +34,28 @@ class ButtonFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(ButtonViewModel::class.java)
+
+        val factory = RepositoryViewModelFactory(
+                CellWallRepositoryImpl.getInstance(
+                        PreferenceManager.getDefaultSharedPreferences(requireContext().applicationContext)
+                )
+        )
+        viewModel = ViewModelProviders.of(this, factory).get(ButtonViewModelImpl::class.java)
+
+        setupButton()
 
         arguments?.run {
             getString(ARG_BACKGROUND_COLOR)?.let { viewModel.setBackgroundColor(it) }
         }
-
-        // TODO: Use viewModel
     }
 
+    private fun setupButton() {
+        viewModel.backgroundColor.observe(viewLifecycleOwner, Observer { color ->
+            button.setBackgroundColor(color)
+        })
+
+        button.setOnClickListener {
+            viewModel.handleTouch()
+        }
+    }
 }

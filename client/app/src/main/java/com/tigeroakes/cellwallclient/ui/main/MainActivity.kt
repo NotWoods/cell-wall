@@ -1,4 +1,4 @@
-package com.tigeroakes.cellwallclient
+package com.tigeroakes.cellwallclient.ui.main
 
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -14,6 +14,7 @@ import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.transaction
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import com.tigeroakes.cellwallclient.R
 import com.tigeroakes.cellwallclient.data.CellWallRepositoryImpl
 import com.tigeroakes.cellwallclient.device.getSystemDimension
 import com.tigeroakes.cellwallclient.model.CellState
@@ -22,8 +23,6 @@ import com.tigeroakes.cellwallclient.ui.blank.BlankFragment
 import com.tigeroakes.cellwallclient.ui.button.ButtonFragment
 import com.tigeroakes.cellwallclient.ui.image.ImageFragment
 import com.tigeroakes.cellwallclient.ui.login.LoginActivity
-import com.tigeroakes.cellwallclient.ui.main.MainViewModel
-import com.tigeroakes.cellwallclient.ui.main.MainViewModelImpl
 import com.tigeroakes.cellwallclient.ui.text.LargeTextFragment
 import kotlinx.android.synthetic.main.main_activity.*
 
@@ -47,8 +46,13 @@ class MainActivity : AppCompatActivity() {
 
         viewModel.cellState.observe(this, Observer {
             it.getContentIfNotHandled()?.let { state ->
+                val fragment = state.toFragment().apply {
+                    enterTransition = randomSlideDir().apply { duration = 1000 }
+                    allowEnterTransitionOverlap = true
+                    allowReturnTransitionOverlap = true
+                }
                 supportFragmentManager.transaction {
-                    replace(R.id.container, state.toFragment())
+                    replace(R.id.container, fragment)
                     setCustomAnimations(R.animator.fade_in, R.animator.fade_out)
                 }
             }

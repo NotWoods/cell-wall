@@ -12,9 +12,10 @@ import androidx.lifecycle.ViewModelProviders
 import com.bumptech.glide.Glide
 import com.tigeroakes.cellwallclient.R
 import com.tigeroakes.cellwallclient.data.CellWallRepositoryImpl
+import com.tigeroakes.cellwallclient.ui.RepositoryViewModelFactory
 import kotlinx.android.synthetic.main.image_fragment.*
 
-class ImageFragment : Fragment(), Observer<String> {
+class ImageFragment : Fragment() {
 
     companion object {
         private const val ARG_IMAGE_SRC = "image_src"
@@ -33,17 +34,26 @@ class ImageFragment : Fragment(), Observer<String> {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(ImageViewModelImpl::class.java)
-        viewModel.imageSrc.observe(this, this)
+
+        val factory = RepositoryViewModelFactory(
+                CellWallRepositoryImpl.getInstance(
+                        getDefaultSharedPreferences(requireContext().applicationContext)
+                )
+        )
+        viewModel = ViewModelProviders.of(this, factory).get(ImageViewModelImpl::class.java)
+
+        setupImage()
 
         arguments?.getString(ARG_IMAGE_SRC)?.let {
             viewModel.setImageSrc(it)
         }
     }
 
-    override fun onChanged(imageSrc: String?) {
-        val repository = CellWallRepositoryImpl.getInstance(getDefaultSharedPreferences(context))
-        val imageUrl = imageSrc?.let { repository.addImageHost(it) }
-        Glide.with(this).load(imageUrl).into(image)
+    private fun setupImage() {
+        viewModel.imageSrc.observe(viewLifecycleOwner, Observer { imageUrl ->
+            Glide.with(this)
+                    .load(imageUrl)
+                    .into(image)
+        })
     }
 }

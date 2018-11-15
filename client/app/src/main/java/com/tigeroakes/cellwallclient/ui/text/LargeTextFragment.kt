@@ -11,7 +11,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.tigeroakes.cellwallclient.R
 import kotlinx.android.synthetic.main.large_text_fragment.*
 
-class LargeTextFragment : Fragment(), Observer<String> {
+class LargeTextFragment : Fragment() {
 
     companion object {
         private const val ARG_TEXT = "text"
@@ -32,14 +32,16 @@ class LargeTextFragment : Fragment(), Observer<String> {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(LargeTextViewModelImpl::class.java)
 
+        setupText()
+
         arguments?.run {
             getString(ARG_TEXT)?.let { viewModel.setText(it) }
         }
-
-        viewModel.text.observe(this, this)
     }
 
-    override fun onChanged(text: String?) {
-        large_text.text = text
+    private fun setupText() {
+        viewModel.text.observe(viewLifecycleOwner, Observer { text ->
+            large_text.text = text
+        })
     }
 }
