@@ -1,21 +1,29 @@
 export class ObservableSet<T> extends Set<T> {
-  onchange?: (items: Set<T>) => void;
+  private onchange = new Set<(items: Set<T>) => void>();
+
+  addListener(listener: (items: Set<T>) => void) {
+    this.onchange.add(listener);
+  }
+
+  removeListener(listener: (items: Set<T>) => void) {
+    this.onchange.delete(listener);
+  }
 
   add(value: T) {
     super.add(value);
-    if (this.onchange) this.onchange(this);
+    this.onchange.forEach(listener => listener(this));
     return this;
   }
 
   delete(value: T) {
     const result = super.delete(value);
-    if (this.onchange) this.onchange(this);
+    this.onchange.forEach(listener => listener(this));
     return result;
   }
 
   clear() {
     super.clear();
-    if (this.onchange) this.onchange(this);
+    this.onchange.forEach(listener => listener(this));
     return this;
   }
 }

@@ -24,6 +24,31 @@ const DRAGGABLE_OPTIONS = {
 class Board {
   constructor() {
     this.element = document.getElementById("cellwall-board");
+    this.container = this.element.parentElement;
+    this.updateContainerDimensions();
+    this.setDimension("width", form.width.value);
+    this.setDimension("height", form.height.value);
+    this.updateScale();
+  }
+
+  updateContainerDimensions() {
+    this.containerDim = {
+      width: this.container.clientWidth,
+      height: this.container.clientHeight
+    };
+  }
+
+  updateScale() {
+    const width = parseInt(this.element.style.width, 10);
+    const height = parseInt(this.element.style.height, 10);
+    if (width > this.containerDim.width || height > this.containerDim.height) {
+      const xScale = this.containerDim.width / width;
+      const yScale = this.containerDim.height / height;
+      console.log(xScale, yScale);
+      this.element.style.transform = `scale(${Math.min(xScale, yScale)})`;
+    } else {
+      this.element.style.transform = "scale(1)";
+    }
   }
 
   /**

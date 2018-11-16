@@ -35,9 +35,10 @@ socket.on("move-cell", ({ id, x, y }) => {
   display.setPosition(x, y);
 });
 socket.on("show-preview", show => board.showPreview(show));
-socket.on("resize-wall", (dimension, value) =>
-  board.setDimension(dimension, value)
-);
+socket.on("resize-wall", (dimension, value) => {
+  board.setDimension(dimension, value);
+  board.updateScale();
+});
 
 board.element.addEventListener("move", event => {
   const display = Display.get(event.target);
@@ -52,6 +53,7 @@ form.addEventListener("change", event => {
     case "height":
       const value = parseInt(input.value, 10);
       board.setDimension(input.name, value);
+      board.updateScale();
       socket.emit("resize-wall", input.name, value);
       break;
     case "preview":
@@ -60,4 +62,8 @@ form.addEventListener("change", event => {
       socket.emit("show-preview", checked);
       break;
   }
+});
+window.addEventListener("resize", () => {
+  board.updateContainerDimensions();
+  board.updateScale();
 });
