@@ -1,5 +1,5 @@
-import { join } from "path";
-import { Request, Response, Express, static as serveStatic } from "express";
+import { Express, Request, Response, static as serveStatic } from "express";
+import { join, posix } from "path";
 
 /**
  * GET /
@@ -19,9 +19,7 @@ export const isCellWall = (req: Request, res: Response) => {
 
 export function serveModules(app: Express, folders: string[]) {
   for (const folder of folders) {
-    app.use(
-      join("/node_modules", folder),
-      serveStatic(join(__dirname, "../node_modules", folder))
-    );
+    const path = join(__dirname, "../../node_modules", folder);
+    app.use(posix.join("/node_modules", folder), serveStatic(path));
   }
 }

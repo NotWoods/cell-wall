@@ -1,8 +1,10 @@
 import { Response, Request } from "express";
 import { check, validationResult } from "express-validator/check";
+import { isUUID } from "validator";
 import { Socket } from "socket.io";
 import { wall } from "../models/Wall";
 import { Cell } from "../models/Cell";
+import { CellState } from "../models/CellState";
 
 /**
  * GET /cell/:uuid
@@ -66,16 +68,27 @@ putCell.checks = [
 
 export const connectCell = (socket: Socket) => {
   const { uuid } = socket.handshake.query;
+  if (!isUUID(uuid)) {
+    throw new Error(`Bad cell UUID ${uuid}`);
+  }
   console.log("cell connected", uuid);
+
+  function handleUpdate(state: CellState) {
+    socket.emit("cell-update", state);
+  }
 
   wall.connectedCells.add(uuid);
   const cell = wall.knownCells.get(uuid);
   if (cell != null) {
-    socket.emit("cell-update", cell.state);
+    cell.onchange = handleUpdate;
+    handleUpdate(cell.state);
+  } else {
+    throw new Error(`Unknown cell ${uuid}`);
   }
 
   socket.on("disconnect", () => {
     console.log("cell disconnected");
+    delete cell.onchange;
     wall.connectedCells.delete(uuid);
   });
 };

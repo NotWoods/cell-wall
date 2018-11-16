@@ -7,6 +7,7 @@ import socketIO = require("socket.io");
 // Controllers (route handlers)
 import * as homeController from "./controllers/home";
 import * as cellController from "./controllers/cell";
+import * as editorController from "./controllers/editor";
 import * as wallController from "./controllers/wall";
 
 // Create Express server
@@ -40,5 +41,6 @@ app.get("/cell/:uuid", cellController.getState.checks, cellController.getState);
 app.put("/cell/:uuid", cellController.putCell.checks, cellController.putCell);
 
 cell.on("connection", cellController.connectCell);
+edit.on("connection", editorController.connectEditor);
 
 export default server;

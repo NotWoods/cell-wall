@@ -45,7 +45,18 @@ export class Cell implements CellModel {
     heightPixels: 160,
     widthPixels: 90
   };
-  state = blank();
+
+  onchange?: (state: CellState) => void;
+
+  private _state: CellState = blank();
+
+  get state() {
+    return this._state;
+  }
+  set state(value) {
+    if (this.onchange) this.onchange(value);
+    this._state = value;
+  }
 
   constructor(public id: UUID) {}
 }

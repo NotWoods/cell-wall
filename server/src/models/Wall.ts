@@ -1,6 +1,7 @@
-import { CellModel, UUID } from "./Cell";
-import { text, image, blank } from "./CellState";
-import { zip, enumerate } from "../util/itertools";
+import { enumerate } from "../util/itertools";
+import { Cell, CellModel, UUID } from "./Cell";
+import { blank, image, text } from "./CellState";
+import { ObservableSet } from "./ObservableSet";
 
 type FunctionPropertyNames<T> = {
   [K in keyof T]: T[K] extends () => void ? K : never
@@ -35,9 +36,9 @@ export interface WallSerialized {
 class Wall implements WallModel {
   width = 0;
   height = 0;
-  knownCells = new Map<UUID, CellModel>();
-  connectedCells = new Set<UUID>();
-  private showingPreview = false;
+  knownCells = new Map<UUID, Cell>();
+  connectedCells = new ObservableSet<UUID>();
+  showingPreview = false;
 
   /**
    * Returns a serializable version of the Wall.
@@ -57,7 +58,8 @@ class Wall implements WallModel {
     this.width = json.width;
     this.height = json.height;
     for (const cell of json.knownCells) {
-      this.knownCells.set(cell.id, cell);
+      const cellInst = Object.assign(new Cell(cell.id), cell);
+      this.knownCells.set(cell.id, cellInst);
     }
     return this;
   }
