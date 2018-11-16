@@ -16,6 +16,8 @@ class LargeTextFragment : Fragment() {
     companion object {
         private const val ARG_TEXT = "text"
 
+        private val BACKGROUNDS = listOf(R.color.colorPrimary, R.color.accent1, R.color.accent2)
+
         fun newInstance(text: String) = LargeTextFragment().apply {
             arguments = bundleOf(ARG_TEXT to text)
         }
@@ -34,6 +36,8 @@ class LargeTextFragment : Fragment() {
 
         setupText()
 
+        setupBackground()
+
         arguments?.run {
             getString(ARG_TEXT)?.let { viewModel.setText(it) }
         }
@@ -43,5 +47,9 @@ class LargeTextFragment : Fragment() {
         viewModel.text.observe(viewLifecycleOwner, Observer { text ->
             large_text.text = text
         })
+    }
+
+    private fun setupBackground() {
+        text_container.setBackgroundResource(BACKGROUNDS.random())
     }
 }

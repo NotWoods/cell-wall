@@ -86,8 +86,9 @@ class Board {
  * to the actual display.
  */
 class Display {
-  constructor(id, width = 32, height = 32) {
+  constructor(id, name, width = 32, height = 32) {
     const displayElement = document.createElement("button");
+    displayElement.type = "button";
     displayElement.className = "display";
     displayElement.id = id;
     displayElement.style.width = `${width}px`;

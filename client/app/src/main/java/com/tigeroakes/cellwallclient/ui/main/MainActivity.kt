@@ -8,12 +8,16 @@ import android.os.Bundle
 import android.preference.PreferenceManager.getDefaultSharedPreferences
 import android.view.View
 import android.view.WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
+import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.transaction
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.transition.AutoTransition
+import androidx.transition.Fade
+import androidx.transition.Slide
 import com.tigeroakes.cellwallclient.R
 import com.tigeroakes.cellwallclient.data.CellWallRepositoryImpl
 import com.tigeroakes.cellwallclient.device.getSystemDimension
@@ -47,13 +51,19 @@ class MainActivity : AppCompatActivity() {
         viewModel.cellState.observe(this, Observer {
             it.getContentIfNotHandled()?.let { state ->
                 val fragment = state.toFragment().apply {
-                    enterTransition = randomSlideDir().apply { duration = 1000 }
+                    enterTransition = Slide(randomEdge()).apply {
+                        duration = 500
+                        interpolator = AccelerateDecelerateInterpolator()
+                    }
+                    exitTransition = Fade().apply {
+                        duration = 300
+                        startDelay = 200
+                    }
                     allowEnterTransitionOverlap = true
                     allowReturnTransitionOverlap = true
                 }
                 supportFragmentManager.transaction {
                     replace(R.id.container, fragment)
-                    setCustomAnimations(R.animator.fade_in, R.animator.fade_out)
                 }
             }
         })

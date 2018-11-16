@@ -24,7 +24,7 @@ const ready = readFileAsync(CACHE_PATH, "utf8")
 
 async function saveWall() {
   try {
-    await writeFileAsync(CACHE_PATH, JSON.stringify(wall), "utf8");
+    await writeFileAsync(CACHE_PATH, JSON.stringify(wall, null, "  "), "utf8");
   } catch (err) {
     console.warn("Error while saving cache:", err.message);
   }
@@ -58,9 +58,8 @@ export const connectEditor = async (socket: Socket) => {
     } else if (items.size < connected.size) {
       const deletedCells = difference(connected, items);
       for (const id of deletedCells) {
-        const cell = wall.knownCells.get(id);
-        if (cell != null) {
-          socket.emit("delete-cell", cell);
+        if (wall.knownCells.has(id)) {
+          socket.emit("delete-cell", id);
         }
       }
     }

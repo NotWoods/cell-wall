@@ -31,12 +31,11 @@ export const postAction = async (req: Request, res: Response) => {
   }
 
   try {
-    const actionFunc = wall[req.body.action as Action];
-    await actionFunc();
+    await wall[req.body.action as Action]();
 
-    res.sendStatus(200);
+    res.redirect("/");
   } catch (err) {
-    res.status(500).json({ errors: [err] });
+    res.status(500).json({ errors: [err.message] });
   }
 };
 postAction.checks = check("action").isIn(Object.keys(actions));

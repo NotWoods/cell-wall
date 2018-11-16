@@ -83,12 +83,14 @@ export const connectCell = (socket: Socket) => {
     cell.onchange = handleUpdate;
     handleUpdate(cell.state);
   } else {
-    throw new Error(`Unknown cell ${uuid}`);
+    console.warn(`Unknown cell ${uuid}`);
   }
 
   socket.on("disconnect", () => {
     console.log("cell disconnected");
-    delete cell.onchange;
+    if (cell != null) {
+      delete cell.onchange;
+    }
     wall.connectedCells.delete(uuid);
   });
 };

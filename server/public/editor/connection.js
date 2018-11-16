@@ -7,10 +7,14 @@ const board = new Board();
 /**
  * @typedef {object} CellInfo
  * @prop {string} id
- * @prop {number} x
- * @prop {number} y
- * @prop {number} width
- * @prop {number} height
+ * @prop {string} deviceName
+ * @prop {object} position
+ * @prop {number} position.x
+ * @prop {number} position.y
+ * @prop {object} display
+ * @prop {number} display.density
+ * @prop {number} display.widthPixels
+ * @prop {number} display.heightPixels
  */
 
 socket.on("connect", () => {
@@ -22,9 +26,14 @@ socket.on("disconnect", () => {
 socket.on("add-cell", cell => {
   /** @type {CellInfo} */
   const info = cell;
-  const display = new Display(info.id, info.width, info.height);
+  const display = new Display(
+    info.id,
+    info.deviceName,
+    info.display.widthPixels,
+    info.display.heightPixels
+  );
   board.add(display.element);
-  display.setPosition(info.x, info.y);
+  display.setPosition(info.position.x, info.position.y);
 });
 socket.on("delete-cell", id => {
   const display = Display.get(id);
