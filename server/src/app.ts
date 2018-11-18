@@ -1,6 +1,5 @@
 import { createServer } from "http";
 import { join } from "path";
-import { json, urlencoded } from "body-parser";
 import express = require("express");
 import socketIO = require("socket.io");
 
@@ -20,8 +19,8 @@ const io = socketIO(server);
 // Express configuration
 export const port = process.env.PORT || 3000;
 export const env = app.get("env");
-app.use(json());
-app.use(urlencoded({ extended: false }));
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 
 app.use(express.static(join(__dirname, "../public"), { maxAge: 36000 }));
 homeController.serveModules(app, ["interactjs/dist", "socket.io-client/dist"]);

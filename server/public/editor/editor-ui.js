@@ -51,16 +51,9 @@ export class Board {
   updateScale() {
     const width = parseFloat(this.element.style.width) * BASE_SIZE;
     const height = parseFloat(this.element.style.height) * BASE_SIZE;
-    console.log("dim", width, height);
-    if (width > this.containerDim.width || height > this.containerDim.height) {
-      const xScale = this.containerDim.width / width;
-      const yScale = this.containerDim.height / height;
-      console.log(xScale, yScale);
-      this.container.style.fontSize = `${Math.min(xScale, yScale) *
-        BASE_SIZE}px`;
-    } else {
-      this.container.style.fontSize = `${BASE_SIZE}px`;
-    }
+    const xScale = this.containerDim.width / width;
+    const yScale = this.containerDim.height / height;
+    this.container.style.fontSize = `${Math.min(xScale, yScale) * BASE_SIZE}px`;
   }
 
   /**
@@ -77,6 +70,7 @@ export class Board {
    */
   setDimension(dim, value) {
     this.element.style[dim] = scale(value);
+    form[dim].value = value;
   }
 
   /**
@@ -117,6 +111,7 @@ export class Display {
     interact(displayElement)
       .draggable(DRAGGABLE_OPTIONS)
       .on("dragmove", Display.onDragMove)
+      .on("tap", Display.onDragStart)
       .on("dragstart", Display.onDragStart)
       .on("dragend", Display.onDragEnd);
 
@@ -150,7 +145,7 @@ export class Display {
 
     const { x, y } = display.getPosition();
     const { dx, dy } = event;
-    const scale = display.scale * BASE_SIZE;
+    const scale = 1;
     display.setPosition(x + dx * scale, y + dy * scale);
   }
 
@@ -165,7 +160,8 @@ export class Display {
     Display.select(display);
     display.element.classList.add("dragging");
 
-    display.scale = parseFloat(getComputedStyle(event.target).fontSize);
+    display.scale =
+      parseFloat(getComputedStyle(event.target).fontSize) / BASE_SIZE;
   }
 
   static onDragEnd(event) {

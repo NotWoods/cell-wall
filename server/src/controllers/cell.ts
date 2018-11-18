@@ -73,7 +73,8 @@ export const connectCell = (socket: Socket) => {
   if (!isUUID(uuid)) {
     throw new Error(`Bad cell UUID ${uuid}`);
   }
-  console.log("cell connected", uuid);
+
+  console.log(`Cell connected [${uuid}]`);
 
   function handleUpdate(state: CellState) {
     socket.emit("cell-update", state);
@@ -82,16 +83,19 @@ export const connectCell = (socket: Socket) => {
   wall.connectedCells.add(uuid);
   const cell = wall.knownCells.get(uuid);
   if (cell != null) {
+    console.log(`  ${cell.deviceName}`);
     cell.onchange = handleUpdate;
     handleUpdate(cell.state);
   } else {
-    console.warn(`Unknown cell ${uuid}`);
+    console.warn(`  Cell is unknown, register first`);
   }
 
   socket.on("disconnect", () => {
-    console.log("cell disconnected");
     if (cell != null) {
+      console.log(`Cell disconnected - ${cell.deviceName} [${uuid}]`);
       delete cell.onchange;
+    } else {
+      console.log(`Cell disconnected - <unknown> [${uuid}]`);
     }
     wall.connectedCells.delete(uuid);
   });

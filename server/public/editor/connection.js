@@ -26,11 +26,12 @@ socket.on("disconnect", () => {
 socket.on("add-cell", cell => {
   /** @type {CellInfo} */
   const info = cell;
+  console.log(cell);
   const display = new Display(
     info.id,
     info.deviceName,
-    info.display.widthPixels,
-    info.display.heightPixels
+    (info.display.widthPixels / info.display.density) * 2,
+    (info.display.heightPixels / info.display.density) * 2
   );
   board.add(display.element);
   display.setPosition(info.position.x, info.position.y);
