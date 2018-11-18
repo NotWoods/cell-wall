@@ -19,6 +19,13 @@
         <item name="textAppearanceCaption">@style/TextAppearance.AppTheme.Caption</item>
         <item name="textAppearanceButton">@style/TextAppearance.AppTheme.Button</item>
         <item name="textAppearanceOverline">@style/TextAppearance.AppTheme.Overline</item>
+
+        <item name="android:actionBarStyle">@style/FullscreenActionBarStyle</item>
+        <item name="android:windowActionBarOverlay">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowContentOverlay">@null</item>
     </style>
     <style name="AppTheme" parent="BaseAppTheme" />
 
@@ -42,15 +49,6 @@
         <item name="textAppearanceOverline">@style/TextAppearance.AppTheme.Overline</item>
     </style>
     <style name="LoginTheme" parent="BaseLoginTheme" />
-
-    <style name="FullscreenTheme" parent="AppTheme">
-        <item name="android:actionBarStyle">@style/FullscreenActionBarStyle</item>
-        <item name="android:windowActionBarOverlay">true</item>
-        <item name="android:windowNoTitle">true</item>
-        <item name="android:windowActionBar">false</item>
-        <item name="android:windowFullscreen">true</item>
-        <item name="android:windowContentOverlay">@null</item>
-    </style>
 
     <style name="FullscreenActionBarStyle" parent="android:Widget.Holo.ActionBar">
         <item name="android:background">@color/black_overlay</item>

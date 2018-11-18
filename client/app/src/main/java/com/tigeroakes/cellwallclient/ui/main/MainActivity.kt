@@ -69,12 +69,19 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
+        goFullscreen()
+
         // If there is no server address, show the login page
         if (!viewModel.isUrlSaved) {
             return openLogin()
         }
+    }
 
-        goFullscreen()
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        if (hasFocus) {
+            goFullscreen()
+        }
     }
 
     private fun openLogin() {
@@ -101,22 +108,19 @@ class MainActivity : AppCompatActivity() {
      */
     @SuppressLint("InlinedApi")
     private fun goFullscreen() {
-        container.systemUiVisibility =
-                View.SYSTEM_UI_FLAG_LOW_PROFILE or
-                View.SYSTEM_UI_FLAG_FULLSCREEN or
-                View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
+        window.decorView.systemUiVisibility =
                 View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY or
+                // Set the content to appear under the system bars so that the
+                // content doesn't resize when the system bars hide and show.
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
                 View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
-                View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
+                // Hide the nav bar and status bar
+                View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or
+                View.SYSTEM_UI_FLAG_FULLSCREEN
 
         if (SDK_INT >= VERSION_CODES.KITKAT) {
             window.setFlags(FLAG_LAYOUT_NO_LIMITS, FLAG_LAYOUT_NO_LIMITS)
-
-            val navBarHeight = resources.getSystemDimension("navigation_bar_height")
-            reconnect_button.updateLayoutParams<ConstraintLayout.LayoutParams> {
-                bottomMargin = navBarHeight
-            }
-            reconnect_button.requestLayout()
         }
     }
 

@@ -52,9 +52,10 @@ export const putCell = (req: Request, res: Response) => {
   saveWall();
 
   console.info(
-    `${existingCell != null ? "Updated" : "Added"} cell,`,
-    uuid,
-    cell
+    `${existingCell != null ? "Updated" : "Added"} cell [${uuid}]\n` +
+      `  ${cell.deviceName}\n` +
+      `  Position: ${JSON.stringify(cell.position)}\n` +
+      `  Display: ${JSON.stringify(cell.display)}\n`
   );
 
   // Respond with 201 if new cell was created
