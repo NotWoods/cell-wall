@@ -1,5 +1,7 @@
 package com.tigeroakes.cellwallclient.ui.image
 
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.preference.PreferenceManager.getDefaultSharedPreferences
 import android.view.LayoutInflater
@@ -10,8 +12,11 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.RequestOptions.centerCropTransform
 import com.tigeroakes.cellwallclient.R
 import com.tigeroakes.cellwallclient.data.CellWallRepositoryImpl
+import com.tigeroakes.cellwallclient.ui.GlideApp
 import com.tigeroakes.cellwallclient.ui.RepositoryViewModelFactory
 import kotlinx.android.synthetic.main.image_fragment.*
 
@@ -51,8 +56,10 @@ class ImageFragment : Fragment() {
 
     private fun setupImage() {
         viewModel.imageSrc.observe(viewLifecycleOwner, Observer { imageUrl ->
-            Glide.with(this)
+            GlideApp.with(this)
                     .load(imageUrl)
+                    .apply(centerCropTransform())
+                    .error(ColorDrawable(Color.RED))
                     .into(image)
         })
     }

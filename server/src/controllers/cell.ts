@@ -5,6 +5,7 @@ import { Socket } from "socket.io";
 import { wall } from "../models/Wall";
 import { Cell } from "../models/Cell";
 import { CellState } from "../models/CellState";
+import { saveWall } from "./editor";
 
 /**
  * GET /cell/:uuid
@@ -48,6 +49,7 @@ export const putCell = (req: Request, res: Response) => {
     widthPixels: req.body.widthPixels
   };
   wall.knownCells.set(uuid, cell);
+  saveWall();
 
   console.info(
     `${existingCell != null ? "Updated" : "Added"} cell,`,

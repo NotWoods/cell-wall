@@ -26,6 +26,7 @@
       .board-wrapper {
         margin: 12px;
         flex: 1;
+        font-size: 16px;
       }
       .board {
         position: absolute;
@@ -42,9 +43,10 @@
       }
 
       .display {
+        all: unset;
         display: block;
-        height: 30px;
-        width: 30px;
+        height: 3em;
+        width: 3em;
         position: absolute;
 
         background: #eee;
@@ -69,14 +71,9 @@
     </style>
     <script
       defer
-      src="../node_modules/interactjs/dist/interact.min.js"
-    ></script>
-    <script defer src="editor-ui.js"></script>
-    <script
-      defer
       src="../node_modules/socket.io-client/dist/socket.io.js"
     ></script>
-    <script defer src="connection.js"></script>
+    <script defer type="module" src="connection.js"></script>
   </head>
 
   <body>

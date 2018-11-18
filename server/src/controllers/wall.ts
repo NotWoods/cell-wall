@@ -1,6 +1,87 @@
 import { Response, Request } from "express";
 import { check, validationResult } from "express-validator/check";
-import { wall, actions, Action } from "../models/Wall";
+import { wall } from "../models/Wall";
+import { text, image, blank } from "../models/CellState";
+import { enumerate } from "../util/itertools";
+
+function showText(list: string[]) {
+  for (const [i, cell] of enumerate(wall)) {
+    if (i < list.length) {
+      cell.state = text(list[i]);
+    } else {
+      cell.state = blank();
+    }
+  }
+}
+
+const actions = Object.freeze({
+  demo: {
+    name: "Text/photos demo",
+    /**
+     * Demo the CellWall by showing "Hello World!" along with
+     * some images surrounding it.
+     */
+    run() {
+      const center = wall.centerCell();
+      if (center != null) {
+        center.state = text("Hello world!");
+      }
+
+      for (const [i, cell] of enumerate(wall.surroundingCells())) {
+        cell.state = image(`/img/demo${i % 2}.jpg`);
+      }
+    }
+  },
+  /**
+   * Show a dashboard with weather, clock, upcoming events.
+   * Take ideas from the Google Home displays.
+   */
+  dashboard: {
+    name: "Dashboard",
+    run() {
+      // TODO
+    }
+  },
+  todo: {
+    name: "To Do",
+    /**
+     * Show a todo list, one item per cell.
+     */
+    run() {
+      const mockTodoList = [
+        "Take out the trash",
+        "Make more lists",
+        "Give Daphne a hug",
+        "Build CellWall",
+        "Finish that assignment",
+        "Pet Roxy",
+        "This shouldn't show up"
+      ];
+
+      showText(mockTodoList);
+    }
+  },
+  /**
+   * Show controls for the smart home.
+   */
+  home: {
+    name: "Home controls",
+    run() {
+      // TODO
+    }
+  },
+  /**
+   * Play Simon Says
+   */
+  simon: {
+    name: "Simon says",
+    run() {
+      // TODO
+    }
+  }
+});
+
+type Action = keyof typeof actions;
 
 /**
  * GET /wall
@@ -21,7 +102,26 @@ export const getActions = (req: Request, res: Response) => {
 };
 
 /**
- * POST /wall/action
+ * POST /wall/action/text
+ * Display a list of text on the wall
+ */
+export const postTextAction = async (req: Request, res: Response) => {
+  const list = req.body as string[];
+  if (!Array.isArray(list)) {
+    return res.status(422).json({ errors: ["Body must be string array"] });
+  }
+
+  try {
+    await showText(list);
+
+    res.redirect("/");
+  } catch (err) {
+    res.status(500).json({ errors: [err.message] });
+  }
+};
+
+/**
+ * POST /wall/action/:action
  * Returns the serialized version of the wall.
  */
 export const postAction = async (req: Request, res: Response) => {
@@ -31,7 +131,8 @@ export const postAction = async (req: Request, res: Response) => {
   }
 
   try {
-    await wall[req.body.action as Action]();
+    const action = req.params.action as Action;
+    await actions[action].run();
 
     res.redirect("/");
   } catch (err) {

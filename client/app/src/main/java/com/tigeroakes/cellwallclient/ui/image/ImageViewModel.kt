@@ -7,15 +7,15 @@ import com.tigeroakes.cellwallclient.data.CellWallRepository
 import java.net.URI
 
 interface ImageViewModel {
-    val imageSrc: LiveData<URI>
+    val imageSrc: LiveData<String>
 
     fun setImageSrc(src: String)
 }
 
 class ImageViewModelImpl(private val repository: CellWallRepository) : ImageViewModel, ViewModel() {
-    override val imageSrc = MutableLiveData<URI>()
+    override val imageSrc = MutableLiveData<String>()
 
     override fun setImageSrc(src: String) {
-        imageSrc.value = repository.addImageHost(src)
+        imageSrc.value = repository.addImageHost(src).toString()
     }
 }

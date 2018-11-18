@@ -4,4 +4,4 @@
 server/src/**/*.js
 server/src/**/*.js.map
 server/.env
-server/.wall-cache
+server/.wall-cache.json

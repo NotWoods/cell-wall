@@ -51,13 +51,14 @@ class MainActivity : AppCompatActivity() {
         viewModel.cellState.observe(this, Observer {
             it.getContentIfNotHandled()?.let { state ->
                 val fragment = state.toFragment().apply {
-                    enterTransition = Slide(randomEdge()).apply {
+                    val enterEdge = randomEdge()
+                    enterTransition = Slide(enterEdge).apply {
                         duration = 500
                         interpolator = AccelerateDecelerateInterpolator()
                     }
-                    exitTransition = Fade().apply {
-                        duration = 300
-                        startDelay = 200
+                    exitTransition = Slide(oppositeEdge(enterEdge)).apply {
+                        duration = 500
+                        interpolator = AccelerateDecelerateInterpolator()
                     }
                     allowEnterTransitionOverlap = true
                     allowReturnTransitionOverlap = true

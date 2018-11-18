@@ -1,7 +1,7 @@
 // @ts-check
-"use strict";
+import "../node_modules/interactjs/dist/interact.min.js";
 
-const form = /** @type {HTMLFormElement} */ (document.getElementById(
+export const form = /** @type {HTMLFormElement} */ (document.getElementById(
   "options"
 ));
 const displaySelect = /** @type {HTMLSelectElement} */ (form.elements.namedItem(
@@ -21,7 +21,17 @@ const DRAGGABLE_OPTIONS = {
   autoScroll: true
 };
 
-class Board {
+const BASE_SIZE = 16;
+
+/**
+ *
+ * @param {number} value
+ */
+function scale(value) {
+  return `${value / BASE_SIZE}em`;
+}
+
+export class Board {
   constructor() {
     this.element = document.getElementById("cellwall-board");
     this.container = this.element.parentElement;
@@ -39,15 +49,17 @@ class Board {
   }
 
   updateScale() {
-    const width = parseInt(this.element.style.width, 10);
-    const height = parseInt(this.element.style.height, 10);
+    const width = parseFloat(this.element.style.width) * BASE_SIZE;
+    const height = parseFloat(this.element.style.height) * BASE_SIZE;
+    console.log("dim", width, height);
     if (width > this.containerDim.width || height > this.containerDim.height) {
       const xScale = this.containerDim.width / width;
       const yScale = this.containerDim.height / height;
       console.log(xScale, yScale);
-      this.element.style.transform = `scale(${Math.min(xScale, yScale)})`;
+      this.container.style.fontSize = `${Math.min(xScale, yScale) *
+        BASE_SIZE}px`;
     } else {
-      this.element.style.transform = "scale(1)";
+      this.container.style.fontSize = `${BASE_SIZE}px`;
     }
   }
 
@@ -64,7 +76,7 @@ class Board {
    * @param {number} value
    */
   setDimension(dim, value) {
-    this.element.style[dim] = `${value}px`;
+    this.element.style[dim] = scale(value);
   }
 
   /**
@@ -85,18 +97,20 @@ class Board {
  * representation of a display, where the element size and position correspond
  * to the actual display.
  */
-class Display {
+export class Display {
   constructor(id, name, width = 32, height = 32) {
+    this.scale = BASE_SIZE;
+
     const displayElement = document.createElement("button");
     displayElement.type = "button";
     displayElement.className = "display";
     displayElement.id = id;
-    displayElement.style.width = `${width}px`;
-    displayElement.style.height = `${height}px`;
+    displayElement.style.width = scale(width);
+    displayElement.style.height = scale(height);
 
     const option = document.createElement("option");
     option.value = id;
-    option.textContent = id;
+    option.textContent = name;
 
     displaySelect.appendChild(option);
 
@@ -135,7 +149,9 @@ class Display {
     const display = Display.get(event.target);
 
     const { x, y } = display.getPosition();
-    display.setPosition(x + event.dx, y + event.dy);
+    const { dx, dy } = event;
+    const scale = display.scale * BASE_SIZE;
+    display.setPosition(x + dx * scale, y + dy * scale);
   }
 
   /**
@@ -148,6 +164,8 @@ class Display {
     displaySelect.value = display.element.id;
     Display.select(display);
     display.element.classList.add("dragging");
+
+    display.scale = parseFloat(getComputedStyle(event.target).fontSize);
   }
 
   static onDragEnd(event) {
@@ -188,10 +206,12 @@ class Display {
   setPosition(x, y) {
     const xs = x.toFixed(0);
     const ys = y.toFixed(0);
+    x = parseInt(xs, 10);
+    y = parseInt(ys, 10);
 
     this.element.dataset.x = xs;
     this.element.dataset.y = ys;
-    this.element.style.transform = `translate(${xs}px, ${ys}px)`;
+    this.element.style.transform = `translate(${scale(x)}, ${scale(y)})`;
 
     xInput.value = xs;
     yInput.value = ys;

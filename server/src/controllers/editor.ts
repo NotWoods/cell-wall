@@ -9,7 +9,7 @@ import { UUID } from "../models/Cell";
 const readFileAsync = promisify(readFile);
 const writeFileAsync = promisify(writeFile);
 
-const CACHE_PATH = join(__dirname, "../../.wall-cache");
+const CACHE_PATH = join(__dirname, "../../.wall-cache.json");
 
 const ready = readFileAsync(CACHE_PATH, "utf8")
   .then(JSON.parse)
@@ -22,7 +22,7 @@ const ready = readFileAsync(CACHE_PATH, "utf8")
     throw err;
   });
 
-async function saveWall() {
+export async function saveWall() {
   try {
     await writeFileAsync(CACHE_PATH, JSON.stringify(wall, null, "  "), "utf8");
   } catch (err) {
@@ -65,7 +65,6 @@ export const connectEditor = async (socket: Socket) => {
     }
 
     connected = new Set(items);
-    saveWall();
   }
   onchange(wall.connectedCells);
   wall.connectedCells.addListener(onchange);

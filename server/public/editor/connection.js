@@ -1,5 +1,5 @@
 // @ts-check
-"use strict";
+import { form, Display, Board } from "./editor-ui.js";
 
 const socket = io(new URL("../edit", location.href).href);
 const board = new Board();

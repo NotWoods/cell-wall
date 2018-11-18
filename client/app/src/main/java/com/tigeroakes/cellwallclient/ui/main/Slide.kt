@@ -10,3 +10,11 @@ private val edges = listOf(
 )
 
 fun randomEdge() = edges.random()
+
+fun oppositeEdge(edge: Int) = when (edge) {
+    Gravity.BOTTOM -> Gravity.TOP
+    Gravity.TOP -> Gravity.BOTTOM
+    Gravity.START -> Gravity.END
+    Gravity.END -> Gravity.START
+    else -> Gravity.TOP
+}

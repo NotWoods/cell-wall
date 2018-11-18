@@ -100,83 +100,18 @@ class Wall implements WallModel {
     return closestCell;
   }
 
-  getCell(uuid: UUID) {
-    return this.knownCells.get(uuid) || null;
-  }
-
-  /**
-   * Demo the CellWall by showing "Hello World!" along with
-   * some images surrounding it.
-   */
-  demo() {
+  *surroundingCells() {
     const center = this.centerCell();
-    if (center != null) {
-      center.state = text("Hello world!");
-    }
-
-    let i = 0;
     for (const cell of this) {
       if (cell !== center) {
-        cell.state = image(`/img/demo${i % 2}.jpg`);
-        i++;
+        yield cell;
       }
     }
   }
 
-  /**
-   * Show a dashboard with weather, clock, upcoming events.
-   * Take ideas from the Google Home displays.
-   */
-  dashboard() {
-    // TODO
-  }
-
-  /**
-   * Show a todo list, one item per cell.
-   */
-  todo() {
-    const mockTodoList = [
-      "Take out the trash",
-      "Make more lists",
-      "Give Daphne a hug",
-      "Build CellWall",
-      "Finish that assignment",
-      "Pet Roxy",
-      "This shouldn't show up"
-    ];
-
-    for (const [i, cell] of enumerate(this)) {
-      if (i < mockTodoList.length) {
-        cell.state = text(mockTodoList[i]);
-      } else {
-        cell.state = blank();
-      }
-    }
-  }
-
-  /**
-   * Show controls for the smart home.
-   */
-  home() {
-    // TODO
-  }
-
-  /**
-   * Play Simon Says
-   */
-  simon() {
-    // TODO
+  getCell(uuid: UUID) {
+    return this.knownCells.get(uuid) || null;
   }
 }
 
 export const wall = new Wall();
-
-export type Action = FunctionPropertyNames<Wall>;
-
-export const actions: Readonly<Partial<Record<Action, { name: string }>>> = {
-  demo: { name: "Text/photos demo" },
-  dashboard: { name: "Dashboard" },
-  todo: { name: "To Do" },
-  home: { name: "Home controls" },
-  simon: { name: "Simon says" }
-};

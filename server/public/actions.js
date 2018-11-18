@@ -6,7 +6,7 @@ function renderItem(action) {
   const result = document.importNode(itemTemplate.content, true);
   const button = result.querySelector("button");
   button.textContent = action.name;
-  button.value = action.id;
+  button.formAction = `/wall/action/${action.id}`;
   return result;
 }
 
