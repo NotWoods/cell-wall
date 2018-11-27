@@ -8,19 +8,12 @@ import android.os.Bundle
 import android.preference.PreferenceManager.getDefaultSharedPreferences
 import android.view.View
 import android.view.WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
-import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.transaction
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import androidx.transition.AutoTransition
-import androidx.transition.Fade
-import androidx.transition.Slide
 import com.tigeroakes.cellwallclient.R
 import com.tigeroakes.cellwallclient.data.CellWallRepositoryImpl
-import com.tigeroakes.cellwallclient.device.getSystemDimension
 import com.tigeroakes.cellwallclient.model.CellState
 import com.tigeroakes.cellwallclient.ui.RepositoryViewModelFactory
 import com.tigeroakes.cellwallclient.ui.blank.BlankFragment
@@ -50,20 +43,10 @@ class MainActivity : AppCompatActivity() {
 
         viewModel.cellState.observe(this, Observer {
             it.getContentIfNotHandled()?.let { state ->
-                val fragment = state.toFragment().apply {
-                    val enterEdge = randomEdge()
-                    enterTransition = Slide(enterEdge).apply {
-                        duration = 500
-                        interpolator = AccelerateDecelerateInterpolator()
-                    }
-                    exitTransition = Slide(oppositeEdge(enterEdge)).apply {
-                        duration = 500
-                        interpolator = AccelerateDecelerateInterpolator()
-                    }
-                    allowEnterTransitionOverlap = true
-                    allowReturnTransitionOverlap = true
-                }
+                val fragment = state.toFragment()
+                val (slideIn, slideOut) = SlideAnim.random()
                 supportFragmentManager.transaction {
+                    setCustomAnimations(slideIn, slideOut)
                     replace(R.id.container, fragment)
                 }
             }
@@ -124,12 +107,13 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun CellState.toFragment() = cellStateToFragment(this)
     companion object {
-        private fun cellStateToFragment(state: CellState) = when (state) {
-            is CellState.Text -> LargeTextFragment.newInstance(state.text)
-            is CellState.Image -> ImageFragment.newInstance(state.src)
-            is CellState.Button -> ButtonFragment.newInstance(state.backgroundColor)
+
+
+        private fun CellState.toFragment() = when (this) {
+            is CellState.Text -> LargeTextFragment.newInstance(this.text)
+            is CellState.Image -> ImageFragment.newInstance(this.src)
+            is CellState.Button -> ButtonFragment.newInstance(this.backgroundColor)
             else -> BlankFragment.newInstance()
         }
     }
