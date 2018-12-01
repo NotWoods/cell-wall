@@ -2,11 +2,11 @@
   "name": "cell-wall-server",
   "version": "2.0.0",
   "description": "Server for the CellWall",
-  "main": "src/server.js",
+  "main": "index.js",
   "scripts": {
     "test": "jest --forceExit --coverage --verbose",
     "build": "tsc",
-    "start": "node src/server.js"
+    "start": "node index.js"
   },
   "author": "Tiger Oakes",
   "license": "UNLICENSED",
