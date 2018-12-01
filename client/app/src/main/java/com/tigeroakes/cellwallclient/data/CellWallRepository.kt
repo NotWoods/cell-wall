@@ -1,11 +1,10 @@
 package com.tigeroakes.cellwallclient.data
 
 import android.content.SharedPreferences
+import androidx.core.content.edit
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
-import com.tigeroakes.cellwallclient.data.prefs.PreferenceManager
-import com.tigeroakes.cellwallclient.data.prefs.SERVER_ADDRESS_KEY
 import com.tigeroakes.cellwallclient.data.prefs.getStringLiveData
 import com.tigeroakes.cellwallclient.data.rest.*
 import com.tigeroakes.cellwallclient.data.socket.StateLiveData
@@ -67,16 +66,15 @@ interface CellWallRepository {
  * such as web services, sockets, and caches.
  */
 class CellWallRepositoryImpl private constructor(
-        sharedPrefs: SharedPreferences
+        private val sharedPrefs: SharedPreferences
 ) : CellWallRepository {
-    private val prefs = PreferenceManager(sharedPrefs)
     private val webservice = ServiceGenerator.createService(Webservice::class.java)
 
     override val serverAddress: LiveData<String?> =
             sharedPrefs.getStringLiveData(SERVER_ADDRESS_KEY)
 
     override val id: UUID
-        get() = Installation.id(prefs)
+        get() = Installation.id(sharedPrefs)
 
     override val isUrlSaved: Boolean
         get() = serverAddress.value != null
@@ -94,7 +92,9 @@ class CellWallRepositoryImpl private constructor(
         }
 
         if (res.isSuccessful) {
-            prefs.serverAddress = url.toString()
+            sharedPrefs.edit {
+                putString(SERVER_ADDRESS_KEY, url.toString())
+            }
             return url
         } else {
             ServiceGenerator.apiBaseUrl = lastUrl
@@ -150,6 +150,7 @@ class CellWallRepositoryImpl private constructor(
     }
 
     companion object {
+        private const val SERVER_ADDRESS_KEY = "address"
         private const val SOCKET_PATH = "./cell"
 
         @Volatile private var instance: CellWallRepository? = null

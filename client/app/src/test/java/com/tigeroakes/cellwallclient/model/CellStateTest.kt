@@ -8,79 +8,119 @@ import org.junit.Test
 class CellStateTest {
     @Test
     fun from_unknown() {
-        assertEquals(CellState.Blank, CellState.from("BLANK", JSONObject()))
-        assertEquals(CellState.Blank, CellState.from("ABC", JSONObject()))
+        assertEquals(
+                CellState.Blank,
+                CellState.from(JSONObject().apply {
+                    put("name", "BLANK")
+                    put("data", JSONObject())
+                }))
+        assertEquals(
+                CellState.Blank,
+                CellState.from(JSONObject().apply {
+                    put("name", "ABC")
+                    put("data", JSONObject())
+                }))
     }
 
     @Test
     fun from_configure() {
         assertEquals(
                 CellState.Configure("#FFFFFF", "star"),
-                CellState.from("CONFIGURE", JSONObject().apply {
-                    put("backgroundColor", "#FFFFFF")
-                    put("icon", "star")
+                CellState.from(JSONObject().apply {
+                    put("name", "CONFIGURE")
+                    put("data", JSONObject().apply {
+                        put("backgroundColor", "#FFFFFF")
+                        put("icon", "star")
+                    })
                 }))
         assertEquals(
                 CellState.Configure("#FF0000", "square"),
-                CellState.from("CONFIGURE", JSONObject().apply {
-                    put("backgroundColor", "#FF0000")
-                    put("icon", "square")
-                    put("extra", "abc")
+                CellState.from(JSONObject().apply {
+                    put("name", "CONFIGURE")
+                    put("data", JSONObject().apply {
+                        put("backgroundColor", "#FF0000")
+                        put("icon", "square")
+                        put("extra", "abc")
+                    })
                 }))
     }
 
     @Test(expected = JSONException::class)
     fun from_configure_noFields() {
-        CellState.from("CONFIGURE", JSONObject())
+        CellState.from(JSONObject().apply {
+            put("name", "CONFIGURE")
+            put("data", JSONObject())
+        })
     }
 
     @Test
     fun from_text() {
         assertEquals(
                 CellState.Text("Hello world!"),
-                CellState.from("TEXT", JSONObject().apply {
-                    put("text", "Hello world!")
-                    put("extra", "xyz")
+                CellState.from(JSONObject().apply {
+                    put("name", "TEXT")
+                    put("data", JSONObject().apply {
+                        put("text", "Hello world!")
+                        put("extra", "xyz")
+                    })
                 }))
     }
 
     @Test(expected = JSONException::class)
     fun from_text_noFields() {
-        CellState.from("TEXT", JSONObject())
+        CellState.from(JSONObject().apply {
+            put("name", "TEXT")
+            put("data", JSONObject())
+        })
     }
 
     @Test
     fun from_image() {
         assertEquals(
                 CellState.Image("http://example.com/img.png"),
-                CellState.from("IMAGE", JSONObject().apply {
-                    put("src", "http://example.com/img.png")
+                CellState.from(JSONObject().apply {
+                    put("name", "IMAGE")
+                    put("data", JSONObject().apply {
+                        put("src", "http://example.com/img.png")
+                    })
                 }))
         assertEquals(
                 CellState.Image("/some/sub_path"),
-                CellState.from("IMAGE", JSONObject().apply {
-                    put("src", "/some/sub_path")
-                    put("extra", "xyz")
+                CellState.from(JSONObject().apply {
+                    put("name", "IMAGE")
+                    put("data", JSONObject().apply {
+                        put("src", "http://example.com/img.png")
+                        put("extra", "xyz")
+                    })
                 }))
     }
 
     @Test(expected = JSONException::class)
     fun from_image_noFields() {
-        CellState.from("IMAGE", JSONObject())
+        CellState.from(JSONObject().apply {
+            put("name", "IMAGE")
+            put("data", JSONObject())
+        })
     }
 
     @Test
     fun from_button() {
         assertEquals(
                 CellState.Button("#FFFF00"),
-                CellState.from("BUTTON", JSONObject().apply {
-                    put("backgroundColor", "#FFFF00")
-                    put("extra", "xyz")
+                CellState.from(JSONObject().apply {
+                    put("name", "BUTTON")
+                    put("data", JSONObject().apply {
+                        put("backgroundColor", "#FFFF00")
+                        put("extra", "xyz")
+                    })
                 }))
     }
 
     @Test(expected = JSONException::class)
     fun from_button_noFields() {
-        CellState.from("BUTTON", JSONObject())
+        CellState.from(JSONObject().apply {
+            put("name", "BUTTON")
+            put("data", JSONObject())
+        })
     }
 }
