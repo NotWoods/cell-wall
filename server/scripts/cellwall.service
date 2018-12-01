@@ -1,0 +1,19 @@
+# Copy this file into /etc/systemd/system: cp cellwall.service /etc/systemd/system
+# Start with: systemctl start cellwall
+# Enable run on boot with: systemctl enable cellwall
+# See logs with: journalctl -u cellwall
+
+[Unit]
+Description=CellWall
+
+[Service]
+ExecStart=/var/www/cell-wall/server/src/server.js
+Restart=always
+User=nobody
+Group=nogroup
+Environment=PATH=/usr/bin:/usr/local/bin
+Environment=NODE_ENV=production
+WorkingDirectory=/var/www/cell-wall/server/
+
+[Install]
+WantedBy=multi-user.target
