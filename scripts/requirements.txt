@@ -1,0 +1,5 @@
+# pip3 install --no-deps -r requirements.txt
+# adb often tries to install m2crypto but only needs rsa
+adb
+rsa
+libusb1>=1.0.16

@@ -7,7 +7,7 @@
 Description=CellWall
 
 [Service]
-ExecStart=/var/www/cell-wall/server/src/server.js
+ExecStart=/var/www/cell-wall/server/index.js
 Restart=always
 User=nobody
 Group=nogroup
