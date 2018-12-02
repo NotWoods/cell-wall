@@ -1,3 +1,5 @@
+import { config } from "dotenv";
+config();
 import app, { port, env } from "./app";
 
 export default app.listen(port, () => {
