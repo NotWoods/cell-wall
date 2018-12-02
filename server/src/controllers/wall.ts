@@ -121,6 +121,35 @@ export const postTextAction = async (req: Request, res: Response) => {
 };
 
 /**
+ * POST /wall/action/person
+ * Display a greeting to a person, along with images of them.
+ */
+export const postPersonAction = async (req: Request, res: Response) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).json({ errors: errors.array() });
+  }
+
+  const person = req.params.person as string;
+
+  try {
+    const center = wall.centerCell();
+    if (center != null) {
+      center.state = text(`Welcome ${person}!`);
+    }
+
+    for (const [i, cell] of enumerate(wall.surroundingCells())) {
+      cell.state = image(`/img/demo${i % 2}.jpg`);
+    }
+
+    res.redirect("/");
+  } catch (err) {
+    res.status(500).json({ errors: [err.message] });
+  }
+};
+postPersonAction.checks = check("person").isString();
+
+/**
  * POST /wall/action/:action
  * Returns the serialized version of the wall.
  */

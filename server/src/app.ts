@@ -37,6 +37,11 @@ app.get("/is-cellwall-server", homeController.isCellWall);
 app.get("/wall", wallController.getWall);
 app.get("/wall/actions", wallController.getActions);
 app.post("/wall/action/text", wallController.postTextAction);
+app.post(
+  "/wall/action/person",
+  wallController.postPersonAction.checks,
+  wallController.postPersonAction
+);
 app.post("/wall/action/:action", wallController.postAction);
 app.get("/cell/:uuid", cellController.getState.checks, cellController.getState);
 app.put("/cell/:uuid", cellController.putCell.checks, cellController.putCell);
