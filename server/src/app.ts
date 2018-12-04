@@ -2,6 +2,9 @@ import { createServer } from "http";
 import { join } from "path";
 import express = require("express");
 import socketIO = require("socket.io");
+import passport = require("passport");
+
+import "./auth";
 
 // Controllers (route handlers)
 import * as homeController from "./controllers/home";
@@ -45,6 +48,34 @@ app.post(
 app.post("/wall/action/:action", wallController.postAction);
 app.get("/cell/:uuid", cellController.getState.checks, cellController.getState);
 app.put("/cell/:uuid", cellController.putCell.checks, cellController.putCell);
+
+// Star the OAuth login process for Google.
+app.get(
+  "/auth/google",
+  passport.authenticate("google", {
+    scope: [
+      "https://www.googleapis.com/auth/photoslibrary.readonly",
+      "profile"
+    ],
+    failureFlash: true, // Display errors to the user.
+    session: true
+  })
+);
+
+// Callback receiver for the OAuth process after log in.
+app.get(
+  "/auth/google/callback",
+  passport.authenticate("google", {
+    failureRedirect: "/",
+    failureFlash: true,
+    session: true
+  }),
+  (req, res) => {
+    // User has logged in.
+    console.info("User has logged in.");
+    res.redirect("/");
+  }
+);
 
 cell.on("connection", cellController.connectCell);
 edit.on("connection", editorController.connectEditor);
