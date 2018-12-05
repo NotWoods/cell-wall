@@ -12,8 +12,13 @@ KEYCODE_POWER = 26
 class AndroidDevice:
     def __init__(self, signer, serial=None, port_path=None):
         self.device = AdbCommands()
+        self.serial = serial
+        self.port_path = port_path
         self.device.ConnectDevice(
             serial=serial, port_path=port_path, rsa_keys=[signer])
+
+    def __repr__(self):
+        return f"AndroidDevice(serial={self.serial},port_path={self.port_path})"
 
     def install(self, apk_path):
         self.device.Install(apk_path)
@@ -34,7 +39,7 @@ class AndroidDevice:
         wakefulness = None
         for chunk in powerstate:
             buffer += chunk
-            match = WAKEFULLNESS.match(buffer)
+            match = WAKEFULLNESS.search(buffer)
             if match:
                 wakefulness = match.group(1)
                 break
@@ -42,9 +47,9 @@ class AndroidDevice:
 
 
 class DeviceHelper:
-    def __init__(self):
+    def __init__(self, rsa_key_path='~/.android/adbkey'):
         # KitKat+ devices require authentication
-        self.signer = PythonRSASigner(expanduser('~/.android/adbkey'))
+        self.signer = PythonRSASigner.FromRSAKeyPath(expanduser(rsa_key_path))
         self.devices = []
         self.refresh_devices()
 
