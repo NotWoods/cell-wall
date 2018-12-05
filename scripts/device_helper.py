@@ -3,6 +3,7 @@ from os.path import expanduser
 
 from adb.adb_commands import AdbCommands
 from adb.sign_pythonrsa import PythonRSASigner
+from adb.usb_exceptions import ReadFailedError
 
 
 WAKEFULLNESS = compile(r"mWakefulness=(\w+)")
@@ -12,10 +13,10 @@ KEYCODE_POWER = 26
 class AndroidDevice:
     def __init__(self, signer, serial=None, port_path=None):
         self.device = AdbCommands()
-        self.serial = serial
+        self.serial = serial.encode() if serial else None
         self.port_path = port_path
         self.device.ConnectDevice(
-            serial=serial, port_path=port_path, rsa_keys=[signer])
+            serial=self.serial, port_path=self.port_path, rsa_keys=[signer])
 
     def __repr__(self):
         return f"AndroidDevice(serial={self.serial},port_path={self.port_path})"
@@ -73,10 +74,16 @@ class DeviceHelper:
 
     def turn_on(self):
         for device in self.devices:
-            if not device.is_on():
-                device.trigger_button(KEYCODE_POWER)
+            try:
+                if not device.is_on():
+                    device.trigger_button(KEYCODE_POWER)
+            except ReadFailedError:
+                pass
 
     def turn_off(self):
         for device in self.devices:
-            if device.is_on():
-                device.trigger_button(KEYCODE_POWER)
+            try:
+                if device.is_on():
+                    device.trigger_button(KEYCODE_POWER)
+            except ReadFailedError:
+                pass
