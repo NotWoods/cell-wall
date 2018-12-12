@@ -3,9 +3,13 @@
     "target": "esnext",
     "module": "commonjs",
     "strict": true,
+    "noUnusedLocals": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
     "esModuleInterop": false,
     "moduleResolution": "node",
-    "sourceMap": true
+    "sourceMap": true,
+    "pretty": true
   },
   "include": ["src/**/*"],
   "exclude": ["public/**/*"]

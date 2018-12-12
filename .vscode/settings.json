@@ -12,9 +12,9 @@
   "editor.formatOnSave": true,
   "search.exclude": {
     "**/node_modules": true,
-    "**/bower_components": true,
-    "**/coverge": true
+    "**/lib": true,
+    "**/coverge": true,
+    "package-lock.json": true
   },
-  "typescript.referencesCodeLens.enabled": true,
-  "editor.tabSize": 2
+  "typescript.referencesCodeLens.enabled": true
 }
