@@ -1,4 +1,4 @@
-![](gallery/logo.png)
+![](images/logo.png)
 
 # CellWall
 
@@ -16,8 +16,8 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Prerequisites
 
-- Node.js 10 or greater
-- Android Studio 3.2 or greater
+-   Node.js 10 or greater
+-   Android Studio 3.2 or greater
 
 ### Installing
 
@@ -51,7 +51,7 @@ When running the client application, you will be prompted to enter a URL for you
 
 ## Built with
 
-- [Express](https://expressjs.com) - Web server
-- [Socket.io](https://socket.io) - WebSocket library for client and server
-- [Android Architecture Components](https://developer.android.com/topic/libraries/architecture/) - Used for MVVM architecture on client
-- [OKHttp](http://square.github.io/okhttp/) - HTTP library for the client
+-   [Express](https://expressjs.com) - Web server
+-   [Socket.io](https://socket.io) - WebSocket library for client and server
+-   [Android Architecture Components](https://developer.android.com/topic/libraries/architecture/) - Used for MVVM architecture on client
+-   [OKHttp](http://square.github.io/okhttp/) - HTTP library for the client
