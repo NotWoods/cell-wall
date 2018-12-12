@@ -1,0 +1,25 @@
+matrix:
+    include:
+        - language: node_js
+          node_js:
+              - "11"
+          sudo: false
+          cache: npm
+          before_script:
+              - cd server
+          script:
+              - npm run lint:check
+        - language: android
+          android:
+          components:
+              - tools
+              - build-tools-28.0.3
+              - android-28
+          before_script:
+              - cd client
+          script:
+              - ./gradlew build connectedCheck
+
+notifications:
+    slack:
+        secure: Zo0/qs4Q7uQfCLAdthVomaVKrbFhoQrZe6PAdiz9H/yr5uY83f9GokQAG/yEgeFJjauY9WjsEY94ZSsPEtS50gCa9PnwFfAu45bA9la0QUFnkKzU/tKqERvujnUruxAKxMEir0wIHEmLNBbxbhaZ9x7EJRWBvuic4ZaXCqyPQW+MJjBTHupwEh4YmSm+uHAVX12J6cYCatvPViudZtLIauSdM8evXkTCtvXb66L9n9FKYvdqLocY2ZjlEfcQQf7j4vrg6W75r5eNxkckjz83e4NuUetPXQxsuTq68gqMrr6SWqYRx4C08/4BNYIWY+RemFvfNdpnFZBYfklsXtCTEHutDIaWZ79EkmUjvzZoXBzacPNMfU7N5lmEpzGzlDjaOEbOsyFnoDhxMMRqK/eXGIxr56+Vd+0OEgR5/5VTlGIwQifGZZpbmaigdq0OwZgQf0L4cLnhRSexk2fLennSX9x0UtnYnqFOQ6ZORAlrOF14ACtEU+bAn9K18Z+H2d42PcHgby9L6EXeJNVSCKglwwSh9hPiPZWPCcd9ExObZZKPiLespgiqaLcoFw7T74nDD4R7/HK7t1Jhh3djnUlboIDbyHS75co3nKYFeMhjeOc8ftlyDq9H4NWchF2CjrbJ7K3cXq5vQLJycKXvxwTURc7gCp1F9ZrtpYtO2RFiyZE=
