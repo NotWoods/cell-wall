@@ -5,16 +5,18 @@ matrix:
               - "11"
           sudo: false
           cache: npm
-          before_script:
+          before_install:
               - cd server
+          install:
+              - npm ci
           script:
               - npm run lint:check
         - language: android
           android:
-          components:
-              - tools
-              - build-tools-28.0.3
-              - android-28
+              components:
+                  - tools
+                  - build-tools-28.0.3
+                  - android-28
           before_script:
               - cd client
           script:
