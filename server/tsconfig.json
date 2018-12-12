@@ -1,16 +1,21 @@
 {
-  "compilerOptions": {
-    "target": "esnext",
-    "module": "commonjs",
-    "strict": true,
-    "noUnusedLocals": true,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-    "esModuleInterop": false,
-    "moduleResolution": "node",
-    "sourceMap": true,
-    "pretty": true
-  },
-  "include": ["src/**/*"],
-  "exclude": ["public/**/*"]
+    "compilerOptions": {
+        /* Basic Options */
+        "target": "esnext",
+        "module": "commonjs",
+        "checkJs": true,
+        "sourceMap": true,
+        "pretty": true,
+
+        /* Strict Type-Checking Options */
+        "strict": true,
+        "noUnusedLocals": true,
+        "noImplicitReturns": true,
+        "noFallthroughCasesInSwitch": true,
+
+        /* Module Resolution Options */
+        "moduleResolution": "node"
+    },
+    "include": ["src/**/*"],
+    "exclude": ["public/**/*"]
 }

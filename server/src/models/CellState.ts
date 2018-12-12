@@ -1,20 +1,20 @@
 export enum CellStateType {
-  BLANK = "BLANK",
-  IDENTIFY = "IDENTIFY",
-  TEXT = "TEXT",
-  IMAGE = "IMAGE",
-  BUTTON = "BUTTON"
+    BLANK = 'BLANK',
+    IDENTIFY = 'IDENTIFY',
+    TEXT = 'TEXT',
+    IMAGE = 'IMAGE',
+    BUTTON = 'BUTTON',
 }
 
 export type CellState =
-  | ReturnType<typeof blank>
-  | ReturnType<typeof identify>
-  | ReturnType<typeof text>
-  | ReturnType<typeof image>
-  | ReturnType<typeof button>;
+    | ReturnType<typeof blank>
+    | ReturnType<typeof identify>
+    | ReturnType<typeof text>
+    | ReturnType<typeof image>
+    | ReturnType<typeof button>;
 
 function createState<M extends CellStateType, T>(type: M, data: T) {
-  return { type, data };
+    return { type, data };
 }
 
 export const blank = () => createState(CellStateType.BLANK, {});
@@ -26,7 +26,7 @@ export const blank = () => createState(CellStateType.BLANK, {});
  * @param {string} icon
  */
 export const identify = (backgroundColor: string, icon: string) =>
-  createState(CellStateType.IDENTIFY, { backgroundColor, icon });
+    createState(CellStateType.IDENTIFY, { backgroundColor, icon });
 
 /**
  * Shows some large text on the cell.
@@ -38,8 +38,8 @@ export const text = (text: string) => createState(CellStateType.TEXT, { text });
  * Shows an image on the cell.
  * @param {string} src
  */
-export const image = (src: string, scale: "cover" | "contain" = "cover") =>
-  createState(CellStateType.IMAGE, { src, scale });
+export const image = (src: string, scale: 'cover' | 'contain' = 'cover') =>
+    createState(CellStateType.IMAGE, { src, scale });
 
 /**
  * Shows a button with some color and icon.
@@ -47,4 +47,4 @@ export const image = (src: string, scale: "cover" | "contain" = "cover") =>
  * @param {string} icon
  */
 export const button = (backgroundColor: string, icon: string) =>
-  createState(CellStateType.BUTTON, { backgroundColor, icon });
+    createState(CellStateType.BUTTON, { backgroundColor, icon });

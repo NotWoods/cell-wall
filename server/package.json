@@ -11,7 +11,11 @@
     "scripts": {
         "test": "jest --forceExit --coverage --verbose",
         "build": "tsc",
-        "start": "node index.js"
+        "start": "node index.js",
+        "lint:ts": "prettier --parser typescript \"src/**/*.ts\"",
+        "lint:js": "prettier --parser babylon \"public/**/*.js\" \"index.js\"",
+        "lint": "npm run lint:ts -- --write && npm run lint:js -- --write",
+        "lint:check": "npm run lint:ts -- --list-different && npm run lint:js -- --list-different"
     },
     "dependencies": {
         "dotenv": "^6.2.0",
@@ -34,19 +38,15 @@
         "@types/validator": "^9.4.3",
         "jest": "^23.6.0",
         "merge": "^1.2.1",
+        "prettier": "^1.15.3",
         "ts-jest": "^23.10.5",
-        "typescript": "^3.1.6"
+        "typescript": "^3.2.2"
     },
     "engines": {
         "node": ">=10.14.2"
     },
     "jest": {
         "preset": "ts-jest"
-    },
-    "husky": {
-        "hooks": {
-            "pre-commit": "npm run lint"
-        }
     },
     "prettier": {
         "singleQuote": true,
