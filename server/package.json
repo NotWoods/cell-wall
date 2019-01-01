@@ -35,7 +35,7 @@
         "@types/passport-google-oauth": "^1.0.39",
         "@types/socket.io": "^2.1.2",
         "@types/socket.io-client": "^1.4.32",
-        "@types/validator": "^9.4.3",
+        "@types/validator": "^10.9.0",
         "jest": "^23.6.0",
         "merge": "^1.2.1",
         "prettier": "^1.15.3",
