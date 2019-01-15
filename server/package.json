@@ -15,7 +15,7 @@
         "lint:ts": "prettier --parser typescript \"src/**/*.ts\"",
         "lint:js": "prettier --parser babylon \"public/**/*.js\" \"index.js\"",
         "lint": "npm run lint:ts -- --write && npm run lint:js -- --write",
-        "lint:check": "npm run lint:ts -- --list-different && npm run lint:js -- --list-different"
+        "lint:check": "npm run build && npm run lint:ts -- --list-different && npm run lint:js -- --list-different"
     },
     "dependencies": {
         "dotenv": "^6.2.0",

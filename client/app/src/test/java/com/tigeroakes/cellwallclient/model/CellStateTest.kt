@@ -11,13 +11,13 @@ class CellStateTest {
         assertEquals(
                 CellState.Blank,
                 CellState.from(JSONObject().apply {
-                    put("name", "BLANK")
+                    put("type", "BLANK")
                     put("data", JSONObject())
                 }))
         assertEquals(
                 CellState.Blank,
                 CellState.from(JSONObject().apply {
-                    put("name", "ABC")
+                    put("type", "ABC")
                     put("data", JSONObject())
                 }))
     }
@@ -27,7 +27,7 @@ class CellStateTest {
         assertEquals(
                 CellState.Configure("#FFFFFF", "star"),
                 CellState.from(JSONObject().apply {
-                    put("name", "CONFIGURE")
+                    put("type", "CONFIGURE")
                     put("data", JSONObject().apply {
                         put("backgroundColor", "#FFFFFF")
                         put("icon", "star")
@@ -36,7 +36,7 @@ class CellStateTest {
         assertEquals(
                 CellState.Configure("#FF0000", "square"),
                 CellState.from(JSONObject().apply {
-                    put("name", "CONFIGURE")
+                    put("type", "CONFIGURE")
                     put("data", JSONObject().apply {
                         put("backgroundColor", "#FF0000")
                         put("icon", "square")
@@ -48,7 +48,7 @@ class CellStateTest {
     @Test(expected = JSONException::class)
     fun from_configure_noFields() {
         CellState.from(JSONObject().apply {
-            put("name", "CONFIGURE")
+            put("type", "CONFIGURE")
             put("data", JSONObject())
         })
     }
@@ -58,7 +58,7 @@ class CellStateTest {
         assertEquals(
                 CellState.Text("Hello world!"),
                 CellState.from(JSONObject().apply {
-                    put("name", "TEXT")
+                    put("type", "TEXT")
                     put("data", JSONObject().apply {
                         put("text", "Hello world!")
                         put("extra", "xyz")
@@ -69,7 +69,7 @@ class CellStateTest {
     @Test(expected = JSONException::class)
     fun from_text_noFields() {
         CellState.from(JSONObject().apply {
-            put("name", "TEXT")
+            put("type", "TEXT")
             put("data", JSONObject())
         })
     }
@@ -79,7 +79,7 @@ class CellStateTest {
         assertEquals(
                 CellState.Image("http://example.com/img.png"),
                 CellState.from(JSONObject().apply {
-                    put("name", "IMAGE")
+                    put("type", "IMAGE")
                     put("data", JSONObject().apply {
                         put("src", "http://example.com/img.png")
                     })
@@ -87,9 +87,9 @@ class CellStateTest {
         assertEquals(
                 CellState.Image("/some/sub_path"),
                 CellState.from(JSONObject().apply {
-                    put("name", "IMAGE")
+                    put("type", "IMAGE")
                     put("data", JSONObject().apply {
-                        put("src", "http://example.com/img.png")
+                        put("src", "/some/sub_path")
                         put("extra", "xyz")
                     })
                 }))
@@ -98,7 +98,7 @@ class CellStateTest {
     @Test(expected = JSONException::class)
     fun from_image_noFields() {
         CellState.from(JSONObject().apply {
-            put("name", "IMAGE")
+            put("type", "IMAGE")
             put("data", JSONObject())
         })
     }
@@ -108,7 +108,7 @@ class CellStateTest {
         assertEquals(
                 CellState.Button("#FFFF00"),
                 CellState.from(JSONObject().apply {
-                    put("name", "BUTTON")
+                    put("type", "BUTTON")
                     put("data", JSONObject().apply {
                         put("backgroundColor", "#FFFF00")
                         put("extra", "xyz")
@@ -119,7 +119,7 @@ class CellStateTest {
     @Test(expected = JSONException::class)
     fun from_button_noFields() {
         CellState.from(JSONObject().apply {
-            put("name", "BUTTON")
+            put("type", "BUTTON")
             put("data", JSONObject())
         })
     }
