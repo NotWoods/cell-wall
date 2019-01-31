@@ -14,7 +14,8 @@ import { saveWall } from './editor';
 export const getState = (req: Request, res: Response) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        return res.status(422).json({ errors: errors.array() });
+        res.status(422).json({ errors: errors.array() });
+        return;
     }
 
     const cell = wall.getCell(req.params.uuid);
@@ -33,7 +34,8 @@ getState.checks = check('uuid').isUUID();
 export const putCell = (req: Request, res: Response) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        return res.status(422).json({ errors: errors.array() });
+        res.status(422).json({ errors: errors.array() });
+        return;
     }
 
     const { uuid } = req.params;

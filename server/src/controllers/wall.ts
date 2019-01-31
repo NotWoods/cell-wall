@@ -108,7 +108,8 @@ export const getActions = (req: Request, res: Response) => {
 export const postTextAction = async (req: Request, res: Response) => {
     const list = req.body as string[];
     if (!Array.isArray(list)) {
-        return res.status(422).json({ errors: ['Body must be string array'] });
+        res.status(422).json({ errors: ['Body must be string array'] });
+        return;
     }
 
     try {
@@ -127,7 +128,8 @@ export const postTextAction = async (req: Request, res: Response) => {
 export const postPersonAction = async (req: Request, res: Response) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        return res.status(422).json({ errors: errors.array() });
+        res.status(422).json({ errors: errors.array() });
+        return;
     }
 
     const person = req.params.person as string;
@@ -156,7 +158,8 @@ postPersonAction.checks = check('person').isString();
 export const postAction = async (req: Request, res: Response) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        return res.status(422).json({ errors: errors.array() });
+        res.status(422).json({ errors: errors.array() });
+        return;
     }
 
     try {

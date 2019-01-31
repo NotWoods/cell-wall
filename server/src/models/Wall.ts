@@ -1,11 +1,5 @@
-import { enumerate } from '../util/itertools';
 import { Cell, CellModel, UUID } from './Cell';
-import { blank, image, text } from './CellState';
 import { ObservableSet } from './ObservableSet';
-
-type FunctionPropertyNames<T> = {
-    [K in keyof T]: T[K] extends () => void ? K : never
-}[keyof T];
 
 export interface WallModel {
     /**

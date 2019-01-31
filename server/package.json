@@ -15,7 +15,7 @@
         "lint:ts": "prettier --parser typescript \"src/**/*.ts\"",
         "lint:js": "prettier --parser babylon \"public/**/*.js\" \"index.js\"",
         "lint": "npm run lint:ts -- --write && npm run lint:js -- --write",
-        "lint:check": "npm run build && npm run lint:ts -- --list-different && npm run lint:js -- --list-different"
+        "lint:check": "npm run build && npm run lint:ts -- --check && npm run lint:js -- --check"
     },
     "dependencies": {
         "dotenv": "^6.2.0",
@@ -30,17 +30,17 @@
     },
     "devDependencies": {
         "@types/dotenv": "^6.1.0",
-        "@types/express": "^4.16.0",
-        "@types/jest": "^23.3.11",
+        "@types/express": "^4.16.1",
+        "@types/jest": "^23.3.13",
         "@types/passport-google-oauth": "^1.0.39",
         "@types/socket.io": "^2.1.2",
         "@types/socket.io-client": "^1.4.32",
         "@types/validator": "^10.9.0",
         "jest": "^23.6.0",
         "merge": "^1.2.1",
-        "prettier": "^1.15.3",
+        "prettier": "^1.16.3",
         "ts-jest": "^23.10.5",
-        "typescript": "^3.2.2"
+        "typescript": "^3.2.4"
     },
     "engines": {
         "node": ">=10.14.2"

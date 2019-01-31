@@ -3,6 +3,7 @@
         /* Basic Options */
         "target": "esnext",
         "module": "commonjs",
+        "allowJs": true,
         "checkJs": true,
         "sourceMap": true,
         "pretty": true,
