@@ -1,4 +1,6 @@
-import { Express, Request, Response, static as serveStatic } from 'express';
+import { Request, Response } from 'express';
+import Koa = require('koa');
+import serveStatic = require('koa-static');
 import { join, posix } from 'path';
 
 /**
@@ -17,7 +19,7 @@ export const isCellWall = (req: Request, res: Response) => {
     res.sendStatus(204);
 };
 
-export function serveModules(app: Express, folders: string[]) {
+export function serveModules(app: Koa, folders: string[]) {
     for (const folder of folders) {
         const path = join(__dirname, '../../node_modules', folder);
         app.use(posix.join('/node_modules', folder), serveStatic(path));

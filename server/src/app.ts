@@ -1,6 +1,8 @@
 import { createServer } from 'http';
 import { join } from 'path';
-import express = require('express');
+import Koa = require('koa');
+import bodyParser = require('koa-bodyparser');
+import serveStatic = require('koa-static');
 import socketIO = require('socket.io');
 // import passport = require('passport');
 // import './auth';
@@ -11,25 +13,35 @@ import * as cellController from './controllers/cell';
 import * as editorController from './controllers/editor';
 import * as wallController from './controllers/wall';
 
-// Create Express server
-const app = express();
+// Create server
+const app = new Koa();
 
 // Create SocketIO server
-const server = createServer(app);
+const server = createServer(app.callback());
 const io = socketIO(server);
 
 // Express configuration
 export const port = process.env.PORT || 3000;
-export const env = app.get('env');
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+export const env = process.env.NODE_ENV;
+app.use(bodyParser());
 
-app.use(express.static(join(__dirname, '../public'), { maxAge: 36000 }));
+app.use(serveStatic(join(__dirname, '../public'), { maxage: 36000 }));
 homeController.serveModules(app, ['interactjs/dist', 'socket.io-client/dist']);
 
 // SocketIO configuration
 const cell = io.of('/cell');
 const edit = io.of('/edit');
+
+// Error handling middleware
+app.use(async (ctx, next) => {
+    try {
+        await next();
+    } catch (err) {
+        ctx.status = err.status || 500;
+        ctx.body = err.message;
+        ctx.app.emit('error', err, ctx);
+    }
+});
 
 /**
  * Primary app routes.
