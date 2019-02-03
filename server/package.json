@@ -18,6 +18,7 @@
         "lint:check": "npm run build && npm run lint:ts -- --check && npm run lint:js -- --check"
     },
     "dependencies": {
+        "appium-adb": "^7.2.0",
         "dotenv": "^6.2.0",
         "express": "^4.16.4",
         "express-validator": "^5.3.1",

@@ -2,9 +2,8 @@ import { createServer } from 'http';
 import { join } from 'path';
 import express = require('express');
 import socketIO = require('socket.io');
-import passport = require('passport');
-
-import './auth';
+// import passport = require('passport');
+// import './auth';
 
 // Controllers (route handlers)
 import * as homeController from './controllers/home';
@@ -50,7 +49,7 @@ app.get('/cell/:uuid', cellController.getState.checks, cellController.getState);
 app.put('/cell/:uuid', cellController.putCell.checks, cellController.putCell);
 
 // Star the OAuth login process for Google.
-app.get(
+/*app.get(
     '/auth/google',
     passport.authenticate('google', {
         scope: [
@@ -75,7 +74,7 @@ app.get(
         console.info('User has logged in.');
         res.redirect('/');
     },
-);
+);*/
 
 cell.on('connection', cellController.connectCell);
 edit.on('connection', editorController.connectEditor);
