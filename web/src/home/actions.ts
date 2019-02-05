@@ -12,7 +12,7 @@ interface Action {
 
 function renderItem(action: Action) {
     const result = document.importNode(itemTemplate.content, true);
-    const button = result.querySelector('button');
+    const button = result.querySelector('button')!;
     button.textContent = action.name;
     button.formAction = `/wall/action/${action.id}`;
     return result;

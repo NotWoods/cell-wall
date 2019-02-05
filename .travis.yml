@@ -11,6 +11,8 @@ matrix:
               - npm ci
           script:
               - npm run lint:check
+              - npm test
+
         - language: node_js
           node_js:
               - '11'
@@ -22,6 +24,8 @@ matrix:
               - npm ci
           script:
               - npm run lint:check
+              - npm test
+
         - language: android
           android:
               components:

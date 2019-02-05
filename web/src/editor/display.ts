@@ -1,6 +1,6 @@
 import interact from 'interactjs';
+import { form, scale, BASE_SIZE } from './board';
 
-export const form = document.getElementById('options') as HTMLFormElement;
 const displaySelect = form.elements.namedItem('display') as HTMLSelectElement;
 const xInput = form.elements.namedItem('x') as HTMLInputElement;
 const yInput = form.elements.namedItem('y') as HTMLInputElement;
@@ -14,76 +14,6 @@ const DRAGGABLE_OPTIONS: interact.DraggableOptions = {
     },
     autoScroll: true,
 };
-
-const BASE_SIZE = 16;
-
-/**
- * Convert number to CSS string
- * @param {number} value
- */
-function scale(value: number) {
-    return `${value / BASE_SIZE}em`;
-}
-
-export class Board {
-    element: HTMLElement;
-    container: HTMLElement;
-    containerDim: { width: number; height: number };
-
-    constructor() {
-        this.element = document.getElementById('cellwall-board');
-        this.container = this.element.parentElement;
-        this.updateContainerDimensions();
-        this.setDimension('width', form.width.value);
-        this.setDimension('height', form.height.value);
-        this.updateScale();
-    }
-
-    updateContainerDimensions() {
-        this.containerDim = {
-            width: this.container.clientWidth,
-            height: this.container.clientHeight,
-        };
-    }
-
-    updateScale() {
-        const width = parseFloat(this.element.style.width) * BASE_SIZE;
-        const height = parseFloat(this.element.style.height) * BASE_SIZE;
-        const xScale = this.containerDim.width / width;
-        const yScale = this.containerDim.height / height;
-        this.container.style.fontSize = `${Math.min(xScale, yScale) *
-            BASE_SIZE}px`;
-    }
-
-    /**
-     * @param {HTMLElement} element
-     */
-    add(element: HTMLElement) {
-        this.element.appendChild(element);
-    }
-
-    /**
-     * Change the width or height of the board
-     * @param {'width' | 'height'} dim
-     * @param {number} value
-     */
-    setDimension(dim: 'width' | 'height', value: number) {
-        this.element.style[dim] = scale(value);
-        form[dim].value = value;
-    }
-
-    /**
-     * Toggles a background image on the board
-     * @param {boolean} value
-     */
-    showPreview(value: boolean) {
-        if (value) {
-            this.element.classList.add('preview');
-        } else {
-            this.element.classList.remove('preview');
-        }
-    }
-}
 
 /**
  * Displays correspond to a screen on the CellWall. This class holds a UI
@@ -134,7 +64,7 @@ export class Display {
      */
     static get(element: HTMLElement | EventTarget | string) {
         if (typeof element === 'string') {
-            element = document.getElementById(element);
+            element = document.getElementById(element)!;
         }
 
         if (element instanceof HTMLElement) {
@@ -150,7 +80,7 @@ export class Display {
      * @param {interact.InteractEvent} event
      */
     static onDragMove(event: interact.InteractEvent) {
-        const display = Display.get(event.target);
+        const display = Display.get(event.target)!;
 
         const { x, y } = display.getPosition();
         const { dx, dy } = event;
@@ -164,17 +94,17 @@ export class Display {
      * @param {interact.InteractEvent} event
      */
     static onDragStart(event: interact.InteractEvent) {
-        const display = Display.get(event.target);
+        const display = Display.get(event.target)!;
         displaySelect.value = display.element.id;
         Display.select(display);
         display.element.classList.add('dragging');
 
         display.scale =
-            parseFloat(getComputedStyle(event.target).fontSize) / BASE_SIZE;
+            parseFloat(getComputedStyle(event.target).fontSize!) / BASE_SIZE;
     }
 
     static onDragEnd(event: { target: string | EventTarget | HTMLElement }) {
-        const display = Display.get(event.target);
+        const display = Display.get(event.target)!;
         display.dispatchMoveEvent();
         display.element.classList.remove('dragging');
     }
@@ -198,8 +128,8 @@ export class Display {
      * Returns the X and Y position of the display.
      */
     getPosition() {
-        const x = parseInt(this.element.dataset.x, 10) || 0;
-        const y = parseInt(this.element.dataset.y, 10) || 0;
+        const x = parseInt(this.element.dataset.x!, 10) || 0;
+        const y = parseInt(this.element.dataset.y!, 10) || 0;
         return { x, y };
     }
 
@@ -230,7 +160,7 @@ export class Display {
         // Remove <option> from select
         const option = displaySelect.querySelector(
             `option[value=${this.element.id}]`,
-        );
+        )!;
         option.remove();
 
         // Remove interact.js listeners
