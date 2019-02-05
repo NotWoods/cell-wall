@@ -1,7 +1,7 @@
-import { Response, Request } from 'express';
-import { check, validationResult } from 'express-validator/check';
+import { Context } from 'koa';
+import { Joi, Spec } from 'koa-joi-router';
+import { blank, image, text } from '../models/CellState';
 import { wall } from '../models/Wall';
-import { text, image, blank } from '../models/CellState';
 import { enumerate } from '../util/itertools';
 
 function showText(list: string[]) {
@@ -87,54 +87,62 @@ type Action = keyof typeof actions;
  * GET /wall
  * Returns the serialized version of the wall.
  */
-export const getWall = (req: Request, res: Response) => {
-    res.json(wall.toJSON());
+export const getWall: Spec = {
+    method: 'GET',
+    path: '/wall',
+    async handler(ctx: Context) {
+        ctx.body = wall.toJSON();
+    },
 };
 
 /**
  * GET /wall/actions
  * Return list of actions that can be manually triggered.
  */
-export const getActions = (req: Request, res: Response) => {
-    res.json(
-        Object.entries(actions).map(([id, details]) => ({ id, ...details })),
-    );
+export const getActions: Spec = {
+    method: 'GET',
+    path: '/wall/actions',
+    async handler(ctx: Context) {
+        ctx.body = Object.entries(actions).map(([id, details]) => ({
+            id,
+            ...details,
+        }));
+    },
 };
 
 /**
  * POST /wall/action/text
  * Display a list of text on the wall
  */
-export const postTextAction = async (req: Request, res: Response) => {
-    const list = req.body as string[];
-    if (!Array.isArray(list)) {
-        res.status(422).json({ errors: ['Body must be string array'] });
-        return;
-    }
-
-    try {
+export const postTextAction: Spec = {
+    method: 'POST',
+    path: '/wall/action/text',
+    validate: {
+        body: Joi.array().items(Joi.string()),
+    },
+    async handler(ctx: Context) {
+        const list = ctx.request.body as string[];
         await showText(list);
 
-        res.redirect('/');
-    } catch (err) {
-        res.status(500).json({ errors: [err.message] });
-    }
+        ctx.redirect('/');
+    },
 };
 
 /**
- * POST /wall/action/person
+ * POST /wall/action/:person
  * Display a greeting to a person, along with images of them.
  */
-export const postPersonAction = async (req: Request, res: Response) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        res.status(422).json({ errors: errors.array() });
-        return;
-    }
+export const postPersonAction: Spec = {
+    method: 'POST',
+    path: '/wall/action/:person',
+    validate: {
+        params: {
+            person: Joi.string(),
+        },
+    },
+    async handler(ctx: Context) {
+        const person = ctx.params.person as string;
 
-    const person = req.params.person as string;
-
-    try {
         const center = wall.centerCell();
         if (center != null) {
             center.state = text(`Welcome ${person}!`);
@@ -144,31 +152,26 @@ export const postPersonAction = async (req: Request, res: Response) => {
             cell.state = image(`/img/demo${i % 2}.jpg`);
         }
 
-        res.redirect('/');
-    } catch (err) {
-        res.status(500).json({ errors: [err.message] });
-    }
+        ctx.redirect('/');
+    },
 };
-postPersonAction.checks = check('person').isString();
 
 /**
  * POST /wall/action/:action
  * Returns the serialized version of the wall.
  */
-export const postAction = async (req: Request, res: Response) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        res.status(422).json({ errors: errors.array() });
-        return;
-    }
-
-    try {
-        const action = req.params.action as Action;
+export const postAction: Spec = {
+    method: 'POST',
+    path: '/wall/action/:action',
+    validate: {
+        params: {
+            action: Joi.only(Object.keys(actions)),
+        },
+    },
+    async handler(ctx: Context) {
+        const action = ctx.params.action as Action;
         await actions[action].run();
 
-        res.redirect('/');
-    } catch (err) {
-        res.status(500).json({ errors: [err.message] });
-    }
+        ctx.redirect('/');
+    },
 };
-postAction.checks = check('action').isIn(Object.keys(actions));

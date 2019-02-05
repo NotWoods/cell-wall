@@ -1,6 +1,5 @@
-import { Response, Request } from 'express';
-import { check, validationResult } from 'express-validator/check';
-import { isUUID } from 'validator';
+import { Joi, Spec } from 'koa-joi-router';
+import { Context } from 'koa';
 import { Socket } from 'socket.io';
 import { wall } from '../models/Wall';
 import { Cell } from '../models/Cell';
@@ -11,71 +10,75 @@ import { saveWall } from './editor';
  * GET /cell/:uuid
  * Returns the current state of the cell.
  */
-export const getState = (req: Request, res: Response) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        res.status(422).json({ errors: errors.array() });
-        return;
-    }
-
-    const cell = wall.getCell(req.params.uuid);
-    if (cell == null) {
-        res.sendStatus(404); // ID was incorrect
-    } else {
-        res.json(cell.state);
-    }
+export const getState: Spec = {
+    method: 'GET',
+    path: '/cell/:uuid',
+    validate: {
+        params: {
+            uuid: Joi.string().guid(),
+        },
+    },
+    async handler(ctx: Context) {
+        const cell = wall.getCell(ctx.params.uuid);
+        if (cell == null) {
+            ctx.status = 404; // ID was incorrect
+        } else {
+            ctx.body = cell.state;
+        }
+    },
 };
-getState.checks = check('uuid').isUUID();
 
 /**
  * PUT /cell/:uuid
  * Register a new cell with the given data
  */
-export const putCell = (req: Request, res: Response) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        res.status(422).json({ errors: errors.array() });
-        return;
-    }
+export const putCell: Spec = {
+    method: 'PUT',
+    path: '/cell/:uuid',
+    validate: {
+        params: {
+            uuid: Joi.string().guid(),
+        },
+        query: {
+            deviceName: Joi.string(),
+            widthPixels: Joi.number(),
+            heightPixels: Joi.number(),
+        },
+    },
+    async handler(ctx: Context) {
+        const { uuid } = ctx.params;
+        const existingCell = wall.getCell(uuid);
+        let cell = existingCell;
+        if (cell == null) {
+            cell = new Cell(uuid);
+        }
+        cell.deviceName = ctx.request.body.deviceName;
+        cell.display = {
+            density: ctx.request.body.density,
+            heightPixels: ctx.request.body.heightPixels,
+            widthPixels: ctx.request.body.widthPixels,
+        };
+        wall.knownCells.set(uuid, cell);
+        saveWall();
 
-    const { uuid } = req.params;
-    const existingCell = wall.getCell(uuid);
-    let cell = existingCell;
-    if (cell == null) {
-        cell = new Cell(uuid);
-    }
-    cell.deviceName = req.body.deviceName;
-    cell.display = {
-        density: req.body.density,
-        heightPixels: req.body.heightPixels,
-        widthPixels: req.body.widthPixels,
-    };
-    wall.knownCells.set(uuid, cell);
-    saveWall();
+        console.info(
+            `${existingCell != null ? 'Updated' : 'Added'} cell [${uuid}]\n` +
+                `  ${cell.deviceName}\n` +
+                `  Position: ${JSON.stringify(cell.position)}\n` +
+                `  Display: ${JSON.stringify(cell.display)}\n`,
+        );
 
-    console.info(
-        `${existingCell != null ? 'Updated' : 'Added'} cell [${uuid}]\n` +
-            `  ${cell.deviceName}\n` +
-            `  Position: ${JSON.stringify(cell.position)}\n` +
-            `  Display: ${JSON.stringify(cell.display)}\n`,
-    );
-
-    // Respond with 201 if new cell was created
-    res.status(existingCell != null ? 200 : 201).json(cell);
+        // Respond with 201 if new cell was created
+        ctx.status = existingCell != null ? 200 : 201;
+        ctx.body = cell;
+    },
 };
-putCell.checks = [
-    check('uuid').isUUID(),
-    check('deviceName').isString(),
-    check('density').isNumeric(),
-    check('widthPixels').isNumeric(),
-    check('heightPixels').isNumeric(),
-];
 
-export const connectCell = (socket: Socket) => {
-    const { uuid } = socket.handshake.query;
-    if (!isUUID(uuid)) {
-        throw new Error(`Bad cell UUID ${uuid}`);
-    }
+export const connectCell = async (socket: Socket) => {
+    const { uuid } = await Joi.validate(
+        socket.handshake.query,
+        connectCell.schema.query,
+    );
 
     console.log(`Cell connected [${uuid}]`);
 
@@ -102,4 +105,9 @@ export const connectCell = (socket: Socket) => {
         }
         wall.connectedCells.delete(uuid);
     });
+};
+connectCell.schema = {
+    query: {
+        uuid: Joi.string().guid(),
+    },
 };

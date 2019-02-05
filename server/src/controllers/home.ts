@@ -1,27 +1,26 @@
-import { Request, Response } from 'express';
-import Koa = require('koa');
-import serveStatic = require('koa-static');
+import { Context } from 'koa';
+import { Router, Spec } from 'koa-joi-router';
 import { join, posix } from 'path';
-
-/**
- * GET /
- * Home page.
- */
-export const index = (req: Request, res: Response) => {
-    res.sendStatus(200);
-};
+import serveStatic = require('koa-static');
 
 /**
  * GET /is-cellwall-server
  * Indicates this server is a CellWall server
  */
-export const isCellWall = (req: Request, res: Response) => {
-    res.sendStatus(204);
+export const isCellWall: Spec = {
+    method: 'GET',
+    path: '/is-cellwall-server',
+    async handler(ctx: Context) {
+        ctx.status = 204;
+    },
 };
 
-export function serveModules(app: Koa, folders: string[]) {
+export function serveModules(router: Router, folders: string[]) {
     for (const folder of folders) {
         const path = join(__dirname, '../../node_modules', folder);
-        app.use(posix.join('/node_modules', folder), serveStatic(path));
+        router.use(
+            posix.join('/node_modules', folder),
+            serveStatic(path, { maxage: 36000 }),
+        );
     }
 }

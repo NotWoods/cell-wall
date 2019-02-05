@@ -1,10 +1,10 @@
 import { readFile, writeFile } from 'fs';
-import { promisify } from 'util';
+import { Joi } from 'koa-joi-router';
 import { join } from 'path';
 import { Socket } from 'socket.io';
-import { isUUID } from 'validator';
-import { wall } from '../models/Wall';
+import { promisify } from 'util';
 import { UUID } from '../models/Cell';
+import { wall } from '../models/Wall';
 
 const readFileAsync = promisify(readFile);
 const writeFileAsync = promisify(writeFile);
@@ -41,6 +41,18 @@ function difference<T>(a: Set<T>, b: Set<T>): T[] {
     return [...a].filter(x => !b.has(x));
 }
 
+const moveCellSchema = {
+    id: Joi.string().guid(),
+    x: Joi.number(),
+    y: Joi.number(),
+};
+
+const resizeWallSchema = Joi.array()
+    .length(2)
+    .items(Joi.only('width', 'height'), Joi.number());
+
+const showingPreviewSchema = Joi.boolean();
+
 export const connectEditor = async (socket: Socket) => {
     await ready;
     console.log('editor connected');
@@ -73,14 +85,8 @@ export const connectEditor = async (socket: Socket) => {
     onchange(wall.connectedCells);
     wall.connectedCells.addListener(onchange);
 
-    socket.on('move-cell', data => {
-        if (
-            !isUUID(data.id) ||
-            typeof data.x !== 'number' ||
-            typeof data.y !== 'number'
-        ) {
-            throw new Error(`Bad data: ${JSON.stringify(data)}`);
-        }
+    socket.on('move-cell', async data => {
+        await Joi.validate(data, moveCellSchema);
 
         const cell = wall.knownCells.get(data.id);
         if (cell != null) {
@@ -90,22 +96,15 @@ export const connectEditor = async (socket: Socket) => {
             saveWall();
         }
     });
-    socket.on('resize-wall', (dimension: 'width' | 'height', value) => {
-        if (
-            !(dimension === 'width' || dimension === 'height') ||
-            typeof value !== 'number'
-        ) {
-            throw new Error(`Bad data: ${dimension}, ${value}`);
-        }
+    socket.on('resize-wall', async (dimension: 'width' | 'height', value) => {
+        await Joi.validate([dimension, value], resizeWallSchema);
 
         wall[dimension] = value;
         socket.broadcast.emit('resize-wall', dimension, value);
         saveWall();
     });
-    socket.on('showing-preview', show => {
-        if (typeof show !== 'boolean') {
-            throw new Error(`Bad data: ${show}`);
-        }
+    socket.on('showing-preview', async show => {
+        await Joi.validate(show, showingPreviewSchema);
 
         wall.showingPreview = show;
         socket.broadcast.emit('showing-preview', show);
