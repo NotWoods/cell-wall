@@ -1,9 +1,9 @@
-import { Joi, Spec } from 'koa-joi-router';
 import { Context } from 'koa';
+import { Joi, Spec } from 'koa-joi-router';
 import { Socket } from 'socket.io';
+import { Cell, cellSchema } from '../models/Cell';
+import { CellState, cellStateSchema } from '../models/CellState';
 import { wall } from '../models/Wall';
-import { Cell } from '../models/Cell';
-import { CellState } from '../models/CellState';
 import { saveWall } from './editor';
 
 /**
@@ -16,6 +16,10 @@ export const getState: Spec = {
     validate: {
         params: {
             uuid: Joi.string().guid(),
+        },
+        output: {
+            200: cellStateSchema,
+            404: Joi.any(),
         },
     },
     async handler(ctx: Context) {
@@ -41,8 +45,11 @@ export const putCell: Spec = {
         },
         query: {
             deviceName: Joi.string(),
-            widthPixels: Joi.number(),
-            heightPixels: Joi.number(),
+            widthPixels: Joi.number().positive(),
+            heightPixels: Joi.number().positive(),
+        },
+        output: {
+            '200,201': cellSchema,
         },
     },
     async handler(ctx: Context) {

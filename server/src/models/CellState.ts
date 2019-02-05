@@ -1,3 +1,5 @@
+import { Joi } from 'koa-joi-router';
+
 export enum CellStateType {
     BLANK = 'BLANK',
     IDENTIFY = 'IDENTIFY',
@@ -48,3 +50,8 @@ export const image = (src: string, scale: 'cover' | 'contain' = 'cover') =>
  */
 export const button = (backgroundColor: string, icon: string) =>
     createState(CellStateType.BUTTON, { backgroundColor, icon });
+
+export const cellStateSchema = Joi.object({
+    type: Joi.string().required(),
+    data: Joi.object().required(),
+});

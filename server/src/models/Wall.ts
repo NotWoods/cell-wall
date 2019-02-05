@@ -1,4 +1,5 @@
-import { Cell, CellModel, UUID } from './Cell';
+import { Joi } from 'koa-joi-router';
+import { Cell, CellModel, UUID, cellSchema } from './Cell';
 import { ObservableSet } from './ObservableSet';
 
 export interface WallModel {
@@ -109,3 +110,15 @@ class Wall implements WallModel {
 }
 
 export const wall = new Wall();
+
+export const wallSchema = Joi.object({
+    width: Joi.number()
+        .positive()
+        .required(),
+    height: Joi.number()
+        .positive()
+        .required(),
+    knownCells: Joi.array()
+        .required()
+        .items(cellSchema),
+});

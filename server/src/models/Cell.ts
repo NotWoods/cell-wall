@@ -1,4 +1,5 @@
-import { CellState, blank } from './CellState';
+import { Joi } from 'koa-joi-router';
+import { CellState, blank, cellStateSchema } from './CellState';
 
 /**
  * @see {@link{https://developer.android.com/reference/android/util/DisplayMetrics}}
@@ -60,3 +61,26 @@ export class Cell implements CellModel {
 
     constructor(public id: UUID) {}
 }
+
+export const cellSchema = Joi.object({
+    id: Joi.string()
+        .guid()
+        .required(),
+    deviceName: Joi.string().required(),
+    position: {
+        x: Joi.number().required(),
+        y: Joi.number().required(),
+    },
+    display: {
+        density: Joi.number()
+            .positive()
+            .required(),
+        heightPixels: Joi.number()
+            .positive()
+            .required(),
+        widthPixels: Joi.number()
+            .positive()
+            .required(),
+    },
+    state: cellStateSchema,
+});

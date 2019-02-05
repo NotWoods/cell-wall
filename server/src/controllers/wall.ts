@@ -1,7 +1,7 @@
 import { Context } from 'koa';
 import { Joi, Spec } from 'koa-joi-router';
 import { blank, image, text } from '../models/CellState';
-import { wall } from '../models/Wall';
+import { wall, wallSchema } from '../models/Wall';
 import { enumerate } from '../util/itertools';
 
 function showText(list: string[]) {
@@ -90,6 +90,11 @@ type Action = keyof typeof actions;
 export const getWall: Spec = {
     method: 'GET',
     path: '/wall',
+    validate: {
+        output: {
+            200: wallSchema,
+        },
+    },
     async handler(ctx: Context) {
         ctx.body = wall.toJSON();
     },
@@ -102,6 +107,16 @@ export const getWall: Spec = {
 export const getActions: Spec = {
     method: 'GET',
     path: '/wall/actions',
+    validate: {
+        output: {
+            200: Joi.array().items(
+                Joi.object({
+                    id: Joi.only(Object.keys(actions)),
+                    name: Joi.string(),
+                }),
+            ),
+        },
+    },
     async handler(ctx: Context) {
         ctx.body = Object.entries(actions).map(([id, details]) => ({
             id,
