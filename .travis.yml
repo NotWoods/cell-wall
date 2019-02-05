@@ -11,6 +11,17 @@ matrix:
               - npm ci
           script:
               - npm run lint:check
+        - language: node_js
+          node_js:
+              - '11'
+          sudo: false
+          cache: npm
+          before_install:
+              - cd web
+          install:
+              - npm ci
+          script:
+              - npm run lint:check
         - language: android
           android:
               components:
@@ -18,6 +29,6 @@ matrix:
                   - build-tools-28.0.3
                   - android-28
           before_script:
-              - cd client
+              - cd android
           script:
               - ./gradlew build connectedCheck
