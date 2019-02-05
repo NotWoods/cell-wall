@@ -1,21 +1,31 @@
-// @ts-check
-import { form, Display, Board } from './editor-ui.js';
+import io from 'socket.io-client';
+import { form, Display, Board } from './editor-ui';
 
 const socket = io(new URL('../edit', location.href).href);
 const board = new Board();
 
-/**
- * @typedef {object} CellInfo
- * @prop {string} id
- * @prop {string} deviceName
- * @prop {object} position
- * @prop {number} position.x
- * @prop {number} position.y
- * @prop {object} display
- * @prop {number} display.density
- * @prop {number} display.widthPixels
- * @prop {number} display.heightPixels
- */
+interface CellInfo {
+    /**
+     * UUID to identify the phone.
+     */
+    id: string;
+    /** User-readable string representing the phone model. */
+    deviceName: string;
+    position: {
+        x: number;
+        y: number;
+    };
+    display: {
+        /**
+         * The logical density of the display. This is a scaling factor for the `dp`,
+         * where one `dp` is one `px` on a 160dpi screen. Thus on a 160dpi screen,
+         * this density value will be 1; on a 120dpi screen it would be .75; etc.
+         */
+        density: number;
+        heightPixels: number;
+        widthPixels: number;
+    };
+}
 
 socket.on('connect', () => {
     document.body.classList.add('connected');
@@ -23,9 +33,8 @@ socket.on('connect', () => {
 socket.on('disconnect', () => {
     document.body.classList.remove('connected');
 });
-socket.on('add-cell', cell => {
-    /** @type {CellInfo} */
-    const info = cell;
+socket.on('add-cell', (cell: CellInfo) => {
+    const info: CellInfo = cell;
     console.log(cell);
     const display = new Display(
         info.id,
@@ -36,16 +45,16 @@ socket.on('add-cell', cell => {
     board.add(display.element);
     display.setPosition(info.position.x, info.position.y);
 });
-socket.on('delete-cell', id => {
+socket.on('delete-cell', (id: string) => {
     const display = Display.get(id);
     if (display) display.destroy();
 });
-socket.on('move-cell', ({ id, x, y }) => {
+socket.on('move-cell', ({ id, x, y }: { id: string; x: number; y: number }) => {
     const display = Display.get(id);
     display.setPosition(x, y);
 });
-socket.on('show-preview', show => board.showPreview(show));
-socket.on('resize-wall', (dimension, value) => {
+socket.on('show-preview', (show: boolean) => board.showPreview(show));
+socket.on('resize-wall', (dimension: 'width' | 'height', value: number) => {
     board.setDimension(dimension, value);
     board.updateScale();
 });
@@ -55,8 +64,7 @@ board.element.addEventListener('move', event => {
     socket.emit('move-cell', display.toJSON());
 });
 form.addEventListener('change', event => {
-    const input =
-        /** @type {HTMLInputElement|HTMLSelectElement} */ (event.target);
+    const input = event.target as HTMLInputElement | HTMLSelectElement;
     switch (input.name) {
         // Adjust width and height of the CellWall board
         case 'width':
@@ -67,7 +75,7 @@ form.addEventListener('change', event => {
             socket.emit('resize-wall', input.name, value);
             break;
         case 'preview':
-            const { checked } = /** @type {HTMLInputElement} */ (input);
+            const { checked } = input as HTMLInputElement;
             board.showPreview(checked);
             socket.emit('show-preview', checked);
             break;

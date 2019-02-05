@@ -1,17 +1,11 @@
-// @ts-check
-import '../node_modules/interactjs/dist/interact.min.js';
+import interact from 'interactjs';
 
-export const form = /** @type {HTMLFormElement} */ (document.getElementById(
-    'options',
-));
-const displaySelect = /** @type {HTMLSelectElement} */ (form.elements.namedItem(
-    'display',
-));
-const xInput = /** @type {HTMLInputElement} */ (form.elements.namedItem('x'));
-const yInput = /** @type {HTMLInputElement} */ (form.elements.namedItem('y'));
+export const form = document.getElementById('options') as HTMLFormElement;
+const displaySelect = form.elements.namedItem('display') as HTMLSelectElement;
+const xInput = form.elements.namedItem('x') as HTMLInputElement;
+const yInput = form.elements.namedItem('y') as HTMLInputElement;
 
-/** @type {interact.DraggableOptions} */
-const DRAGGABLE_OPTIONS = {
+const DRAGGABLE_OPTIONS: interact.DraggableOptions = {
     inertia: true,
     restrict: {
         restriction: 'parent',
@@ -24,14 +18,18 @@ const DRAGGABLE_OPTIONS = {
 const BASE_SIZE = 16;
 
 /**
- *
+ * Convert number to CSS string
  * @param {number} value
  */
-function scale(value) {
+function scale(value: number) {
     return `${value / BASE_SIZE}em`;
 }
 
 export class Board {
+    element: HTMLElement;
+    container: HTMLElement;
+    containerDim: { width: number; height: number };
+
     constructor() {
         this.element = document.getElementById('cellwall-board');
         this.container = this.element.parentElement;
@@ -60,7 +58,7 @@ export class Board {
     /**
      * @param {HTMLElement} element
      */
-    add(element) {
+    add(element: HTMLElement) {
         this.element.appendChild(element);
     }
 
@@ -69,7 +67,7 @@ export class Board {
      * @param {'width' | 'height'} dim
      * @param {number} value
      */
-    setDimension(dim, value) {
+    setDimension(dim: 'width' | 'height', value: number) {
         this.element.style[dim] = scale(value);
         form[dim].value = value;
     }
@@ -78,7 +76,7 @@ export class Board {
      * Toggles a background image on the board
      * @param {boolean} value
      */
-    showPreview(value) {
+    showPreview(value: boolean) {
         if (value) {
             this.element.classList.add('preview');
         } else {
@@ -93,21 +91,31 @@ export class Board {
  * to the actual display.
  */
 export class Display {
-    constructor(id, name, width = 32, height = 32) {
+    /** Used to get the Display instance corresponding to an element */
+    static lookup = new WeakMap<HTMLElement, Display>();
+    /** Display that currently has the `.selected` class */
+    static selected: Display | null = null;
+
+    element: HTMLElement;
+    scale: number;
+
+    constructor(id: string, name: string, width = 32, height = 32) {
         this.scale = BASE_SIZE;
 
-        const displayElement = document.createElement('button');
-        displayElement.type = 'button';
-        displayElement.className = 'display';
-        displayElement.id = id;
+        const displayElement = Object.assign(document.createElement('button'), {
+            type: 'button',
+            className: 'display',
+            id,
+        });
         displayElement.style.width = scale(width);
         displayElement.style.height = scale(height);
 
-        const option = document.createElement('option');
-        option.value = id;
-        option.textContent = name;
-
-        displaySelect.appendChild(option);
+        displaySelect.appendChild(
+            Object.assign(document.createElement('option'), {
+                value: id,
+                textContent: name,
+            }),
+        );
 
         interact(displayElement)
             .draggable(DRAGGABLE_OPTIONS)
@@ -124,7 +132,7 @@ export class Display {
      * Returns the Display instance for the given element.
      * @param {HTMLElement | EventTarget | string} element HTML element or ID string.
      */
-    static get(element) {
+    static get(element: HTMLElement | EventTarget | string) {
         if (typeof element === 'string') {
             element = document.getElementById(element);
         }
@@ -141,7 +149,7 @@ export class Display {
      * display so its position on screen reflects the x and y valyes set.
      * @param {interact.InteractEvent} event
      */
-    static onDragMove(event) {
+    static onDragMove(event: interact.InteractEvent) {
         const display = Display.get(event.target);
 
         const { x, y } = display.getPosition();
@@ -155,7 +163,7 @@ export class Display {
      * and updates the select element with this display's ID.
      * @param {interact.InteractEvent} event
      */
-    static onDragStart(event) {
+    static onDragStart(event: interact.InteractEvent) {
         const display = Display.get(event.target);
         displaySelect.value = display.element.id;
         Display.select(display);
@@ -165,7 +173,7 @@ export class Display {
             parseFloat(getComputedStyle(event.target).fontSize) / BASE_SIZE;
     }
 
-    static onDragEnd(event) {
+    static onDragEnd(event: { target: string | EventTarget | HTMLElement }) {
         const display = Display.get(event.target);
         display.dispatchMoveEvent();
         display.element.classList.remove('dragging');
@@ -176,7 +184,7 @@ export class Display {
      * so the class is removed from the last selected display.
      * @param {Display | null} display
      */
-    static select(display) {
+    static select(display: Display | null) {
         if (Display.selected != null) {
             Display.selected.element.classList.remove('selected');
         }
@@ -200,7 +208,7 @@ export class Display {
      * @param {number} x
      * @param {number} y
      */
-    setPosition(x, y) {
+    setPosition(x: number, y: number) {
         const xs = x.toFixed(0);
         const ys = y.toFixed(0);
         x = parseInt(xs, 10);
@@ -238,18 +246,10 @@ export class Display {
         return { id: this.element.id, x, y };
     }
 }
-/**
- * @type {WeakMap<HTMLElement, Display>}
- * Used to get the Display instance corresponding to an element
- */
-Display.lookup = new WeakMap();
-/** @type {Display | null} Display that currently has the `.selected` class */
-Display.selected = null;
 
 // When an input in the form is changed, update the UI accordingly
 form.addEventListener('change', event => {
-    const input =
-        /** @type {HTMLInputElement|HTMLSelectElement} */ (event.target);
+    const input = event.target as HTMLInputElement | HTMLSelectElement;
     switch (input.name) {
         // Change the selected display
         case 'display':

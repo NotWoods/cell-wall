@@ -119,6 +119,7 @@ export const postTextAction: Spec = {
     path: '/wall/action/text',
     validate: {
         body: Joi.array().items(Joi.string()),
+        type: 'json',
     },
     async handler(ctx: Context) {
         const list = ctx.request.body as string[];
