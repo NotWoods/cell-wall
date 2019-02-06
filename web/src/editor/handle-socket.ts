@@ -84,8 +84,13 @@ export const showPreview: SocketSpec = {
 };
 export const resizeWall: SocketSpec = {
     event: 'resize-wall',
-    handler(dimension: 'width' | 'height', value: number) {
-        Board.instance.setDimension(dimension, value);
+    handler(opts: { width?: number; height?: number }) {
+        if (opts.width != null) {
+            Board.instance.setDimension('width', opts.width);
+        }
+        if (opts.height != null) {
+            Board.instance.setDimension('height', opts.height);
+        }
         Board.instance.updateScale();
     },
 };

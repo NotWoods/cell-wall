@@ -5,6 +5,8 @@ import { Socket } from 'socket.io';
 import { promisify } from 'util';
 import { UUID } from '../models/Cell';
 import { wall } from '../models/Wall';
+import { difference } from '../util/itertools';
+import { SocketSpec } from '../util/socket-spec';
 
 const readFileAsync = promisify(readFile);
 const writeFileAsync = promisify(writeFile);
@@ -35,59 +37,67 @@ export async function saveWall() {
 }
 
 /**
- * Return elements of set a that are not in set b.
+ * connect
+ * When an editor connects, reply with the current wall size and if a preview
+ * is showing. Also reply with cells currently displayed.
  */
-function difference<T>(a: Set<T>, b: Set<T>): T[] {
-    return [...a].filter(x => !b.has(x));
-}
+export const connectEditor: SocketSpec<null> = {
+    event: 'connect',
+    async handler(socket: Socket) {
+        await ready;
+        console.log('editor connected');
 
-const moveCellSchema = {
-    id: Joi.string().guid(),
-    x: Joi.number(),
-    y: Joi.number(),
+        socket.emit('resize-wall', { width: wall.width, height: wall.height });
+        socket.emit('show-preview', wall.showingPreview);
+
+        let connected = new Set<UUID>();
+        function onchange(items: Set<UUID>) {
+            if (items.size > connected.size) {
+                const newCells = difference(items, connected);
+                for (const id of newCells) {
+                    const cell = wall.knownCells.get(id);
+                    if (cell != null) {
+                        socket.emit('add-cell', cell);
+                    }
+                }
+            } else if (items.size < connected.size) {
+                const deletedCells = difference(connected, items);
+                for (const id of deletedCells) {
+                    if (wall.knownCells.has(id)) {
+                        socket.emit('delete-cell', id);
+                    }
+                }
+            }
+
+            connected = new Set(items);
+        }
+        onchange(wall.connectedCells);
+        wall.connectedCells.addListener(onchange);
+
+        socket.on('disconnect', () => {
+            wall.connectedCells.removeListener(onchange);
+        });
+    },
 };
 
-const resizeWallSchema = Joi.array()
-    .length(2)
-    .items(Joi.only('width', 'height'), Joi.number());
-
-const showingPreviewSchema = Joi.boolean();
-
-export const connectEditor = async (socket: Socket) => {
-    await ready;
-    console.log('editor connected');
-
-    socket.emit('resize-wall', 'width', wall.width);
-    socket.emit('resize-wall', 'height', wall.height);
-    socket.emit('show-preview', wall.showingPreview);
-
-    let connected = new Set<UUID>();
-    function onchange(items: Set<UUID>) {
-        if (items.size > connected.size) {
-            const newCells = difference(items, connected);
-            for (const id of newCells) {
-                const cell = wall.knownCells.get(id);
-                if (cell != null) {
-                    socket.emit('add-cell', cell);
-                }
-            }
-        } else if (items.size < connected.size) {
-            const deletedCells = difference(connected, items);
-            for (const id of deletedCells) {
-                if (wall.knownCells.has(id)) {
-                    socket.emit('delete-cell', id);
-                }
-            }
-        }
-
-        connected = new Set(items);
-    }
-    onchange(wall.connectedCells);
-    wall.connectedCells.addListener(onchange);
-
-    socket.on('move-cell', async data => {
-        await Joi.validate(data, moveCellSchema);
-
+/**
+ * move-cell
+ * Move the location of a cell on the wall.
+ */
+export const editorMoveCell: SocketSpec<{
+    id: string;
+    x: number;
+    y: number;
+}> = {
+    event: 'move-cell',
+    validate: {
+        params: {
+            id: Joi.string().guid(),
+            x: Joi.number(),
+            y: Joi.number(),
+        },
+    },
+    handler(socket, data) {
         const cell = wall.knownCells.get(data.id);
         if (cell != null) {
             cell.position.x = data.x;
@@ -95,23 +105,45 @@ export const connectEditor = async (socket: Socket) => {
             socket.broadcast.emit('move-cell', data);
             saveWall();
         }
-    });
-    socket.on('resize-wall', async (dimension: 'width' | 'height', value) => {
-        await Joi.validate([dimension, value], resizeWallSchema);
+    },
+};
 
-        wall[dimension] = value;
-        socket.broadcast.emit('resize-wall', dimension, value);
+/**
+ * resize-wall
+ * Change the dimensions of the wall. 1-2 dimensions may be specified.
+ */
+export const editorResizeWall: SocketSpec<{
+    width?: number;
+    height?: number;
+}> = {
+    event: 'resize-wall',
+    validate: {
+        params: {
+            width: Joi.number(),
+            height: Joi.number(),
+        },
+    },
+    handler(socket, opts) {
+        if (opts.width != null) wall.width = opts.width;
+        if (opts.height != null) wall.height = opts.height;
+
+        socket.broadcast.emit('resize-wall', opts);
         saveWall();
-    });
-    socket.on('showing-preview', async show => {
-        await Joi.validate(show, showingPreviewSchema);
+    },
+};
 
+/**
+ * showing-preview
+ * Toggle the "Show preview" mode of the wall, which displays a background image.
+ */
+export const editorShowPreview: SocketSpec<boolean> = {
+    event: 'showing-preview',
+    validate: {
+        params: Joi.boolean(),
+    },
+    handler(socket: Socket, show: boolean) {
         wall.showingPreview = show;
         socket.broadcast.emit('showing-preview', show);
         saveWall();
-    });
-
-    socket.on('disconnect', () => {
-        wall.connectedCells.removeListener(onchange);
-    });
+    },
 };

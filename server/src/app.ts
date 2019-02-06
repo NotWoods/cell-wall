@@ -10,6 +10,7 @@ import * as homeController from './controllers/home';
 import * as cellController from './controllers/cell';
 import * as editorController from './controllers/editor';
 import * as wallController from './controllers/wall';
+import { SocketRouter } from './util/socket-spec';
 
 // Create router
 const router = Router();
@@ -34,14 +35,19 @@ const server = createServer(app.callback());
 
 // Create SocketIO server
 const io = socketIO(server);
+const cellRouter = new SocketRouter();
+const editorRouter = new SocketRouter();
 
 /**
  * SocketIO configuration
  */
-const cell = io.of('/cell');
-const edit = io.of('/edit');
+cellRouter.route(cellController.connectCell);
+editorRouter.route(editorController.connectEditor);
+editorRouter.route(editorController.editorMoveCell);
+editorRouter.route(editorController.editorResizeWall);
+editorRouter.route(editorController.editorShowPreview);
 
-cell.on('connection', cellController.connectCell);
-edit.on('connection', editorController.connectEditor);
+io.of('/cell').on('connection', cellRouter.onConnect());
+io.of('/edit').on('connection', editorRouter.onConnect);
 
 export default server;

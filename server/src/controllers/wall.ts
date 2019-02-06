@@ -1,4 +1,3 @@
-import { Context } from 'koa';
 import { Joi, Spec } from 'koa-joi-router';
 import { blank, image, text } from '../models/CellState';
 import { wall, wallSchema } from '../models/Wall';
@@ -95,7 +94,7 @@ export const getWall: Spec = {
             200: wallSchema,
         },
     },
-    async handler(ctx: Context) {
+    async handler(ctx) {
         ctx.body = wall.toJSON();
     },
 };
@@ -117,7 +116,7 @@ export const getActions: Spec = {
             ),
         },
     },
-    async handler(ctx: Context) {
+    async handler(ctx) {
         ctx.body = Object.entries(actions).map(([id, details]) => ({
             id,
             ...details,
@@ -136,7 +135,7 @@ export const postTextAction: Spec = {
         body: Joi.array().items(Joi.string()),
         type: 'json',
     },
-    async handler(ctx: Context) {
+    async handler(ctx) {
         const list = ctx.request.body as string[];
         await showText(list);
 
@@ -156,7 +155,7 @@ export const postPersonAction: Spec = {
             person: Joi.string(),
         },
     },
-    async handler(ctx: Context) {
+    async handler(ctx) {
         const person = ctx.params.person as string;
 
         const center = wall.centerCell();
@@ -184,7 +183,7 @@ export const postAction: Spec = {
             action: Joi.only(Object.keys(actions)),
         },
     },
-    async handler(ctx: Context) {
+    async handler(ctx) {
         const action = ctx.params.action as Action;
         await actions[action].run();
 

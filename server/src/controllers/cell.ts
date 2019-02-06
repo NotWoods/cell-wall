@@ -4,6 +4,7 @@ import { Socket } from 'socket.io';
 import { Cell, cellSchema } from '../models/Cell';
 import { CellState, cellStateSchema } from '../models/CellState';
 import { wall } from '../models/Wall';
+import { SocketSpec } from '../util/socket-spec';
 import { saveWall } from './editor';
 
 /**
@@ -81,40 +82,40 @@ export const putCell: Spec = {
     },
 };
 
-export const connectCell = async (socket: Socket) => {
-    const { uuid } = await Joi.validate(
-        socket.handshake.query,
-        connectCell.schema.query,
-    );
+export const connectCell: SocketSpec<null> = {
+    event: 'connect',
+    validate: {
+        query: {
+            uuid: Joi.string().guid(),
+        },
+    },
+    handler(socket: Socket) {
+        const uuid = socket.handshake.query.uuid as string;
 
-    console.log(`Cell connected [${uuid}]`);
+        console.log(`Cell connected [${uuid}]`);
 
-    function handleUpdate(state: CellState) {
-        socket.emit('cell-update', state);
-    }
-
-    wall.connectedCells.add(uuid);
-    const cell = wall.knownCells.get(uuid);
-    if (cell != null) {
-        console.log(`  ${cell.deviceName}`);
-        cell.onchange = handleUpdate;
-        handleUpdate(cell.state);
-    } else {
-        console.warn(`  Cell is unknown, register first`);
-    }
-
-    socket.on('disconnect', () => {
-        if (cell != null) {
-            console.log(`Cell disconnected - ${cell.deviceName} [${uuid}]`);
-            delete cell.onchange;
-        } else {
-            console.log(`Cell disconnected - <unknown> [${uuid}]`);
+        function handleUpdate(state: CellState) {
+            socket.emit('cell-update', state);
         }
-        wall.connectedCells.delete(uuid);
-    });
-};
-connectCell.schema = {
-    query: {
-        uuid: Joi.string().guid(),
+
+        wall.connectedCells.add(uuid);
+        const cell = wall.knownCells.get(uuid);
+        if (cell != null) {
+            console.log(`  ${cell.deviceName}`);
+            cell.onchange = handleUpdate;
+            handleUpdate(cell.state);
+        } else {
+            console.warn(`  Cell is unknown, register first`);
+        }
+
+        socket.on('disconnect', () => {
+            if (cell != null) {
+                console.log(`Cell disconnected - ${cell.deviceName} [${uuid}]`);
+                delete cell.onchange;
+            } else {
+                console.log(`Cell disconnected - <unknown> [${uuid}]`);
+            }
+            wall.connectedCells.delete(uuid);
+        });
     },
 };

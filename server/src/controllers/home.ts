@@ -1,4 +1,3 @@
-import { Context } from 'koa';
 import { Joi, Router, Spec } from 'koa-joi-router';
 import { join, posix } from 'path';
 import serveStatic = require('koa-static');
@@ -15,7 +14,7 @@ export const isCellWall: Spec = {
             204: Joi.any(),
         },
     },
-    async handler(ctx: Context) {
+    async handler(ctx) {
         ctx.status = 204;
     },
 };
