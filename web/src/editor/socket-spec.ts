@@ -1,12 +1,12 @@
-export interface SocketSpec {
+export interface SocketSpec<T> {
     event: string;
-    handler(...args: any[]): void;
+    handler(arg: T): void;
 }
 
 interface Emitter {
     on(event: string, fn: Function): this;
 }
 
-export function on(socket: Emitter, spec: SocketSpec) {
+export function on(socket: Emitter, spec: SocketSpec<unknown>) {
     socket.on(spec.event, spec.handler);
 }

@@ -4,14 +4,18 @@ import Koa = require('koa');
 import Router = require('koa-joi-router');
 import serveStatic = require('koa-static');
 import socketIO = require('socket.io');
+import { WallImpl } from './models/Wall';
+import { WallDao } from './models/WallDao';
+import { SocketRouter } from './util/socket-spec';
 
 // Controllers (route handlers)
 import * as homeController from './controllers/home';
 import * as cellController from './controllers/cell';
 import * as editorController from './controllers/editor';
 import * as wallController from './controllers/wall';
-import { SocketRouter } from './util/socket-spec';
-import { wall } from './models/Wall';
+
+const CACHE_PATH = join(__dirname, '../.wall-cache.json');
+const wall = new WallImpl(new WallDao(CACHE_PATH));
 
 // Create router
 const router = Router();

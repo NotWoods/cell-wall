@@ -4,6 +4,7 @@ import { join } from 'path';
 import { promisify } from 'util';
 import { Cell, CellModel, UUID, cellSchema } from './Cell';
 import { ObservableSet } from './ObservableSet';
+import { WallSerialized, WallDao } from './WallDao';
 
 const readFileAsync = promisify(readFile);
 const writeFileAsync = promisify(writeFile);
@@ -28,12 +29,6 @@ export interface WallModel {
     connectedCells: Set<UUID>;
 }
 
-export interface WallSerialized {
-    width: number;
-    height: number;
-    knownCells: CellModel[];
-}
-
 export interface Wall extends WallModel, Iterable<CellModel> {
     ready: Promise<void>;
     showingPreview: boolean;
@@ -46,24 +41,14 @@ export interface Wall extends WallModel, Iterable<CellModel> {
     save(): Promise<void>;
 }
 
-class WallImpl implements Wall {
-    private static readonly CACHE_PATH = join(
-        __dirname,
-        '../../.wall-cache.json',
-    );
+export class WallImpl implements Wall {
+    readonly ready: Promise<void>;
 
-    ready = readFileAsync(WallImpl.CACHE_PATH, 'utf8')
-        .then(JSON.parse)
-        .then(json => {
-            wall.fromJSON(json);
-        })
-        .catch(err => {
-            if (err.code === 'ENOENT') {
-                // don't care if cache doesn't exist yet
-                return;
-            }
-            throw err;
+    constructor(private readonly dao: WallDao) {
+        this.ready = dao.read().then(json => {
+            if (json != null) this.fromJSON(json);
         });
+    }
 
     width = 0;
     height = 0;
@@ -145,19 +130,9 @@ class WallImpl implements Wall {
     }
 
     async save() {
-        try {
-            await writeFileAsync(
-                WallImpl.CACHE_PATH,
-                JSON.stringify(wall, null, '  '),
-                'utf8',
-            );
-        } catch (err) {
-            console.warn('Error while saving cache:', err.message);
-        }
+        return this.dao.write(this.toJSON());
     }
 }
-
-export const wall = new WallImpl();
 
 export const wallSchema = Joi.object({
     width: Joi.number()

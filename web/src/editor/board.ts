@@ -15,14 +15,6 @@ export class Board {
     container: HTMLElement;
     containerDim!: { width: number; height: number };
 
-    private static _instance: Board | undefined;
-    static get instance() {
-        if (Board._instance == null) {
-            Board._instance = new Board();
-        }
-        return Board._instance;
-    }
-
     constructor() {
         this.element = document.getElementById('cellwall-board')!;
         this.container = this.element.parentElement!;

@@ -27,7 +27,7 @@ interface CellInfo {
  * connect
  * Add the 'connected' class to `<body>`
  */
-export const connect: SocketSpec = {
+export const connect: SocketSpec<void> = {
     event: 'connect',
     handler() {
         document.body.classList.add('connected');
@@ -38,59 +38,68 @@ export const connect: SocketSpec = {
  * disconnect
  * Remove the 'connected' class to `<body>`
  */
-export const disconnect: SocketSpec = {
+export const disconnect: SocketSpec<void> = {
     event: 'disconnect',
     handler() {
         document.body.classList.remove('connected');
     },
 };
 
-export const addCell: SocketSpec = {
-    event: 'add-cell',
-    handler(info: CellInfo) {
-        console.log(info);
-        const display = new Display(
-            info.id,
-            info.deviceName,
-            (info.display.widthPixels / info.display.density) * 2,
-            (info.display.heightPixels / info.display.density) * 2,
-        );
-        Board.instance.add(display.element);
-        display.setPosition(info.position.x, info.position.y);
-    },
-};
+export function addCell(board: Board): SocketSpec<CellInfo> {
+    return {
+        event: 'add-cell',
+        handler(info) {
+            console.log(info);
+            const display = new Display(
+                info.id,
+                info.deviceName,
+                (info.display.widthPixels / info.display.density) * 2,
+                (info.display.heightPixels / info.display.density) * 2,
+            );
+            board.add(display.element);
+            display.setPosition(info.position.x, info.position.y);
+        },
+    };
+}
 
-export const deleteCell: SocketSpec = {
+export const deleteCell: SocketSpec<string> = {
     event: 'delete-cell',
-    handler(id: string) {
+    handler(id) {
         const display = Display.get(id);
         if (display) display.destroy();
     },
 };
 
-export const moveCell: SocketSpec = {
+export const moveCell: SocketSpec<{ id: string; x: number; y: number }> = {
     event: 'move-cell',
-    handler({ id, x, y }: { id: string; x: number; y: number }) {
+    handler({ id, x, y }) {
         const display = Display.get(id)!;
         display.setPosition(x, y);
     },
 };
 
-export const showPreview: SocketSpec = {
-    event: 'show-preview',
-    handler(show: boolean) {
-        Board.instance.showPreview(show);
-    },
-};
-export const resizeWall: SocketSpec = {
-    event: 'resize-wall',
-    handler(opts: { width?: number; height?: number }) {
-        if (opts.width != null) {
-            Board.instance.setDimension('width', opts.width);
-        }
-        if (opts.height != null) {
-            Board.instance.setDimension('height', opts.height);
-        }
-        Board.instance.updateScale();
-    },
-};
+export function showPreview(board: Board): SocketSpec<boolean> {
+    return {
+        event: 'show-preview',
+        handler(show) {
+            board.showPreview(show);
+        },
+    };
+}
+
+export function resizeWall(
+    board: Board,
+): SocketSpec<{ width?: number; height?: number }> {
+    return {
+        event: 'resize-wall',
+        handler(opts) {
+            if (opts.width != null) {
+                board.setDimension('width', opts.width);
+            }
+            if (opts.height != null) {
+                board.setDimension('height', opts.height);
+            }
+            board.updateScale();
+        },
+    };
+}

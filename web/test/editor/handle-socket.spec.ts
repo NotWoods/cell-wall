@@ -33,12 +33,12 @@ describe('editorController', () => {
     });
 
     test('showPreview', () => {
-        showPreview.handler(true);
+        showPreview(board as any).handler(true);
         expect(board.showPreview).toBeCalledWith(true);
     });
 
     test('resizeWall', () => {
-        resizeWall.handler('width', 200);
+        resizeWall(board as any).handler({ width: 200 });
         expect(board.setDimension).toBeCalledWith('width', 200);
         expect(board.updateScale).toBeCalled();
     });
