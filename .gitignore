@@ -1,9 +1,8 @@
 # Ignore built files
-server/src/**/*.js
-server/src/**/*.js.map
 server/.wall-cache.json
 web/public/**/*.js
 web/public/**/*.js.map
+lib
 *.apk
 *.ap_
 *.aab

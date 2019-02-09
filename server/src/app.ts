@@ -11,6 +11,7 @@ import * as cellController from './controllers/cell';
 import * as editorController from './controllers/editor';
 import * as wallController from './controllers/wall';
 import { SocketRouter } from './util/socket-spec';
+import { wall } from './models/Wall';
 
 // Create router
 const router = Router();
@@ -19,13 +20,13 @@ const router = Router();
  * Primary app routes.
  */
 router.route(homeController.isCellWall);
-router.route(wallController.getWall);
+router.route(wallController.getWall(wall));
 router.route(wallController.getActions);
-router.route(wallController.postTextAction);
-router.route(wallController.postPersonAction);
-router.route(wallController.postAction);
-router.route(cellController.getState);
-router.route(cellController.putCell);
+router.route(wallController.postTextAction(wall));
+router.route(wallController.postPersonAction(wall));
+router.route(wallController.postAction(wall));
+router.route(cellController.getState(wall));
+router.route(cellController.putCell(wall));
 
 // Create HTTP server
 const app = new Koa();
@@ -41,11 +42,11 @@ const editorRouter = new SocketRouter();
 /**
  * SocketIO configuration
  */
-cellRouter.route(cellController.connectCell);
-editorRouter.route(editorController.connectEditor);
-editorRouter.route(editorController.editorMoveCell);
-editorRouter.route(editorController.editorResizeWall);
-editorRouter.route(editorController.editorShowPreview);
+cellRouter.route(cellController.connectCell(wall));
+editorRouter.route(editorController.connectEditor(wall));
+editorRouter.route(editorController.editorMoveCell(wall));
+editorRouter.route(editorController.editorResizeWall(wall));
+editorRouter.route(editorController.editorShowPreview(wall));
 
 io.of('/cell').on('connection', cellRouter.onConnect());
 io.of('/edit').on('connection', editorRouter.onConnect);

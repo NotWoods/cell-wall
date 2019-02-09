@@ -11,7 +11,7 @@ export const isCellWall: Spec = {
     path: '/is-cellwall-server',
     validate: {
         output: {
-            204: Joi.any(),
+            204: { body: Joi.any() },
         },
     },
     async handler(ctx) {

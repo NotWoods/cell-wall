@@ -1,9 +1,9 @@
 import { Joi, Spec } from 'koa-joi-router';
 import { blank, image, text } from '../models/CellState';
-import { wall, wallSchema } from '../models/Wall';
+import { Wall, wallSchema } from '../models/Wall';
 import { enumerate } from '../util/itertools';
 
-function showText(list: string[]) {
+function showText(wall: Wall, list: string[]) {
     for (const [i, cell] of enumerate(wall)) {
         if (i < list.length) {
             cell.state = text(list[i]);
@@ -20,7 +20,7 @@ const actions = Object.freeze({
          * Demo the CellWall by showing "Hello World!" along with
          * some images surrounding it.
          */
-        run() {
+        run(wall: Wall) {
             const center = wall.centerCell();
             if (center != null) {
                 center.state = text('Hello world!');
@@ -46,7 +46,7 @@ const actions = Object.freeze({
         /**
          * Show a todo list, one item per cell.
          */
-        run() {
+        run(wall: Wall) {
             const mockTodoList = [
                 'Take out the trash',
                 'Make more lists',
@@ -57,7 +57,7 @@ const actions = Object.freeze({
                 "This shouldn't show up",
             ];
 
-            showText(mockTodoList);
+            showText(wall, mockTodoList);
         },
     },
     /**
@@ -86,18 +86,20 @@ type Action = keyof typeof actions;
  * GET /wall
  * Returns the serialized version of the wall.
  */
-export const getWall: Spec = {
-    method: 'GET',
-    path: '/wall',
-    validate: {
-        output: {
-            200: wallSchema,
+export function getWall(wall: Wall): Spec {
+    return {
+        method: 'GET',
+        path: '/wall',
+        validate: {
+            output: {
+                200: { body: wallSchema },
+            },
         },
-    },
-    async handler(ctx) {
-        ctx.body = wall.toJSON();
-    },
-};
+        async handler(ctx) {
+            ctx.body = wall.toJSON();
+        },
+    };
+}
 
 /**
  * GET /wall/actions
@@ -108,18 +110,20 @@ export const getActions: Spec = {
     path: '/wall/actions',
     validate: {
         output: {
-            200: Joi.array().items(
-                Joi.object({
-                    id: Joi.only(Object.keys(actions)),
-                    name: Joi.string(),
-                }),
-            ),
+            200: {
+                body: Joi.array().items(
+                    Joi.object({
+                        id: Joi.only(Object.keys(actions)),
+                        name: Joi.string(),
+                    }),
+                ),
+            },
         },
     },
     async handler(ctx) {
         ctx.body = Object.entries(actions).map(([id, details]) => ({
             id,
-            ...details,
+            name: details.name,
         }));
     },
 };
@@ -128,65 +132,71 @@ export const getActions: Spec = {
  * POST /wall/action/text
  * Display a list of text on the wall
  */
-export const postTextAction: Spec = {
-    method: 'POST',
-    path: '/wall/action/text',
-    validate: {
-        body: Joi.array().items(Joi.string()),
-        type: 'json',
-    },
-    async handler(ctx) {
-        const list = ctx.request.body as string[];
-        await showText(list);
+export function postTextAction(wall: Wall): Spec {
+    return {
+        method: 'POST',
+        path: '/wall/action/text',
+        validate: {
+            body: Joi.array().items(Joi.string()),
+            type: 'json',
+        },
+        async handler(ctx) {
+            const list = ctx.request.body as string[];
+            await showText(wall, list);
 
-        ctx.redirect('/');
-    },
-};
+            ctx.redirect('/');
+        },
+    };
+}
 
 /**
  * POST /wall/action/:person
  * Display a greeting to a person, along with images of them.
  */
-export const postPersonAction: Spec = {
-    method: 'POST',
-    path: '/wall/action/:person',
-    validate: {
-        params: {
-            person: Joi.string(),
+export function postPersonAction(wall: Wall): Spec {
+    return {
+        method: 'POST',
+        path: '/wall/action/:person',
+        validate: {
+            params: {
+                person: Joi.string(),
+            },
         },
-    },
-    async handler(ctx) {
-        const person = ctx.params.person as string;
+        async handler(ctx) {
+            const person = ctx.params.person as string;
 
-        const center = wall.centerCell();
-        if (center != null) {
-            center.state = text(`Welcome ${person}!`);
-        }
+            const center = wall.centerCell();
+            if (center != null) {
+                center.state = text(`Welcome ${person}!`);
+            }
 
-        for (const [i, cell] of enumerate(wall.surroundingCells())) {
-            cell.state = image(`/img/demo${i % 2}.jpg`);
-        }
+            for (const [i, cell] of enumerate(wall.surroundingCells())) {
+                cell.state = image(`/img/demo${i % 2}.jpg`);
+            }
 
-        ctx.redirect('/');
-    },
-};
+            ctx.redirect('/');
+        },
+    };
+}
 
 /**
  * POST /wall/action/:action
  * Returns the serialized version of the wall.
  */
-export const postAction: Spec = {
-    method: 'POST',
-    path: '/wall/action/:action',
-    validate: {
-        params: {
-            action: Joi.only(Object.keys(actions)),
+export function postAction(wall: Wall): Spec {
+    return {
+        method: 'POST',
+        path: '/wall/action/:action',
+        validate: {
+            params: {
+                action: Joi.only(Object.keys(actions)),
+            },
         },
-    },
-    async handler(ctx) {
-        const action = ctx.params.action as Action;
-        await actions[action].run();
+        async handler(ctx) {
+            const action = ctx.params.action as Action;
+            await actions[action].run(wall);
 
-        ctx.redirect('/');
-    },
-};
+            ctx.redirect('/');
+        },
+    };
+}

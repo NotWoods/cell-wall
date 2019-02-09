@@ -9,6 +9,7 @@
         "checkJs": true,
         "sourceMap": true,
         "pretty": true,
+        "outDir": "lib",
 
         /* Strict Type-Checking Options */
         "strict": true,
@@ -19,5 +20,5 @@
         /* Module Resolution Options */
         "moduleResolution": "node"
     },
-    "include": ["src/**/*", "test/**/*"]
+    "include": ["src/**/*"]
 }

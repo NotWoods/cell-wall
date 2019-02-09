@@ -1,6 +1,12 @@
+import { readFile, writeFile } from 'fs';
 import { Joi } from 'koa-joi-router';
+import { join } from 'path';
+import { promisify } from 'util';
 import { Cell, CellModel, UUID, cellSchema } from './Cell';
 import { ObservableSet } from './ObservableSet';
+
+const readFileAsync = promisify(readFile);
+const writeFileAsync = promisify(writeFile);
 
 export interface WallModel {
     /**
@@ -28,7 +34,37 @@ export interface WallSerialized {
     knownCells: CellModel[];
 }
 
-class Wall implements WallModel {
+export interface Wall extends WallModel, Iterable<CellModel> {
+    ready: Promise<void>;
+    showingPreview: boolean;
+    connectedCells: ObservableSet<UUID>;
+    toJSON(): WallSerialized;
+    fromJSON(json: WallSerialized): this;
+    centerCell(): CellModel | null;
+    surroundingCells(): IterableIterator<CellModel>;
+    getCell(uuid: UUID): CellModel | null;
+    save(): Promise<void>;
+}
+
+class WallImpl implements Wall {
+    private static readonly CACHE_PATH = join(
+        __dirname,
+        '../../.wall-cache.json',
+    );
+
+    ready = readFileAsync(WallImpl.CACHE_PATH, 'utf8')
+        .then(JSON.parse)
+        .then(json => {
+            wall.fromJSON(json);
+        })
+        .catch(err => {
+            if (err.code === 'ENOENT') {
+                // don't care if cache doesn't exist yet
+                return;
+            }
+            throw err;
+        });
+
     width = 0;
     height = 0;
     knownCells = new Map<UUID, Cell>();
@@ -49,7 +85,7 @@ class Wall implements WallModel {
     /**
      * Deserializes a JSON representation of the Wall.
      */
-    fromJSON(json: WallSerialized): Wall {
+    fromJSON(json: WallSerialized): this {
         this.width = json.width;
         this.height = json.height;
         for (const cell of json.knownCells) {
@@ -107,9 +143,21 @@ class Wall implements WallModel {
     getCell(uuid: UUID) {
         return this.knownCells.get(uuid) || null;
     }
+
+    async save() {
+        try {
+            await writeFileAsync(
+                WallImpl.CACHE_PATH,
+                JSON.stringify(wall, null, '  '),
+                'utf8',
+            );
+        } catch (err) {
+            console.warn('Error while saving cache:', err.message);
+        }
+    }
 }
 
-export const wall = new Wall();
+export const wall = new WallImpl();
 
 export const wallSchema = Joi.object({
     width: Joi.number()
