@@ -1,13 +1,7 @@
-import { readFile, writeFile } from 'fs';
 import { Joi } from 'koa-joi-router';
-import { join } from 'path';
-import { promisify } from 'util';
 import { Cell, CellModel, UUID, cellSchema } from './Cell';
 import { ObservableSet } from './ObservableSet';
 import { WallSerialized, WallDao } from './WallDao';
-
-const readFileAsync = promisify(readFile);
-const writeFileAsync = promisify(writeFile);
 
 export interface WallModel {
     /**
