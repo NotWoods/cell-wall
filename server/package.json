@@ -8,7 +8,7 @@
     "repository": "NotWoods/cell-wall",
     "bugs": "https://github.com/NotWoods/cell-wall/issues",
     "homepage": "https://github.com/NotWoods/cell-wall#readme",
-    "main": "src/server.js",
+    "main": "lib/server.js",
     "scripts": {
         "test": "jest",
         "build": "tsc",
@@ -27,16 +27,16 @@
     },
     "devDependencies": {
         "@types/dotenv": "^6.1.0",
-        "@types/jest": "^23.3.14",
+        "@types/jest": "^24.0.6",
         "@types/koa": "^2.0.48",
         "@types/koa-joi-router": "^5.2.1",
         "@types/koa-static": "^4.0.1",
         "@types/socket.io": "^2.1.2",
         "@types/supertest": "^2.0.7",
-        "jest": "^23.6.0",
+        "jest": "^24.1.0",
         "prettier": "^1.16.4",
         "supertest": "^3.4.2",
-        "ts-jest": "^23.10.5",
+        "ts-jest": "^24.0.0",
         "typescript": "^3.3.3"
     },
     "engines": {
