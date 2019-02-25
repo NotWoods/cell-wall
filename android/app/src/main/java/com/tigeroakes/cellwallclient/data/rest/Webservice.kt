@@ -22,5 +22,5 @@ interface Webservice {
     fun getState(@Path("uuid") uuid: UUID): Call<CellState>
 
     @PUT("/cell/{uuid}")
-    fun putCell(@Path("uuid") uuid: UUID, @Body cell: CellInfo): Call<Unit>
+    fun  putCell(@Path("uuid") uuid: UUID, @Body cell: CellInfo): Call<Unit>
 }

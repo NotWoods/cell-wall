@@ -59,6 +59,16 @@ export class Cell implements CellModel {
         this._state = value;
     }
 
+    toJSON(): CellModel {
+        return {
+            id: this.id,
+            deviceName: this.deviceName,
+            position: this.position,
+            display: this.display,
+            state: this.state,
+        };
+    }
+
     constructor(public id: UUID) {}
 }
 

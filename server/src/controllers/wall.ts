@@ -156,18 +156,18 @@ export function postTextAction(wall: Wall): Spec {
 export function postPersonAction(wall: Wall): Spec {
     return {
         method: 'POST',
-        path: '/wall/action/:person',
+        path: '/wall/action/welcome',
         validate: {
-            params: {
-                person: Joi.string(),
+            query: {
+                name: Joi.string(),
             },
         },
         async handler(ctx) {
-            const person = ctx.params.person as string;
+            const name = ctx.query.name as string;
 
             const center = wall.centerCell();
             if (center != null) {
-                center.state = text(`Welcome ${person}!`);
+                center.state = text(`Welcome ${name}!`);
             }
 
             for (const [i, cell] of enumerate(wall.surroundingCells())) {

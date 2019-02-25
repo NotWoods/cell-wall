@@ -65,9 +65,10 @@ export class SocketRouter {
     private makeValidator<T>(route: SocketSpec<T>): (data: T) => Promise<void> {
         const { validate } = route;
         if (validate && validate.params) {
-            return async data => {
+            const validator = async (data: T) => {
                 await Joi.validate(data, validate.params!);
             };
+            return validator;
         }
         return () => Promise.resolve();
     }
@@ -83,17 +84,20 @@ export class SocketRouter {
                 .filter(key => validate[key])
                 .map(key => [key, validate[key]] as [typeof key, SchemaLike]),
         );
-        return async socket => {
+        const handshakeValidator = async (socket: Socket) => {
             await Promise.all(
                 Array.from(schemas, ([key, schema]) =>
-                    Joi.validate(socket.handshake[key], schema),
+                    Joi.validate(socket.handshake[key], schema, {
+                        allowUnknown: true,
+                    }),
                 ),
             );
         };
+        return handshakeValidator;
     }
 
     onConnect() {
-        return async (socket: Socket) => {
+        const onConnectHandler = async (socket: Socket) => {
             if (this.connectValidator) {
                 await this.connectValidator(socket);
             }
@@ -109,5 +113,6 @@ export class SocketRouter {
                 });
             }
         };
+        return onConnectHandler;
     }
 }

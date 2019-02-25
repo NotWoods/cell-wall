@@ -13,7 +13,7 @@ class RetrofitLiveData<T>(
         private val call: Call<T>
 ) : LiveData<Resource<T>>(), Callback<T> {
     init {
-        value = Resource.loading(null)
+        value = Resource.loading()
     }
 
     override fun onActive() {
@@ -23,8 +23,7 @@ class RetrofitLiveData<T>(
     }
 
     override fun onFailure(call: Call<T>, t: Throwable) {
-        postValue(Resource.error(t.message
-                ?: "", null))
+        postValue(Resource.failure(t))
     }
 
     override fun onResponse(call: Call<T>, response: Response<T>) {

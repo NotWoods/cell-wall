@@ -46,10 +46,18 @@ export function putCell(wall: Wall): Spec {
             params: {
                 uuid: Joi.string().guid(),
             },
-            query: {
-                deviceName: Joi.string(),
-                widthPixels: Joi.number().positive(),
-                heightPixels: Joi.number().positive(),
+            type: 'json',
+            body: {
+                deviceName: Joi.string().required(),
+                density: Joi.number()
+                    .positive()
+                    .required(),
+                widthPixels: Joi.number()
+                    .positive()
+                    .required(),
+                heightPixels: Joi.number()
+                    .positive()
+                    .required(),
             },
             output: {
                 '200,201': { body: cellSchema },
@@ -82,7 +90,7 @@ export function putCell(wall: Wall): Spec {
 
             // Respond with 201 if new cell was created
             ctx.status = existingCell != null ? 200 : 201;
-            ctx.body = cell;
+            ctx.body = cell instanceof Cell ? cell.toJSON() : cell;
         },
     };
 }

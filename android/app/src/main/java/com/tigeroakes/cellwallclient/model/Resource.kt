@@ -1,17 +1,65 @@
 package com.tigeroakes.cellwallclient.model
 
+import java.io.Serializable
+
 /**
  * A generic class that contains data and status about loading this data.
  * @see {https://developer.android.com/jetpack/docs/guide#addendum}
  */
-class Resource<T> private constructor(val status: Status, val data: T?, val message: String? = null) {
-    companion object {
-        fun <T>success(data: T): Resource<T> = Resource(Status.SUCCESS, data)
+class Resource<out T> private constructor(private val value: Any?) : Serializable {
+    val isSuccess: Boolean get() = !isFailure && !isLoading
 
-        fun <T>error(msg: String, data: T?): Resource<T> = Resource(Status.ERROR, data, msg)
+    val isFailure: Boolean get() = value is Failure
 
-        fun <T>loading(data: T?): Resource<T> = Resource(Status.LOADING, data)
+    val isLoading: Boolean get() = value is Loading
+
+    @Suppress("UNCHECKED_CAST")
+    fun getOrNull(): T? = when {
+        isFailure -> null
+        isLoading -> null
+        else -> value as T
     }
 
-    enum class Status { SUCCESS, ERROR, LOADING }
+    fun exceptionOrNull(): Throwable? = when (value) {
+        is Failure -> value.exception
+        else -> null
+    }
+
+    fun throwOnFailure() {
+        if (value is Failure) throw value.exception
+    }
+
+    override fun toString(): String = when (value) {
+        is Failure -> value.toString() // "Failure($exception)"
+        is Loading -> value.toString() // "Loading()"
+        else -> "Success($value)"
+    }
+
+    companion object {
+        /**
+         * Returns an instance that encapsulates the given [value] as successful value.
+         */
+        fun <T> success(value: T): Resource<T> =
+            Resource(value)
+
+        /**
+         * Returns an instance that encapsulates the given [exception] as failure.
+         */
+        fun <T> failure(exception: Throwable): Resource<T> =
+            Resource(Failure(exception) as Any)
+
+        fun <T> loading(): Resource<T> =
+            Resource(Loading() as Any)
+    }
+
+    private data class Failure(
+        @JvmField
+        val exception: Throwable
+    ) : Serializable
+
+    private class Loading : Serializable {
+        override fun equals(other: Any?): Boolean = other is Loading
+        override fun hashCode(): Int = 7
+        override fun toString(): String = "Loading()"
+    }
 }

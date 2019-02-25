@@ -39,7 +39,7 @@ class LoginViewModelImpl(
     private val loginAttempt = MutableLiveData<Resource<URI>>()
 
     override val isLoading: LiveData<Boolean> = Transformations.map(loginAttempt) {
-        it.status == Resource.Status.LOADING
+        it.isLoading
     }
     override val errorResource = MutableLiveData<Event<@StringRes Int?>>()
     override val savedAddress = MediatorLiveData<Event<String>>().apply {
@@ -50,8 +50,8 @@ class LoginViewModelImpl(
 
         addSource(loginAttempt) { res ->
             // Only update when successful.
-            if (res.status === Resource.Status.SUCCESS) {
-                val url = res.data!!
+            if (res.isSuccess) {
+                val url = res.getOrNull()
                 value = Event(url.toString())
             }
         }
@@ -64,16 +64,16 @@ class LoginViewModelImpl(
      * Try logging in to the server by pinging it and ensuring it responds.
      */
     override fun attemptLogin(address: String, cellInfo: CellInfo) {
-        loginAttempt.value = Resource.loading(null)
+        loginAttempt.value = Resource.loading()
         uiScope.launch {
             val url = try {
                 repository.attemptToConnect(address)
             } catch (err: ServerUrlValidator.ValidationException) {
-                loginAttempt.value = Resource.error(err.reason.name, null)
+                loginAttempt.value = Resource.failure(err)
                 errorResource.value = Event(err.reason.stringRes)
                 return@launch
             }
-            loginAttempt.value = Resource.loading(url)
+            loginAttempt.value = Resource.loading()
 
             repository.register(cellInfo)
             loginAttempt.value = Resource.success(url)
