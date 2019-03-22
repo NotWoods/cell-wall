@@ -40,7 +40,7 @@ export class Devices {
     /**
      * Run a command on each connected device.
      */
-    async forEachDevice(cb: (adb: ADB) => Promise<void>) {
+    async forEach(cb: (adb: ADB) => Promise<void>) {
         await Promise.all(Array.from(this.devices.values(), cb));
     }
 }
@@ -63,4 +63,8 @@ export async function isScreenOn(adb: ADB) {
 export async function turnOn(adb: ADB, on = true) {
     const isOn = await isScreenOn(adb);
     if (isOn !== on) await adb.keyevent(KEYCODE_POWER);
+}
+
+export async function openWebsite(adb: ADB, url: string) {
+    adb.shell(['am', 'start', '-a', 'android.intent.action.VIEW', '-d', url]);
 }

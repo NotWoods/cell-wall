@@ -13,9 +13,11 @@ import * as homeController from './controllers/home';
 import * as cellController from './controllers/cell';
 import * as editorController from './controllers/editor';
 import * as wallController from './controllers/wall';
+import { Devices } from './util/adb';
 
 const CACHE_PATH = join(__dirname, '../.wall-cache.json');
 const wall = new WallImpl(new WallDao(CACHE_PATH));
+const devices = Devices.create();
 
 // Create router
 const router = Router();
@@ -25,9 +27,12 @@ const router = Router();
  */
 router.route(homeController.isCellWall);
 router.route(wallController.getWall(wall));
+router.route(wallController.postRefreshAdb(devices));
 router.route(wallController.getActions);
 router.route(wallController.postTextAction(wall));
 router.route(wallController.postPersonAction(wall));
+router.route(wallController.postWebsiteAction(devices));
+router.route(wallController.postScreenToggleAction(devices));
 router.route(wallController.postAction(wall));
 router.route(cellController.getState(wall));
 router.route(cellController.putCell(wall));

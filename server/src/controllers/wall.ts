@@ -2,6 +2,7 @@ import { Joi, Spec } from 'koa-joi-router';
 import { blank, image, text } from '../models/CellState';
 import { Wall, wallSchema } from '../models/Wall';
 import { enumerate } from '../util/itertools';
+import { Devices, openWebsite, turnOn } from '../util/adb';
 
 function showText(wall: Wall, list: string[]) {
     for (const [i, cell] of enumerate(wall)) {
@@ -102,6 +103,22 @@ export function getWall(wall: Wall): Spec {
 }
 
 /**
+ * GET /wall/refresh-adb
+ * Open a website on cells
+ */
+export function postRefreshAdb(devices: Promise<Devices>): Spec {
+    return {
+        method: 'GET',
+        path: '/wall/refresh-adb',
+        async handler(ctx) {
+            await (await devices).refreshDevices();
+
+            ctx.redirect('/');
+        },
+    };
+}
+
+/**
  * GET /wall/actions
  * Return list of actions that can be manually triggered.
  */
@@ -150,7 +167,7 @@ export function postTextAction(wall: Wall): Spec {
 }
 
 /**
- * POST /wall/action/:person
+ * POST /wall/action/welcome
  * Display a greeting to a person, along with images of them.
  */
 export function postPersonAction(wall: Wall): Spec {
@@ -173,6 +190,48 @@ export function postPersonAction(wall: Wall): Spec {
             for (const [i, cell] of enumerate(wall.surroundingCells())) {
                 cell.state = image(`/img/demo${i % 2}.jpg`);
             }
+
+            ctx.redirect('/');
+        },
+    };
+}
+
+/**
+ * POST /wall/action/website
+ * Open a website on cells
+ */
+export function postWebsiteAction(devices: Promise<Devices>): Spec {
+    return {
+        method: 'POST',
+        path: '/wall/action/website',
+        validate: {
+            body: Joi.string(),
+            type: 'json',
+        },
+        async handler(ctx) {
+            const url = ctx.request.body as string;
+            await (await devices).forEach(adb => openWebsite(adb, url));
+
+            ctx.redirect('/');
+        },
+    };
+}
+
+/**
+ * POST /wall/action/screen
+ * Turn all screens on or off
+ */
+export function postScreenToggleAction(devices: Promise<Devices>): Spec {
+    return {
+        method: 'POST',
+        path: '/wall/action/screen',
+        validate: {
+            body: Joi.boolean(),
+            type: 'json',
+        },
+        async handler(ctx) {
+            const on = ctx.request.body as boolean;
+            await (await devices).forEach(adb => turnOn(adb, on));
 
             ctx.redirect('/');
         },
