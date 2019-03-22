@@ -35,4 +35,4 @@ matrix:
           before_script:
               - cd android
           script:
-              - ./gradlew build connectedCheck
+              - ./gradlew build lint test --stacktrace
