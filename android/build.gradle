@@ -10,7 +10,7 @@ buildscript {
         ktxVersion = '1.0.1'
         lifecycleVersion = '2.0.0'
         materialVersion = '1.0.0'
-        mockitoVersion = '2.23.4'
+        mockitoVersion = '2.25.1'
         okHttpVersion = '3.13.1'
         recyclerViewVersion = '1.0.0'
         retrofitVersion = '2.5.0'
