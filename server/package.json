@@ -18,7 +18,7 @@
         "lint:check": "npm run build && npm run lint:ts -- --check"
     },
     "dependencies": {
-        "appium-adb": "^7.3.0",
+        "appium-adb": "^7.6.3",
         "dotenv": "^6.2.0",
         "koa": "^2.7.0",
         "koa-joi-router": "^5.2.0",
