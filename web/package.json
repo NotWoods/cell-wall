@@ -26,7 +26,7 @@
         "@types/socket.io-client": "^1.4.32",
         "jest": "^23.6.0",
         "prettier": "^1.16.4",
-        "rollup": "^1.1.2",
+        "rollup": "^1.7.4",
         "rollup-plugin-commonjs": "^9.2.0",
         "rollup-plugin-node-resolve": "^4.0.0",
         "rollup-plugin-replace": "^2.1.0",
