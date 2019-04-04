@@ -42,11 +42,11 @@ export class SubProcess extends EventEmitter {
     // "started"
     start(detach?: boolean): Promise<any>;
     start(
-        startDetector?: ((stdout, stderr) => boolean) | number | null,
+        startDetector?: ((stdout: any, stderr: any) => boolean) | number | null,
         detach?: boolean,
     ): Promise<any>;
     start(
-        startDetector?: ((stdout, stderr) => boolean) | number | null,
+        startDetector?: ((stdout: any, stderr: any) => boolean) | number | null,
         timeoutMs?: number | null,
         detach?: boolean,
     ): Promise<void>;
