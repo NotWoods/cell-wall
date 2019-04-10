@@ -4,15 +4,17 @@ const board = {
     setDimension: jest.fn(),
     updateScale: jest.fn(),
 };
-jest.mock('../../src/editor/board', () => ({ Board: { instance: board } }));
-jest.mock('../../src/editor/display', () => ({ Display: jest.fn() }));
+jest.mock('../../../src/web/editor/board', () => ({
+    Board: { instance: board },
+}));
+jest.mock('../../../src/web/editor/display', () => ({ Display: jest.fn() }));
 
 import {
     connect,
     disconnect,
     showPreview,
     resizeWall,
-} from '../../src/editor/handle-socket';
+} from '../../../src/web/editor/handle-socket';
 
 describe('editorController', () => {
     beforeEach(() => {

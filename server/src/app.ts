@@ -39,7 +39,7 @@ router.route(cellController.putCell(wall));
 
 // Create HTTP server
 const app = new Koa();
-app.use(serveStatic(join(__dirname, '../../web/public'), { maxAge: 36000 }));
+app.use(serveStatic(join(__dirname, '../public'), { maxAge: 36000 }));
 app.use(router.middleware());
 const server = createServer(app.callback());
 

@@ -21,7 +21,7 @@ export const isCellWall: Spec = {
 
 export function serveModules(router: Router, folders: string[]) {
     for (const folder of folders) {
-        const path = join(__dirname, '../../node_modules', folder);
+        const path = join(__dirname, '../node_modules', folder);
         router.use(
             posix.join('/node_modules', folder),
             serveStatic(path, { maxage: 36000 }),

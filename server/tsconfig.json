@@ -16,9 +16,12 @@
         "noUnusedLocals": true,
         "noImplicitReturns": true,
         "noFallthroughCasesInSwitch": true,
+        "skipLibCheck": true,
 
         /* Module Resolution Options */
-        "moduleResolution": "node"
+        "moduleResolution": "node",
+        "esModuleInterop": true
     },
-    "include": ["src/**/*"]
+    "include": ["src/**/*", "test/**/*"],
+    "exclude": ["src/web/**/*"]
 }

@@ -5,7 +5,7 @@ document.getElementById = jest.fn(() => {
     return element;
 });
 
-import { scale } from '../../src/editor/board';
+import { scale } from '../../../src/web/editor/board';
 
 test('scale', () => {
     expect(scale(16)).toBe('1em');
