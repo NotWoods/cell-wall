@@ -1,4 +1,4 @@
-import request = require('supertest');
+import request from 'supertest';
 import { getActions, getWall } from '../../src/controllers/wall';
 import { MockWall } from '../mock-wall';
 import { makeApp } from './make-app';

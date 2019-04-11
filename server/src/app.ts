@@ -1,9 +1,9 @@
 import { createServer } from 'http';
 import { join } from 'path';
-import Koa = require('koa');
-import Router = require('koa-joi-router');
-import serveStatic = require('koa-static');
-import socketIO = require('socket.io');
+import Koa from 'koa';
+import Router from 'koa-joi-router';
+import serveStatic from 'koa-static';
+import socketIO from 'socket.io';
 import { WallImpl } from './models/Wall';
 import { WallDao } from './models/WallDao';
 import { SocketRouter } from './util/socket-spec';

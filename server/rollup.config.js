@@ -14,7 +14,7 @@ const serverConfig = {
         format: 'cjs',
         sourcemap: true,
     },
-    plugins: [typescript(), resolve(), commonjs(), terser()],
+    plugins: [typescript(), resolve(), commonjs()],
     external: ['http', 'fs', 'util', 'path', ...Object.keys(pkg.dependencies)],
 };
 

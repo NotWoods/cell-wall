@@ -1,6 +1,6 @@
 import { createServer } from 'http';
-import Router = require('koa-joi-router');
-import Koa = require('koa');
+import Router from 'koa-joi-router';
+import Koa from 'koa';
 
 export function makeApp(route: Router.Spec | Router.Spec[]) {
     const router = Router();

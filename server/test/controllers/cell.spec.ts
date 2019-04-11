@@ -1,4 +1,4 @@
-import request = require('supertest');
+import request from 'supertest';
 import { getState, putCell } from '../../src/controllers/cell';
 import { MockWall } from '../mock-wall';
 import { makeApp } from './make-app';

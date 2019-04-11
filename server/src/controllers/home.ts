@@ -1,6 +1,6 @@
 import { Joi, Router, Spec } from 'koa-joi-router';
 import { join, posix } from 'path';
-import serveStatic = require('koa-static');
+import serveStatic from 'koa-static';
 
 /**
  * GET /is-cellwall-server
