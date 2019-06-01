@@ -48,7 +48,7 @@ dependencies {
     testImplementation 'org.json:json:20140107'
     testImplementation "org.mockito:mockito-core:$rootProject.mockitoVersion"
     androidTestImplementation "org.mockito:mockito-core:$rootProject.mockitoVersion"
-    androidTestImplementation 'androidx.test:runner:1.1.1'
+    androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
     androidTestImplementation "com.squareup.okhttp3:mockwebserver:$rootProject.okHttpVersion"
 
