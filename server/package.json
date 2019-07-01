@@ -18,7 +18,7 @@
         "lint:check": "tsc --noEmit && npm run lint:ts -- --check"
     },
     "dependencies": {
-        "appium-adb": "^7.7.0",
+        "appium-adb": "^7.9.0",
         "dotenv": "^7.0.0",
         "koa": "^2.7.0",
         "koa-joi-router": "^5.3.0",
