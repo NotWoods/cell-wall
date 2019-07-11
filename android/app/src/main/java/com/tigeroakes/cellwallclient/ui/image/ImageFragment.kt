@@ -11,12 +11,9 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
-import com.bumptech.glide.request.RequestOptions.centerCropTransform
+import com.squareup.picasso.Picasso
 import com.tigeroakes.cellwallclient.R
 import com.tigeroakes.cellwallclient.data.CellWallRepositoryImpl
-import com.tigeroakes.cellwallclient.ui.GlideApp
 import com.tigeroakes.cellwallclient.ui.RepositoryViewModelFactory
 import kotlinx.android.synthetic.main.image_fragment.*
 
@@ -56,11 +53,11 @@ class ImageFragment : Fragment() {
 
     private fun setupImage() {
         viewModel.imageSrc.observe(viewLifecycleOwner, Observer { imageUrl ->
-            GlideApp.with(this)
-                    .load(imageUrl)
-                    .apply(centerCropTransform())
-                    .error(ColorDrawable(Color.RED))
-                    .into(image)
+            Picasso.with(context)
+                .load(imageUrl)
+                .centerCrop()
+                .error(ColorDrawable(Color.RED))
+                .into(image)
         })
     }
 }
