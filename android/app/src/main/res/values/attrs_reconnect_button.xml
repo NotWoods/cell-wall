@@ -1,9 +1,0 @@
-<resources>
-    <declare-styleable name="ReconnectButton">
-        <attr name="status" format="enum">
-            <enum name="disconnected" value="0" />
-            <enum name="connecting" value="1" />
-            <enum name="connected" value="2" />
-        </attr>
-    </declare-styleable>
-</resources>

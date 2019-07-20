@@ -35,6 +35,6 @@ export function* enumerate<T>(sequence: Iterable<T>, start = 0) {
 /**
  * Return elements of set a that are not in set b.
  */
-export function difference<T>(a: Iterable<T>, b: Set<T>): T[] {
+export function difference<T>(a: Iterable<T>, b: ReadonlySet<T>): T[] {
     return [...a].filter(x => !b.has(x));
 }
