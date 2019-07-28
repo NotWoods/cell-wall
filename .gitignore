@@ -1,11 +1,11 @@
 # Ignore built files
-server/.wall-cache.json
-server/public/**/*.js
-server/public/**/*.js.map
-lib
+web/public/**/build*.js
+build
 *.apk
 *.ap_
 *.aab
+*.map
+.rpt2_cache
 
 # Logs
 logs

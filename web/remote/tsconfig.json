@@ -1,0 +1,10 @@
+{
+    "extends": "../tsproject.json",
+    "compilerOptions": {
+        "outDir": "../public",
+
+        "composite": false,
+        "declaration": false,
+        "declarationMap": false
+    }
+}

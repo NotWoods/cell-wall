@@ -1,0 +1,27 @@
+{
+    "compilerOptions": {
+        "composite": true,
+        "lib": [],
+
+        "target": "esnext",
+        "module": "esnext",
+        "declaration": true,
+        "sourceMap": true,
+        "declarationMap": true,
+        "pretty": true,
+
+        "strict": true,
+        "noUnusedLocals": true,
+        "noImplicitReturns": true,
+        "noFallthroughCasesInSwitch": true,
+        "skipLibCheck": true,
+
+        "moduleResolution": "node",
+        "esModuleInterop": true
+    },
+    "references": [
+        { "path": "./server" },
+        { "path": "./remote" },
+        { "path": "./editor" }
+    ]
+}

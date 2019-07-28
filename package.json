@@ -8,21 +8,25 @@
     "repository": "NotWoods/cell-wall",
     "bugs": "https://github.com/NotWoods/cell-wall/issues",
     "homepage": "https://github.com/NotWoods/cell-wall#readme",
-    "main": "lib/server.js",
+    "main": "web/build/server.js",
     "scripts": {
         "test": "jest",
         "build": "rollup -c",
-        "start": "node lib/server.js",
-        "lint:files": "prettier \"{src,test}/**/*.ts\"",
+        "start": "node .",
+        "lint:files": "prettier \"web/**/*.ts\"",
         "lint": "npm run lint:files -- --write",
         "lint:check": "tsc --noEmit && npm run lint:files -- --check"
     },
     "dependencies": {
-        "appium-adb": "^7.10.0"
+        "appium-adb": "^7.11.0",
+        "socket.io": "^2.2.0"
     },
     "devDependencies": {
         "@types/jest": "^24.0.15",
+        "@types/socket.io": "^2.1.2",
+        "@types/socket.io-client": "^1.4.32",
         "@types/supertest": "^2.0.8",
+        "interactjs": "^1.5.4",
         "jest": "^24.8.0",
         "prettier": "^1.18.2",
         "rollup": "^1.17.0",
@@ -30,7 +34,8 @@
         "rollup-plugin-node-resolve": "^5.2.0",
         "rollup-plugin-replace": "^2.2.0",
         "rollup-plugin-terser": "^5.1.1",
-        "rollup-plugin-typescript": "^1.0.1",
+        "rollup-plugin-typescript2": "^0.22.1",
+        "socket.io-client": "^2.2.0",
         "supertest": "^4.0.2",
         "ts-jest": "^24.0.2",
         "tslib": "^1.10.0",
