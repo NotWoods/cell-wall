@@ -1,5 +1,5 @@
 import io from 'socket.io-client';
-import { ConfigState } from '../server/state-types';
+import { ConfigState } from '../server/config/state-types';
 import { Board, form } from './board.js';
 import { Display } from './display.js';
 

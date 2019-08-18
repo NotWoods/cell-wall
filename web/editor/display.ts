@@ -4,7 +4,7 @@ import {
     OrBoolean,
 } from '@interactjs/types/types';
 import interact from 'interactjs';
-import { DeviceState } from '../server/state-types.js';
+import { DeviceState } from '../server/config/state-types.js';
 import { BASE_SIZE, form, scale } from './board.js';
 
 const displaySelect = form.elements.namedItem('display') as HTMLSelectElement;

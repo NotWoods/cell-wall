@@ -1,16 +1,15 @@
 import { createServer } from 'http';
 import SocketIO from 'socket.io';
 import { ACTION_VIEW_CELLWALL, getClients, intent } from './adb.js';
-import { config } from './live-config.js';
+import { liveConfig } from './config/live-config.js';
+import { configRequestListener } from './config/request-listener.js';
 
 // Load configuration store
-const store = config('config.json', 'config.default.json');
+const store = liveConfig('config.json', 'config.default.json');
 
-const server = createServer((request, response) => {
-    console.log(request.url);
-    response.end('Hello Node.js server!');
-});
+const server = createServer(configRequestListener(store));
 const io = SocketIO(server);
+io.on('connection', store.subscribe);
 
 store.subscribe(async state => {
     // Refresh clients on every state change
@@ -28,6 +27,5 @@ store.subscribe(async state => {
         }),
     );
 });
-io.on('connection', store.subscribe);
 
 export default server;
