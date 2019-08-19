@@ -19,7 +19,6 @@ export function configRequestListener(config: LiveConfig): RequestListener {
         try {
             if (request.url === CONFIG_PATH && request.method === 'GET') {
                 const body = JSON.stringify(await config.getState());
-                console.log(body);
                 response
                     .writeHead(200, { 'Content-Type': 'application/json' })
                     .end(body);
@@ -35,6 +34,7 @@ export function configRequestListener(config: LiveConfig): RequestListener {
             }
         } catch (err) {
             response.writeHead(500).end(String(err));
+            throw err;
         }
     };
 }

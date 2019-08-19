@@ -47,26 +47,25 @@ describe('configRequestListener', () => {
 
         await listener(mockRequest as any, response as any);
 
-        expect(store.getState).toBeCalled();
         expect(response.writeHead).toBeCalledWith(200, {
             'Content-Type': 'application/json',
         });
         expect(response.end).toBeCalledWith(JSON.stringify(state));
+        expect(store.getState).toBeCalled();
     });
 
     test('sets state for POST request', async () => {
         const listener = configRequestListener(store);
-        const mockRequest = {
+        const mockRequest = Readable.from([JSON.stringify(state)]);
+        Object.assign(mockRequest, {
             url: '/config',
             method: 'POST',
-            body: new Readable(),
-        };
-        mockRequest.body.push(JSON.stringify(state));
+        });
 
         await listener(mockRequest as any, response as any);
 
-        expect(store.setState).toBeCalledWith(state);
         expect(response.writeHead).toBeCalledWith(201);
         expect(response.end).toBeCalledWith('Created');
+        expect(store.setState).toBeCalledWith(state);
     });
 });
