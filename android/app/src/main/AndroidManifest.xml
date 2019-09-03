@@ -15,9 +15,16 @@
         tools:ignore="GoogleAppIndexingWarning">
         <activity android:name=".WebActivity">
             <intent-filter>
-                <action android:name="com.tigeroakes.cellwallclient.VIEW" />
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
 
+            <intent-filter>
+                <action android:name="com.tigeroakes.cellwallclient.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:scheme="http" />
+                <data android:scheme="https" />
             </intent-filter>
         </activity>
     </application>
