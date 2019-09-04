@@ -14,52 +14,26 @@ import android.webkit.WebView
  */
 class WebActivity : AppCompatActivity() {
 
+    private lateinit var webView: WebViewController
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        setupWebView(intent)
+
+        webView = WebViewController(findViewById(R.id.webView))
+
+        webView.processIntent(intent)
     }
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
-        setupWebView(intent)
+
+        webView.processIntent(intent)
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
-        if (hasFocus) enterImmersiveMode()
+        if (hasFocus) Immersive.enterImmersiveMode(window)
     }
 
-    /**
-     * Specifies [WebView] settings and loads a URL.
-     *
-     * The URL is pulled from the data string. If no data URI is specified, about:blank is displayed.
-     */
-    @Suppress("SetJavascriptEnabled")
-    private fun setupWebView(intent: Intent?) = findViewById<WebView>(R.id.webView).apply {
-        settings.javaScriptEnabled = true
-
-        val url = intent?.dataString?.ifEmpty { null }
-        loadUrl(url ?: "about:blank")
-    }
-
-    /**
-     * Hides system bars.
-     * https://developer.android.com/training/system-ui/immersive
-     */
-    private fun enterImmersiveMode() {
-        var visibilityFlags = SYSTEM_UI_FLAG_HIDE_NAVIGATION
-        if (SDK_INT >= VERSION_CODES.JELLY_BEAN) {
-            visibilityFlags = visibilityFlags or
-                    SYSTEM_UI_FLAG_LAYOUT_STABLE or
-                    SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
-                    SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
-                    SYSTEM_UI_FLAG_FULLSCREEN
-        }
-        if (SDK_INT >= VERSION_CODES.KITKAT) {
-            visibilityFlags = visibilityFlags or SYSTEM_UI_FLAG_IMMERSIVE
-        }
-        window.decorView.systemUiVisibility = visibilityFlags
-
-    }
 }

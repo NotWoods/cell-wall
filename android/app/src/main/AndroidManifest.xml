@@ -13,7 +13,8 @@
         android:networkSecurityConfig="@xml/network_security_config"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".WebActivity">
+        <activity android:name=".WebActivity"
+            android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -25,6 +26,12 @@
 
                 <data android:scheme="http" />
                 <data android:scheme="https" />
+                <data android:scheme="javascript" />
+            </intent-filter>
+
+            <intent-filter>
+                <action android:name="com.tigeroakes.cellwallclient.RELOAD" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
     </application>
