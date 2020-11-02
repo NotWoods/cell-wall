@@ -19,16 +19,15 @@ how to deploy the project on a live system.
 
 ### Prerequisites
 
-- Node.js 10 or greater
-- Android Studio 3.2 or greater
+- Node.js 14 or greater
+- Android Studio 4.1 or greater
 
 ### Installing
 
 Install NPM dependencies for the server:
 
 ```shell
-cd ./server
-npm install
+pnpm recursive install
 ```
 
 Install Gradle dependencies for the client by opening the `./android` folder as
@@ -46,9 +45,7 @@ gradlew build
 Run the server by compiling the TypeScript code and launching it with node:
 
 ```shell
-cd ./server
-npm run build # Runs `tsc` to compile TypeScript
-npm start # Runs `node src/index.js` to start server
+pnpm run build # Runs `tsc` to compile TypeScript
 ```
 
 When running the client application, you will be prompted to enter a URL for
@@ -56,7 +53,7 @@ your server. Enter the path to your node server, such as `http://10.0.2.2:3000`.
 
 ## Built with
 
-- [Koa](https://koajs.com/) - Web server
+- [Fastify](https://www.fastify.io/) - Web server
 - [Socket.io](https://socket.io) - WebSocket library for client and server
 - [Android Architecture Components](https://developer.android.com/topic/libraries/architecture/) -
   Used for MVVM architecture on client
