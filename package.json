@@ -12,18 +12,14 @@
   "bugs": "https://github.com/NotWoods/cell-wall/issues",
   "homepage": "https://github.com/NotWoods/cell-wall#readme",
   "engines": {
-    "node": ">=14.15.0",
-    "npm": ">=7.0.0"
-  },
-  "workspaces": {
-    "packages": [
-      "javascript/*"
-    ]
+    "node": ">=14.15.0"
   },
   "scripts": {
-    "format": "prettier *.json .vscode/*.json *.md --write"
+    "build": "tsc --build javascript",
+    "format": "prettier *.json .vscode/*.json *.md javascript/*.js javascript/*.json --write"
   },
   "devDependencies": {
-    "prettier": "^2.1.2"
+    "prettier": "^2.1.2",
+    "typescript": "4.1.0-beta"
   }
 }

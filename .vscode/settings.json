@@ -2,11 +2,15 @@
   "files.exclude": {
     "**/.git": true,
     "**/.DS_Store": true,
+    "**/tsconfig.tsbuildinfo": true,
     "**/*.js": {
       "when": "$(basename).ts"
     },
     "**/*.js.map": {
       "when": "$(basename)"
+    },
+    "**/*.d.ts": {
+      "when": "$(basename).ts"
     }
   },
   "editor.formatOnSave": true,
@@ -16,5 +20,6 @@
     "**/coverge": true,
     "package-lock.json": true
   },
-  "typescript.referencesCodeLens.enabled": true
+  "typescript.referencesCodeLens.enabled": true,
+  "typescript.tsdk": "node_modules\\typescript\\lib"
 }

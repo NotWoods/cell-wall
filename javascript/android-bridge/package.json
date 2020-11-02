@@ -3,14 +3,19 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "format": "prettier **/*.json --write"
+    "build": "",
+    "format": "prettier **/*.ts **/*.json --write",
+    "test": "ava"
   },
   "dependencies": {
+    "@types/appium-adb": "*",
     "appium-adb": "^8.7.3",
-    "typescript": "^3.4.3"
+    "tslib": "^2.0.1"
   },
   "devDependencies": {
-    "@types/appium-adb": "^8.7.0",
-    "prettier": "^2.1.2"
+    "ava": "^3.13.0",
+    "prettier": "^2.1.2",
+    "ts-node": "^9.0.0",
+    "typescript": "4.1.0-beta"
   }
 }

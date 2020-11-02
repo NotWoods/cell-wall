@@ -4,6 +4,7 @@
     "incremental": true,
     "target": "esnext",
     "module": "commonjs",
+    "sourceMap": true,
     "importHelpers": true,
     "strict": true,
     "noUnusedLocals": true,

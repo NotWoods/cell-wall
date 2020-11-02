@@ -1,7 +1,10 @@
 import ADB, { Device } from 'appium-adb';
 
+export type DeviceMap = Map<string, ADB>;
+export type DeviceCallback<T> = (adb: ADB, udid: string) => Promise<T>;
+
 export class DeviceManager {
-  devices = new Map<Device['uuid'], ADB>();
+  devices = new Map<string, ADB>();
   devicesLoading = true;
 
   async refreshDevices() {
@@ -14,23 +17,12 @@ export class DeviceManager {
       devices.map(async (device) => {
         const adb = await ADB.createADB();
         adb.setDevice(device);
-        return [device.uuid, adb] as const;
+        return [device.udid, adb] as const;
       }),
     );
 
     this.devices = new Map(clients);
     this.devicesLoading = false;
     return this.devices;
-  }
-
-  /**
-   * Calls a defined callback function on each device.
-   */
-  async map<T>(callback: (adb: ADB, uuid: Device['uuid']) => Promise<T>) {
-    const results: Promise<T>[] = [];
-    for (const [uuid, adb] of this.devices) {
-      results.push(callback(adb, uuid));
-    }
-    return await Promise.all(results);
   }
 }

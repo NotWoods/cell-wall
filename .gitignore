@@ -6,6 +6,11 @@ build
 *.aab
 *.map
 .rpt2_cache
+*.tsbuildinfo
+javascript/*/src/**/*.js
+javascript/*/src/**/*.d.ts
+javascript/*/test/**/*.js
+javascript/*/test/**/*.d.ts
 
 # Logs
 *.log
