@@ -1,4 +1,5 @@
 import fastify, { FastifyServerOptions } from 'fastify';
+import SocketIO from 'socket.io';
 import decorateServer from './decorate';
 import * as routes from './routes';
 
@@ -9,5 +10,7 @@ export default function server(options?: FastifyServerOptions) {
 
   Object.values(routes).forEach((route) => app.route(route));
 
-  return app;
+  const io = SocketIO(app.server);
+
+  return { app, io };
 }

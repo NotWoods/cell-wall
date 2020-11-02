@@ -1,7 +1,7 @@
 import server from './app';
 
 async function start(port = 3000) {
-  const app = server({ logger: true });
+  const { app } = server({ logger: true });
   try {
     await app.listen(port);
     const nodeEnv = process.env.NODE_ENV || 'development';
