@@ -20,6 +20,24 @@ export const cellWallVersion: RouteOptions = {
   },
 };
 
+export const statusPowerAll: RouteOptions = {
+  method: 'GET',
+  url: '/v3/status/power/',
+  async handler(_request, _reply) {
+    const devices = this.deviceManager.devices;
+
+    return {
+      devices: Object.fromEntries(
+        await Promise.all(
+          Array.from(devices.entries()).map(async ([udid, device]) => {
+            return [udid, await checkIfOn(device)];
+          }),
+        ),
+      ),
+    };
+  },
+};
+
 export const statusPower: RouteOptions = {
   method: 'GET',
   url: '/v3/status/power/:udid',
