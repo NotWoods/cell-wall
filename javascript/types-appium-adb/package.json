@@ -4,7 +4,6 @@
   "private": true,
   "types": "src/index.d.ts",
   "scripts": {
-    "build": "",
     "format": "prettier src/**/*.d.ts *.json --write",
     "test": "tsc"
   },

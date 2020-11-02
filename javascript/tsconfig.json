@@ -4,7 +4,6 @@
     { "path": "android-bridge/src" },
     { "path": "android-bridge/test" },
     { "path": "server/src" },
-    { "path": "server/test" },
-    { "path": "types-appium-adb" }
+    { "path": "server/test" }
   ]
 }

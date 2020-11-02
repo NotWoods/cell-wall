@@ -5,8 +5,10 @@
   "main": "src/index.js",
   "types": "src/index.d.ts",
   "scripts": {
+    "build": "tsc --build src",
     "format": "prettier **/*.json **/*.ts --write",
     "start": "node src/index.js",
+    "pretest": "tsc --build test",
     "test": "ava"
   },
   "dependencies": {
