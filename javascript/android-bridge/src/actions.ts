@@ -1,4 +1,3 @@
-import 'iterator-polyfill';
 import { checkIfOn, togglePower } from './device-action';
 import { DeviceMap } from './device-manager';
 

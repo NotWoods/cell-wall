@@ -1,0 +1,23 @@
+{
+  "name": "@cell-wall/deploy",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "rollup -c",
+    "format": "prettier *.json --write"
+  },
+  "dependencies": {
+    "@cell-wall/server": "*"
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^15.1.0",
+    "@rollup/plugin-json": "^4.1.0",
+    "@rollup/plugin-node-resolve": "^9.0.0",
+    "prettier": "^2.1.2",
+    "rollup": "^2.33.1",
+    "typescript": "4.1.0-beta"
+  },
+  "files": [
+    "src"
+  ]
+}
