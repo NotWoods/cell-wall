@@ -46,6 +46,7 @@ Run the server by compiling the TypeScript code and launching it with node:
 
 ```shell
 pnpm run build # Runs `tsc` to compile TypeScript
+pnpm start
 ```
 
 When running the client application, you will be prompted to enter a URL for
