@@ -1,0 +1,16 @@
+{
+  "name": "@cell-wall/android-bridge",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "format": "prettier **/*.json --write"
+  },
+  "dependencies": {
+    "appium-adb": "^8.7.3",
+    "typescript": "^3.4.3"
+  },
+  "devDependencies": {
+    "@types/appium-adb": "^8.7.0",
+    "prettier": "^2.1.2"
+  }
+}

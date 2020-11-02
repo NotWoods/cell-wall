@@ -1,0 +1,9 @@
+{
+  "files": [],
+  "references": [
+    { "path": "android-bridge/src" },
+    { "path": "android-bridge/test" },
+    { "path": "server" },
+    { "path": "types-appium-adb" }
+  ]
+}

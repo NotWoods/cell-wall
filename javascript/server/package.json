@@ -1,0 +1,14 @@
+{
+  "name": "@cell-wall/server",
+  "version": "2.0.0",
+  "private": true,
+  "scripts": {
+    "format": "prettier *.json .vscode/*.json *.md --write"
+  },
+  "dependencies": {
+    "@cell-wall/android-bridge": "*"
+  },
+  "devDependencies": {
+    "prettier": "^2.1.2"
+  }
+}

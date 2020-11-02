@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "incremental": true,
+    "target": "esnext",
+    "module": "commonjs",
+    "importHelpers": true,
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "moduleResolution": "node",
+    "esModuleInterop": true
+  }
+}
