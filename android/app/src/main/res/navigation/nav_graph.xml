@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:id="@+id/nav_graph"
+  app:startDestination="@id/loading">
+
+  <fragment android:id="@+id/loading" >
+    <action
+      android:id="@+id/action_loading_to_largeTextFragment"
+      app:destination="@id/largeTextFragment" />
+  </fragment>
+
+  <fragment
+    android:id="@+id/largeTextFragment"
+    android:name="com.tigeroakes.cellwallclient.ui.text.LargeTextFragment"
+    android:label="fragment_large_text"
+    tools:layout="@layout/fragment_large_text">
+    <argument
+      android:name="text"
+      app:argType="string" />
+    <argument
+      android:name="background"
+      app:argType="integer" />
+  </fragment>
+</navigation>
