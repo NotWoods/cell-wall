@@ -1,56 +1,30 @@
 {
-    "name": "@cell-wall/server",
-    "version": "2.0.0",
-    "description": "Server for the CellWall",
-    "private": true,
-    "license": "UNLICENSED",
-    "author": "Tiger Oakes <contact@tigeroakes.com> (https://tigeroakes.com)",
-    "repository": "NotWoods/cell-wall",
-    "bugs": "https://github.com/NotWoods/cell-wall/issues",
-    "homepage": "https://github.com/NotWoods/cell-wall#readme",
-    "main": "web/build/server.js",
-    "scripts": {
-        "test": "jest",
-        "build": "rollup -c",
-        "start": "node .",
-        "lint:files": "prettier \"web/**/*.ts\"",
-        "lint": "npm run lint:files -- --write",
-        "lint:check": "tsc --noEmit && npm run lint:files -- --check"
-    },
-    "dependencies": {
-        "appium-adb": "^7.11.0",
-        "get-stream": "^5.1.0",
-        "socket.io": "^2.2.0"
-    },
-    "devDependencies": {
-        "@types/jest": "^24.0.17",
-        "@types/socket.io": "^2.1.2",
-        "@types/socket.io-client": "^1.4.32",
-        "@types/supertest": "^2.0.8",
-        "interactjs": "^1.5.4",
-        "jest": "^24.9.0",
-        "prettier": "^1.18.2",
-        "rollup": "^1.19.4",
-        "rollup-plugin-commonjs": "^10.0.2",
-        "rollup-plugin-node-resolve": "^5.2.0",
-        "rollup-plugin-replace": "^2.2.0",
-        "rollup-plugin-terser": "^5.1.1",
-        "rollup-plugin-typescript2": "^0.22.1",
-        "socket.io-client": "^2.2.0",
-        "supertest": "^4.0.2",
-        "ts-jest": "^24.0.2",
-        "tslib": "^1.10.0",
-        "typescript": "^3.5.3"
-    },
-    "engines": {
-        "node": ">=10.14.2"
-    },
-    "jest": {
-        "preset": "ts-jest"
-    },
-    "prettier": {
-        "singleQuote": true,
-        "trailingComma": "all",
-        "proseWrap": "always"
-    }
+  "name": "@cell-wall/workspace",
+  "version": "3.0.0",
+  "private": true,
+  "license": "UNLICENSED",
+  "author": {
+    "name": "Tiger Oakes",
+    "email": "contact@tigeroakes.com",
+    "url": "https://tigeroakes.com"
+  },
+  "repository": "NotWoods/cell-wall",
+  "bugs": "https://github.com/NotWoods/cell-wall/issues",
+  "homepage": "https://github.com/NotWoods/cell-wall#readme",
+  "engines": {
+    "node": ">=14.15.0",
+    "npm": ">=7.0.0"
+  },
+  "workspaces": {
+    "packages": [
+      "javascript/*"
+    ]
+  },
+  "devDependencies": {
+    "prettier": "^2.1.2"
+  },
+  "prettier": {
+    "singleQuote": true,
+    "trailingComma": "all"
+  }
 }
