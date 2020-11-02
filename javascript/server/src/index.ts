@@ -1,19 +1,19 @@
-import server from './app';
+import type { FastifyInstance, FastifyServerOptions } from 'fastify';
+import formbodyPlugin from 'fastify-formbody';
+import SocketIO from 'socket.io';
+import decorateServer from './decorate';
+import * as routes from './routes';
 
-async function start(port = 3000) {
-  const { app } = server({ logger: true });
-  try {
-    await app.listen(port);
-    const nodeEnv = process.env.NODE_ENV || 'development';
-    app.log.info(
-      `App is running at ${JSON.stringify(
-        app.server.address(),
-      )} in ${nodeEnv} mode`,
-    );
-  } catch (err) {
-    app.log.error(err);
-    process.exit(1);
-  }
+export default async function server(
+  app: FastifyInstance,
+  _options: FastifyServerOptions,
+) {
+  app.register(formbodyPlugin);
+  await decorateServer(app);
+
+  Object.values(routes).forEach((route) => app.route(route));
+
+  const io = SocketIO(app.server);
+
+  return { app, io };
 }
-
-start(process.argv[2] ? parseInt(process.argv[2], 10) : undefined);

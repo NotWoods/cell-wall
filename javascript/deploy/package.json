@@ -2,14 +2,21 @@
   "name": "@cell-wall/deploy",
   "version": "1.0.0",
   "private": true,
+  "main": "dist/cell-wall.js",
   "scripts": {
     "build": "rollup -c",
-    "format": "prettier *.json --write"
+    "format": "prettier *.json --write",
+    "start": "fastify start dist/cell-wall.js"
   },
   "dependencies": {
-    "@cell-wall/server": "*"
+    "appium-adb": "^8.7.3",
+    "fastify": "^3.7.0",
+    "fastify-cli": "^2.5.1",
+    "fastify-formbody": "^5.0.0",
+    "socket.io": "^2.3.0"
   },
   "devDependencies": {
+    "@cell-wall/server": "*",
     "@rollup/plugin-commonjs": "^15.1.0",
     "@rollup/plugin-json": "^4.1.0",
     "@rollup/plugin-node-resolve": "^9.0.0",
