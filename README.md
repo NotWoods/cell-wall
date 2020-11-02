@@ -19,8 +19,8 @@ how to deploy the project on a live system.
 
 ### Prerequisites
 
--   Node.js 10 or greater
--   Android Studio 3.2 or greater
+- Node.js 10 or greater
+- Android Studio 3.2 or greater
 
 ### Installing
 
@@ -56,7 +56,7 @@ your server. Enter the path to your node server, such as `http://10.0.2.2:3000`.
 
 ## Built with
 
--   [Koa](https://koajs.com/) - Web server
--   [Socket.io](https://socket.io) - WebSocket library for client and server
--   [Android Architecture Components](https://developer.android.com/topic/libraries/architecture/) -
-    Used for MVVM architecture on client
+- [Koa](https://koajs.com/) - Web server
+- [Socket.io](https://socket.io) - WebSocket library for client and server
+- [Android Architecture Components](https://developer.android.com/topic/libraries/architecture/) -
+  Used for MVVM architecture on client

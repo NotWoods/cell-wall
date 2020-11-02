@@ -20,6 +20,9 @@
       "javascript/*"
     ]
   },
+  "scripts": {
+    "format": "prettier *.json .vscode/*.json *.md --write"
+  },
   "devDependencies": {
     "prettier": "^2.1.2"
   },
