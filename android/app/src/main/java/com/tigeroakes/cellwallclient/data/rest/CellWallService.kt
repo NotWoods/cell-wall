@@ -10,7 +10,7 @@ interface CellWallService {
   @GET("/v3/cellwall-version")
   suspend fun isCellWall(): JSONObject
 
-  @PUT("/v3/cell/{serial}")
+  @PUT("/v3/device/{serial}")
   suspend fun putCell(
     @Path("serial") serial: String,
     @Body cell: JSONObject

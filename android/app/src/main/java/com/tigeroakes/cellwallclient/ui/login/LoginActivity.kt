@@ -1,6 +1,7 @@
 package com.tigeroakes.cellwallclient.ui.login
 
 import android.animation.Animator
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.os.PersistableBundle
@@ -13,6 +14,7 @@ import androidx.lifecycle.lifecycleScope
 import com.tigeroakes.cellwallclient.R
 import com.tigeroakes.cellwallclient.device.getCellInfo
 import com.tigeroakes.cellwallclient.device.serialNo
+import com.tigeroakes.cellwallclient.ui.MainActivity
 import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.coroutines.launch
 
@@ -27,6 +29,11 @@ class LoginActivity : AppCompatActivity(R.layout.activity_login) {
     setupAddressInput()
     setupSerialNoInput()
     setupDebugText()
+
+    exit_button.setOnClickListener {
+      val intent = Intent(this, MainActivity::class.java)
+      startActivity(intent)
+    }
   }
 
   /**

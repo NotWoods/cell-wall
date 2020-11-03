@@ -6,6 +6,7 @@
 
   <string name="action_reconnect">Reconnect</string>
   <string name="action_login">Connect to new server</string>
+  <string name="action_exit">Done</string>
 
   <string name="prompt_address">Address</string>
   <string name="address_hint">HTML Address of your CellWall Server.</string>
