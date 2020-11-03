@@ -26,12 +26,14 @@ export class CellManager extends EventEmitter {
     };
     this.cells.set(serial, data);
     this.emit('register', data);
+    return data;
   }
 
   setState(serial: string, state: CellState) {
-    const existing = this.cells.get(serial);
+    let existing = this.cells.get(serial);
     if (!existing) {
-      throw new Error(`Register ${serial} before setting its state.`);
+      // throw new Error(`Register ${serial} before setting its state.`);
+      existing = this.register(serial, {});
     }
     const data: CellData = {
       serial,

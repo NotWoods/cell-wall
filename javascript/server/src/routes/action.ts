@@ -69,9 +69,8 @@ export const actionPower: RouteOptions = {
 };
 
 export const actionState: RouteOptions = {
-  method: 'PUT',
-  url: '/v3/action/status/:serial',
-  schema: {},
+  method: 'POST',
+  url: '/v3/action/state/:serial',
   async handler(request, reply) {
     interface Params {
       serial: string;

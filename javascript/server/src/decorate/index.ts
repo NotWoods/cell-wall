@@ -6,6 +6,7 @@ import {
   RawRequestDefaultExpression,
   RawServerBase,
 } from 'fastify';
+import { cellBridge } from './cell-bridge';
 
 declare module 'fastify' {
   export interface FastifyInstance<
@@ -23,6 +24,7 @@ export default async function decorateServer(app: FastifyInstance) {
   const deviceManager = new DeviceManager();
   const cells = new CellManager();
   await Promise.all([deviceManager.refreshDevices(), cells.loadData()]);
+  cellBridge(deviceManager, cells);
 
   app.decorate('deviceManager', deviceManager);
   app.decorate('cells', cells);
