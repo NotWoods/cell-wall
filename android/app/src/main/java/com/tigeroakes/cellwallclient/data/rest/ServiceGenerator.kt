@@ -1,14 +1,10 @@
 package com.tigeroakes.cellwallclient.data.rest
 
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import com.tigeroakes.cellwallclient.model.cellStateAdapter
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
-import retrofit2.converter.moshi.MoshiConverterFactory
 import java.net.URI
 
-class ServiceGenerator(moshi: Moshi) {
+class ServiceGenerator() {
 
   var apiBaseUrl = URI("http://10.0.2.2:3000/")
 
@@ -37,7 +33,7 @@ class ServiceGenerator(moshi: Moshi) {
     .build()
 
   private val retrofit = Retrofit.Builder()
-    .addConverterFactory(MoshiConverterFactory.create(moshi))
+    .addConverterFactory(JsonConverterFactory())
     .baseUrl(apiBaseUrl.toString())
     .client(httpClient)
     .build()

@@ -1,6 +1,6 @@
 package com.tigeroakes.cellwallclient.model
 
-import com.squareup.moshi.adapters.PolymorphicJsonAdapterFactory
+import org.json.JSONObject
 
 enum class CellStateType {
   BLANK,
@@ -25,11 +25,30 @@ sealed class CellState(val type: CellStateType) {
   data class Text(val text: String, val backgroundColor: Int) : CellState(CellStateType.TEXT)
   data class Image(val src: String) : CellState(CellStateType.IMAGE)
   data class Button(val backgroundColor: String) : CellState(CellStateType.BUTTON)
-}
 
-val cellStateAdapter = PolymorphicJsonAdapterFactory.of(CellState::class.java, "type")
-  .withSubtype(CellState.Blank::class.java, CellStateType.BLANK.name)
-  .withSubtype(CellState.Configure::class.java, CellStateType.CONFIGURE.name)
-  .withSubtype(CellState.Text::class.java, CellStateType.TEXT.name)
-  .withSubtype(CellState.Image::class.java, CellStateType.IMAGE.name)
-  .withSubtype(CellState.Button::class.java, CellStateType.BUTTON.name)
+  companion object {
+    /**
+     * Return the CellState object corresponding to the given mode.
+     * CellState fields are populated using the provided JSON data.
+     */
+    @JvmStatic
+    fun from(json: JSONObject): CellState {
+      val mode = json.getString("type")
+      return json.run {
+        when (mode) {
+          "CONFIGURE" -> Configure(
+            getString("backgroundColor"),
+            getString("icon")
+          )
+          "TEXT" -> Text(
+            getString("text"),
+            getInt("backgroundColor")
+          )
+          "IMAGE" -> Image(getString("src"))
+          "BUTTON" -> Button(getString("backgroundColor"))
+          else -> Blank
+        }
+      }
+    }
+  }
+}
