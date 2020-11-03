@@ -1,12 +1,8 @@
 package com.tigeroakes.cellwallclient
 
 import android.content.Intent
-import android.os.Build.VERSION_CODES
-import android.os.Build.VERSION.SDK_INT
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.View.*
-import android.webkit.WebView
 
 /**
  * Basic WebView to link to the actual server. Started with an intent.
@@ -18,7 +14,7 @@ class WebActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_web)
 
         webView = WebViewController(findViewById(R.id.webView))
 

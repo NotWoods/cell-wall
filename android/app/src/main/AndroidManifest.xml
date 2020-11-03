@@ -16,15 +16,21 @@
     <activity
       android:name=".ui.login.LoginActivity"
       android:label="@string/title_activity_login"
-      android:theme="@style/AppTheme.NoActionBar"></activity>
+      android:theme="@style/AppTheme.NoActionBar">
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN" />
+        <category android:name="android.intent.category.LAUNCHER" />
+      </intent-filter>
+      <intent-filter>
+        <action android:name="com.tigeroakes.cellwallclient.LOGIN" />
+
+        <data android:scheme="http" />
+        <data android:scheme="https" />
+      </intent-filter>
+    </activity>
     <activity
       android:name=".WebActivity"
       android:launchMode="singleTop">
-      <intent-filter>
-        <action android:name="android.intent.action.MAIN" />
-
-        <category android:name="android.intent.category.LAUNCHER" />
-      </intent-filter>
       <intent-filter>
         <action android:name="com.tigeroakes.cellwallclient.VIEW" />
 

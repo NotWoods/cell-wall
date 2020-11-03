@@ -9,6 +9,7 @@
 
   <string name="prompt_address">Address</string>
   <string name="address_hint">HTML Address of your CellWall Server.</string>
+  <string name="prompt_serial">Serial number</string>
   <string name="action_connect">Connect to server</string>
   <string name="error_invalid_address">This URL is invalid</string>
   <string name="error_incorrect_address">Could not find a CellWall server at this URL</string>

@@ -1,21 +1,20 @@
 package com.tigeroakes.cellwallclient.ui.login
 
 import android.animation.Animator
-import android.annotation.SuppressLint
 import android.os.Build
-import android.os.Build.VERSION.SDK_INT
 import android.os.Bundle
 import android.os.PersistableBundle
 import android.view.ViewPropertyAnimator
-import android.view.inputmethod.EditorInfo
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
+import androidx.lifecycle.lifecycleScope
 import com.tigeroakes.cellwallclient.R
 import com.tigeroakes.cellwallclient.device.getCellInfo
-import com.tigeroakes.cellwallclient.ui.login.databinding.ActivityLoginBinding
+import com.tigeroakes.cellwallclient.device.serialNo
 import kotlinx.android.synthetic.main.activity_login.*
+import kotlinx.coroutines.launch
 
 class LoginActivity : AppCompatActivity(R.layout.activity_login) {
 
@@ -23,13 +22,22 @@ class LoginActivity : AppCompatActivity(R.layout.activity_login) {
 
   override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
     super.onCreate(savedInstanceState, persistentState)
+
+    setupLoadingBar()
+    setupAddressInput()
+    setupSerialNoInput()
+    setupDebugText()
   }
 
   /**
    * Attempts to connect to the server specified by the login form.
    */
-  private fun attemptLogin() {
-    viewModel.attemptLogin(address.text.toString(), getCellInfo(resources.displayMetrics))
+  private suspend fun attemptLogin() {
+    viewModel.attemptLogin(
+      address.text.toString(),
+      serial.text.toString(),
+      getCellInfo(resources.displayMetrics),
+    )
   }
 
   /**
@@ -66,27 +74,16 @@ class LoginActivity : AppCompatActivity(R.layout.activity_login) {
   }
 
   private fun setupAddressInput() {
-    // Login when the enter is pressed
-    address.setOnEditorActionListener { _, id, _ ->
-      if (id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL) {
-        attemptLogin()
-        true
-      } else {
-        false
-      }
+    val intentAddress = intent.data
+    if (intentAddress != null) {
+      address.setText(intentAddress.toString())
     }
 
     // Login when the connect button is pressed
-    connect_button.setOnClickListener { attemptLogin() }
-
-    address.setText(viewModel.savedAddress.value!!.peekContent())
-
-    viewModel.savedAddress.observe(this) { urlEvent ->
-      urlEvent.getContentIfNotHandled()?.let {
-        // When saved URL updates, exit this activity.
-        finish()
-      }
+    connect_button.setOnClickListener {
+      lifecycleScope.launch { attemptLogin() }
     }
+
     viewModel.errorResource.observe(this) {
       // Show error, if any.
       address_container.error = it.peekContent()?.let(this::getString)
@@ -98,16 +95,19 @@ class LoginActivity : AppCompatActivity(R.layout.activity_login) {
     }
   }
 
+  private fun setupSerialNoInput() {
+    val intentSerial = intent.extras?.getString(EXTRA_SERIAL)
+    val systemSerial = serialNo()
+    if (intentSerial != null) {
+      serial.setText(intentSerial)
+    } else if (systemSerial != Build.UNKNOWN) {
+      serial.setText(systemSerial)
+    }
+  }
+
   /** Update the debug text */
   private fun setupDebugText() {
     val info = getCellInfo(resources.displayMetrics)
-    val serial = if (SDK_INT >= Build.VERSION_CODES.O) {
-      "unknown"
-    } else {
-      @Suppress("Deprecation", "HardwareIds")
-      Build.SERIAL
-    }
-    debug_uuid.text = getString(R.string.debug_uuid, serial)
     debug_device_name.text = getString(R.string.debug_device_name, info.deviceName)
     debug_density.text = getString(R.string.debug_density, info.density)
     debug_display.text = getString(R.string.debug_display, info.widthPixels, info.heightPixels)
@@ -130,5 +130,9 @@ class LoginActivity : AppCompatActivity(R.layout.activity_login) {
       override fun onAnimationStart(animator: Animator) = onStart(animator)
     }
     return setListener(listener)
+  }
+
+  companion object {
+    const val EXTRA_SERIAL = "EXTRA_SERIAL"
   }
 }

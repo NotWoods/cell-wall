@@ -54,6 +54,22 @@
           android:singleLine="true"/>
       </com.google.android.material.textfield.TextInputLayout>
 
+      <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/serial_container"
+        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+          android:id="@+id/serial"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:hint="@string/prompt_serial"
+          android:maxLines="1"
+          android:singleLine="true"/>
+      </com.google.android.material.textfield.TextInputLayout>
+
       <Button
         android:id="@+id/connect_button"
         style="?android:textAppearanceSmall"
@@ -72,12 +88,6 @@
         android:layout_marginRight="32dp"
         android:layout_marginBottom="16dp"
         android:orientation="vertical">
-
-        <TextView
-          android:id="@+id/debug_uuid"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:text="@string/debug_uuid" />
 
         <TextView
           android:id="@+id/debug_device_name"

@@ -5,6 +5,7 @@ buildscript {
     kotlin_version = '1.4.10'
     nav_version = "2.3.1"
     datastore_version = "1.0.0-alpha02"
+    lifecycle_version = "2.3.0-beta01"
   }
   repositories {
     google()

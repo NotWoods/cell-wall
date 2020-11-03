@@ -21,6 +21,15 @@ fun deviceName(): String {
   }
 }
 
+fun serialNo(): String {
+  return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+    Build.UNKNOWN
+  } else {
+    @Suppress("Deprecation", "HardwareIds")
+    Build.SERIAL
+  }
+}
+
 fun getCellInfo(metrics: DisplayMetrics): CellInfo {
   return CellInfo(
     deviceName = deviceName(),
