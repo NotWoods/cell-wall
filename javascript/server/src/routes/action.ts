@@ -9,7 +9,14 @@ export const actionRefresh: RouteOptions = {
     response: {
       200: {
         type: 'object',
-        additionalProperties: { type: 'string' },
+        properties: {
+          devices: {
+            type: 'array',
+            items: {
+              type: 'string',
+            },
+          },
+        },
       },
     },
   },
@@ -21,7 +28,7 @@ export const actionRefresh: RouteOptions = {
   },
 };
 
-export const actioninstall: RouteOptions = {
+export const actioninstallAll: RouteOptions = {
   method: 'POST',
   url: '/v3/action/install',
   schema: {
@@ -34,11 +41,16 @@ export const actioninstall: RouteOptions = {
     response: {
       200: {
         type: 'object',
-        additionalProperties: {
-          type: 'object',
-          properties: {
-            wasUninstalled: { type: 'boolean' },
-            appState: { type: 'string' },
+        properties: {
+          device: {
+            type: 'object',
+            additionalProperties: {
+              type: 'object',
+              properties: {
+                wasUninstalled: { type: 'boolean' },
+                appState: { type: 'string' },
+              },
+            },
           },
         },
       },
@@ -61,8 +73,12 @@ export const actioninstall: RouteOptions = {
             const result = await device.installOrUpgrade(
               path,
               'com.tigeroakes.cellwallclient',
+              {
+                allowTestPackages: true,
+                enforceCurrentBuild: true,
+              },
             );
-            return [serial, result];
+            return [serial, result] as const;
           }),
         ),
       ),
@@ -84,7 +100,14 @@ export const actionPower: RouteOptions = {
     response: {
       200: {
         type: 'object',
-        additionalProperties: { type: 'string' },
+        properties: {
+          devices: {
+            type: 'array',
+            items: {
+              type: 'string',
+            },
+          },
+        },
       },
     },
   },
