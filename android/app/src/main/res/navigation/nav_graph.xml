@@ -3,11 +3,18 @@
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
   android:id="@+id/nav_graph"
-  app:startDestination="@id/loading">
+  app:startDestination="@id/splash">
 
-  <fragment android:id="@+id/loading" >
+  <action
+    android:id="@+id/action_global_splashFragment"
+    app:destination="@id/splash" />
+  <action
+    android:id="@+id/action_global_largeTextFragment"
+    app:destination="@id/largeTextFragment" />
+
+  <fragment android:id="@+id/splash">
     <action
-      android:id="@+id/action_loading_to_largeTextFragment"
+      android:id="@+id/action_splash_to_largeTextFragment"
       app:destination="@id/largeTextFragment" />
   </fragment>
 

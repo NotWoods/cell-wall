@@ -22,6 +22,15 @@ import java.net.URI
 
 class CellWallRepository(context: Context) {
 
+  companion object {
+    private var instance: CellWallRepository? = null
+
+    fun get(context: Context): CellWallRepository {
+      if (instance != null) return instance!!
+      return CellWallRepository(context.applicationContext).also { instance = it }
+    }
+  }
+
   private val moshi = Moshi.Builder()
     .add(cellStateAdapter)
     .add(KotlinJsonAdapterFactory())
@@ -34,13 +43,15 @@ class CellWallRepository(context: Context) {
   val serverAddress = dataStore.data.map { it.serverAddress }
   val isUrlSaved = serverAddress.map { it.isNotEmpty() }
 
+  fun cellStateAdapter() = moshi.adapter(CellState::class.java)
+
   suspend fun attemptToConnect(address: String): URI {
     val lastUrl = serviceGenerator.apiBaseUrl
 
     val url = ServerUrlValidator.guessUri(address)
     serviceGenerator.apiBaseUrl = url
 
-    val res = try {
+    try {
       webService.isCellWall()
     } catch (err: Throwable) {
       serviceGenerator.apiBaseUrl = lastUrl
@@ -57,21 +68,5 @@ class CellWallRepository(context: Context) {
 
   suspend fun register(serial: String, info: CellInfo) {
     webService.putCell(serial, info)
-  }
-
-  fun getState(): LiveData<CellStates> = Transformations.switchMap(serverAddress.asLiveData()) { address ->
-    if (address.isNotEmpty()) {
-      val adapter = moshi.adapter(CellStates::class.java)
-      SocketLiveData<String>(URI(address), event = "cell-update")
-        .asFlow()
-        .map {
-          withContext(Dispatchers.IO) {
-            adapter.fromJson(it)
-          }
-        }
-        .asLiveData()
-    } else {
-      MutableLiveData(CellStates(listOf(CellState.Blank)))
-    }
   }
 }
