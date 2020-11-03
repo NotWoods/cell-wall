@@ -1,5 +1,7 @@
 package com.tigeroakes.cellwallclient.model
 
+import android.graphics.Color
+import androidx.annotation.ColorInt
 import org.json.JSONObject
 
 enum class CellStateType {
@@ -21,12 +23,16 @@ sealed class CellState(val type: CellStateType) {
    * the user see which displays they correspond to in the editor. They may instead display parts
    * of a whole image to check if the positions are set correctly.
    */
-  data class Configure(val backgroundColor: String, val icon: String) : CellState(CellStateType.CONFIGURE)
-  data class Text(val text: String, val backgroundColor: Int) : CellState(CellStateType.TEXT)
+  data class Configure(val icon: String, @ColorInt val backgroundColor: Int) : CellState(CellStateType.CONFIGURE)
+  data class Text(val text: String, @ColorInt val backgroundColor: Int) : CellState(CellStateType.TEXT)
   data class Image(val src: String) : CellState(CellStateType.IMAGE)
-  data class Button(val backgroundColor: String) : CellState(CellStateType.BUTTON)
+  data class Button(@ColorInt val backgroundColor: Int) : CellState(CellStateType.BUTTON)
 
   companion object {
+    @JvmStatic
+    @ColorInt
+    private fun JSONObject.getColor(name: String) = Color.parseColor(getString(name))
+
     /**
      * Return the CellState object corresponding to the given mode.
      * CellState fields are populated using the provided JSON data.
@@ -37,15 +43,15 @@ sealed class CellState(val type: CellStateType) {
       return json.run {
         when (mode) {
           "CONFIGURE" -> Configure(
-            getString("backgroundColor"),
-            getString("icon")
+            icon = getString("icon"),
+            backgroundColor = getColor("backgroundColor"),
           )
           "TEXT" -> Text(
-            getString("text"),
-            getInt("backgroundColor")
+            text = getString("text"),
+            backgroundColor = getColor("backgroundColor")
           )
           "IMAGE" -> Image(getString("src"))
-          "BUTTON" -> Button(getString("backgroundColor"))
+          "BUTTON" -> Button(getColor("backgroundColor"))
           else -> Blank
         }
       }

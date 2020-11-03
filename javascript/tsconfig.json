@@ -5,6 +5,8 @@
     { "path": "android-bridge/test" },
     { "path": "cells/src" },
     { "path": "cells/test" },
+    { "path": "iterators/src" },
+    { "path": "iterators/test" },
     { "path": "server/src" },
     { "path": "server/test" }
   ]

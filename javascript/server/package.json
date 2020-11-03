@@ -14,12 +14,14 @@
   "dependencies": {
     "@cell-wall/android-bridge": "*",
     "@cell-wall/cells": "*",
+    "@cell-wall/iterators": "*",
     "fastify": "^3.7.0",
     "fastify-formbody": "^5.0.0",
     "socket.io": "^2.3.0",
     "tslib": "^2.0.1"
   },
   "devDependencies": {
+    "@types/appium-adb": "*",
     "@types/socket.io": "^2.1.11",
     "@types/yargs-parser": "^15.0.0",
     "ava": "^3.13.0",

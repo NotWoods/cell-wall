@@ -11,6 +11,7 @@ import com.tigeroakes.cellwallclient.model.CellState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.json.JSONException
 import org.json.JSONObject
 
 class MainActivity : AppCompatActivity(R.layout.activity_web) {
@@ -29,8 +30,12 @@ class MainActivity : AppCompatActivity(R.layout.activity_web) {
     val stateJson = intent.getStringExtra("EXTRA_STATE")
     if (intent.action == "com.tigeroakes.cellwallclient.DISPLAY" && stateJson != null) {
       val state = withContext(Dispatchers.IO) {
-        val json = JSONObject(stateJson)
-        CellState.from(json)
+        try {
+          val json = JSONObject(stateJson)
+          CellState.from(json)
+        } catch (err: JSONException) {
+          CellState.Blank
+        }
       }
       updateState(state)
     }

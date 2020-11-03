@@ -62,15 +62,29 @@ importers:
       rollup: ^2.33.1
       socket.io: ^2.3.0
       typescript: 4.1.0-beta
+  javascript/iterators:
+    dependencies:
+      tslib: 2.0.3
+    devDependencies:
+      ava: 3.13.0
+      prettier: 2.1.2
+      typescript: 4.1.0-beta
+    specifiers:
+      ava: ^3.13.0
+      prettier: ^2.1.2
+      tslib: ^2.0.1
+      typescript: 4.1.0-beta
   javascript/server:
     dependencies:
       '@cell-wall/android-bridge': 'link:../android-bridge'
       '@cell-wall/cells': 'link:../cells'
+      '@cell-wall/iterators': 'link:../iterators'
       fastify: 3.7.0
       fastify-formbody: 5.0.0
       socket.io: 2.3.0
       tslib: 2.0.3
     devDependencies:
+      '@types/appium-adb': 'link:../types-appium-adb'
       '@types/socket.io': 2.1.11
       '@types/yargs-parser': 15.0.0
       ava: 3.13.0
@@ -79,6 +93,8 @@ importers:
     specifiers:
       '@cell-wall/android-bridge': '*'
       '@cell-wall/cells': '*'
+      '@cell-wall/iterators': '*'
+      '@types/appium-adb': '*'
       '@types/socket.io': ^2.1.11
       '@types/yargs-parser': ^15.0.0
       ava: ^3.13.0

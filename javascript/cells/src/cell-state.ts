@@ -13,7 +13,7 @@ export interface CellStateBlank {
 export interface CellStateText {
   type: CellStateType.TEXT;
   text: string;
-  background: number;
+  backgroundColor: string;
 }
 
 export type CellState = CellStateBlank | CellStateText;

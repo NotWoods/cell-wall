@@ -22,7 +22,7 @@ export const cellWallVersion: RouteOptions = {
 
 export const registerCell: RouteOptions = {
   method: 'PUT',
-  url: '/v3/cell/:serial',
+  url: '/v3/device/:serial',
   schema: {
     body: {
       type: 'object',
