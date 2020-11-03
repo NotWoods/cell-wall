@@ -1,25 +1,6 @@
 import { checkIfOn } from '@cell-wall/android-bridge';
 import { RouteOptions } from 'fastify';
 
-export const cellWallVersion: RouteOptions = {
-  method: 'GET',
-  url: '/v3/cellwall-version',
-  schema: {
-    response: {
-      200: {
-        type: 'object',
-        properties: {
-          version: { type: 'string' },
-        },
-      },
-    },
-  },
-  async handler(_request, reply) {
-    const { version } = require('../../package.json');
-    return reply.send({ version });
-  },
-};
-
 export const statusPowerAll: RouteOptions = {
   method: 'GET',
   url: '/v3/status/power/',
@@ -40,7 +21,7 @@ export const statusPowerAll: RouteOptions = {
 
 export const statusPower: RouteOptions = {
   method: 'GET',
-  url: '/v3/status/power/:udid',
+  url: '/v3/status/power/:serial',
   schema: {
     response: {
       200: {
@@ -59,12 +40,11 @@ export const statusPower: RouteOptions = {
   },
   async handler(request, reply) {
     interface Params {
-      udid: string;
+      serial: string;
     }
 
-    const device = this.deviceManager.devices.get(
-      (request.params as Params).udid,
-    );
+    const { serial } = request.params as Params;
+    const device = this.deviceManager.devices.get(serial);
 
     if (device) {
       const on = await checkIfOn(device);
@@ -76,5 +56,19 @@ export const statusPower: RouteOptions = {
         error: 'Could not find device',
       });
     }
+  },
+};
+
+export const statusStateAll: RouteOptions = {
+  method: 'GET',
+  url: '/v3/status/state/',
+  async handler(_request, _reply) {
+    const cells = this.cells.values();
+
+    return {
+      devices: Object.fromEntries(
+        Array.from(cells).map((cell) => [cell.serial, cell]),
+      ),
+    };
   },
 };

@@ -22,7 +22,7 @@ sealed class CellState(val type: CellStateType) {
    * of a whole image to check if the positions are set correctly.
    */
   data class Configure(val backgroundColor: String, val icon: String) : CellState(CellStateType.CONFIGURE)
-  data class Text(val text: String) : CellState(CellStateType.TEXT)
+  data class Text(val text: String, val backgroundColor: Int) : CellState(CellStateType.TEXT)
   data class Image(val src: String) : CellState(CellStateType.IMAGE)
   data class Button(val backgroundColor: String) : CellState(CellStateType.BUTTON)
 }

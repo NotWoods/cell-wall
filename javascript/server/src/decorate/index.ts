@@ -1,4 +1,5 @@
 import { DeviceManager } from '@cell-wall/android-bridge';
+import { CellManager } from '@cell-wall/cells';
 import {
   FastifyInstance,
   RawReplyDefaultExpression,
@@ -14,12 +15,15 @@ declare module 'fastify' {
     Logger
   > {
     deviceManager: DeviceManager;
+    cells: CellManager;
   }
 }
 
 export default async function decorateServer(app: FastifyInstance) {
   const deviceManager = new DeviceManager();
-  await deviceManager.refreshDevices();
+  const cells = new CellManager();
+  await Promise.all([deviceManager.refreshDevices(), cells.loadData()]);
 
   app.decorate('deviceManager', deviceManager);
+  app.decorate('cells', cells);
 }

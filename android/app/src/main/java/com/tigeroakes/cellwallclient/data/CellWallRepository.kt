@@ -1,9 +1,7 @@
 package com.tigeroakes.cellwallclient.data
 
 import android.content.Context
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
-import androidx.lifecycle.asLiveData
+import androidx.lifecycle.*
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.tigeroakes.cellwallclient.data.prefs.SettingsSerializer
@@ -11,14 +9,15 @@ import com.tigeroakes.cellwallclient.data.rest.CellWallService
 import com.tigeroakes.cellwallclient.data.rest.Reason
 import com.tigeroakes.cellwallclient.data.rest.ServerUrlValidator
 import com.tigeroakes.cellwallclient.data.rest.ServiceGenerator
-import com.tigeroakes.cellwallclient.data.socket.CellStateSocketLiveData
+import com.tigeroakes.cellwallclient.data.socket.SocketLiveData
 import com.tigeroakes.cellwallclient.device.CellInfo
 import com.tigeroakes.cellwallclient.model.CellState
+import com.tigeroakes.cellwallclient.model.CellStates
 import com.tigeroakes.cellwallclient.model.cellStateAdapter
 import io.socket.client.IO
-import io.socket.client.Socket
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 import java.net.URI
 
 class CellWallRepository(context: Context) {
@@ -60,11 +59,19 @@ class CellWallRepository(context: Context) {
     webService.putCell(serial, info)
   }
 
-  fun getState() = Transformations.switchMap(serverAddress.asLiveData()) { address ->
+  fun getState(): LiveData<CellStates> = Transformations.switchMap(serverAddress.asLiveData()) { address ->
     if (address.isNotEmpty()) {
-      CellStateSocketLiveData(URI(address))
+      val adapter = moshi.adapter(CellStates::class.java)
+      SocketLiveData<String>(URI(address), event = "cell-update")
+        .asFlow()
+        .map {
+          withContext(Dispatchers.IO) {
+            adapter.fromJson(it)
+          }
+        }
+        .asLiveData()
     } else {
-      MutableLiveData(CellState.Blank)
+      MutableLiveData(CellStates(listOf(CellState.Blank)))
     }
   }
 }

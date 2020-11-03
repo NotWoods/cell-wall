@@ -1,6 +1,7 @@
 package com.tigeroakes.cellwallclient.data.socket
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.Transformations
 import com.tigeroakes.cellwallclient.model.CellState
 import io.socket.client.IO
 import io.socket.client.Socket
@@ -26,8 +27,3 @@ open class SocketLiveData<T>(
     socket.disconnect()
   }
 }
-
-class CellStateSocketLiveData(
-  address: URI,
-  options: IO.Options? = null
-) : SocketLiveData<CellState>(address, options, event = "cell-update")

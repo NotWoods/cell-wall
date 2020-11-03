@@ -1,21 +1,6 @@
 import test from 'ava';
 import fastify from 'fastify';
-import { cellWallVersion, statusPower } from '../../src/routes/status';
-
-test('/v3/cellwall-version', async (t) => {
-  const app = fastify();
-  app.route(cellWallVersion);
-
-  const response = await app.inject({
-    method: 'GET',
-    url: '/v3/cellwall-version',
-  });
-
-  t.is(response.statusCode, 200);
-  t.deepEqual(response.json(), {
-    version: '3.0.0',
-  });
-});
+import { statusPower } from '../../src/routes/status';
 
 test('/v3/status/power 200', async (t) => {
   const app = fastify();
