@@ -5,6 +5,7 @@
   "main": "dist/cell-wall.js",
   "scripts": {
     "build": "rollup -c",
+    "caddy": "caddy reverse-proxy --from :2015 --to 127.0.0.1:3000",
     "format": "prettier *.json --write",
     "start": "fastify start dist/cell-wall.js"
   },

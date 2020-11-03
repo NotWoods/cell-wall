@@ -5,6 +5,14 @@ import { RouteOptions } from 'fastify';
 export const actionRefresh: RouteOptions = {
   method: 'POST',
   url: '/v3/action/refresh',
+  schema: {
+    response: {
+      200: {
+        type: 'object',
+        additionalProperties: { type: 'string' },
+      },
+    },
+  },
   async handler(_request, _reply) {
     const devices = await this.deviceManager.refreshDevices();
     return {
@@ -16,12 +24,34 @@ export const actionRefresh: RouteOptions = {
 export const actioninstall: RouteOptions = {
   method: 'POST',
   url: '/v3/action/install',
+  schema: {
+    body: {
+      type: 'object',
+      properties: {
+        path: { type: 'string' },
+      },
+    },
+    response: {
+      200: {
+        type: 'object',
+        additionalProperties: {
+          type: 'object',
+          properties: {
+            wasUninstalled: { type: 'boolean' },
+            appState: { type: 'string' },
+          },
+        },
+      },
+    },
+  },
   async handler(request, _reply) {
     interface Body {
       path: string;
     }
 
-    const { path } = request.body as Body;
+    const {
+      path = '/home/pi/cell-wall-deploy/app-debug.apk',
+    } = request.body as Body;
     const devices = this.deviceManager.devices;
 
     return {
@@ -48,6 +78,13 @@ export const actionPower: RouteOptions = {
       type: 'object',
       properties: {
         on: { type: 'boolean' },
+      },
+      required: ['on'],
+    },
+    response: {
+      200: {
+        type: 'object',
+        additionalProperties: { type: 'string' },
       },
     },
   },
