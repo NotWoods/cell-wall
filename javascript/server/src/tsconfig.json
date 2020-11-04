@@ -1,6 +1,6 @@
 {
   "extends": "../../tsconfig.base.json",
-  "include": ["**/*.ts"],
+  "include": ["**/*.ts", "static/**/*.json"],
   "references": [
     { "path": "../../android-bridge/src" },
     { "path": "../../cells/src" }

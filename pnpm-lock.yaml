@@ -34,6 +34,20 @@ importers:
       prettier: ^2.1.2
       tslib: ^2.0.1
       typescript: 4.1.0-beta
+  javascript/controller:
+    dependencies:
+      tslib: 2.0.3
+    devDependencies:
+      ava: 3.13.0
+      prettier: 2.1.2
+      rollup: 2.33.1
+      typescript: 4.1.0-beta
+    specifiers:
+      ava: ^3.13.0
+      prettier: ^2.1.2
+      rollup: ^2.33.1
+      tslib: ^2.0.1
+      typescript: 4.1.0-beta
   javascript/deploy:
     dependencies:
       appium-adb: 8.9.0

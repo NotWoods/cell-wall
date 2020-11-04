@@ -1,6 +1,11 @@
 import { CellState } from '@cell-wall/cells';
 import { RouteOptions } from 'fastify';
+import * as premadeStates from '../../static';
 import { errorSchema, MultiRouteOptions, SerialParams } from '../helpers';
+
+interface StaticQuery {
+  premade?: string;
+}
 
 const cellStateSchema = {
   type: 'object',
@@ -110,17 +115,25 @@ export const actionStateAll: RouteOptions = {
       },
     },
   },
-  async handler(request, _reply) {
-    const deviceStates = request.body as Record<string, CellState>;
-
-    const devices: string[] = [];
-    for (const [serial, state] of Object.entries(deviceStates)) {
-      if (this.cells.has(serial)) {
-        this.cells.setState(serial, state);
-        devices.push(serial);
+  async handler(request, reply) {
+    let deviceStates = request.body as Record<string, CellState>;
+    const { premade } = request.query as StaticQuery;
+    if (premade) {
+      const state = premadeStates[premade as keyof typeof premadeStates];
+      if (state) {
+        deviceStates = state as Record<string, CellState>;
+      } else {
+        reply.status(404).send({ error: `Invalid premade name ${premade}` });
+        return;
       }
     }
 
-    return { devices };
+    const devices: string[] = [];
+    for (const [serial, state] of Object.entries(deviceStates)) {
+      this.cells.setState(serial, state);
+      devices.push(serial);
+    }
+
+    reply.status(200).send({ devices });
   },
 };
