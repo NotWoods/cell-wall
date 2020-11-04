@@ -36,6 +36,7 @@
       <intent-filter>
         <action android:name="com.tigeroakes.cellwallclient.DISPLAY" />
         <category android:name="android.intent.category.DEFAULT" />
+        <data android:scheme="cellwall" />
       </intent-filter>
     </activity>
   </application>

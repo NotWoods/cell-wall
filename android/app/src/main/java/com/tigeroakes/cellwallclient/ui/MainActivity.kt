@@ -14,7 +14,7 @@ import kotlinx.coroutines.withContext
 import org.json.JSONException
 import org.json.JSONObject
 
-class MainActivity : AppCompatActivity(R.layout.activity_web) {
+class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
   override fun onStart() {
     super.onStart()
@@ -27,15 +27,12 @@ class MainActivity : AppCompatActivity(R.layout.activity_web) {
   }
 
   private suspend fun updateState(intent: Intent) {
-    val stateJson = intent.getStringExtra("EXTRA_STATE")
-    if (intent.action == "com.tigeroakes.cellwallclient.DISPLAY" && stateJson != null) {
-      val state = withContext(Dispatchers.IO) {
-        try {
-          val json = JSONObject(stateJson)
-          CellState.from(json)
-        } catch (err: JSONException) {
-          CellState.Blank
-        }
+    val data = intent.data
+    if (intent.action == "com.tigeroakes.cellwallclient.DISPLAY" && data != null) {
+      val state = try {
+        CellState.from(data)
+      } catch (err: NullPointerException) {
+        CellState.Blank
       }
       updateState(state)
     }

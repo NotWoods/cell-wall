@@ -9,6 +9,7 @@ import android.view.ViewPropertyAnimator
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isGone
+import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import com.tigeroakes.cellwallclient.R
@@ -22,8 +23,8 @@ class LoginActivity : AppCompatActivity(R.layout.activity_login) {
 
   private val viewModel by viewModels<LoginViewModel>()
 
-  override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
-    super.onCreate(savedInstanceState, persistentState)
+  override fun onStart() {
+    super.onStart()
 
     setupLoadingBar()
     setupAddressInput()
@@ -47,42 +48,17 @@ class LoginActivity : AppCompatActivity(R.layout.activity_login) {
     )
   }
 
-  /**
-   * Shows the progress UI and hides the login form.
-   */
-  private fun showProgress(show: Boolean) {
-    val animDelay = 200L
-    val shortAnimTime = resources.getInteger(android.R.integer.config_shortAnimTime).toLong()
-
-    login_form.isGone = show
-    login_form.animate()
-      .setStartDelay(animDelay)
-      .setDuration(shortAnimTime)
-      .alpha(if (show) 0f else 1f)
-      .setListener {
-        login_form.isGone = show
-      }
-
-    login_progress.isVisible = show
-    login_progress.animate()
-      .setStartDelay(animDelay)
-      .setDuration(shortAnimTime)
-      .alpha(if (show) 1f else 0f)
-      .setListener {
-        login_progress.isVisible = show
-      }
-  }
-
   private fun setupLoadingBar() {
     viewModel.isLoading.observe(this) {
       // Show the loading bar when communicating with the server.
-      showProgress(it)
+      login_progress.isInvisible = !it
     }
   }
 
   private fun setupAddressInput() {
     val intentAddress = intent.data
     if (intentAddress != null) {
+      // http://192.168.50.252:2015
       address.setText(intentAddress.toString())
     }
 

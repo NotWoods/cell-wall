@@ -18,6 +18,10 @@ export class CellManager extends EventEmitter {
 
   async saveData() {}
 
+  has(serial: string) {
+    return this.cells.has(serial);
+  }
+
   register(serial: string, info: CellInfo) {
     const data: CellData = {
       serial,

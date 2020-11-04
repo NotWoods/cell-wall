@@ -12,7 +12,10 @@
     android:id="@+id/action_global_largeTextFragment"
     app:destination="@id/largeTextFragment" />
 
-  <fragment android:id="@+id/splash">
+  <fragment
+    android:id="@+id/splash"
+    android:name="com.tigeroakes.cellwallclient.ui.LoadingFragment"
+    tools:layout="@layout/fragment_loading">
     <action
       android:id="@+id/action_splash_to_largeTextFragment"
       app:destination="@id/largeTextFragment" />
@@ -21,7 +24,6 @@
   <fragment
     android:id="@+id/largeTextFragment"
     android:name="com.tigeroakes.cellwallclient.ui.text.LargeTextFragment"
-    android:label="fragment_large_text"
     tools:layout="@layout/fragment_large_text">
     <argument
       android:name="text"

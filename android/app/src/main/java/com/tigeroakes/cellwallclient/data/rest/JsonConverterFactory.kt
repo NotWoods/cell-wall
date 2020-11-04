@@ -20,10 +20,11 @@ class JsonConverterFactory : Converter.Factory() {
     methodAnnotations: Array<Annotation>,
     retrofit: Retrofit
   ): Converter<*, RequestBody>? {
-    if (type == JSONObject::class.java || type == JSONArray::class.java) {
-      return JsonRequestBodyConverter.INSTANCE
+    return if (type == JSONObject::class.java || type == JSONArray::class.java) {
+      JsonRequestBodyConverter
+    } else {
+      null
     }
-    return null
   }
 
   override fun responseBodyConverter(
@@ -39,17 +40,14 @@ class JsonConverterFactory : Converter.Factory() {
   }
 }
 
-internal class JsonRequestBodyConverter<T> private constructor() : Converter<T, RequestBody> {
+object JsonRequestBodyConverter : Converter<Any, RequestBody> {
 
   @Throws(IOException::class)
-  override fun convert(value: T): RequestBody {
+  override fun convert(value: Any): RequestBody {
     return RequestBody.create(MEDIA_TYPE, value.toString())
   }
 
-  companion object {
-    val INSTANCE = JsonRequestBodyConverter<Any>()
-    private val MEDIA_TYPE: MediaType = MediaType.parse("text/plain; charset=UTF-8")!!
-  }
+  private val MEDIA_TYPE: MediaType = MediaType.parse("application/json; charset=UTF-8")!!
 }
 
 object JsonObjectResponseBodyConverter : Converter<ResponseBody, JSONObject?> {

@@ -1,5 +1,6 @@
 package com.tigeroakes.cellwallclient.ui.login
 
+import android.app.Application
 import androidx.annotation.StringRes
 import androidx.lifecycle.*
 import com.tigeroakes.cellwallclient.data.CellWallRepository
@@ -11,8 +12,10 @@ import kotlinx.coroutines.launch
 import java.net.URI
 
 class LoginViewModel(
-  private val repository: CellWallRepository
-) : ViewModel() {
+  application: Application
+) : AndroidViewModel(application) {
+
+  private val repository = CellWallRepository.get(application)
 
   private val loginAttempt = MutableLiveData<Resource<URI>>(Resource.Loading())
   private val _errorResource = MutableLiveData<Event<@StringRes Int?>>()

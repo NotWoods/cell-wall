@@ -1,8 +1,10 @@
 package com.tigeroakes.cellwallclient.model
 
 import android.graphics.Color
+import android.net.Uri
 import androidx.annotation.ColorInt
 import org.json.JSONObject
+import java.util.*
 
 enum class CellStateType {
   BLANK,
@@ -29,29 +31,45 @@ sealed class CellState(val type: CellStateType) {
   data class Button(@ColorInt val backgroundColor: Int) : CellState(CellStateType.BUTTON)
 
   companion object {
-    @JvmStatic
-    @ColorInt
-    private fun JSONObject.getColor(name: String) = Color.parseColor(getString(name))
-
     /**
      * Return the CellState object corresponding to the given mode.
      * CellState fields are populated using the provided JSON data.
      */
-    @JvmStatic
     fun from(json: JSONObject): CellState {
       val mode = json.getString("type")
       return json.run {
         when (mode) {
-          "CONFIGURE" -> Configure(
+          CellStateType.CONFIGURE.name -> Configure(
             icon = getString("icon"),
-            backgroundColor = getColor("backgroundColor"),
+            backgroundColor = Color.parseColor(getString("backgroundColor")),
           )
-          "TEXT" -> Text(
+          CellStateType.TEXT.name -> Text(
             text = getString("text"),
-            backgroundColor = getColor("backgroundColor")
+            backgroundColor = Color.parseColor(getString("backgroundColor"))
           )
-          "IMAGE" -> Image(getString("src"))
-          "BUTTON" -> Button(getColor("backgroundColor"))
+          CellStateType.IMAGE.name -> Image(getString("src"))
+          CellStateType.BUTTON.name -> Button(Color.parseColor(getString("backgroundColor")))
+          else -> Blank
+        }
+      }
+    }
+
+    fun from(uri: Uri): CellState {
+      if (uri.scheme != "cellwall") return Blank
+      val type = uri.host?.toUpperCase(Locale.ROOT) ?: return Blank
+
+      return uri.run {
+        when (type) {
+          CellStateType.CONFIGURE.name -> Configure(
+            icon = getQueryParameter("icon")!!,
+            backgroundColor = Color.parseColor(getQueryParameter("backgroundColor")),
+          )
+          CellStateType.TEXT.name -> Text(
+            text = getQueryParameter("text")!!,
+            backgroundColor = Color.parseColor(getQueryParameter("backgroundColor"))
+          )
+          CellStateType.IMAGE.name -> Image(getQueryParameter("src")!!)
+          CellStateType.BUTTON.name -> Button(Color.parseColor(getQueryParameter("backgroundColor")))
           else -> Blank
         }
       }
