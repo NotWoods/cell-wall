@@ -1,0 +1,6 @@
+POST http://raspberrypi.local:3000/v3/action/install
+content-type: application/json
+
+{}
+
+###

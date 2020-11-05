@@ -1,3 +1,4 @@
+import { transformMapAsync } from '@cell-wall/iterators';
 import { RouteOptions } from 'fastify';
 
 export const actionRefresh: RouteOptions = {
@@ -66,17 +67,10 @@ export const actioninstallAll: RouteOptions = {
 
     return {
       devices: Object.fromEntries(
-        await Promise.all(
-          Array.from(devices.entries()).map(async ([serial, device]) => {
-            const result = await device.installOrUpgrade(
-              path,
-              'com.tigeroakes.cellwallclient',
-              {
-                allowTestPackages: true,
-                enforceCurrentBuild: true,
-              },
-            );
-            return [serial, result] as const;
+        await transformMapAsync(devices, (device) =>
+          device.installOrUpgrade(path, 'com.tigeroakes.cellwallclient', {
+            allowTestPackages: true,
+            enforceCurrentBuild: true,
           }),
         ),
       ),

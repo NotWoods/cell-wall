@@ -1,0 +1,8 @@
+POST http://raspberrypi.local:3000/v3/device/power
+content-type: application/json
+
+{
+  "on": true
+}
+
+###

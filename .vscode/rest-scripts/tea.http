@@ -1,0 +1,35 @@
+POST http://raspberrypi.local:3000/v3/device/state
+content-type: application/json
+
+{
+  "93HAY0BJ0G": {
+    "device": "Pixel_3a",
+    "type": "WEB",
+    "url": "/page/text?text=Blueberry+White+Peony&backgroundColor=%239BA1B5",
+    "text": "Blueberry White Peony",
+    "backgroundColor": "#9BA1B5"
+  },
+  "TA880004ZI": {
+    "device": "XT1034",
+    "type": "WEB",
+    "url": "/page/text?text=Mana+Assam&backgroundColor=%23B0513F",
+    "text": "Mana Assam",
+    "backgroundColor": "#B0513F"
+  },
+  "4e50f5bd": {
+    "device": "A0001",
+    "type": "WEB",
+    "url": "/page/text?text=Kashi+Ginger&backgroundColor=%235072AB",
+    "text": "Kashi Ginger",
+    "backgroundColor": "#5072AB"
+  },
+  "D01EC0A0201512ER": {
+    "device": "Amazon_OtterX",
+    "type": "TEXT",
+    "url": "/page/text?text=Jasmine,+Genmaicha,+Hojicha&backgroundColor=%23B9BB66",
+    "text": "Jasmine, Genmaicha, Hojicha",
+    "backgroundColor": "#B9BB66"
+  }
+}
+
+###

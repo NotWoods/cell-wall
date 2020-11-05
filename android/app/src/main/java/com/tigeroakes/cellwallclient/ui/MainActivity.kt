@@ -14,8 +14,11 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.json.JSONException
 import org.json.JSONObject
+import java.util.logging.Logger
 
 class MainActivity : AppCompatActivity(R.layout.activity_main) {
+
+  private val logger = Logger.getLogger("CellState")
 
   override fun onStart() {
     super.onStart()
@@ -45,10 +48,15 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
   }
 
   private suspend fun updateState(state: CellState) {
+    logger.info(state.toString())
+
     val directions = when (state) {
       is CellState.Text -> NavGraphDirections.actionGlobalLargeTextFragment(
         text = state.text,
         background = state.backgroundColor
+      )
+      is CellState.Web -> NavGraphDirections.actionGlobalWebFragment(
+        url = state.url
       )
       else -> NavGraphDirections.actionGlobalSplashFragment()
     }

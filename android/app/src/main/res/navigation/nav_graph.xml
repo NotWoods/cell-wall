@@ -11,6 +11,9 @@
   <action
     android:id="@+id/action_global_largeTextFragment"
     app:destination="@id/largeTextFragment" />
+  <action
+    android:id="@+id/action_global_webFragment"
+    app:destination="@id/webFragment" />
 
   <fragment
     android:id="@+id/splash"
