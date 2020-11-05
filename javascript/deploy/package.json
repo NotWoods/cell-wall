@@ -7,7 +7,7 @@
     "build": "rollup -c",
     "pm2": "pm2 start --name cell-wall npm -- start",
     "format": "prettier *.json --write",
-    "start": "fastify start dist/cell-wall.js"
+    "start": "fastify start dist/cell-wall.js --address 0.0.0.0"
   },
   "dependencies": {
     "appium-adb": "^8.7.3",
