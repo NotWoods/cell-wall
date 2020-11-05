@@ -2,26 +2,32 @@ package com.tigeroakes.cellwallclient.ui
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import com.tigeroakes.cellwallclient.NavGraphDirections
 import com.tigeroakes.cellwallclient.R
-import com.tigeroakes.cellwallclient.data.CellWallRepository
 import com.tigeroakes.cellwallclient.device.Immersive
 import com.tigeroakes.cellwallclient.model.CellState
-import kotlinx.coroutines.Dispatchers
+import com.tigeroakes.cellwallclient.ui.web.WebFragment
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import org.json.JSONException
-import org.json.JSONObject
 import java.util.logging.Logger
 
 class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
+  private lateinit var navController: NavController
+
   private val logger = Logger.getLogger("CellState")
+
+  private val FragmentManager.currentNavigationFragment: Fragment?
+    get() = primaryNavigationFragment?.childFragmentManager?.fragments?.first()
 
   override fun onStart() {
     super.onStart()
+    navController = findNavController(R.id.nav_host_fragment)
+
     lifecycleScope.launch { updateState(intent) }
   }
 
@@ -50,6 +56,13 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
   private suspend fun updateState(state: CellState) {
     logger.info(state.toString())
 
+    if (state is CellState.Web) {
+      (supportFragmentManager.currentNavigationFragment as? WebFragment)?.let { fragment ->
+        fragment.openUrl(state.url)
+        return
+      }
+    }
+
     val directions = when (state) {
       is CellState.Text -> NavGraphDirections.actionGlobalLargeTextFragment(
         text = state.text,
@@ -61,6 +74,6 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
       else -> NavGraphDirections.actionGlobalSplashFragment()
     }
 
-    findNavController(R.id.nav_host_fragment).navigate(directions)
+    navController.navigate(directions)
   }
 }
