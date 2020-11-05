@@ -16,7 +16,7 @@
   },
   "scripts": {
     "build": "tsc --build javascript",
-    "format": "prettier *.json .vscode/*.json *.md javascript/*.js javascript/*.json --write",
+    "format": "prettier *.json .vscode/*.json *.md javascript/*.json --write",
     "start": "node javascript/server"
   },
   "devDependencies": {
