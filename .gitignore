@@ -9,8 +9,8 @@ build
 *.tsbuildinfo
 javascript/*/src/**/*.js
 javascript/*/test/**/*.js
-javascript/*/test/**/*.d.ts
 javascript/*/src/**/*.d.ts
+javascript/*/test/**/*.d.ts
 !javascript/types-appium-adb/src/**/*.d.ts
 
 # Logs

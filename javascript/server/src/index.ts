@@ -21,3 +21,10 @@ export default async function server(
 
   return app;
 }
+
+export const options: FastifyServerOptions = {
+  logger: true,
+  caseSensitive: false,
+  ignoreTrailingSlash: true,
+  trustProxy: true,
+};

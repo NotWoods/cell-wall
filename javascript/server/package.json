@@ -6,27 +6,35 @@
   "types": "src/index.d.ts",
   "scripts": {
     "build": "tsc --build src",
+    "postbuild:bundle": "cell-wall-bundle --pkg package.json --input src/index.js index.ts --out dist/cell-wall.js",
+    "postbuild:package": "cell-wall-package --input package.json --out package.dist.json",
+    "postbuild": "npm run postbuild:bundle && npm run postbuild:package",
     "format": "prettier **/*.json **/*.ts --write",
-    "start": "node src/index.js",
+    "pm2": "pm2 start --name cell-wall npm -- start",
+    "start:dev": "fastify start src/index.js",
+    "start": "fastify start dist/cell-wall.js --address 0.0.0.0",
     "pretest": "tsc --build test",
     "test": "ava"
   },
   "dependencies": {
-    "@cell-wall/android-bridge": "*",
-    "@cell-wall/cells": "*",
-    "@cell-wall/iterators": "*",
+    "appium-adb": "^8.7.3",
     "fastify": "^3.7.0",
+    "fastify-cli": "^2.5.1",
     "fastify-formbody": "^5.0.0",
     "fastify-static": "^3.3.0",
-    "socket.io": "^2.3.0",
-    "tslib": "^2.0.1"
+    "socket.io": "^2.3.0"
   },
   "devDependencies": {
+    "@cell-wall/android-bridge": "*",
+    "@cell-wall/cells": "*",
+    "@cell-wall/deploy": "*",
+    "@cell-wall/iterators": "*",
     "@types/appium-adb": "*",
     "@types/socket.io": "^2.1.11",
     "@types/yargs-parser": "^15.0.0",
     "ava": "^3.13.0",
     "prettier": "^2.1.2",
+    "tslib": "^2.0.1",
     "typescript": "4.1.0-beta"
   },
   "files": [
