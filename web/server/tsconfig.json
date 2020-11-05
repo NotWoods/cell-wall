@@ -1,8 +1,0 @@
-{
-    "extends": "../tsproject.json",
-    "compilerOptions": {
-        "outDir": "../build",
-        "baseUrl": ".",
-        "paths": { "*": ["types/*"] }
-    }
-}
