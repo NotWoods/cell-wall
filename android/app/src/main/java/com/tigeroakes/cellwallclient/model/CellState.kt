@@ -11,7 +11,8 @@ enum class CellStateType {
   CONFIGURE,
   TEXT,
   IMAGE,
-  BUTTON
+  BUTTON,
+  WEB,
 }
 
 /**
@@ -29,6 +30,7 @@ sealed class CellState(val type: CellStateType) {
   data class Text(val text: String, @ColorInt val backgroundColor: Int) : CellState(CellStateType.TEXT)
   data class Image(val src: String) : CellState(CellStateType.IMAGE)
   data class Button(@ColorInt val backgroundColor: Int) : CellState(CellStateType.BUTTON)
+  data class Web(val url: String) : CellState(CellStateType.WEB)
 
   companion object {
     /**
@@ -49,29 +51,34 @@ sealed class CellState(val type: CellStateType) {
           )
           CellStateType.IMAGE.name -> Image(getString("src"))
           CellStateType.BUTTON.name -> Button(Color.parseColor(getString("backgroundColor")))
+          CellStateType.WEB.name -> Web(getString("url"))
           else -> Blank
         }
       }
     }
 
     fun from(uri: Uri): CellState {
-      if (uri.scheme != "cellwall") return Blank
-      val type = uri.host?.toUpperCase(Locale.ROOT) ?: return Blank
-
-      return uri.run {
-        when (type) {
-          CellStateType.CONFIGURE.name -> Configure(
-            icon = getQueryParameter("icon")!!,
-            backgroundColor = Color.parseColor(getQueryParameter("backgroundColor")),
-          )
-          CellStateType.TEXT.name -> Text(
-            text = getQueryParameter("text")!!,
-            backgroundColor = Color.parseColor(getQueryParameter("backgroundColor"))
-          )
-          CellStateType.IMAGE.name -> Image(getQueryParameter("src")!!)
-          CellStateType.BUTTON.name -> Button(Color.parseColor(getQueryParameter("backgroundColor")))
-          else -> Blank
+      return when (uri.scheme) {
+        "http", "https" -> Web(uri.toString())
+        "cellwall" -> {
+          val type = uri.host?.toUpperCase(Locale.ROOT)
+          uri.run {
+            when (type) {
+              CellStateType.CONFIGURE.name -> Configure(
+                icon = getQueryParameter("icon")!!,
+                backgroundColor = Color.parseColor(getQueryParameter("backgroundColor")),
+              )
+              CellStateType.TEXT.name -> Text(
+                text = getQueryParameter("text")!!,
+                backgroundColor = Color.parseColor(getQueryParameter("backgroundColor"))
+              )
+              CellStateType.IMAGE.name -> Image(getQueryParameter("src")!!)
+              CellStateType.BUTTON.name -> Button(Color.parseColor(getQueryParameter("backgroundColor")))
+              else -> Blank
+            }
+          }
         }
+        else -> Blank
       }
     }
   }

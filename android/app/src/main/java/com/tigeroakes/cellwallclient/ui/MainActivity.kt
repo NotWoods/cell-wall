@@ -7,6 +7,7 @@ import androidx.navigation.findNavController
 import com.tigeroakes.cellwallclient.NavGraphDirections
 import com.tigeroakes.cellwallclient.R
 import com.tigeroakes.cellwallclient.data.CellWallRepository
+import com.tigeroakes.cellwallclient.device.Immersive
 import com.tigeroakes.cellwallclient.model.CellState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -24,6 +25,11 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
   override fun onNewIntent(intent: Intent) {
     super.onNewIntent(intent)
     lifecycleScope.launch { updateState(intent) }
+  }
+
+  override fun onWindowFocusChanged(hasFocus: Boolean) {
+    super.onWindowFocusChanged(hasFocus)
+    if (hasFocus) Immersive.enterImmersiveMode(window)
   }
 
   private suspend fun updateState(intent: Intent) {

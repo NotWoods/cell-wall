@@ -19,6 +19,9 @@
     <action
       android:id="@+id/action_splash_to_largeTextFragment"
       app:destination="@id/largeTextFragment" />
+    <action
+      android:id="@+id/action_splash_to_webFragment"
+      app:destination="@id/webFragment" />
   </fragment>
 
   <fragment
@@ -31,5 +34,13 @@
     <argument
       android:name="background"
       app:argType="integer" />
+  </fragment>
+  <fragment
+    android:id="@+id/webFragment"
+    android:name="com.tigeroakes.cellwallclient.ui.web.WebFragment"
+    tools:layout="@layout/fragment_web">
+    <argument
+      android:name="url"
+      app:argType="string" />
   </fragment>
 </navigation>
