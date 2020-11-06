@@ -35,7 +35,7 @@ export interface MultiRouteOptions<
 
 export function registerRoutes(
   app: FastifyInstance,
-  routes: Iterable<RouteOptions | MultiRouteOptions>,
+  routes: Iterable<RouteOptions<any> | MultiRouteOptions<any>>,
 ) {
   for (const route of routes) {
     if (Array.isArray(route.url)) {

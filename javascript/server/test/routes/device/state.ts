@@ -1,66 +1,69 @@
 import test from 'ava';
 import fastify from 'fastify';
-import { registerRoutes } from '../../../src/routes/helpers';
-import { statusPower } from '../../../src/routes/device/power';
+import { registerRoutes } from '../../../src/routes/register';
+import { statusState } from '../../../src/routes/device/state';
 
-test('GET /v3/device/power 200', async (t) => {
+test('GET /v3/device/state 200', async (t) => {
   const app = fastify();
-  registerRoutes(app, [statusPower]);
-  app.decorate('deviceManager', {
-    devices: new Map([['ABC', { shell: () => 'mWakefulness=Awake' }]]),
+  registerRoutes(app, [statusState]);
+  app.decorate('cells', {
+    values: [
+      {
+        serial: 'ABC',
+        info: { deviceName: 'Phone' },
+        state: { type: 'BLANK' },
+      },
+    ],
   });
 
   const response = await app.inject({
     method: 'GET',
-    url: '/v3/device/power',
+    url: '/v3/device/state',
   });
 
   t.is(response.statusCode, 200);
   t.deepEqual(response.json(), {
-    devices: {
+    cells: {
       ABC: {
-        on: true,
+        serial: 'ABC',
+        info: { deviceName: 'Phone' },
+        state: { type: 'BLANK' },
       },
     },
   });
 });
 
-test('GET /v3/device/power/:serial 200', async (t) => {
+test('GET /v3/device/state/:serial 200', async (t) => {
   const app = fastify();
-  registerRoutes(app, [statusPower]);
-  app.decorate('deviceManager', {
-    devices: new Map([['ABC', { shell: () => 'mWakefulness=Awake' }]]),
+  registerRoutes(app, [statusState]);
+  app.decorate('cells', {
+    values: [
+      {
+        serial: 'ABC',
+        info: { deviceName: 'Phone' },
+        state: { type: 'BLANK' },
+      },
+      {
+        serial: 'EBF',
+        info: { deviceName: 'Phone' },
+        state: { type: 'BLANK' },
+      },
+    ],
   });
 
   const response = await app.inject({
     method: 'GET',
-    url: '/v3/device/power/ABC',
+    url: '/v3/device/state/ABC',
   });
 
   t.is(response.statusCode, 200);
   t.deepEqual(response.json(), {
-    devices: {
+    cells: {
       ABC: {
-        on: true,
+        serial: 'ABC',
+        info: { deviceName: 'Phone' },
+        state: { type: 'BLANK' },
       },
     },
-  });
-});
-
-test('GET /v3/device/power/:serial 404', async (t) => {
-  const app = fastify();
-  registerRoutes(app, [statusPower]);
-  app.decorate('deviceManager', {
-    devices: new Map(),
-  });
-
-  const response = await app.inject({
-    method: 'GET',
-    url: '/v3/device/power/ABC',
-  });
-
-  t.is(response.statusCode, 404);
-  t.deepEqual(response.json(), {
-    error: 'Could not find device ABC',
   });
 });
