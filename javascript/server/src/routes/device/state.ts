@@ -1,7 +1,7 @@
-import { CellState } from '@cell-wall/cells';
-import { RouteOptions } from 'fastify';
+import { CellData, CellState } from '@cell-wall/cells';
 import * as premadeStates from '../../static';
-import { errorSchema, MultiRouteOptions, SerialParams } from '../helpers';
+import { ErrorReply, errorSchema, SerialParams } from '../helpers';
+import { MultiRouteOptions, RouteOptions } from '../register';
 
 interface StaticQuery {
   premade?: string;
@@ -16,7 +16,10 @@ const cellStateSchema = {
   additionalProperties: true,
 };
 
-export const statusState: MultiRouteOptions = {
+export const statusState: MultiRouteOptions<{
+  Params: SerialParams;
+  Reply: ErrorReply | { devices: Record<string, CellData> };
+}> = {
   method: 'GET',
   url: ['/v3/device/state', '/v3/device/state/:serial'],
   schema: {
@@ -34,7 +37,7 @@ export const statusState: MultiRouteOptions = {
     },
   },
   async handler(request, reply) {
-    const { serial } = request.params as SerialParams;
+    const { serial } = request.params;
 
     let cells = new Map(
       Array.from(this.cells.values()).map(
@@ -58,7 +61,11 @@ export const statusState: MultiRouteOptions = {
   },
 };
 
-export const actionState: RouteOptions = {
+export const actionState: RouteOptions<{
+  Params: Required<SerialParams>;
+  Body: CellState;
+  Reply: { devices: string[] };
+}> = {
   method: 'POST',
   url: '/v3/device/state/:serial',
   schema: {
@@ -78,8 +85,8 @@ export const actionState: RouteOptions = {
     },
   },
   async handler(request, reply) {
-    const { serial } = request.params as Required<SerialParams>;
-    const state = request.body as CellState;
+    const { serial } = request.params;
+    const state = request.body;
 
     this.cells.setState(serial, state);
     reply.status(200).send({
@@ -88,7 +95,11 @@ export const actionState: RouteOptions = {
   },
 };
 
-export const actionStateAll: RouteOptions = {
+export const actionStateAll: RouteOptions<{
+  Querystring: StaticQuery;
+  Body: Record<string, CellState>;
+  Reply: ErrorReply | { devices: string[] };
+}> = {
   method: 'POST',
   url: '/v3/device/state',
   schema: {
@@ -116,8 +127,8 @@ export const actionStateAll: RouteOptions = {
     },
   },
   async handler(request, reply) {
-    let deviceStates = request.body as Record<string, CellState>;
-    const { premade } = request.query as StaticQuery;
+    let deviceStates = request.body;
+    const { premade } = request.query;
     if (premade) {
       const state = premadeStates[premade as keyof typeof premadeStates];
       if (state) {

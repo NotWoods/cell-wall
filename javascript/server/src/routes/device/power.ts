@@ -1,13 +1,17 @@
 import { checkIfOn, setPower } from '@cell-wall/android-bridge';
 import { transformMapAsync } from '@cell-wall/iterators';
 import {
+  ErrorReply,
   errorSchema,
   filterDevices,
-  MultiRouteOptions,
   SerialParams,
 } from '../helpers';
+import { MultiRouteOptions } from '../register';
 
-export const statusPower: MultiRouteOptions = {
+export const statusPower: MultiRouteOptions<{
+  Params: SerialParams;
+  Reply: ErrorReply | { devices: Record<string, { on: boolean }> };
+}> = {
   method: 'GET',
   url: ['/v3/device/power', '/v3/device/power/:serial'],
   schema: {
@@ -31,7 +35,7 @@ export const statusPower: MultiRouteOptions = {
     },
   },
   async handler(request, reply) {
-    const { serial } = request.params as SerialParams;
+    const { serial } = request.params;
 
     const devices = filterDevices(this.deviceManager, reply, serial);
     if (!devices) return;
@@ -46,7 +50,11 @@ export const statusPower: MultiRouteOptions = {
   },
 };
 
-export const actionPower: MultiRouteOptions = {
+export const actionPower: MultiRouteOptions<{
+  Params: SerialParams;
+  Body: { on: boolean | 'toggle' };
+  Reply: ErrorReply | { devices: string[] };
+}> = {
   method: 'POST',
   url: ['/v3/device/power', '/v3/device/power/:serial'],
   schema: {
@@ -75,12 +83,8 @@ export const actionPower: MultiRouteOptions = {
     },
   },
   async handler(request, reply) {
-    interface Power {
-      on: boolean | 'toggle';
-    }
-
-    const { serial } = request.params as SerialParams;
-    let { on } = request.body as Power;
+    const { serial } = request.params;
+    let { on } = request.body;
 
     const devices = filterDevices(this.deviceManager, reply, serial);
     if (!devices) return;

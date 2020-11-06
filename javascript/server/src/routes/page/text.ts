@@ -1,18 +1,17 @@
-import { RouteOptions } from 'fastify';
+import { RouteOptions } from '../register';
 
 interface TextQuery {
   text?: string;
   backgroundColor?: string;
 }
 
-export const pageText: RouteOptions = {
+export const pageText: RouteOptions<{
+  Querystring: TextQuery;
+}> = {
   method: 'GET',
   url: '/page/text',
   async handler(request, reply) {
-    const {
-      text = 'CellWall',
-      backgroundColor = '#429A46',
-    } = request.query as TextQuery;
+    const { text = 'CellWall', backgroundColor = '#429A46' } = request.query;
     reply.type('text/html').send(`
       <link rel="stylesheet" href="/assets/css/base.css" />
       <style>

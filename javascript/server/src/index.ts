@@ -1,10 +1,10 @@
-import { resolve } from 'path';
 import type { FastifyInstance, FastifyServerOptions } from 'fastify';
 import formbodyPlugin from 'fastify-formbody';
 import staticPlugin from 'fastify-static';
+import { resolve } from 'path';
 import decorateServer from './decorate';
 import * as routes from './routes';
-import { registerRoutes } from './routes/helpers';
+import { registerRoutes } from './routes/register';
 
 export default async function server(
   app: FastifyInstance,

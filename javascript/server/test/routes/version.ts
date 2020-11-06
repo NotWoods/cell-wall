@@ -1,6 +1,6 @@
 import test from 'ava';
 import fastify from 'fastify';
-import { cellWallVersion } from '../../src/routes/register';
+import { cellWallVersion } from '../../src/routes/version';
 
 test('/v3/cellwall-version', async (t) => {
   const app = fastify();

@@ -1,8 +1,11 @@
 import { transformMapAsync } from '@cell-wall/iterators';
-import { RouteOptions } from 'fastify';
-import { filterDevices, MultiRouteOptions, SerialParams } from './helpers';
+import type { InstallOrUpgradeResult } from 'appium-adb';
+import { filterDevices, SerialParams } from './helpers';
+import { MultiRouteOptions, RouteOptions } from './register';
 
-export const actionRefresh: RouteOptions = {
+export const actionRefresh: RouteOptions<{
+  Reply: { devices: string[] };
+}> = {
   method: 'POST',
   url: '/v3/action/refresh',
   schema: {
@@ -28,7 +31,11 @@ export const actionRefresh: RouteOptions = {
   },
 };
 
-export const actioninstallAll: MultiRouteOptions = {
+export const actioninstallAll: MultiRouteOptions<{
+  Body: { path: string };
+  Params: SerialParams;
+  Reply: { devices: Record<string, InstallOrUpgradeResult> };
+}> = {
   method: 'POST',
   url: ['/v3/action/install', '/v3/action/install/:serial'],
   schema: {
@@ -57,14 +64,8 @@ export const actioninstallAll: MultiRouteOptions = {
     },
   },
   async handler(request, reply) {
-    interface Body {
-      path: string;
-    }
-
-    const { serial } = request.params as SerialParams;
-    const {
-      path = '/home/pi/cell-wall-deploy/app-debug.apk',
-    } = request.body as Body;
+    const { serial } = request.params;
+    const { path = '/home/pi/cell-wall-deploy/app-debug.apk' } = request.body;
 
     const devices = filterDevices(this.deviceManager, reply, serial);
     if (!devices) return;
