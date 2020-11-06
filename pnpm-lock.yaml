@@ -84,6 +84,7 @@ importers:
       fastify-cli: 2.5.1
       fastify-formbody: 5.0.0
       fastify-static: 3.3.0
+      fastify-websocket: 2.0.10
       socket.io: 2.3.0
     devDependencies:
       '@cell-wall/android-bridge': 'link:../android-bridge'
@@ -92,6 +93,7 @@ importers:
       '@cell-wall/iterators': 'link:../iterators'
       '@types/appium-adb': 'link:../types-appium-adb'
       '@types/socket.io': 2.1.11
+      '@types/ws': 5.1.2
       '@types/yargs-parser': 15.0.0
       ava: 3.13.0
       prettier: 2.1.2
@@ -104,6 +106,7 @@ importers:
       '@cell-wall/iterators': '*'
       '@types/appium-adb': '*'
       '@types/socket.io': ^2.1.11
+      '@types/ws': ^5.1.0
       '@types/yargs-parser': ^15.0.0
       appium-adb: ^8.7.3
       ava: ^3.13.0
@@ -111,6 +114,7 @@ importers:
       fastify-cli: ^2.5.1
       fastify-formbody: ^5.0.0
       fastify-static: ^3.3.0
+      fastify-websocket: ^2.0.10
       prettier: ^2.1.2
       socket.io: ^2.3.0
       tslib: ^2.0.1
@@ -641,6 +645,10 @@ packages:
     dev: false
     resolution:
       integrity: sha512-jnqIUKDUqJbDIUxm0Uj7bnlMnRm1T/eZ9N+AVMqhPgzrba2GhGG5o/jCTwmdPK709nEZsGoMzXEDUjcXHa3W0g==
+  /@types/events/3.0.0:
+    dev: true
+    resolution:
+      integrity: sha512-EaObqwIvayI5a8dCzhFrjKzVwKLxjoG9T6Ppd5CEo07LRKfQ8Yokw54r5+Wq7FaBQ+yXRvQAYPrHwya1/UFt9g==
   /@types/node/14.14.6:
     resolution:
       integrity: sha512-6QlRuqsQ/Ox/aJEQWBEJG7A9+u7oSYl3mem/K8IzxXG/kAGbV1YPD9Bg9Zw3vyxC/YP+zONKwy8hGkSt1jxFMw==
@@ -661,6 +669,13 @@ packages:
     dev: true
     resolution:
       integrity: sha512-bVprmqPhJMLb9ZCm8g0Xy8kwBFRbnanOWSxzWkDkkIwxTvud5tKMfAJymXX6LQbizUKCS1yima7JM4BeLqjNqA==
+  /@types/ws/5.1.2:
+    dependencies:
+      '@types/events': 3.0.0
+      '@types/node': 14.14.6
+    dev: true
+    resolution:
+      integrity: sha512-NkTXUKTYdXdnPE2aUUbGOXE1XfMK527SCvU/9bj86kyFF6kZ9ZnOQ3mK5jADn98Y2vEUD/7wKDgZa7Qst2wYOg==
   /@types/yargs-parser/15.0.0:
     dev: true
     resolution:
@@ -2053,6 +2068,14 @@ packages:
     dev: false
     resolution:
       integrity: sha512-s1EQguBw/9qtc1p/WTY4eq9WMRIACkj+HTcOIK1in4MV5aFaQC9ZCIt0dJ7pr5bIf4lPpHvAtP2ywpTNgs7hqw==
+  /fastify-websocket/2.0.10:
+    dependencies:
+      fastify-plugin: 2.3.4
+      find-my-way: 3.0.4
+      ws: 7.3.1
+    dev: false
+    resolution:
+      integrity: sha512-cESoKnOsq8DIeYOcnGQbRnNUqegXFUAkrEsVIu0vSyiVL2d1bJnsZo6LwA1W8P77fi2cYVodFBAm13gIY0k5Kg==
   /fastify/3.7.0:
     dependencies:
       abstract-logging: 2.0.1

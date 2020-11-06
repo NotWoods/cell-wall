@@ -22,6 +22,7 @@
     "fastify-cli": "^2.5.1",
     "fastify-formbody": "^5.0.0",
     "fastify-static": "^3.3.0",
+    "fastify-websocket": "^2.0.10",
     "socket.io": "^2.3.0"
   },
   "devDependencies": {
@@ -31,6 +32,7 @@
     "@cell-wall/iterators": "*",
     "@types/appium-adb": "*",
     "@types/socket.io": "^2.1.11",
+    "@types/ws": "^5.1.0",
     "@types/yargs-parser": "^15.0.0",
     "ava": "^3.13.0",
     "prettier": "^2.1.2",

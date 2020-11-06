@@ -38,8 +38,8 @@ export class CellManager extends EventEmitter {
     );
   }
 
-  has(serial: string) {
-    return this.cells.has(serial);
+  get(serial: string) {
+    return this.cells.get(serial);
   }
 
   register(serial: string, info: CellInfo) {

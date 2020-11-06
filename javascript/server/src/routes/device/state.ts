@@ -1,7 +1,7 @@
 import { CellData, CellState } from '@cell-wall/cells';
 import * as premadeStates from '../../static';
 import { ErrorReply, errorSchema, SerialParams } from '../helpers';
-import { MultiRouteOptions, RouteOptions } from '../register';
+import { RouteOptions } from '../register';
 
 interface StaticQuery {
   premade?: string;
@@ -16,12 +16,12 @@ const cellStateSchema = {
   additionalProperties: true,
 };
 
-export const statusState: MultiRouteOptions<{
-  Params: SerialParams;
+export const statusState: RouteOptions<{
+  Params: Required<SerialParams>;
   Reply: ErrorReply | { devices: Record<string, CellData> };
 }> = {
   method: 'GET',
-  url: ['/v3/device/state', '/v3/device/state/:serial'],
+  url: '/v3/device/state/:serial',
   schema: {
     response: {
       200: {
@@ -39,21 +39,58 @@ export const statusState: MultiRouteOptions<{
   async handler(request, reply) {
     const { serial } = request.params;
 
+    const cell = this.cells.get(serial);
+    if (cell) {
+      reply.status(200).send({
+        devices: {
+          [serial]: cell,
+        },
+      });
+    } else {
+      reply.status(404).send({ error: `Could not find device ${serial}` });
+    }
+  },
+  wsHandler(connection, _req, params) {
+    const { serial } = params as Required<SerialParams>;
+    connection.setEncoding('utf8');
+
+    function onState(data: CellData) {
+      if (data.serial === serial) {
+        connection.socket.send(JSON.stringify(data.state));
+      }
+    }
+
+    this.cells.on('state', onState);
+    connection.socket.on('close', () => {
+      this.cells.off('state', onState);
+    });
+  },
+};
+
+export const statusStateAll: RouteOptions<{
+  Reply: ErrorReply | { devices: Record<string, CellData> };
+}> = {
+  method: 'GET',
+  url: '/v3/device/state',
+  schema: {
+    response: {
+      200: {
+        type: 'object',
+        properties: {
+          devices: {
+            type: 'object',
+            additionalProperties: cellStateSchema,
+          },
+        },
+      },
+    },
+  },
+  async handler(_request, reply) {
     let cells = new Map(
       Array.from(this.cells.values()).map(
         (cell) => [cell.serial, cell] as const,
       ),
     );
-
-    if (serial) {
-      const cell = cells.get(serial);
-      if (cell) {
-        cells = new Map().set(serial, cell);
-      } else {
-        reply.status(404).send({ error: `Could not find device ${serial}` });
-        return;
-      }
-    }
 
     reply.status(200).send({
       devices: Object.fromEntries(cells),
