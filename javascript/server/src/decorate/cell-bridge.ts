@@ -6,7 +6,7 @@ export function cellBridge(deviceManager: DeviceManager, cells: CellManager) {
     const device = deviceManager.devices.get(data.serial);
     if (!device) return;
 
-    const base = process.env.SERVER_ADDRESS;
+    const base = data.info.server || process.env.SERVER_ADDRESS;
 
     await startIntent(device, {
       action: 'com.tigeroakes.cellwallclient.DISPLAY',

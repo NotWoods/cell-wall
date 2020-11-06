@@ -17,8 +17,8 @@
 
   <fragment
     android:id="@+id/splash"
-    android:name="com.tigeroakes.cellwallclient.ui.LoadingFragment"
-    tools:layout="@layout/fragment_loading">
+    android:name="com.tigeroakes.cellwallclient.ui.splash.SplashFragment"
+    tools:layout="@layout/fragment_splash">
     <action
       android:id="@+id/action_splash_to_largeTextFragment"
       app:destination="@id/largeTextFragment" />
