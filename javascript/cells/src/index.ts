@@ -1,3 +1,4 @@
+import { readFile, writeFile } from 'fs/promises';
 import { EventEmitter } from 'events';
 import { CellInfo } from './cell-info';
 import { CellState, CellStateType } from './cell-state';
@@ -14,9 +15,28 @@ export interface CellData {
 export class CellManager extends EventEmitter {
   private cells = new Map<string, CellData>();
 
-  async loadData() {}
+  constructor(private readonly path: string) {
+    super();
+  }
 
-  async saveData() {}
+  async loadData() {
+    try {
+      const json = JSON.parse(await readFile(this.path, 'utf8'));
+      if (typeof json === 'object' && json != null && !Array.isArray(json)) {
+        this.cells = new Map(Object.entries(json));
+      }
+    } catch (err) {
+      // do nothing, just use blank data
+    }
+  }
+
+  async saveData() {
+    await writeFile(
+      this.path,
+      JSON.stringify(Object.fromEntries(this.cells)),
+      'utf8',
+    );
+  }
 
   has(serial: string) {
     return this.cells.has(serial);
@@ -36,8 +56,7 @@ export class CellManager extends EventEmitter {
   setState(serial: string, state: CellState) {
     let existing = this.cells.get(serial);
     if (!existing) {
-      // throw new Error(`Register ${serial} before setting its state.`);
-      existing = this.register(serial, {});
+      throw new Error(`Register ${serial} before setting its state.`);
     }
     const data: CellData = {
       serial,

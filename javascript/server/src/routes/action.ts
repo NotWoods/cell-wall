@@ -1,5 +1,6 @@
 import { transformMapAsync } from '@cell-wall/iterators';
 import { RouteOptions } from 'fastify';
+import { filterDevices, MultiRouteOptions, SerialParams } from './helpers';
 
 export const actionRefresh: RouteOptions = {
   method: 'POST',
@@ -27,9 +28,9 @@ export const actionRefresh: RouteOptions = {
   },
 };
 
-export const actioninstallAll: RouteOptions = {
+export const actioninstallAll: MultiRouteOptions = {
   method: 'POST',
-  url: '/v3/action/install',
+  url: ['/v3/action/install', '/v3/action/install/:serial'],
   schema: {
     body: {
       type: 'object',
@@ -55,17 +56,20 @@ export const actioninstallAll: RouteOptions = {
       },
     },
   },
-  async handler(request, _reply) {
+  async handler(request, reply) {
     interface Body {
       path: string;
     }
 
+    const { serial } = request.params as SerialParams;
     const {
       path = '/home/pi/cell-wall-deploy/app-debug.apk',
     } = request.body as Body;
-    const devices = this.deviceManager.devices;
 
-    return {
+    const devices = filterDevices(this.deviceManager, reply, serial);
+    if (!devices) return;
+
+    reply.status(200).send({
       devices: Object.fromEntries(
         await transformMapAsync(devices, (device) =>
           device.installOrUpgrade(path, 'com.tigeroakes.cellwallclient', {
@@ -74,6 +78,6 @@ export const actioninstallAll: RouteOptions = {
           }),
         ),
       ),
-    };
+    });
   },
 };

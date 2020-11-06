@@ -22,7 +22,7 @@ declare module 'fastify' {
 
 export default async function decorateServer(app: FastifyInstance) {
   const deviceManager = new DeviceManager();
-  const cells = new CellManager();
+  const cells = new CellManager(process.env.CELLS_PATH || 'cell-info.json');
   await Promise.all([deviceManager.refreshDevices(), cells.loadData()]);
   cellBridge(deviceManager, cells);
 

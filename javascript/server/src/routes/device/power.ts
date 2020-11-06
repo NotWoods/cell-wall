@@ -7,18 +7,6 @@ import {
   SerialParams,
 } from '../helpers';
 
-interface Power {
-  on: boolean;
-}
-
-const powerSchema = {
-  type: 'object',
-  properties: {
-    on: { type: 'boolean' },
-  },
-  required: ['on'],
-};
-
 export const statusPower: MultiRouteOptions = {
   method: 'GET',
   url: ['/v3/device/power', '/v3/device/power/:serial'],
@@ -29,7 +17,13 @@ export const statusPower: MultiRouteOptions = {
         properties: {
           devices: {
             type: 'object',
-            additionalProperties: powerSchema,
+            additionalProperties: {
+              type: 'object',
+              properties: {
+                on: { type: 'boolean' },
+              },
+              required: ['on'],
+            },
           },
         },
       },
@@ -56,7 +50,15 @@ export const actionPower: MultiRouteOptions = {
   method: 'POST',
   url: ['/v3/device/power', '/v3/device/power/:serial'],
   schema: {
-    body: powerSchema,
+    body: {
+      type: 'object',
+      properties: {
+        on: {
+          enum: ['toggle', true, false],
+        },
+      },
+      required: ['on'],
+    },
     response: {
       200: {
         type: 'object',
@@ -73,8 +75,12 @@ export const actionPower: MultiRouteOptions = {
     },
   },
   async handler(request, reply) {
+    interface Power {
+      on: boolean | 'toggle';
+    }
+
     const { serial } = request.params as SerialParams;
-    const { on } = request.body as Power;
+    let { on } = request.body as Power;
 
     const devices = filterDevices(this.deviceManager, reply, serial);
     if (!devices) return;

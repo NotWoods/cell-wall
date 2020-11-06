@@ -1,5 +1,17 @@
 import { CellInfo } from '@cell-wall/cells';
 import { RouteOptions } from 'fastify';
+import { errorSchema, MultiRouteOptions, SerialParams } from './helpers';
+
+const cellInfoSchema = {
+  type: 'object',
+  properties: {
+    deviceName: { type: 'string' },
+    density: { type: 'number' },
+    widthPixels: { type: 'number' },
+    heightPixels: { type: 'number' },
+    server: { type: 'string' },
+  },
+};
 
 export const cellWallVersion: RouteOptions = {
   method: 'GET',
@@ -20,19 +32,40 @@ export const cellWallVersion: RouteOptions = {
   },
 };
 
+export const getCells: MultiRouteOptions = {
+  method: 'GET',
+  url: ['/v3/device', '/v3/device/:serial'],
+  schema: {
+    response: {
+      200: {
+        type: 'object',
+        additionalProperties: cellInfoSchema,
+      },
+      404: errorSchema,
+    },
+  },
+  async handler(request, reply) {
+    const { serial } = request.params as SerialParams;
+
+    let cells = Array.from(this.cells.values());
+    if (serial) {
+      cells = cells.filter((cell) => cell.serial === serial);
+      if (cells.length === 0) {
+        reply.status(404).send({ error: `Could not find cell ${serial}` });
+        return;
+      }
+    }
+
+    const entries = cells.map((cell) => [cell.serial, cell.info] as const);
+    reply.status(200).send(Object.fromEntries(entries));
+  },
+};
+
 export const registerCell: RouteOptions = {
   method: 'PUT',
   url: '/v3/device/:serial',
   schema: {
-    body: {
-      type: 'object',
-      properties: {
-        deviceName: { type: 'string' },
-        density: { type: 'number' },
-        widthPixels: { type: 'number' },
-        heightPixels: { type: 'number' },
-      },
-    },
+    body: cellInfoSchema,
     response: {
       200: {
         type: 'object',
@@ -49,11 +82,7 @@ export const registerCell: RouteOptions = {
     },
   },
   async handler(request, reply) {
-    interface Params {
-      serial: string;
-    }
-
-    const { serial } = request.params as Params;
+    const { serial } = request.params as Required<SerialParams>;
     const info = request.body as CellInfo;
     const devices = this.deviceManager.devices;
 
