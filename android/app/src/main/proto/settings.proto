@@ -1,9 +1,0 @@
-syntax = "proto3";
-
-option java_package = "com.tigeroakes.cellwallclient";
-option java_multiple_files = true;
-
-message Settings {
-  string serial = 1;
-  string server_address = 2;
-}

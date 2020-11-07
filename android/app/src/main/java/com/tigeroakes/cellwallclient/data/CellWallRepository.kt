@@ -1,7 +1,8 @@
 package com.tigeroakes.cellwallclient.data
 
 import android.content.Context
-import com.tigeroakes.cellwallclient.data.prefs.SettingsSerializer
+import androidx.datastore.preferences.edit
+import com.tigeroakes.cellwallclient.data.prefs.SettingsKeys
 import com.tigeroakes.cellwallclient.data.rest.CellWallService
 import com.tigeroakes.cellwallclient.data.rest.Reason
 import com.tigeroakes.cellwallclient.data.rest.ServerUrlValidator
@@ -24,11 +25,11 @@ class CellWallRepository(context: Context) {
   }
 
   private val serviceGenerator = ServiceGenerator()
-  private val dataStore = SettingsSerializer.createDataStore(context)
+  private val dataStore = SettingsKeys.createDataStore(context)
   private val webService = serviceGenerator.createService(CellWallService::class.java)
 
-  val serverAddress = dataStore.data.map { it.serverAddress }
-  val isUrlSaved = serverAddress.map { it.isNotEmpty() }
+  val serverAddress = dataStore.data.map { preferences -> preferences[SettingsKeys.SERVER_ADDRESS] }
+  val isUrlSaved = serverAddress.map { !it.isNullOrEmpty() }
 
   suspend fun attemptToConnect(address: String): URI {
     val lastUrl = serviceGenerator.apiBaseUrl
@@ -43,10 +44,8 @@ class CellWallRepository(context: Context) {
       throw ServerUrlValidator.ValidationException(Reason.PATH_DOES_NOT_EXIST)
     }
 
-    dataStore.updateData { settings ->
-      settings.toBuilder()
-        .setServerAddress(url.toString())
-        .build()
+    dataStore.edit { preferences ->
+      preferences[SettingsKeys.SERVER_ADDRESS] = url.toString()
     }
     return url
   }

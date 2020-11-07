@@ -1,0 +1,9 @@
+POST http://raspberrypi.local:3000/v3/device/state/D01EC0A0201512ER
+content-type: application/json
+
+{
+  "type": "WEB",
+  "url": "https://forecast.io/embed/#lat=49.264728&lon=-123.100472&units=ca"
+}
+
+###
