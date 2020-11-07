@@ -1,20 +1,31 @@
 import test from 'ava';
 import fastify from 'fastify';
 import { registerRoutes } from '../../../src/routes/register';
-import { statusState } from '../../../src/routes/device/state';
+import { statusStateAll, statusState } from '../../../src/routes/device/state';
+
+const cellsMock = new Map([
+  [
+    'ABC',
+    {
+      serial: 'ABC',
+      info: { deviceName: 'Phone' },
+      state: { type: 'BLANK' },
+    },
+  ],
+  [
+    'EBF',
+    {
+      serial: 'EBF',
+      info: { deviceName: 'Phone' },
+      state: { type: 'WEB', url: 'http://example.com' },
+    },
+  ],
+]);
 
 test('GET /v3/device/state 200', async (t) => {
   const app = fastify();
-  registerRoutes(app, [statusState]);
-  app.decorate('cells', {
-    values: [
-      {
-        serial: 'ABC',
-        info: { deviceName: 'Phone' },
-        state: { type: 'BLANK' },
-      },
-    ],
-  });
+  registerRoutes(app, [statusStateAll]);
+  app.decorate('cells', cellsMock);
 
   const response = await app.inject({
     method: 'GET',
@@ -23,11 +34,13 @@ test('GET /v3/device/state 200', async (t) => {
 
   t.is(response.statusCode, 200);
   t.deepEqual(response.json(), {
-    cells: {
+    devices: {
       ABC: {
-        serial: 'ABC',
-        info: { deviceName: 'Phone' },
-        state: { type: 'BLANK' },
+        type: 'BLANK',
+      },
+      EBF: {
+        type: 'WEB',
+        url: 'http://example.com',
       },
     },
   });
@@ -36,20 +49,7 @@ test('GET /v3/device/state 200', async (t) => {
 test('GET /v3/device/state/:serial 200', async (t) => {
   const app = fastify();
   registerRoutes(app, [statusState]);
-  app.decorate('cells', {
-    values: [
-      {
-        serial: 'ABC',
-        info: { deviceName: 'Phone' },
-        state: { type: 'BLANK' },
-      },
-      {
-        serial: 'EBF',
-        info: { deviceName: 'Phone' },
-        state: { type: 'BLANK' },
-      },
-    ],
-  });
+  app.decorate('cells', cellsMock);
 
   const response = await app.inject({
     method: 'GET',
@@ -58,11 +58,9 @@ test('GET /v3/device/state/:serial 200', async (t) => {
 
   t.is(response.statusCode, 200);
   t.deepEqual(response.json(), {
-    cells: {
+    devices: {
       ABC: {
-        serial: 'ABC',
-        info: { deviceName: 'Phone' },
-        state: { type: 'BLANK' },
+        type: 'BLANK',
       },
     },
   });

@@ -25,7 +25,9 @@ export default async function server(
 }
 
 export const options: FastifyServerOptions = {
-  logger: true,
+  logger: {
+    level: 'info',
+  },
   caseSensitive: false,
   ignoreTrailingSlash: true,
   trustProxy: true,

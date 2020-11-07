@@ -10,9 +10,9 @@
     "postbuild:package": "cell-wall-package --input package.json --out package.dist.json",
     "postbuild": "npm run postbuild:bundle && npm run postbuild:package",
     "format": "prettier **/*.json **/*.ts --write",
-    "pm2": "pm2 start --name cell-wall npm -- start",
-    "start:dev": "fastify start src/index.js",
-    "start": "fastify start dist/cell-wall.js --address 0.0.0.0",
+    "pm2": "pm2 start --name cell-wall --watch npm -- start",
+    "start:dev": "fastify start src/index.js --log-level info",
+    "start": "fastify start cell-wall.js --address 0.0.0.0 --log-level info",
     "pretest": "tsc --build test",
     "test": "ava"
   },

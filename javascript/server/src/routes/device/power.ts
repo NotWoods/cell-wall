@@ -53,7 +53,7 @@ export const statusPower: MultiRouteOptions<{
 export const actionPower: MultiRouteOptions<{
   Params: SerialParams;
   Body: { on: boolean | 'toggle' };
-  Reply: ErrorReply | { devices: string[] };
+  Reply: ErrorReply | { devices: string[]; on: boolean };
 }> = {
   method: 'POST',
   url: ['/v3/device/power', '/v3/device/power/:serial'],
@@ -77,6 +77,7 @@ export const actionPower: MultiRouteOptions<{
               type: 'string',
             },
           },
+          on: { type: 'boolean' },
         },
       },
       404: errorSchema,
@@ -89,9 +90,10 @@ export const actionPower: MultiRouteOptions<{
     const devices = filterDevices(this.deviceManager, reply, serial);
     if (!devices) return;
 
-    await setPower(devices, on);
+    const isOn = await setPower(devices, on);
     reply.status(200).send({
       devices: Array.from(devices.keys()),
+      on: isOn,
     });
   },
 };

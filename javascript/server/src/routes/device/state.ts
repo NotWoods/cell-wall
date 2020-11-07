@@ -18,7 +18,7 @@ const cellStateSchema = {
 
 export const statusState: RouteOptions<{
   Params: Required<SerialParams>;
-  Reply: ErrorReply | { devices: Record<string, CellData> };
+  Reply: ErrorReply | { devices: Record<string, CellState> };
 }> = {
   method: 'GET',
   url: '/v3/device/state/:serial',
@@ -43,7 +43,7 @@ export const statusState: RouteOptions<{
     if (cell) {
       reply.status(200).send({
         devices: {
-          [serial]: cell,
+          [serial]: cell.state,
         },
       });
     } else {
@@ -68,7 +68,7 @@ export const statusState: RouteOptions<{
 };
 
 export const statusStateAll: RouteOptions<{
-  Reply: ErrorReply | { devices: Record<string, CellData> };
+  Reply: ErrorReply | { devices: Record<string, CellState> };
 }> = {
   method: 'GET',
   url: '/v3/device/state',
@@ -88,7 +88,7 @@ export const statusStateAll: RouteOptions<{
   async handler(_request, reply) {
     let cells = new Map(
       Array.from(this.cells.values()).map(
-        (cell) => [cell.serial, cell] as const,
+        (cell) => [cell.serial, cell.state] as const,
       ),
     );
 
