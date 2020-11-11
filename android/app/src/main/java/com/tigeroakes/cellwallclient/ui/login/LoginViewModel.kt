@@ -1,6 +1,7 @@
 package com.tigeroakes.cellwallclient.ui.login
 
 import android.app.Application
+import android.net.Uri
 import androidx.annotation.StringRes
 import androidx.lifecycle.*
 import com.tigeroakes.cellwallclient.data.CellWallRepository
@@ -8,8 +9,8 @@ import com.tigeroakes.cellwallclient.data.rest.ServerUrlValidator
 import com.tigeroakes.cellwallclient.device.CellInfo
 import com.tigeroakes.cellwallclient.model.Event
 import com.tigeroakes.cellwallclient.model.Resource
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import java.net.URI
 
 class LoginViewModel(
   application: Application
@@ -17,13 +18,16 @@ class LoginViewModel(
 
   private val repository = CellWallRepository.get(application)
 
-  private val loginAttempt = MutableLiveData<Resource<URI>>(Resource.Loading())
+  private val loginAttempt = MutableLiveData<Resource<Uri>>(Resource.Loading())
   private val _errorResource = MutableLiveData<Event<@StringRes Int?>>()
 
   val isLoading: LiveData<Boolean> = Transformations.map(loginAttempt) {
     it is Resource.Loading
   }
   val errorResource: LiveData<Event<Int?>> = _errorResource
+
+  val serverAddressSetting = repository.serverAddress
+  val serialSetting = repository.serial
 
   /**
    * Try logging in to the server by pinging it and ensuring it responds.

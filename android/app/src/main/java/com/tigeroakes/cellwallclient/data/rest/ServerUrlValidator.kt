@@ -1,5 +1,6 @@
 package com.tigeroakes.cellwallclient.data.rest
 
+import android.net.Uri
 import android.webkit.URLUtil
 import androidx.annotation.StringRes
 import com.tigeroakes.cellwallclient.R
@@ -15,7 +16,7 @@ enum class Reason(@StringRes val stringRes: Int) {
 object ServerUrlValidator {
   class ValidationException(val reason: Reason) : Exception()
 
-  fun guessUri(serverUrl: String?): URI {
+  fun guessUri(serverUrl: String?): Uri {
     if (serverUrl.isNullOrBlank()) {
       throw ValidationException(Reason.BLANK)
     }
@@ -23,10 +24,10 @@ object ServerUrlValidator {
     var url = serverUrl
     return if (URLUtil.isNetworkUrl(url)) {
       if (!url.endsWith("/")) url += "/"
-      URI(url)
+      Uri.parse(url)
     } else {
       val withScheme = "http://$url"
-      URI(url)
+      Uri.parse(url)
     }
   }
 }

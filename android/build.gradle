@@ -2,10 +2,13 @@
 
 buildscript {
   ext {
+    geckoview_version = '82.0.20201108180448'
     kotlin_version = '1.4.10'
-    nav_version = "2.3.1"
-    datastore_version = "1.0.0-alpha02"
-    lifecycle_version = "2.3.0-beta01"
+    coroutines_version = '1.4.1'
+    nav_version = '2.3.1'
+    datastore_version = '1.0.0-alpha02'
+    lifecycle_version = '2.3.0-beta01'
+    scarlet_version = '0.1.11'
   }
   repositories {
     google()
@@ -24,6 +27,8 @@ allprojects {
   repositories {
     google()
     jcenter()
+    maven { url "https://maven.mozilla.org/maven2/" }
+    maven { url "https://jitpack.io" }
   }
 }
 

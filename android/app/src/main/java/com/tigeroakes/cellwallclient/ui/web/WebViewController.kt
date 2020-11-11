@@ -1,12 +1,21 @@
 package com.tigeroakes.cellwallclient.ui.web
 
 import android.webkit.WebView
+import org.mozilla.geckoview.GeckoRuntime
+import org.mozilla.geckoview.GeckoSession
+import org.mozilla.geckoview.GeckoView
 
-class WebViewController(private val webView: WebView) {
+
+class WebViewController(webView: GeckoView) {
+
+  private val session = GeckoSession()
 
   init {
-    @Suppress("SetJavascriptEnabled")
-    webView.settings.javaScriptEnabled = true
+    val runtime = GeckoRuntime.create(webView.context)
+
+    session.open(runtime)
+    webView.setSession(session)
+    session.loadUri("about:buildconfig") // Or any other URL...
   }
 
   /**
@@ -14,11 +23,11 @@ class WebViewController(private val webView: WebView) {
    */
   fun openUrl(url: String?) {
     val urlToOpen = if (url.isNullOrEmpty()) "about:blank" else url
-    webView.loadUrl(urlToOpen)
+    session.loadUri(urlToOpen)
   }
 
   /**
    * Reloads the current page.
    */
-  fun reload() = webView.reload()
+  // fun reload() = webView.reload()
 }

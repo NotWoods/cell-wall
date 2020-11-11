@@ -58,10 +58,14 @@ sealed class CellState(val type: CellStateType) : Parcelable {
     }
   }
 
-  data class Image(val src: String) : CellState(CellStateType.IMAGE) {
+  data class Image(
+    val src: String,
+    val scaleType: String
+  ) : CellState(CellStateType.IMAGE) {
     override fun writeToParcel(dest: Parcel, flags: Int) {
       super.writeToParcel(dest, flags)
       dest.writeString(src)
+      dest.writeString(scaleType)
     }
   }
 
@@ -93,7 +97,10 @@ sealed class CellState(val type: CellStateType) : Parcelable {
           text = source.readString()!!,
           backgroundColor = source.readInt(),
         )
-        CellStateType.IMAGE.name -> Image(source.readString()!!)
+        CellStateType.IMAGE.name -> Image(
+          src = source.readString()!!,
+          scaleType = source.readString()!!
+        )
         CellStateType.BUTTON.name -> Button(source.readInt())
         CellStateType.WEB.name -> Web(source.readString()!!)
         else -> Blank
@@ -119,7 +126,10 @@ sealed class CellState(val type: CellStateType) : Parcelable {
           text = getString("text"),
           backgroundColor = getColor("backgroundColor"),
         )
-        CellStateType.IMAGE.name -> Image(getString("src"))
+        CellStateType.IMAGE.name -> Image(
+          src = getString("src"),
+          scaleType = getString("scaleType")
+        )
         CellStateType.BUTTON.name -> Button(getColor("backgroundColor"))
         CellStateType.WEB.name -> Web(getString("url"))
         else -> Blank
@@ -140,7 +150,10 @@ sealed class CellState(val type: CellStateType) : Parcelable {
               text = getQueryParameter("text")!!,
               backgroundColor = getColor("backgroundColor"),
             )
-            CellStateType.IMAGE.name -> Image(getQueryParameter("src")!!)
+            CellStateType.IMAGE.name -> Image(
+              src = getQueryParameter("src")!!,
+              scaleType = getQueryParameter("scaleType")!!
+            )
             CellStateType.BUTTON.name -> Button(getColor("backgroundColor"))
             else -> Blank
           }

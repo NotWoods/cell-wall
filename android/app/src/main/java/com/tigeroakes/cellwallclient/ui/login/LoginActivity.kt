@@ -1,22 +1,17 @@
 package com.tigeroakes.cellwallclient.ui.login
 
-import android.animation.Animator
 import android.content.Intent
 import android.os.Build
-import android.os.Bundle
-import android.os.PersistableBundle
-import android.view.ViewPropertyAnimator
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.isGone
 import androidx.core.view.isInvisible
-import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import com.tigeroakes.cellwallclient.R
 import com.tigeroakes.cellwallclient.device.getCellInfo
 import com.tigeroakes.cellwallclient.device.serialNo
 import com.tigeroakes.cellwallclient.ui.MainActivity
 import kotlinx.android.synthetic.main.activity_login.*
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 class LoginActivity : AppCompatActivity(R.layout.activity_login) {
@@ -60,6 +55,11 @@ class LoginActivity : AppCompatActivity(R.layout.activity_login) {
     if (intentAddress != null) {
       // http://192.168.50.252:2015
       address.setText(intentAddress.toString())
+    } else {
+      lifecycleScope.launch {
+        val defaultValue = viewModel.serverAddressSetting.first()
+        address.setText(defaultValue)
+      }
     }
 
     // Login when the connect button is pressed
@@ -80,13 +80,15 @@ class LoginActivity : AppCompatActivity(R.layout.activity_login) {
 
   private fun setupSerialNoInput() {
     val intentSerial = intent.extras?.getString(EXTRA_SERIAL)
-    val systemSerial = serialNo()
-    if (intentSerial != null) {
-      serial.setText(intentSerial)
-    } else if (systemSerial != Build.UNKNOWN) {
-      serial.setText(systemSerial)
+    lifecycleScope.launch {
+      val serialText = intentSerial
+        ?: serialNo().takeIf(::notUnknown)
+        ?: viewModel.serialSetting.first().takeIf(::notUnknown)
+      serial.setText(serialText)
     }
   }
+
+  private fun notUnknown(serial: String) = serial != Build.UNKNOWN
 
   /** Update the debug text */
   private fun setupDebugText() {
@@ -94,25 +96,6 @@ class LoginActivity : AppCompatActivity(R.layout.activity_login) {
     debug_device_name.text = getString(R.string.debug_device_name, info.deviceName)
     debug_density.text = getString(R.string.debug_density, info.density)
     debug_display.text = getString(R.string.debug_display, info.widthPixels, info.heightPixels)
-  }
-
-  /**
-   * Add a listener to this ViewPropertyAnimator using the provided actions.
-   * Based on Android KTX Animator.addListener function.
-   */
-  private inline fun ViewPropertyAnimator.setListener(
-    crossinline onEnd: (animator: Animator) -> Unit = {},
-    crossinline onStart: (animator: Animator) -> Unit = {},
-    crossinline onCancel: (animator: Animator) -> Unit = {},
-    crossinline onRepeat: (animator: Animator) -> Unit = {}
-  ): ViewPropertyAnimator {
-    val listener = object : Animator.AnimatorListener {
-      override fun onAnimationRepeat(animator: Animator) = onRepeat(animator)
-      override fun onAnimationEnd(animator: Animator) = onEnd(animator)
-      override fun onAnimationCancel(animator: Animator) = onCancel(animator)
-      override fun onAnimationStart(animator: Animator) = onStart(animator)
-    }
-    return setListener(listener)
   }
 
   companion object {
