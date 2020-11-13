@@ -44,7 +44,7 @@ class CellStateManager(
     val directions = when (state) {
       is CellState.Text -> NavGraphDirections.actionGlobalLargeTextFragment(
         text = state.text,
-        background = state.backgroundColor
+        backgroundColor = state.backgroundColor
       )
       is CellState.Web -> NavGraphDirections.actionGlobalWebFragment(
         url = state.url

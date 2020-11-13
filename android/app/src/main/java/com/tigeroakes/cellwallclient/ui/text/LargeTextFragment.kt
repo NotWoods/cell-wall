@@ -12,7 +12,7 @@ class LargeTextFragment : Fragment(R.layout.fragment_large_text) {
   private val args: LargeTextFragmentArgs by navArgs()
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-    text_container.background = ColorDrawable(args.background)
+    text_container.background = ColorDrawable(args.backgroundColor)
     large_text.text = args.text
   }
 }

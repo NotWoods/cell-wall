@@ -3,13 +3,16 @@ package com.tigeroakes.cellwallclient.ui.login
 import android.app.Application
 import android.net.Uri
 import androidx.annotation.StringRes
-import androidx.lifecycle.*
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
+import androidx.lifecycle.viewModelScope
 import com.tigeroakes.cellwallclient.data.CellWallRepository
 import com.tigeroakes.cellwallclient.data.rest.ServerUrlValidator
 import com.tigeroakes.cellwallclient.device.CellInfo
 import com.tigeroakes.cellwallclient.model.Event
 import com.tigeroakes.cellwallclient.model.Resource
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 class LoginViewModel(

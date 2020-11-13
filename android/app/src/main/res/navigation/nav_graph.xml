@@ -31,7 +31,7 @@
       android:name="text"
       app:argType="string" />
     <argument
-      android:name="background"
+      android:name="backgroundColor"
       app:argType="integer" />
   </fragment>
   <fragment

@@ -7,10 +7,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import com.tigeroakes.cellwallclient.R
-import com.tigeroakes.cellwallclient.ui.web.WebFragmentArgs
-import com.tigeroakes.cellwallclient.ui.web.WebViewController
 import kotlinx.android.synthetic.main.fragment_image.*
-import kotlinx.android.synthetic.main.fragment_web.*
 
 class ImageFragment : Fragment(R.layout.fragment_image) {
 

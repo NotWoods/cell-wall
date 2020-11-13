@@ -5,7 +5,6 @@ import org.mozilla.geckoview.GeckoRuntime
 import org.mozilla.geckoview.GeckoSession
 import org.mozilla.geckoview.GeckoView
 
-
 class WebViewController(webView: GeckoView) {
 
   private val session = GeckoSession()

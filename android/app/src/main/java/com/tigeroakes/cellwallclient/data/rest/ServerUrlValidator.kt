@@ -4,7 +4,6 @@ import android.net.Uri
 import android.webkit.URLUtil
 import androidx.annotation.StringRes
 import com.tigeroakes.cellwallclient.R
-import java.net.URI
 
 enum class Reason(@StringRes val stringRes: Int) {
   BLANK(R.string.error_field_required),
