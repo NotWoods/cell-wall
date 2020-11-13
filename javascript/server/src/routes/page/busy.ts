@@ -7,11 +7,19 @@ interface BusyParams {
   person: keyof typeof calendars;
 }
 
-export const pageText: RouteOptions<{
+export const pageBusy: RouteOptions<{
   Params: BusyParams;
 }> = {
   method: 'GET',
   url: '/page/text/:person',
+  schema: {
+    params: {
+      type: 'object',
+      properties: {
+        person: { type: 'string' },
+      },
+    },
+  },
   async handler(request, reply) {
     const auth = this.googleAuth;
     if (!auth.credentials) {
@@ -62,6 +70,8 @@ export const pageText: RouteOptions<{
       <style>
         body {
           display: flex;
+          flex-direction: column;
+          justify-content: center;
         }
         .profile {
           display: block;
@@ -71,7 +81,10 @@ export const pageText: RouteOptions<{
         .busy { background: #D87220; }
       </style>
       <body class="free">
-        <img class="profile" alt="${person}" src="${calendars[person].image}" />
+        <img class="profile"
+          alt="${person}"
+          src="${calendars[person].image}"
+          width="150" height="150" />
         <h1 class="headline-1">Free</h1>
       </body>
     `);

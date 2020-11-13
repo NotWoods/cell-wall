@@ -1,6 +1,6 @@
 {
   "name": "@cell-wall/server",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "private": true,
   "main": "src/index.js",
   "types": "src/index.d.ts",
@@ -12,7 +12,7 @@
     "format": "prettier **/*.json **/*.ts --write",
     "pm2": "pm2 start --name cell-wall --watch npm -- start",
     "start:dev": "fastify start src/index.js --log-level info",
-    "start": "fastify start cell-wall.js --address 0.0.0.0 --log-level info",
+    "start": "fastify start dist/cell-wall.js --address 0.0.0.0 --log-level info",
     "pretest": "tsc --build test",
     "test": "ava"
   },

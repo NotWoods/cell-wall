@@ -1,4 +1,8 @@
-import { Temporal } from 'https://cdn.skypack.dev/proposal-temporal';
+import proposalTemporal from 'https://cdn.skypack.dev/proposal-temporal';
+const { Temporal } = proposalTemporal;
+
+/** @typedef {import('proposal-temporal').Temporal.Instant} Instant */
+/** @typedef {import('proposal-temporal').Temporal.ZonedDateTime} ZonedDateTime */
 
 /**
  * @typedef {object} TimeStampRange
@@ -8,8 +12,8 @@ import { Temporal } from 'https://cdn.skypack.dev/proposal-temporal';
 
 /**
  * @typedef {object} DateTimeRange
- * @prop {Temporal.ZonedDateTime} start
- * @prop {Temporal.ZonedDateTime} end
+ * @prop {ZonedDateTime} start
+ * @prop {ZonedDateTime} end
  */
 
 /**
@@ -18,7 +22,7 @@ import { Temporal } from 'https://cdn.skypack.dev/proposal-temporal';
  */
 function convert(range) {
   /**
-   * @param {string | Temporal.Instant} timestamp
+   * @param {string | Instant} timestamp
    */
   function fromTimeStamp(timestamp) {
     return Temporal.Instant.from(timestamp).toZonedDateTimeISO('UTC');
@@ -32,7 +36,7 @@ function convert(range) {
 
 /**
  * Check if the given time is within a time range
- * @param {Temporal.ZonedDateTime} time Date time stamp to check
+ * @param {ZonedDateTime} time Date time stamp to check
  * @param {readonly DateTimeRange[]} ranges List of time ranges
  */
 function isBusy(time, ranges) {
@@ -67,11 +71,11 @@ export function isBusyInterval(ranges, callback) {
 
     if (next) {
       const duration = now.until(next);
+      console.log(`Waiting until ${duration}`);
+
       const ms = duration.total({ unit: 'milliseconds' });
       setTimeout(checkBusy, ms);
     }
   }
   checkBusy();
 }
-
-export { Temporal };

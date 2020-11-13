@@ -8,7 +8,10 @@
     { "path": "deploy/src" },
     { "path": "iterators/src" },
     { "path": "iterators/test" },
+    { "path": "server/assets/js" },
     { "path": "server/src" },
-    { "path": "server/test" }
+    { "path": "server/test" },
+    { "path": "storage/src" },
+    { "path": "storage/test" }
   ]
 }

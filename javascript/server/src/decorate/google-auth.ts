@@ -18,12 +18,12 @@ export async function googleAuth(
   const oAuth2Client = new google.auth.OAuth2(
     credentials.web.client_id,
     credentials.web.client_secret,
-    'http://raspberrypi.local:3000/oauth2callback',
+    'https://cellwall.tigeroakes.com/oauth2callback',
   );
 
   const tokens = await repo.getTokens();
   if (tokens) {
-    app.log.info('Loading Google authentication from storage');
+    console.log('Loading Google authentication from storage');
     oAuth2Client.setCredentials(tokens);
     return oAuth2Client;
   }
@@ -39,6 +39,15 @@ export async function googleAuth(
   }>({
     method: 'GET',
     url: '/oauth2callback',
+    schema: {
+      querystring: {
+        type: 'object',
+        properties: {
+          code: { type: 'string' },
+        },
+        required: ['code'],
+      },
+    },
     async handler(request, reply) {
       const { code } = request.query;
 
@@ -50,6 +59,6 @@ export async function googleAuth(
     },
   });
 
-  app.log.info(`Authenticate with Google: ${authorizeUrl}`);
+  console.log(`\n---\nAuthenticate with Google:\n${authorizeUrl}\n---\n`);
   return oAuth2Client;
 }
