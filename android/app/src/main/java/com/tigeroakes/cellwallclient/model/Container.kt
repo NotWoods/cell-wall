@@ -22,16 +22,16 @@ enum class CellStateType {
 
 sealed class Container {
   open val type: CellStateType
-    get() {
-      val name = getString(CellStateType.TYPE)!!.toUpperCase(Locale.ROOT)
-      return CellStateType.valueOf(name)
-    }
+    get() = getEnum<CellStateType>(CellStateType.TYPE)!!
 
   abstract fun getString(name: String): String?
 
   @ColorInt
   open fun getColor(name: String): Int? =
     getString(name)?.let(Color::parseColor)
+
+  inline fun <reified T : Enum<T>> getEnum(name: String): T? =
+    getString(name)?.toUpperCase(Locale.ROOT)?.let { enumValueOf<T>(it) }
 }
 
 class JsonContainer(private val obj: JSONObject) : Container() {

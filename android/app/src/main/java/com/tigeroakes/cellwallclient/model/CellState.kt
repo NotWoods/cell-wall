@@ -1,5 +1,6 @@
 package com.tigeroakes.cellwallclient.model
 
+import android.graphics.Color.rgb
 import android.net.Uri
 import android.os.Bundle
 import android.os.Parcel
@@ -55,12 +56,12 @@ sealed class CellState(val type: CellStateType) : Parcelable {
 
   data class Image(
     val src: String,
-    val scaleType: String
+    val scaleType: ImageView.ScaleType
   ) : CellState(CellStateType.IMAGE) {
     override fun writeToBundle(dest: Bundle) {
       super.writeToBundle(dest)
       dest.putString("src", src)
-      dest.putString("scaleType", scaleType)
+      dest.putString("scaleType", scaleType.name)
     }
   }
 
@@ -80,6 +81,7 @@ sealed class CellState(val type: CellStateType) : Parcelable {
 
   companion object {
     const val STATE_KEY = "state"
+    @ColorInt val COLOR_ACCENT = rgb(27, 94, 32)
 
     @JvmStatic
     val CREATOR: Parcelable.Creator<CellState> = object : Parcelable.Creator<CellState> {
@@ -97,18 +99,18 @@ sealed class CellState(val type: CellStateType) : Parcelable {
       return when (type) {
         CellStateType.CONFIGURE -> Configure(
           icon = getString("icon")!!,
-          backgroundColor = getColor("backgroundColor") ?: 0x1b5e20,
+          backgroundColor = getColor("backgroundColor") ?: COLOR_ACCENT,
         )
         CellStateType.TEXT -> Text(
           text = getString("text")!!,
-          backgroundColor = getColor("backgroundColor") ?: 0x1b5e20,
+          backgroundColor = getColor("backgroundColor") ?: COLOR_ACCENT,
         )
         CellStateType.IMAGE -> Image(
           src = getString("src")!!,
-          scaleType = getString("scaleType") ?: ImageView.ScaleType.FIT_CENTER.name,
+          scaleType = getEnum<ImageView.ScaleType>("scaleType") ?: ImageView.ScaleType.FIT_CENTER,
         )
         CellStateType.BUTTON -> Button(
-          backgroundColor = getColor("backgroundColor") ?: 0x1b5e20,
+          backgroundColor = getColor("backgroundColor") ?: COLOR_ACCENT,
         )
         CellStateType.WEB -> Web(
           getString("url")!!,
