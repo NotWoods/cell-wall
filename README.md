@@ -52,6 +52,20 @@ pnpm start
 When running the client application, you will be prompted to enter a URL for
 your server. Enter the path to your node server, such as `http://10.0.2.2:3000`.
 
+### Enviornment variables
+
+#### `CELLS_PATH`
+
+Default: `'cell-info.json'`
+
+Path to the cell info file.
+
+#### `GOOGLE_CREDENTIALS_PATH`
+
+Default: `'google-credentials.json'`
+
+Path to the Google OAuth2 credentials file, that holds the client ID and secret.
+
 ## Built with
 
 - [Fastify](https://www.fastify.io/) - Web server
