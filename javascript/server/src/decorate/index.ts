@@ -24,7 +24,7 @@ declare module 'fastify' {
 }
 
 export default async function decorateServer(app: FastifyInstance) {
-  const repo = repository('tmp/database.db');
+  const repo = await repository('tmp/database.db');
   const deviceManager = new DeviceManager();
   const cells = new CellManager(process.env.CELLS_PATH || 'cell-info.json');
   const auth = await googleAuth(app, repo);

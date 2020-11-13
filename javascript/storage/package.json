@@ -13,7 +13,7 @@
   "dependencies": {
     "tslib": "^2.0.1",
     "sql-template-strings": "^2.2.2",
-    "sqlite": "^4.0.15",
+    "sqlite": "^4.0.17",
     "sqlite3": "^5.0.0"
   },
   "devDependencies": {
