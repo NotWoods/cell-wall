@@ -17,8 +17,6 @@ export const pageText: RouteOptions<{
       <style>
         body {
           display: flex;
-          align-items: center;
-          color: white;
           background: ${backgroundColor};
         }
       </style>
