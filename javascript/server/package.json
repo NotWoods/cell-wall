@@ -33,6 +33,7 @@
     "@cell-wall/cells": "*",
     "@cell-wall/deploy": "*",
     "@cell-wall/iterators": "*",
+    "@cell-wall/storage": "*",
     "@types/appium-adb": "*",
     "@types/socket.io": "^2.1.11",
     "@types/ws": "^5.1.0",

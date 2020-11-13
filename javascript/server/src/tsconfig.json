@@ -3,6 +3,7 @@
   "include": ["**/*.ts", "static/**/*.json"],
   "references": [
     { "path": "../../android-bridge/src" },
-    { "path": "../../cells/src" }
+    { "path": "../../cells/src" },
+    { "path": "../../storage/src" }
   ]
 }

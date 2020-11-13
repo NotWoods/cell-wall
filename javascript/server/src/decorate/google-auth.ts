@@ -1,8 +1,14 @@
 import { FastifyInstance } from 'fastify';
 import { readFile } from 'fs/promises';
 import { google } from 'googleapis';
+import { Repository } from '@cell-wall/storage';
 
-const TOKENS_PATH = async function googleAuth(app: FastifyInstance) {
+export type OAuth2Client = InstanceType<typeof google.auth.OAuth2>;
+
+export async function googleAuth(
+  app: FastifyInstance,
+  repo: Repository,
+): Promise<OAuth2Client> {
   const credFile = await readFile(
     process.env.GOOGLE_CREDENTIALS_PATH || 'google-credentials.json',
     'utf8',
@@ -15,10 +21,12 @@ const TOKENS_PATH = async function googleAuth(app: FastifyInstance) {
     'http://raspberrypi.local:3000/oauth2callback',
   );
 
-  oAuth2Client.on('tokens', (tokens) => {
-    if (tokens.refresh_token) {
-    }
-  });
+  const tokens = await repo.getTokens();
+  if (tokens) {
+    app.log.info('Loading Google authentication from storage');
+    oAuth2Client.setCredentials(tokens);
+    return oAuth2Client;
+  }
 
   // Generate the url that will be used for the consent dialog.
   const authorizeUrl = oAuth2Client.generateAuthUrl({
@@ -38,8 +46,10 @@ const TOKENS_PATH = async function googleAuth(app: FastifyInstance) {
 
       const r = await oAuth2Client.getToken(code);
       oAuth2Client.setCredentials(r.tokens);
+      await repo.insertTokens(r.tokens);
     },
   });
 
   app.log.info(`Authenticate with Google: ${authorizeUrl}`);
-};
+  return oAuth2Client;
+}

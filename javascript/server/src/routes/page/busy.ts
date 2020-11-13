@@ -3,8 +3,6 @@ import { Temporal } from 'proposal-temporal';
 import { calendars } from '../../static';
 import { RouteOptions } from '../register';
 
-const calendarApi = google.calendar('v3');
-
 interface BusyParams {
   person: keyof typeof calendars;
 }
@@ -15,6 +13,14 @@ export const pageText: RouteOptions<{
   method: 'GET',
   url: '/page/text/:person',
   async handler(request, reply) {
+    const auth = this.googleAuth;
+    if (!auth.credentials) {
+      reply.status(500).send({ error: 'Google credentials not loaded' });
+      return;
+    }
+
+    const api = google.calendar({ version: 'v3', auth });
+
     const { person } = request.params;
     const today = Temporal.now.zonedDateTimeISO('UTC').startOfDay();
     const nextWeek = today.add({ days: 5 });
@@ -23,7 +29,7 @@ export const pageText: RouteOptions<{
       smallestUnit: 'second',
     } as const;
 
-    const res = await calendarApi.freebusy.query({
+    const res = await api.freebusy.query({
       requestBody: {
         timeMin: today.toString(toStringOptions),
         timeMax: nextWeek.toString(toStringOptions),
