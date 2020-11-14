@@ -14,7 +14,6 @@ class WebViewController(webView: GeckoView) {
 
     session.open(runtime)
     webView.setSession(session)
-    session.loadUri("about:buildconfig") // Or any other URL...
   }
 
   /**

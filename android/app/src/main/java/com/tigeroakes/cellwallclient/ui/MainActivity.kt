@@ -18,8 +18,17 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
       navController = findNavController(R.id.nav_host_fragment),
       fragmentManager = supportFragmentManager,
     )
+  }
 
-    manager.updateState(intent)
+  override fun onPostCreate(savedInstanceState: Bundle?) {
+    super.onPostCreate(savedInstanceState)
+
+    val oldState = savedInstanceState?.getParcelable<CellState>(CellState.STATE_KEY)
+    if (oldState != null) {
+      manager.updateState(oldState)
+    } else {
+      manager.updateState(intent)
+    }
   }
 
   override fun onNewIntent(intent: Intent) {
@@ -35,12 +44,5 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
   override fun onSaveInstanceState(outState: Bundle) {
     super.onSaveInstanceState(outState)
     outState.putParcelable(CellState.STATE_KEY, manager.currentState)
-  }
-
-  override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-    super.onRestoreInstanceState(savedInstanceState)
-    savedInstanceState.getParcelable<CellState>(CellState.STATE_KEY)?.let { state ->
-      manager.updateState(state)
-    }
   }
 }

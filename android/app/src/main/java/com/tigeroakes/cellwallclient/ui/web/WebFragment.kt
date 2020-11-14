@@ -14,6 +14,10 @@ class WebFragment : Fragment(R.layout.fragment_web) {
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     controller = WebViewController(web_view)
+  }
+
+  override fun onStart() {
+    super.onStart()
     openUrl(args.url)
   }
 
