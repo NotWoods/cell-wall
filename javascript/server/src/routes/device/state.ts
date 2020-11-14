@@ -1,13 +1,8 @@
 import { CellData, CellState } from '@cell-wall/cells';
-import * as premadeStates from '../../static';
 import { ErrorReply, errorSchema, SerialParams } from '../helpers';
 import { RouteOptions } from '../register';
 
-interface StaticQuery {
-  premade?: string;
-}
-
-const cellStateSchema = {
+export const cellStateSchema = {
   type: 'object',
   properties: {
     type: { type: 'string' },
@@ -133,7 +128,6 @@ export const actionState: RouteOptions<{
 };
 
 export const actionStateAll: RouteOptions<{
-  Querystring: StaticQuery;
   Body: Record<string, CellState>;
   Reply: ErrorReply | { devices: string[] };
 }> = {
@@ -165,16 +159,6 @@ export const actionStateAll: RouteOptions<{
   },
   async handler(request, reply) {
     let deviceStates = request.body;
-    const { premade } = request.query;
-    if (premade) {
-      const state = premadeStates[premade as keyof typeof premadeStates];
-      if (state) {
-        deviceStates = state as Record<string, CellState>;
-      } else {
-        reply.status(404).send({ error: `Invalid premade name ${premade}` });
-        return;
-      }
-    }
 
     const devices: string[] = [];
     for (const [serial, state] of Object.entries(deviceStates)) {
