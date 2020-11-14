@@ -250,9 +250,7 @@ export class ApkUtils extends AndroidManifest {
    * @param {string} pkg - The name of the installed package.
    * @return {?AppInfo} The parsed application information.
    */
-  getPackageInfo(
-    pkg: string,
-  ): Promise<Partial<AppInfo> & Pick<AppInfo, 'name'>>;
+  getPackageInfo(pkg: string): Promise<AppInfo>;
 
   pullApk(pkg: string, tmpDir: string): Promise<string>;
 }

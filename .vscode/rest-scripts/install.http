@@ -1,4 +1,4 @@
-POST http://raspberrypi.local:3000/v3/action/install
+POST http://raspberrypi.local:3000/v3/device/install
 content-type: application/json
 
 {}

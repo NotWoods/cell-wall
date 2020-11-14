@@ -1,4 +1,5 @@
 export * from './device/cell';
+export * from './device/install';
 export * from './device/power';
 export * from './device/state';
 export * from './page/busy';

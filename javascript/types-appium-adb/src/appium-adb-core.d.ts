@@ -264,9 +264,9 @@ export interface AppInfo {
   /**
    * Version code.
    */
-  versionCode: number;
+  versionCode?: number;
   /**
    * Version name, for example '1.0'.
    */
-  versionName: string;
+  versionName?: string;
 }

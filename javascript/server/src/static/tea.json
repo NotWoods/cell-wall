@@ -1,26 +1,27 @@
 {
   "93HAY0BJ0G": {
-    "device": "Pixel_3a",
     "type": "text",
     "text": "Blueberry White Peony",
     "backgroundColor": "#9BA1B5"
   },
   "TA880004ZI": {
-    "device": "XT1034",
     "type": "text",
     "text": "Mana Assam",
     "backgroundColor": "#B0513F"
   },
+  "TA880007GH": {
+    "type": "TEXT",
+    "text": "Jasmine",
+    "backgroundColor": "#B9BB66"
+  },
   "4e50f5bd": {
-    "device": "A0001",
     "type": "text",
     "text": "Kashi Ginger",
     "backgroundColor": "#5072AB"
   },
   "D01EC0A0201512ER": {
-    "device": "Amazon_OtterX",
     "type": "text",
-    "text": "Jasmine, Genmaicha, Hojicha",
+    "text": "Genmaicha, Hojicha",
     "backgroundColor": "#B9BB66"
   }
 }

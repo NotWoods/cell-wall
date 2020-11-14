@@ -1,4 +1,5 @@
 import calendars from './calendars.json';
+import info from './info.json';
 import tea from './tea.json';
 
-export { calendars, tea };
+export { calendars, info, tea };
