@@ -1,0 +1,15 @@
+POST http://raspberrypi.local:3000/v3/device/state
+content-type: application/json
+
+{
+  "93HAY0BJ0G": {
+    "type": "WEB",
+    "url": "/page/busy/daphne"
+  },
+  "4e50f5bd": {
+    "type": "WEB",
+    "url": "/page/busy/tiger"
+  }
+}
+
+###

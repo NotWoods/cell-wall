@@ -11,7 +11,7 @@ export const pageBusy: RouteOptions<{
   Params: BusyParams;
 }> = {
   method: 'GET',
-  url: '/page/text/:person',
+  url: '/page/busy/:person',
   schema: {
     params: {
       type: 'object',

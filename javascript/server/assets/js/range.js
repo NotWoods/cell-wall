@@ -74,7 +74,7 @@ export function isBusyInterval(ranges, callback) {
       console.log(`Waiting until ${duration}`);
 
       const ms = duration.total({ unit: 'milliseconds' });
-      setTimeout(checkBusy, ms);
+      setTimeout(checkBusy, Math.max(ms, 1000));
     }
   }
   checkBusy();

@@ -28,7 +28,6 @@ content-type: application/json
   },
   "D01EC0A0201512ER": {
     "type": "TEXT",
-    "url": "/page/text?text=Genmaicha,+Hojicha&backgroundColor=%23B9BB66",
     "text": "Genmaicha, Hojicha",
     "backgroundColor": "#B9BB66"
   }
