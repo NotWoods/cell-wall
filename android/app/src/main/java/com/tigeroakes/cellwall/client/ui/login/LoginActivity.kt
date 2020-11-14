@@ -3,6 +3,7 @@ package com.tigeroakes.cellwall.client.ui.login
 import android.content.Intent
 import android.os.Build
 import androidx.activity.viewModels
+import androidx.annotation.Keep
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isInvisible
 import androidx.lifecycle.lifecycleScope

@@ -2,6 +2,7 @@ package com.tigeroakes.cellwall.client.ui.login
 
 import android.app.Application
 import android.net.Uri
+import androidx.annotation.Keep
 import androidx.annotation.StringRes
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
