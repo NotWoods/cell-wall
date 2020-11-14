@@ -1,2 +1,3 @@
-rootProject.name='CellWall Client'
+rootProject.name='CellWall'
 include ':app'
+include ':remote'
