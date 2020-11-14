@@ -52,6 +52,7 @@ export const pageBusy: RouteOptions<{
     }
 
     reply.type('text/html').send(`
+      <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
       <link rel="stylesheet" href="/assets/css/base.css" />
       <script type="module">
         import { isBusyInterval } from '/assets/js/range.js';
