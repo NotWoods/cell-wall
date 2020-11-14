@@ -1,6 +1,7 @@
 package com.tigeroakes.cellwall.client.ui.web
 
 import android.webkit.WebView
+import org.mozilla.geckoview.ContentBlocking
 import org.mozilla.geckoview.GeckoRuntime
 import org.mozilla.geckoview.GeckoRuntimeSettings
 import org.mozilla.geckoview.GeckoSession
@@ -11,8 +12,18 @@ class WebViewController(webView: GeckoView) {
   private val session = GeckoSession()
 
   init {
+    val strictContentBlocking = ContentBlocking.Settings.Builder()
+      .antiTracking(ContentBlocking.AntiTracking.STRICT)
+      .cookieBehavior(ContentBlocking.CookieBehavior.ACCEPT_NON_TRACKERS)
+      .cookiePurging(true)
+      .enhancedTrackingProtectionLevel(ContentBlocking.EtpLevel.STRICT)
+      .strictSocialTrackingProtection(true)
+      .build()
     val settings = GeckoRuntimeSettings.Builder()
       .configFilePath("")
+      .doubleTapZoomingEnabled(false)
+      .webManifest(false)
+      .contentBlocking(strictContentBlocking)
       .build()
     val runtime = GeckoRuntime.create(webView.context, settings)
 
