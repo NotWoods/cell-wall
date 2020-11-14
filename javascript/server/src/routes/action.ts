@@ -73,7 +73,7 @@ export const actioninstallAll: MultiRouteOptions<{
     reply.status(200).send({
       devices: Object.fromEntries(
         await transformMapAsync(devices, (device) =>
-          device.installOrUpgrade(path, 'com.tigeroakes.cellwallclient', {
+          device.installOrUpgrade(path, 'com.tigeroakes.cellwall.client', {
             allowTestPackages: true,
             enforceCurrentBuild: true,
           }),

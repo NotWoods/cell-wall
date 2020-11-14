@@ -9,7 +9,7 @@ plugins {
 android {
   compileSdkVersion 30
   defaultConfig {
-    applicationId "com.tigeroakes.cellwallclient"
+    applicationId "com.tigeroakes.cellwall.client"
     minSdkVersion 19
     targetSdkVersion 30
     versionCode 3

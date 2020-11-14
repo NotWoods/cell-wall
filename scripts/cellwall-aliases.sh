@@ -8,7 +8,7 @@ alias cellwall-power="adb-all shell input keyevent KEYCODE_POWER"
 
 # Display website on CellWall.
 # Usage: `cellwall-web https://example.com`
-alias cellwall-web="adb-all shell am start -a 'com.tigeroakes.cellwallclient.VIEW' -d"
+alias cellwall-web="adb-all shell am start -a 'com.tigeroakes.cellwall.client.DISPLAY' -d"
 
 # Open Corsica on CellWall.
 alias cellwall-corsica="cellwall-web http://192.168.50.249:8080"

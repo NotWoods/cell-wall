@@ -10,7 +10,7 @@ export function cellBridge(deviceManager: DeviceManager, cells: CellManager) {
     const base = data.info?.server || process.env.SERVER_ADDRESS;
 
     await startIntent(device, {
-      action: 'com.tigeroakes.cellwallclient.DISPLAY',
+      action: 'com.tigeroakes.cellwall.client.DISPLAY',
       dataUri: toUri(data.state, base).replace(/&/g, '\\&'),
     });
   });
