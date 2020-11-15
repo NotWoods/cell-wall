@@ -39,6 +39,7 @@ importers:
       '@cell-wall/cells': 'link:../cells'
       svelte: 3.29.7
     devDependencies:
+      '@rollup/plugin-commonjs': 14.0.0_rollup@2.33.1
       '@rollup/plugin-node-resolve': 8.4.0_rollup@2.33.1
       '@rollup/plugin-typescript': 6.1.0_26db687484f694fdbb1d3a17aaf9841c
       '@tsconfig/svelte': 1.0.10
@@ -52,6 +53,7 @@ importers:
       typescript: 4.1.0-beta
     specifiers:
       '@cell-wall/cells': '*'
+      '@rollup/plugin-commonjs': ^14.0.0
       '@rollup/plugin-node-resolve': ^8.0.0
       '@rollup/plugin-typescript': ^6.0.0
       '@tsconfig/svelte': ^1.0.0
@@ -111,6 +113,7 @@ importers:
     devDependencies:
       '@cell-wall/android-bridge': 'link:../android-bridge'
       '@cell-wall/cells': 'link:../cells'
+      '@cell-wall/controller': 'link:../controller'
       '@cell-wall/deploy': 'link:../deploy'
       '@cell-wall/iterators': 'link:../iterators'
       '@cell-wall/storage': 'link:../storage'
@@ -125,6 +128,7 @@ importers:
     specifiers:
       '@cell-wall/android-bridge': '*'
       '@cell-wall/cells': '*'
+      '@cell-wall/controller': '*'
       '@cell-wall/deploy': '*'
       '@cell-wall/iterators': '*'
       '@cell-wall/storage': '*'
@@ -610,6 +614,23 @@ packages:
       node: '>= 8'
     resolution:
       integrity: sha512-1V9XOY4rDW0rehzbrcqAmHnz8e7SKvX27gh8Gt2WgB0+pdzdiLV83p72kZPU+jvMbS1qU5mauP2iOvO8rhmurQ==
+  /@rollup/plugin-commonjs/14.0.0_rollup@2.33.1:
+    dependencies:
+      '@rollup/pluginutils': 3.1.0_rollup@2.33.1
+      commondir: 1.0.1
+      estree-walker: 1.0.1
+      glob: 7.1.6
+      is-reference: 1.2.1
+      magic-string: 0.25.7
+      resolve: 1.18.1
+      rollup: 2.33.1
+    dev: true
+    engines:
+      node: '>= 8.0.0'
+    peerDependencies:
+      rollup: ^2.3.4
+    resolution:
+      integrity: sha512-+PSmD9ePwTAeU106i9FRdc+Zb3XUWyW26mo5Atr2mk82hor8+nPwkztEjFo8/B1fJKfaQDg9aM2bzQkjhi7zOw==
   /@rollup/plugin-commonjs/15.1.0_rollup@2.33.1:
     dependencies:
       '@rollup/pluginutils': 3.1.0_rollup@2.33.1
@@ -725,7 +746,6 @@ packages:
     resolution:
       integrity: sha512-EYNwp3bU+98cpU4lAWYYL7Zz+2gryWH1qbdDTidVd6hkiR6weksdbMadyXKXNPEkQFhXM+hVO9ZygomHXp+AIw==
   /@types/estree/0.0.45:
-    dev: false
     resolution:
       integrity: sha512-jnqIUKDUqJbDIUxm0Uj7bnlMnRm1T/eZ9N+AVMqhPgzrba2GhGG5o/jCTwmdPK709nEZsGoMzXEDUjcXHa3W0g==
   /@types/events/3.0.0:
@@ -1679,7 +1699,6 @@ packages:
     resolution:
       integrity: sha512-QE33hToZseCH3jS0qN96O/bSh3kaw/h+Tq7ngyY9eWDUnTlTNUyqfqvCXioLe5Na5jFsL78ra/wuBU4iuEgd4w==
   /commondir/1.0.1:
-    dev: false
     resolution:
       integrity: sha1-3dgA2gxmEnOTzKWVDqloo6rxJTs=
   /component-bind/1.0.0:
@@ -3188,7 +3207,6 @@ packages:
   /is-reference/1.2.1:
     dependencies:
       '@types/estree': 0.0.45
-    dev: false
     resolution:
       integrity: sha512-U82MsXXiFIrjCK4otLT+o2NA2Cd2g5MLoOVXUZjIOhLurrRxpEXzI8O0KZHr3IjLvlAH1kTPYSuqer5T9ZVBKQ==
   /is-regex/1.1.1:
@@ -3536,7 +3554,6 @@ packages:
   /magic-string/0.25.7:
     dependencies:
       sourcemap-codec: 1.4.8
-    dev: false
     resolution:
       integrity: sha512-4CrMT5DOHTDk4HYDlzmwu4FVCcIYI8gauveasrdCu2IKIFOJ3f0v/8MDGJCDL9oD2ppz/Av1b0Nj345H9M+XIA==
   /make-dir/3.1.0:

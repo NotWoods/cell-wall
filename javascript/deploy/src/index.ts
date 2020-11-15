@@ -26,7 +26,6 @@ async function getConfig({
   out,
   cwd = process.cwd(),
 }: GetConfigOptions): Promise<RollupOptions> {
-  const builtins = new Set(builtinModules);
   const { dependencies } = await readJson(pkg, cwd);
 
   return {
@@ -36,7 +35,7 @@ async function getConfig({
       format: 'cjs',
       exports: 'default',
     },
-    external: [...builtins, ...Object.keys(dependencies)],
+    external: [...builtinModules, ...Object.keys(dependencies)],
     plugins: [nodeResolve(), commonjs(), json()],
   };
 }

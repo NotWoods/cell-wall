@@ -1,26 +1,32 @@
 // @ts-check
-import { builtinModules } from 'module';
-import svelte from 'rollup-plugin-svelte';
-import commonjs from '@rollup/plugin-commonjs';
-import resolve from '@rollup/plugin-node-resolve';
-import typescript from '@rollup/plugin-typescript';
-import autoPreprocess from 'svelte-preprocess';
+const { builtinModules } = require('module');
+const { writeFile } = require('fs/promises');
+const { rollup } = require('rollup');
+const svelte = require('rollup-plugin-svelte');
+const commonjs = require('@rollup/plugin-commonjs');
+const { nodeResolve } = require('@rollup/plugin-node-resolve');
+const typescript = require('@rollup/plugin-typescript');
+const autoPreprocess = require('svelte-preprocess');
+
+/** @type {import('rollup').OutputOptions} */
+const outputOptions = {
+  sourcemap: true,
+  format: 'iife',
+  file: 'dist/bundle.js',
+};
 
 /** @type {import('rollup').RollupOptions} */
 const config = {
   input: 'src/index.ts',
-  output: {
-    sourcemap: true,
-    format: 'esm',
-    file: 'dist/bundle.js',
-  },
+  output: outputOptions,
+  external: builtinModules,
   plugins: [
     svelte({
       // @ts-ignore
       dev: true,
       preprocess: autoPreprocess(),
     }),
-    resolve({
+    nodeResolve({
       browser: true,
       dedupe: ['svelte'],
     }),
@@ -29,4 +35,18 @@ const config = {
   ],
 };
 
-export default config;
+module.exports = config;
+
+async function compile() {
+  const bundle = await rollup(config);
+  const { output } = await bundle.generate(outputOptions);
+
+  const [{ code }] = output;
+  const wrapper = `const code = \`${code.replace(
+    /(`|\$)/g,
+    '\\$&',
+  )}\`; export default code`;
+  await writeFile('dist/script.js', wrapper, 'utf8');
+  return code;
+}
+compile();

@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "main": "dist/bundle.js",
+  "types": "index.d.ts",
   "scripts": {
-    "build": "rollup -c",
+    "build": "node rollup.config.js",
     "format": "prettier **/*.json **/*.ts --write",
     "test": "svelte-check"
   },

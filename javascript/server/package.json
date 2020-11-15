@@ -34,6 +34,7 @@
   "devDependencies": {
     "@cell-wall/android-bridge": "*",
     "@cell-wall/cells": "*",
+    "@cell-wall/controller": "*",
     "@cell-wall/deploy": "*",
     "@cell-wall/iterators": "*",
     "@cell-wall/storage": "*",
