@@ -12,13 +12,11 @@ export const controllerHome: RouteOptions = {
         <head>
           <meta charset="utf-8">
           <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+          <title>CellWall Controller</title>
           <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
           <link rel="stylesheet" href="/assets/css/base.css" />
-          <style>
-            body { background: #1b5e20 }
-          </style>
           <script>
-            window.devices = JSON.parse("${JSON.stringify(devices)}")
+            window.devices = JSON.parse('${JSON.stringify(devices)}')
           </script>
           <script async defer src="/controller/script.js"></script>
         </head>

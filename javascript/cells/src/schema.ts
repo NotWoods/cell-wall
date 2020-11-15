@@ -1,7 +1,9 @@
+type Keys<T> = keyof T extends never ? string : keyof T;
+
 function buildCellState<Type extends string, Props>(options: {
   type: Type;
   properties?: Props;
-  required?: readonly (keyof Props)[];
+  required?: readonly Keys<Props>[];
 }) {
   const { type, properties = {}, required = [] } = options;
   return {

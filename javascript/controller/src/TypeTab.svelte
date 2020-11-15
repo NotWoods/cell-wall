@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { startCase } from 'lodash-es';
   import { createEventDispatcher } from 'svelte';
   import { getTypeFromSchema } from '@cell-wall/cells';
   import type { CellStateJsonSchema } from '@cell-wall/cells';
@@ -8,7 +9,7 @@
   export let selected: string;
   export let schema: CellStateJsonSchema;
   $: type = getTypeFromSchema(schema);
-  $: typeName = type[0] + type.slice(1).toLocaleLowerCase();
+  $: typeName = startCase(type.toLocaleLowerCase());
 
   function handleClick() {
     dispatch('click', type);

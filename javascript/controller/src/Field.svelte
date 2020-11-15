@@ -3,9 +3,15 @@
   export let htmlFor: string;
 </script>
 
-<div class="field">
-  <label class="label" for={htmlFor}>{label}</label>
-  <div class="control">
-    <slot />
+<div class="field is-horizontal">
+  <div class="field-label is-normal">
+    <label class="label" for={htmlFor}>{label}</label>
+  </div>
+  <div class="field-body">
+    <div class="field">
+      <div class="control">
+        <slot />
+      </div>
+    </div>
   </div>
 </div>

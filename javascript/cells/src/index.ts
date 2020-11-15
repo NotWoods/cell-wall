@@ -24,7 +24,16 @@ export class CellManager extends EventEmitter {
     try {
       const json = JSON.parse(await readFile(this.path, 'utf8'));
       if (typeof json === 'object' && json != null && !Array.isArray(json)) {
-        this.cells = new Map(Object.entries(json));
+        this.cells = new Map(
+          Object.entries(json).map(([key, info]) => [
+            key,
+            {
+              serial: key,
+              info: info as CellInfo,
+              state: { type: CellStateType.BLANK },
+            },
+          ]),
+        );
       }
     } catch (err) {
       // do nothing, just use blank data
