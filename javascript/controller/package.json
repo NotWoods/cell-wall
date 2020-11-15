@@ -15,6 +15,7 @@
     "@rollup/plugin-commonjs": "^14.0.0",
     "@rollup/plugin-node-resolve": "^8.0.0",
     "@rollup/plugin-typescript": "^6.0.0",
+    "@types/lodash-es": "^4.17.3",
     "ava": "^3.13.0",
     "lodash-es": "^4.17.15",
     "prettier": "^2.1.2",

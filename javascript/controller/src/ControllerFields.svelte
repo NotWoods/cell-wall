@@ -33,7 +33,10 @@
 </script>
 
 {#each properties as [name, property] (name)}
-  <Field htmlFor="control-{name}" label={getInputName(name)}>
+  <Field
+    htmlFor="control-{name}"
+    label={getInputName(name)}
+    narrow={getInputType(name, property) === 'color'}>
     <input
       id="control-{name}"
       class="input"

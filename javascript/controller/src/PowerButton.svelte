@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { post } from './post';
+
   export let serial: string;
   export let value: boolean;
 
@@ -11,19 +13,9 @@
   let loading: Promise<void> = Promise.resolve();
 
   async function setPower() {
-    const res = await fetch(`/v3/device/power/${serial}`, {
-      method: 'post',
-      headers: {
-        'content-type': 'application/json',
-      },
-      body: JSON.stringify({
-        on: value,
-      }),
+    await post(`/v3/device/power/${serial}`, {
+      on: value,
     });
-
-    if (!res.ok) {
-      throw new Error(res.statusText);
-    }
   }
 </script>
 

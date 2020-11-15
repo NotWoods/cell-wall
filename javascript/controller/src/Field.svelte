@@ -1,6 +1,7 @@
 <script lang="ts">
   export let label: string;
   export let htmlFor: string;
+  export let narrow = false;
 </script>
 
 <div class="field is-horizontal">
@@ -8,7 +9,7 @@
     <label class="label" for={htmlFor}>{label}</label>
   </div>
   <div class="field-body">
-    <div class="field">
+    <div class="field" class:is-narrow={narrow}>
       <div class="control">
         <slot />
       </div>

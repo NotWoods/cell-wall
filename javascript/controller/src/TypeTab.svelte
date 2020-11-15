@@ -16,12 +16,6 @@
   }
 </script>
 
-<svelte:head>
-  <link
-    rel="stylesheet"
-    href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css" />
-</svelte:head>
-
 <li class:is-active={type === selected} on:click={handleClick}>
   <!-- svelte-ignore a11y-missing-attribute -->
   <a data-type={type}>{typeName}</a>
