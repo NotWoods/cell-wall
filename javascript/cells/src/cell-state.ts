@@ -16,7 +16,13 @@ export interface CellStateBlank {
 export interface CellStateText {
   type: CellStateType.TEXT;
   text: string;
-  backgroundColor: string;
+  backgroundColor?: string;
+}
+
+export interface CellStateImage {
+  type: CellStateType.IMAGE;
+  src: string;
+  scaleType?: string;
 }
 
 export interface CellStateWeb {

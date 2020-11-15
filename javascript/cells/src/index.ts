@@ -5,6 +5,7 @@ import { CellState, CellStateType } from './cell-state';
 
 export * from './cell-info';
 export * from './cell-state';
+export * from './schema';
 
 export interface CellData {
   serial: string;

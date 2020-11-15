@@ -1,0 +1,3 @@
+GET http://raspberrypi.local:3000/v3/device
+
+###

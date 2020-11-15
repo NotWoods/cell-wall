@@ -1,7 +1,7 @@
 import { Preset, presets } from '../../static';
 import { ErrorReply, errorSchema } from '../helpers';
 import { RouteOptions } from '../register';
-import { cellStateSchema } from './state';
+import { cellStateSchema } from '@cell-wall/cells';
 
 interface PresetParams {
   presetname: keyof typeof presets;

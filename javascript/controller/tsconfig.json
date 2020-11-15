@@ -1,0 +1,14 @@
+{
+  "extends": "../tsconfig.base.json",
+  "include": ["src/**/*"],
+  "compilerOptions": {
+    "importsNotUsedAsValues": "error",
+    "isolatedModules": true,
+    "sourceMap": true,
+    "inlineSources": true,
+    "types": ["svelte"],
+    "incremental": false,
+    "declaration": false,
+    "composite": false
+  }
+}

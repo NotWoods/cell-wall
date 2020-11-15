@@ -1,15 +1,6 @@
-import { CellData, CellState } from '@cell-wall/cells';
+import { cellStateSchema, CellData, CellState } from '@cell-wall/cells';
 import { ErrorReply, errorSchema, SerialParams } from '../helpers';
 import { RouteOptions } from '../register';
-
-export const cellStateSchema = {
-  type: 'object',
-  properties: {
-    type: { type: 'string' },
-  },
-  required: ['type'],
-  additionalProperties: true,
-};
 
 export const statusState: RouteOptions<{
   Params: Required<SerialParams>;
