@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { startCase } from 'lodash-es';
   import {
     getTypeFromSchema,
     cellStateBlankSchema,
@@ -11,17 +10,7 @@
   import TypeTab from './TypeTab.svelte';
   import Field from './Field.svelte';
   import PowerButton from './PowerButton.svelte';
-
-  function getInputType(name: string, property: { type: string }) {
-    if (name.endsWith('Color')) return 'color';
-    if (name === 'url') return 'url';
-    switch (property.type) {
-      case 'number':
-        return 'number';
-      default:
-        return 'text';
-    }
-  }
+  import ControllerFields from './ControllerFields.svelte';
 
   export let devices: { serial: string; info: CellInfo }[];
 
@@ -39,39 +28,22 @@
   $: activeSchema = types.find(
     (schema) => getTypeFromSchema(schema) === selectedType,
   );
-  $: required = new Set<string>(activeSchema?.required || []);
-  $: properties = Object.entries(activeSchema!.properties).filter(
-    ([name]) => name !== 'type',
-  );
 
   function handleSelect(event: CustomEvent<string>) {
     selectedType = event.detail;
   }
 
-  interface SubmitEvent extends Event {
-    readonly submitter: HTMLElement;
-  }
-
-  function handleSubmit(event: Event) {
-    const { submitter } = event as SubmitEvent;
-    const { formAction = form.action } = submitter as HTMLButtonElement;
-
-    loading = submit(formAction);
-  }
-
-  async function submit(action: string) {
+  async function submit() {
     const formData = Array.from(new FormData(form))
       // no files allowed
       .filter(
         (entry): entry is [string, string] => typeof entry[1] === 'string',
       )
       // nor empty strings
-      .filter(([_, value]) => value)
-      // parse booleans
-      .map(([key, value]) => (key === 'on' ? JSON.parse(value) : value));
+      .filter(([_, value]) => value);
     const data = Object.fromEntries(formData);
 
-    const res = await fetch(`${action}/${selectedDevice}`, {
+    const res = await fetch(`${form.action}/${selectedDevice}`, {
       method: 'post',
       headers: {
         'content-type': 'application/json',
@@ -106,7 +78,9 @@
   <form
     method="post"
     action="/v3/device/state"
-    on:submit|preventDefault={handleSubmit}
+    on:submit|preventDefault={() => {
+      loading = submit();
+    }}
     bind:this={form}>
     <Field htmlFor="control-serial" label="Device">
       <div class="select">
@@ -125,22 +99,13 @@
       <div class="field-label is-normal"><span class="label">Power</span></div>
       <div class="field-body">
         <div class="buttons has-addons">
-          <PowerButton value="false">Off</PowerButton>
-          <PowerButton value="true">On</PowerButton>
+          <PowerButton serial={selectedDevice} value={false}>Off</PowerButton>
+          <PowerButton serial={selectedDevice} value={true}>On</PowerButton>
         </div>
       </div>
     </div>
 
-    {#each properties as [name, property] (name)}
-      <Field htmlFor="control-{name}" label={startCase(name)}>
-        <input
-          id="control-{name}"
-          class="input"
-          {name}
-          type={getInputType(name, property)}
-          required={required.has(name)} />
-      </Field>
-    {/each}
+    <ControllerFields schema={activeSchema} />
 
     <div class="field is-grouped is-grouped-right">
       <p class="control">

@@ -61,6 +61,7 @@ export interface CellStateJsonSchema {
       enum: readonly [string];
     };
   };
+  required: readonly string[];
 }
 
 export function getTypeFromSchema(schema: CellStateJsonSchema) {
