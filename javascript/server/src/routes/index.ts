@@ -1,3 +1,4 @@
+export * from './controller/home';
 export * from './device/cell';
 export * from './device/install';
 export * from './device/power';

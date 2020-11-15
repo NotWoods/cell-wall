@@ -33,7 +33,7 @@ async function getConfig({
     output: {
       file: resolve(cwd, out!),
       format: 'cjs',
-      exports: 'default',
+      exports: 'named',
     },
     external: [...builtinModules, ...Object.keys(dependencies)],
     plugins: [nodeResolve(), commonjs(), json()],

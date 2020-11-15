@@ -2,7 +2,7 @@
   "name": "@cell-wall/controller",
   "version": "1.0.0",
   "private": true,
-  "main": "dist/bundle.js",
+  "main": "dist/script.js",
   "types": "index.d.ts",
   "scripts": {
     "build": "node rollup.config.js",

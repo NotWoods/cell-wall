@@ -5,5 +5,8 @@
     { "path": "../../android-bridge/src" },
     { "path": "../../cells/src" },
     { "path": "../../storage/src" }
-  ]
+  ],
+  "compilerOptions": {
+    "module": "esnext"
+  }
 }
