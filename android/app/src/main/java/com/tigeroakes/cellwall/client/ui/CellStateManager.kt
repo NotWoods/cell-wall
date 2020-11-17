@@ -4,6 +4,9 @@ import android.content.Intent
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.navigation.NavController
+import androidx.navigation.NavOptions
+import androidx.navigation.NavOptionsBuilder
+import androidx.navigation.navOptions
 import com.tigeroakes.cellwall.client.NavGraphDirections
 import com.tigeroakes.cellwall.client.model.CellState
 import com.tigeroakes.cellwall.client.ui.web.WebFragment
@@ -56,7 +59,13 @@ class CellStateManager(
       else -> NavGraphDirections.actionGlobalSplashFragment()
     }
 
-    navController.navigate(directions)
+    navController.navigate(directions, navOptions {
+      anim {
+        val animation = SlideAnimation.randomEdge()
+        enter = animation.enterResId
+        exit = animation.exitResId
+      }
+    })
   }
 
   private val FragmentManager.currentNavigationFragment: Fragment?
