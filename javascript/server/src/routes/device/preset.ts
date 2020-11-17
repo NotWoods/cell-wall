@@ -74,7 +74,7 @@ export const actionPresetAll: RouteOptions<{
           },
           preset: {
             type: 'object',
-            additionalProperties: cellStateSchema,
+            // additionalProperties: cellStateSchema,
           },
         },
       },

@@ -40,6 +40,7 @@ importers:
       '@rollup/plugin-commonjs': 14.0.0_rollup@2.33.1
       '@rollup/plugin-node-resolve': 8.4.0_rollup@2.33.1
       '@rollup/plugin-typescript': 6.1.0_26db687484f694fdbb1d3a17aaf9841c
+      '@types/lodash-es': 4.17.3
       ava: 3.13.0
       lodash-es: 4.17.15
       prettier: 2.1.2
@@ -55,6 +56,7 @@ importers:
       '@rollup/plugin-commonjs': ^14.0.0
       '@rollup/plugin-node-resolve': ^8.0.0
       '@rollup/plugin-typescript': ^6.0.0
+      '@types/lodash-es': ^4.17.3
       ava: ^3.13.0
       lodash-es: ^4.17.15
       prettier: ^2.1.2
@@ -747,6 +749,16 @@ packages:
     dev: true
     resolution:
       integrity: sha512-EaObqwIvayI5a8dCzhFrjKzVwKLxjoG9T6Ppd5CEo07LRKfQ8Yokw54r5+Wq7FaBQ+yXRvQAYPrHwya1/UFt9g==
+  /@types/lodash-es/4.17.3:
+    dependencies:
+      '@types/lodash': 4.14.165
+    dev: true
+    resolution:
+      integrity: sha512-iHI0i7ZAL1qepz1Y7f3EKg/zUMDwDfTzitx+AlHhJJvXwenP682ZyGbgPSc5Ej3eEAKVbNWKFuwOadCj5vBbYQ==
+  /@types/lodash/4.14.165:
+    dev: true
+    resolution:
+      integrity: sha512-tjSSOTHhI5mCHTy/OOXYIhi2Wt1qcbHmuXD1Ha7q70CgI/I71afO4XtLb/cVexki1oVYchpul/TOuu3Arcdxrg==
   /@types/node/14.14.6:
     resolution:
       integrity: sha512-6QlRuqsQ/Ox/aJEQWBEJG7A9+u7oSYl3mem/K8IzxXG/kAGbV1YPD9Bg9Zw3vyxC/YP+zONKwy8hGkSt1jxFMw==

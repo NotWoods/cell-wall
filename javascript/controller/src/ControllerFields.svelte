@@ -1,9 +1,13 @@
 <script lang="ts">
-  import { startCase } from 'lodash-es';
+  import startCase from 'lodash-es/startCase';
   import type { CellStateJsonSchema } from '@cell-wall/cells';
   import Field from './Field.svelte';
 
-  function getInputType(name: string, property: { type: string }) {
+  function getInputType(
+    name: string,
+    property: { type: string; enum?: readonly string[] },
+  ) {
+    if (Array.isArray(property.enum)) return 'select';
     if (name.endsWith('Color')) return 'color';
     if (name === 'url' || name === 'url') return 'url';
     switch (property.type) {
@@ -27,21 +31,35 @@
 
   export let schema: CellStateJsonSchema | undefined;
   $: required = new Set<string>(schema?.required || []);
-  $: properties = Object.entries(schema?.properties || {}).filter(
-    ([name]) => name !== 'type',
-  );
+  $: properties = Object.entries(schema?.properties || {})
+    .filter(([name]) => name !== 'type')
+    .map(([name, property]) => ({
+      name,
+      property,
+      type: getInputType(name, property),
+    }));
 </script>
 
-{#each properties as [name, property] (name)}
+{#each properties as { name, type, property } (name)}
   <Field
     htmlFor="control-{name}"
     label={getInputName(name)}
-    narrow={getInputType(name, property) === 'color'}>
-    <input
-      id="control-{name}"
-      class="input"
-      {name}
-      type={getInputType(name, property)}
-      required={required.has(name)} />
+    narrow={type === 'color'}>
+    {#if type === 'select'}
+      <div class="select">
+        <select id="control-{name}" {name}>
+          {#each property.enum as option}
+            <option value={option}>{option}</option>
+          {/each}
+        </select>
+      </div>
+    {:else}
+      <input
+        id="control-{name}"
+        class="input"
+        {name}
+        {type}
+        required={required.has(name)} />
+    {/if}
   </Field>
 {/each}

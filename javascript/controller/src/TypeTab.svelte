@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { startCase } from 'lodash-es';
+  import startCase from 'lodash-es/startCase';
   import { createEventDispatcher } from 'svelte';
   import { getTypeFromSchema } from '@cell-wall/cells';
   import type { CellStateJsonSchema } from '@cell-wall/cells';

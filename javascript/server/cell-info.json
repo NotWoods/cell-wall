@@ -14,5 +14,9 @@
   "TA880007GH": {
     "deviceName": "Moto_G XT1034 (No Wifi)",
     "address": "http://127.0.0.1:3000/"
+  },
+  "0123456789ABCDEF": {
+    "deviceName": "Polaroid A600",
+    "address": "http://127.0.0.1:3000/"
   }
 }

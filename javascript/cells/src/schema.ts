@@ -39,7 +39,10 @@ export const cellStateImageSchema = buildCellState({
   type: 'IMAGE',
   properties: {
     src: { type: 'string' },
-    scaleType: { type: 'string' },
+    scaleType: {
+      type: 'string',
+      enum: ['FIT_CENTER', 'FIT_XY', 'CENTER_INSIDE'],
+    },
   },
   required: ['src'],
 });
@@ -59,6 +62,10 @@ export interface CellStateJsonSchema {
     type: {
       type: 'string';
       enum: readonly [string];
+    };
+    [prop: string]: {
+      type: string;
+      enum?: readonly string[];
     };
   };
   required: readonly string[];
