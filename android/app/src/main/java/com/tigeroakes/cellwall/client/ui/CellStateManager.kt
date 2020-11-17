@@ -10,11 +10,12 @@ import androidx.navigation.navOptions
 import com.tigeroakes.cellwall.client.NavGraphDirections
 import com.tigeroakes.cellwall.client.model.CellState
 import com.tigeroakes.cellwall.client.ui.web.WebFragment
+import com.tigeroakes.cellwall.client.ui.web.WebViewModel
 import java.util.logging.Logger
 
 class CellStateManager(
   private val navController: NavController,
-  private val fragmentManager: FragmentManager
+  private val fragmentManager: FragmentManager,
 ) {
 
   private val logger = Logger.getLogger("CellState")
