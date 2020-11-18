@@ -1,7 +1,10 @@
 import test from 'ava';
 import fastify from 'fastify';
-import { registerRoutes } from '../../../src/routes/register';
-import { statusStateAll, statusState } from '../../../src/routes/device/state';
+import { registerRoutes } from '../../../src/routes/register.js';
+import {
+  statusStateAll,
+  statusState,
+} from '../../../src/routes/device/state.js';
 
 const cellsMock = new Map([
   [
@@ -32,7 +35,6 @@ test('GET /v3/device/state 200', async (t) => {
     url: '/v3/device/state',
   });
 
-  t.is(response.statusCode, 200);
   t.deepEqual(response.json(), {
     devices: {
       ABC: {
@@ -44,6 +46,7 @@ test('GET /v3/device/state 200', async (t) => {
       },
     },
   });
+  t.is(response.statusCode, 200);
 });
 
 test('GET /v3/device/state/:serial 200', async (t) => {
@@ -56,7 +59,6 @@ test('GET /v3/device/state/:serial 200', async (t) => {
     url: '/v3/device/state/ABC',
   });
 
-  t.is(response.statusCode, 200);
   t.deepEqual(response.json(), {
     devices: {
       ABC: {
@@ -64,4 +66,5 @@ test('GET /v3/device/state/:serial 200', async (t) => {
       },
     },
   });
+  t.is(response.statusCode, 200);
 });

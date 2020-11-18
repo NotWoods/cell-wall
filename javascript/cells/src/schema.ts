@@ -23,7 +23,7 @@ export const cellStateBlankSchema = buildCellState({ type: 'BLANK' });
 export const cellStateWebSchema = buildCellState({
   type: 'WEB',
   properties: {
-    url: { type: 'string' },
+    url: { type: 'string', format: 'uri' },
   },
   required: ['url'],
 });
@@ -38,7 +38,7 @@ export const cellStateTextSchema = buildCellState({
 export const cellStateImageSchema = buildCellState({
   type: 'IMAGE',
   properties: {
-    src: { type: 'string' },
+    src: { type: 'string', format: 'uri' },
     scaleType: {
       type: 'string',
       enum: ['FIT_CENTER', 'FIT_XY', 'CENTER_INSIDE'],
@@ -48,12 +48,12 @@ export const cellStateImageSchema = buildCellState({
 });
 
 export const cellStateSchema = {
-  oneOf: [
-    cellStateBlankSchema,
-    cellStateWebSchema,
-    cellStateTextSchema,
-    cellStateImageSchema,
-  ],
+  type: 'object',
+  properties: {
+    type: { type: 'string', enum: ['BLANK', 'WEB', 'TEXT', 'IMAGE'] },
+  },
+  additionalProperties: true,
+  required: ['type'],
 };
 
 export interface CellStateJsonSchema {

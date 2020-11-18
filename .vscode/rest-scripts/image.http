@@ -1,0 +1,4 @@
+POST http://raspberrypi.local:3000/v3/action/image
+Content-Type: image/jpeg
+
+< ./images/finished.jpg

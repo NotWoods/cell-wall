@@ -5,11 +5,11 @@
 
   function getInputType(
     name: string,
-    property: { type: string; enum?: readonly string[] },
+    property: { type: string; format?: string; enum?: readonly string[] },
   ) {
     if (Array.isArray(property.enum)) return 'select';
     if (name.endsWith('Color')) return 'color';
-    if (name === 'url' || name === 'url') return 'url';
+    if (property.format === 'uri') return 'url';
     switch (property.type) {
       case 'number':
         return 'number';
@@ -45,7 +45,7 @@
     htmlFor="control-{name}"
     label={getInputName(name)}
     narrow={type === 'color'}>
-    {#if type === 'select'}
+    {#if Array.isArray(property.enum)}
       <div class="select">
         <select id="control-{name}" {name}>
           {#each property.enum as option}

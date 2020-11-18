@@ -1,5 +1,5 @@
 import test from 'ava';
-import { registerRoutes, RouteOptions } from '../../src/routes/register';
+import { registerRoutes, RouteOptions } from '../../src/routes/register.js';
 
 test('registerRoutes', async (t) => {
   const routes: RouteOptions[] = [];

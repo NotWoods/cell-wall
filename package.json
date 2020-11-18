@@ -16,6 +16,7 @@
   },
   "scripts": {
     "build": "tsc --build javascript",
+    "build:server": "pnpm run build && pnpm run build --filter @cell-wall/controller && pnpm run build --filter @cell-wall/server",
     "format": "prettier *.json .vscode/*.json *.md javascript/*.json --write",
     "start": "node javascript/server"
   },

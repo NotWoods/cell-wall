@@ -1,3 +1,4 @@
+import { readFile } from 'fs/promises';
 import { RouteOptions } from './register';
 
 export const cellWallVersion: RouteOptions<{
@@ -16,7 +17,8 @@ export const cellWallVersion: RouteOptions<{
     },
   },
   async handler(_request, reply) {
-    const { version } = require('../../package.json');
+    const json = await readFile('../../package.json', 'utf8');
+    const { version } = JSON.parse(json);
     return reply.send({ version });
   },
 };

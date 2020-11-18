@@ -4,6 +4,7 @@
   "private": true,
   "main": "src/index.js",
   "types": "src/index.d.ts",
+  "type": "module",
   "scripts": {
     "build": "tsc --build src",
     "format": "prettier **/*.json **/*.ts --write",
@@ -14,6 +15,7 @@
     "tslib": "^2.0.1"
   },
   "devDependencies": {
+    "ajv": "^6.12.2",
     "ava": "^3.13.0",
     "prettier": "^2.1.2",
     "typescript": "4.1.0-beta"

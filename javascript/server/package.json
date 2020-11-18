@@ -4,6 +4,7 @@
   "private": true,
   "main": "src/index.js",
   "types": "src/index.d.ts",
+  "type": "module",
   "scripts": {
     "build": "tsc --build src",
     "postbuild:bundle": "cell-wall-bundle --pkg package.json --input src/index.js index.ts --out dist/cell-wall.js",

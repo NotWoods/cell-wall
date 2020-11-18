@@ -1,7 +1,8 @@
 import test from 'ava';
 import fastify from 'fastify';
-import { registerRoutes } from '../../../src/routes/register';
-import { actionPower, statusPower } from '../../../src/routes/device/power';
+import sensible from 'fastify-sensible';
+import { registerRoutes } from '../../../src/routes/register.js';
+import { actionPower, statusPower } from '../../../src/routes/device/power.js';
 
 test('GET /v3/device/power 200', async (t) => {
   const app = fastify();
@@ -15,7 +16,6 @@ test('GET /v3/device/power 200', async (t) => {
     url: '/v3/device/power',
   });
 
-  t.is(response.statusCode, 200);
   t.deepEqual(response.json(), {
     devices: {
       ABC: {
@@ -23,6 +23,7 @@ test('GET /v3/device/power 200', async (t) => {
       },
     },
   });
+  t.is(response.statusCode, 200);
 });
 
 test('GET /v3/device/power/:serial 200', async (t) => {
@@ -37,7 +38,6 @@ test('GET /v3/device/power/:serial 200', async (t) => {
     url: '/v3/device/power/ABC',
   });
 
-  t.is(response.statusCode, 200);
   t.deepEqual(response.json(), {
     devices: {
       ABC: {
@@ -45,11 +45,13 @@ test('GET /v3/device/power/:serial 200', async (t) => {
       },
     },
   });
+  t.is(response.statusCode, 200);
 });
 
 test('GET /v3/device/power/:serial 404', async (t) => {
   const app = fastify();
   registerRoutes(app, [statusPower]);
+  await app.register(sensible);
   app.decorate('deviceManager', {
     devices: new Map(),
   });
@@ -59,10 +61,12 @@ test('GET /v3/device/power/:serial 404', async (t) => {
     url: '/v3/device/power/ABC',
   });
 
-  t.is(response.statusCode, 404);
   t.deepEqual(response.json(), {
+    error: 'Not Found',
     message: 'Could not find device ABC',
+    statusCode: 404,
   });
+  t.is(response.statusCode, 404);
 });
 
 test('POST /v3/device/power on=true', async (t) => {
@@ -90,11 +94,11 @@ test('POST /v3/device/power on=true', async (t) => {
     payload: { on: true },
   });
 
-  t.is(response.statusCode, 200);
   t.deepEqual(response.json(), {
     devices: ['ABC'],
     on: true,
   });
+  t.is(response.statusCode, 200);
 
   t.is(26, keyPressed);
 });

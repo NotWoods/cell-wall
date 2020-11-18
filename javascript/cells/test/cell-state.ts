@@ -1,5 +1,5 @@
 import test from 'ava';
-import { CellStateType, toUri } from '../src/cell-state';
+import { CellStateType, toUri } from '../src/cell-state.js';
 
 test('toUri WEB', async (t) => {
   t.is(

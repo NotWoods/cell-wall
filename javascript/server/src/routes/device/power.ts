@@ -1,7 +1,7 @@
 import { checkIfOn, setPower } from '@cell-wall/android-bridge';
 import { transformMapAsync } from '@cell-wall/iterators';
-import { filterDevices, SerialParams } from '../helpers';
-import { MultiRouteOptions } from '../register';
+import { filterDevices, SerialParams } from '../helpers.js';
+import { MultiRouteOptions } from '../register.js';
 
 export const statusPower: MultiRouteOptions<{
   Params: SerialParams;

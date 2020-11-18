@@ -1,11 +1,11 @@
 import { readFile } from 'fs/promises';
 import { EventEmitter } from 'events';
-import { CellInfo } from './cell-info';
-import { CellState, CellStateType } from './cell-state';
+import { CellInfo } from './cell-info.js';
+import { CellState, CellStateType } from './cell-state.js';
 
-export * from './cell-info';
-export * from './cell-state';
-export * from './schema';
+export * from './cell-info.js';
+export * from './cell-state.js';
+export * from './schema.js';
 
 function entries<T>(obj: T): [keyof T, T[keyof T]][] {
   return Object.entries(obj) as any;
