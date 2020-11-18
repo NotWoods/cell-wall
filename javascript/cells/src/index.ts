@@ -3,13 +3,10 @@ import { EventEmitter } from 'events';
 import { CellInfo } from './cell-info.js';
 import { CellState, CellStateType } from './cell-state.js';
 
+export * from './canvas.js';
 export * from './cell-info.js';
 export * from './cell-state.js';
 export * from './schema.js';
-
-function entries<T>(obj: T): [keyof T, T[keyof T]][] {
-  return Object.entries(obj) as any;
-}
 
 export interface CellData {
   serial: string;
@@ -17,14 +14,8 @@ export interface CellData {
   state: CellState;
 }
 
-const AXIS_TO_POS = {
-  width: 'x',
-  height: 'y',
-} as const;
-
 export class CellManager extends EventEmitter {
   private cells = new Map<string, CellData>();
-  readonly canvas = { width: 0, height: 0 };
 
   constructor(private readonly path: string) {
     super();
@@ -55,13 +46,6 @@ export class CellManager extends EventEmitter {
       state: { type: CellStateType.BLANK },
     };
     this.cells.set(serial, data);
-
-    for (const [axis, pos] of entries(AXIS_TO_POS)) {
-      const value = info[pos] + info[axis];
-      if (!Number.isNaN(value)) {
-        this.canvas[axis] = Math.max(this.canvas[axis], info[pos] + info[axis]);
-      }
-    }
 
     this.emit('register', data);
     return data;

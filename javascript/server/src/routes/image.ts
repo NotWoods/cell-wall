@@ -1,4 +1,11 @@
-import { CellInfo, CellStateType } from '@cell-wall/cells';
+import {
+  cellCanvas,
+  shiftCell,
+  CellCanvas,
+  CellInfo,
+  CellStateType,
+  CellData,
+} from '@cell-wall/cells';
 import { transformMapAsync } from '@cell-wall/iterators';
 import Jimp from 'jimp';
 import { SerialParams } from './helpers';
@@ -8,6 +15,7 @@ interface ImageQuerystring {
   horizontalAlign?: string;
   verticalAlign?: string;
   resize?: string;
+  device?: string[] | string;
 }
 
 const ALIGN_QUERY: Record<string, number> = {
@@ -38,10 +46,34 @@ function parseImageQuery(query: ImageQuerystring = {}) {
   };
 }
 
+function parseDeviceQuery({ device: devices }: ImageQuerystring = {}): (
+  cell: CellData,
+) => boolean {
+  let included: (serial: string) => boolean;
+  if (Array.isArray(devices)) {
+    if (devices.length > 0) {
+      const set = new Set(devices);
+      included = (serial) => set.has(serial);
+    } else {
+      included = () => true;
+    }
+  } else if (typeof devices === 'string') {
+    included = (serial) => serial === devices;
+  } else {
+    included = () => true;
+  }
+
+  return (cell) =>
+    included(cell.serial) &&
+    !isNaN(cell.info.x) &&
+    !isNaN(cell.info.y) &&
+    !isNaN(cell.info.width) &&
+    !isNaN(cell.info.height);
+}
+
 function resize(
   image: Jimp,
-  width: number,
-  height: number,
+  { width, height }: Pick<CellCanvas, 'width' | 'height'>,
   query: ImageQuerystring = {},
 ) {
   const { alignBits, resizeMode } = parseImageQuery(query);
@@ -111,21 +143,43 @@ export const actionImage: RouteOptions<{
   },
   async handler(request, reply) {
     const image = request.body;
+    const included = parseDeviceQuery(request.query);
 
-    const { width, height } = this.cells.canvas;
-    await resize(image, width, height, request.query);
+    const cells = Array.from(this.cells.values()).filter(included);
 
-    const cropped = await transformMapAsync(this.cells, async ({ info }) => {
-      const copy = await Jimp.create(image);
-      return await crop(copy, info);
-    });
+    const canvas = cellCanvas(cells);
+    await resize(image, canvas, request.query);
 
-    const urls = await transformMapAsync(cropped, async (img, serial) => {
-      imageCache.set(serial, img);
-      return `/v3/action/image/${serial}`;
-    });
+    const cropped = new Map(
+      await Promise.all(
+        cells.map(async ({ serial, info }) => {
+          const copy = await Jimp.create(image);
+          const shifted = shiftCell(canvas, info);
+          const result = {
+            info: shifted,
+            img: await crop(copy, shifted),
+          };
+          return [serial, result] as const;
+        }),
+      ),
+    );
 
-    await transformMapAsync(urls, async (src, serial) => {
+    imageCache.clear();
+    const urls = await transformMapAsync(
+      cropped,
+      async ({ info, img }, serial) => {
+        imageCache.set(serial, img);
+        return {
+          src: `/v3/action/image/${serial}`,
+          x: info.x,
+          y: info.y,
+          width: info.width,
+          height: info.height,
+        };
+      },
+    );
+
+    await transformMapAsync(urls, async ({ src }, serial) => {
       this.cells.setState(serial, {
         type: CellStateType.IMAGE,
         src,
@@ -133,5 +187,14 @@ export const actionImage: RouteOptions<{
     });
 
     reply.status(200).send(Object.fromEntries(urls));
+  },
+};
+
+export const deleteImage: RouteOptions = {
+  method: 'DELETE',
+  url: '/v3/action/image',
+  async handler(_request, reply) {
+    imageCache.clear();
+    reply.status(201).send();
   },
 };
