@@ -1,4 +1,3 @@
-dist
 package.dist.json
 .env
 google-credentials.json

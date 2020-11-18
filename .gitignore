@@ -12,6 +12,7 @@ javascript/*/test/**/*.js
 javascript/*/src/**/*.d.ts
 javascript/*/test/**/*.d.ts
 !javascript/types-appium-adb/src/**/*.d.ts
+dist
 
 # Logs
 *.log
