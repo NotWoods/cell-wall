@@ -7,6 +7,10 @@ export * from './cell-info';
 export * from './cell-state';
 export * from './schema';
 
+function entries<T>(obj: T): [keyof T, T[keyof T]][] {
+  return Object.entries(obj) as any;
+}
+
 export interface CellData {
   serial: string;
   info: CellInfo;
@@ -20,24 +24,10 @@ const AXIS_TO_POS = {
 
 export class CellManager extends EventEmitter {
   private cells = new Map<string, CellData>();
-
-  private canvas = { width: 0, height: 0 };
+  readonly canvas = { width: 0, height: 0 };
 
   constructor(private readonly path: string) {
     super();
-  }
-
-  get canvasHeight() {
-    return this.canvas.height;
-  }
-
-  get canvasWidth() {
-    return this.canvas.width;
-  }
-
-  private updateCanvas(info: CellInfo, axis: 'width' | 'height') {
-    const pos = AXIS_TO_POS[axis];
-    this.canvas[axis] = Math.max(this.canvas[axis], info[pos] + info[axis]);
   }
 
   async loadData() {
@@ -53,6 +43,7 @@ export class CellManager extends EventEmitter {
       // do nothing, just use blank data
     }
   }
+
   get(serial: string) {
     return this.cells.get(serial);
   }
@@ -65,8 +56,9 @@ export class CellManager extends EventEmitter {
     };
     this.cells.set(serial, data);
 
-    this.updateCanvas(info, 'width');
-    this.updateCanvas(info, 'height');
+    for (const [axis, pos] of entries(AXIS_TO_POS)) {
+      this.canvas[axis] = Math.max(this.canvas[axis], info[pos] + info[axis]);
+    }
 
     this.emit('register', data);
     return data;
@@ -84,6 +76,10 @@ export class CellManager extends EventEmitter {
     };
     this.cells.set(serial, data);
     this.emit('state', data);
+  }
+
+  entries() {
+    return this.cells.entries();
   }
 
   values() {

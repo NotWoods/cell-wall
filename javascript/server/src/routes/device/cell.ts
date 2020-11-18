@@ -1,5 +1,5 @@
 import { CellInfo } from '@cell-wall/cells';
-import { ErrorReply, errorSchema, SerialParams } from '../helpers';
+import { SerialParams } from '../helpers';
 import { MultiRouteOptions, RouteOptions } from '../register';
 
 const cellInfoSchema = {
@@ -14,7 +14,7 @@ const cellInfoSchema = {
 
 export const getCells: MultiRouteOptions<{
   Params: SerialParams;
-  Reply: Record<string, CellInfo> | ErrorReply;
+  Reply: Record<string, CellInfo>;
 }> = {
   method: 'GET',
   url: ['/v3/device', '/v3/device/:serial'],
@@ -24,7 +24,6 @@ export const getCells: MultiRouteOptions<{
         type: 'object',
         additionalProperties: cellInfoSchema,
       },
-      404: errorSchema,
     },
   },
   async handler(request, reply) {
@@ -34,8 +33,7 @@ export const getCells: MultiRouteOptions<{
     if (serial) {
       cells = cells.filter((cell) => cell.serial === serial);
       if (cells.length === 0) {
-        reply.status(404).send({ error: `Could not find cell ${serial}` });
-        return;
+        return reply.notFound(`Could not find cell ${serial}`);
       }
     }
 
@@ -47,7 +45,7 @@ export const getCells: MultiRouteOptions<{
 export const registerCell: RouteOptions<{
   Params: Required<SerialParams>;
   Body: CellInfo;
-  Reply: { socket: string } | ErrorReply;
+  Reply: { socket: string };
 }> = {
   method: 'PUT',
   url: '/v3/device/:serial',
@@ -58,12 +56,6 @@ export const registerCell: RouteOptions<{
         type: 'object',
         properties: {
           socket: { type: 'string' },
-        },
-      },
-      404: {
-        type: 'object',
-        properties: {
-          error: { type: 'string' },
         },
       },
     },
@@ -79,9 +71,7 @@ export const registerCell: RouteOptions<{
         socket: `/v3/cell?serial=${serial}`,
       });
     } else {
-      reply.status(404).send({
-        error: `Could not find matching serial`,
-      });
+      reply.notFound(`Could not find matching serial`);
     }
   },
 };

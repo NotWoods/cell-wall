@@ -1,5 +1,4 @@
 import { Preset, presets } from '../../static';
-import { ErrorReply, errorSchema } from '../helpers';
 import { RouteOptions } from '../register';
 import { cellStateSchema } from '@cell-wall/cells';
 
@@ -9,7 +8,7 @@ interface PresetParams {
 
 export const statePresetAll: RouteOptions<{
   Params: PresetParams;
-  Reply: ErrorReply | { presets: string[] };
+  Reply: { presets: string[] };
 }> = {
   method: 'GET',
   url: '/v3/device/state/presets',
@@ -33,7 +32,7 @@ export const statePresetAll: RouteOptions<{
 
 export const statePreset: RouteOptions<{
   Params: PresetParams;
-  Reply: ErrorReply | Preset;
+  Reply: Preset;
 }> = {
   method: 'GET',
   url: '/v3/device/state/presets/:presetname',
@@ -43,7 +42,6 @@ export const statePreset: RouteOptions<{
         type: 'object',
         additionalProperties: cellStateSchema,
       },
-      404: errorSchema,
     },
   },
   async handler(request, reply) {
@@ -52,14 +50,14 @@ export const statePreset: RouteOptions<{
     if (preset) {
       reply.status(200).send(preset);
     } else {
-      reply.status(404).send({ error: `Unknown preset ${presetname}` });
+      reply.notFound(`Unknown preset ${presetname}`);
     }
   },
 };
 
 export const actionPresetAll: RouteOptions<{
   Params: PresetParams;
-  Reply: ErrorReply | { preset: Preset; devices: string[] };
+  Reply: { preset: Preset; devices: string[] };
 }> = {
   method: 'POST',
   url: '/v3/device/state/presets/:presetname',
@@ -78,7 +76,6 @@ export const actionPresetAll: RouteOptions<{
           },
         },
       },
-      404: errorSchema,
     },
   },
   async handler(request, reply) {
@@ -95,7 +92,7 @@ export const actionPresetAll: RouteOptions<{
 
       reply.status(200).send({ preset, devices });
     } else {
-      reply.status(404).send({ error: `Unknown preset ${presetname}` });
+      reply.notFound(`Unknown preset ${presetname}`);
     }
   },
 };

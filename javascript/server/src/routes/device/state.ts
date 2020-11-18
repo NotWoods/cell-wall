@@ -1,10 +1,10 @@
 import { cellStateSchema, CellData, CellState } from '@cell-wall/cells';
-import { ErrorReply, errorSchema, SerialParams } from '../helpers';
+import { SerialParams } from '../helpers';
 import { RouteOptions } from '../register';
 
 export const statusState: RouteOptions<{
   Params: Required<SerialParams>;
-  Reply: ErrorReply | { devices: Record<string, CellState> };
+  Reply: { devices: Record<string, CellState> };
 }> = {
   method: 'GET',
   url: '/v3/device/state/:serial',
@@ -19,7 +19,6 @@ export const statusState: RouteOptions<{
           },
         },
       },
-      404: errorSchema,
     },
   },
   async handler(request, reply) {
@@ -33,7 +32,7 @@ export const statusState: RouteOptions<{
         },
       });
     } else {
-      reply.status(404).send({ error: `Could not find device ${serial}` });
+      reply.notFound(`Could not find device ${serial}`);
     }
   },
   wsHandler(connection, _req, params) {
@@ -54,7 +53,7 @@ export const statusState: RouteOptions<{
 };
 
 export const statusStateAll: RouteOptions<{
-  Reply: ErrorReply | { devices: Record<string, CellState> };
+  Reply: { devices: Record<string, CellState> };
 }> = {
   method: 'GET',
   url: '/v3/device/state',
@@ -120,7 +119,7 @@ export const actionState: RouteOptions<{
 
 export const actionStateAll: RouteOptions<{
   Body: Record<string, CellState>;
-  Reply: ErrorReply | { devices: string[] };
+  Reply: { devices: string[] };
 }> = {
   method: 'POST',
   url: '/v3/device/state',

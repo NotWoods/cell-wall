@@ -1,16 +1,11 @@
 import { checkIfOn, setPower } from '@cell-wall/android-bridge';
 import { transformMapAsync } from '@cell-wall/iterators';
-import {
-  ErrorReply,
-  errorSchema,
-  filterDevices,
-  SerialParams,
-} from '../helpers';
+import { filterDevices, SerialParams } from '../helpers';
 import { MultiRouteOptions } from '../register';
 
 export const statusPower: MultiRouteOptions<{
   Params: SerialParams;
-  Reply: ErrorReply | { devices: Record<string, { on: boolean }> };
+  Reply: { devices: Record<string, { on: boolean }> };
 }> = {
   method: 'GET',
   url: ['/v3/device/power', '/v3/device/power/:serial'],
@@ -31,7 +26,6 @@ export const statusPower: MultiRouteOptions<{
           },
         },
       },
-      404: errorSchema,
     },
   },
   async handler(request, reply) {
@@ -53,7 +47,7 @@ export const statusPower: MultiRouteOptions<{
 export const actionPower: MultiRouteOptions<{
   Params: SerialParams;
   Body: { on: boolean | 'toggle' };
-  Reply: ErrorReply | { devices: string[]; on: boolean };
+  Reply: { devices: string[]; on: boolean };
 }> = {
   method: 'POST',
   url: ['/v3/device/power', '/v3/device/power/:serial'],
@@ -80,7 +74,6 @@ export const actionPower: MultiRouteOptions<{
           on: { type: 'boolean' },
         },
       },
-      404: errorSchema,
     },
   },
   async handler(request, reply) {

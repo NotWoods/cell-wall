@@ -61,7 +61,7 @@ test('GET /v3/device/power/:serial 404', async (t) => {
 
   t.is(response.statusCode, 404);
   t.deepEqual(response.json(), {
-    error: 'Could not find device ABC',
+    message: 'Could not find device ABC',
   });
 });
 

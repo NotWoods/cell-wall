@@ -6,24 +6,13 @@ export interface SerialParams {
   serial?: string;
 }
 
-export interface ErrorReply {
-  error: string;
-}
-
-export const errorSchema = {
-  type: 'object',
-  properties: {
-    error: { type: 'string' },
-  },
-};
-
 export function filterDevices(
   deviceManager: DeviceManager,
   reply: FastifyReply<
     RawServerDefault,
     RawRequestDefault,
     RawReplyDefault,
-    { Reply: ErrorReply | unknown }
+    { Reply: Error | unknown }
   >,
   serial: string | undefined,
 ): DeviceMap | undefined {
@@ -32,7 +21,7 @@ export function filterDevices(
     if (device) {
       return new Map().set(serial, device);
     } else {
-      reply.status(404).send({ error: `Could not find device ${serial}` });
+      reply.notFound(`Could not find device ${serial}`);
       return undefined;
     }
   } else {

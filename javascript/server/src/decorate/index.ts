@@ -7,8 +7,10 @@ import {
   RawRequestDefaultExpression,
   RawServerBase,
 } from 'fastify';
+import sensible from 'fastify-sensible';
 import { cellBridge } from './cell-bridge';
 import { googleAuth, OAuth2Client } from './google-auth';
+import { imageParser } from './jimp';
 
 declare module 'fastify' {
   export interface FastifyInstance<
@@ -34,4 +36,6 @@ export default async function decorateServer(app: FastifyInstance) {
   app.decorate('deviceManager', deviceManager);
   app.decorate('cells', cells);
   app.decorate('googleAuth', auth);
+  await app.register(imageParser);
+  await app.register(sensible);
 }

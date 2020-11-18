@@ -1,5 +1,5 @@
 export async function transformMapAsync<Key, Value, Result>(
-  map: Map<Key, Value>,
+  map: { entries(): IterableIterator<[Key, Value]> },
   transform: (value: Value, key: Key) => Promise<Result>,
 ): Promise<Map<Key, Result>> {
   return new Map(

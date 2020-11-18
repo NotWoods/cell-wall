@@ -7,4 +7,5 @@ export * from './device/state';
 export * from './page/busy';
 export * from './page/text';
 export * from './action';
+export * from './image';
 export * from './version';

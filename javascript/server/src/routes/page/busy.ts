@@ -23,7 +23,7 @@ export const pageBusy: RouteOptions<{
   async handler(request, reply) {
     const auth = this.googleAuth;
     if (!auth.credentials) {
-      reply.status(500).send({ error: 'Google credentials not loaded' });
+      reply.serviceUnavailable('Google credentials not loaded');
       return;
     }
 
@@ -47,7 +47,9 @@ export const pageBusy: RouteOptions<{
     const { errors, busy } = Object.values(res.data.calendars!)[0];
 
     if (errors && errors.length > 0) {
-      reply.status(500).send({ error: 'API call failed', data: errors });
+      reply
+        .status(500)
+        .send({ statusCode: 500, message: 'API call failed', data: errors });
       return;
     }
 
