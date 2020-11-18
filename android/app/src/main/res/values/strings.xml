@@ -19,6 +19,7 @@
 
     <string name="debug_uuid">Serial: %1$s</string>
     <string name="debug_device_name">Device name: %1$s</string>
-    <string name="debug_density">Density: %1$ddp</string>
+    <string name="debug_density">Density: %1$f</string>
     <string name="debug_display">Display: %1$dx%2$d</string>
+    <string name="debug_display_dp">Display: %1$ddp x %2$ddp</string>
 </resources>

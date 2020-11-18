@@ -33,7 +33,7 @@ fun serialNo(): String {
 fun getCellInfo(metrics: DisplayMetrics): CellInfo {
   return CellInfo(
     deviceName = deviceName(),
-    density = metrics.densityDpi,
+    density = metrics.density,
     widthPixels = metrics.widthPixels,
     heightPixels = metrics.heightPixels
   )

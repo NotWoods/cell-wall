@@ -6,9 +6,8 @@ const cellInfoSchema = {
   type: 'object',
   properties: {
     deviceName: { type: 'string' },
-    density: { type: 'number' },
-    widthPixels: { type: 'number' },
-    heightPixels: { type: 'number' },
+    width: { type: 'number' },
+    height: { type: 'number' },
     server: { type: 'string' },
   },
 };

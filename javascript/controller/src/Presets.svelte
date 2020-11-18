@@ -41,6 +41,12 @@
       loading = callPreset(event);
     }}>
     <p id="modalHeading" class="panel-heading">Presets</p>
+
+    <a class="panel-block" href="/v3/device/state/presets/info">
+      Info (Busy indicators & Weather)
+    </a>
+    <a class="panel-block" href="/v3/device/state/presets/tea"> Tea List </a>
+
     <div class="panel-block">
       {#await loading}
         <progress
@@ -58,11 +64,6 @@
           max="100">Error</progress>
       {/await}
     </div>
-
-    <a class="panel-block" href="/v3/device/state/presets/info">
-      Info (Busy indicators & Weather)
-    </a>
-    <a class="panel-block" href="/v3/device/state/presets/tea"> Tea List </a>
   </div>
   <button class="modal-close is-large" aria-label="close" on:click={close} />
 </div>

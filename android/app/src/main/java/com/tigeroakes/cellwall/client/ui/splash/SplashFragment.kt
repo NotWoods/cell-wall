@@ -18,6 +18,6 @@ class SplashFragment : Fragment(R.layout.fragment_splash) {
   private fun setupDebugText() {
     val info = getCellInfo(resources.displayMetrics)
     debug_density.text = getString(R.string.debug_density, info.density)
-    debug_display.text = getString(R.string.debug_display, info.widthPixels, info.heightPixels)
+    debug_display.text = getString(R.string.debug_display_dp, info.width, info.height)
   }
 }

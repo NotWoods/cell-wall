@@ -1,4 +1,4 @@
-import { readFile, writeFile } from 'fs/promises';
+import { readFile } from 'fs/promises';
 import { EventEmitter } from 'events';
 import { CellInfo } from './cell-info';
 import { CellState, CellStateType } from './cell-state';
@@ -13,41 +13,46 @@ export interface CellData {
   state: CellState;
 }
 
+const AXIS_TO_POS = {
+  width: 'x',
+  height: 'y',
+} as const;
+
 export class CellManager extends EventEmitter {
   private cells = new Map<string, CellData>();
 
+  private canvas = { width: 0, height: 0 };
+
   constructor(private readonly path: string) {
     super();
+  }
+
+  get canvasHeight() {
+    return this.canvas.height;
+  }
+
+  get canvasWidth() {
+    return this.canvas.width;
+  }
+
+  private updateCanvas(info: CellInfo, axis: 'width' | 'height') {
+    const pos = AXIS_TO_POS[axis];
+    this.canvas[axis] = Math.max(this.canvas[axis], info[pos] + info[axis]);
   }
 
   async loadData() {
     try {
       const json = JSON.parse(await readFile(this.path, 'utf8'));
       if (typeof json === 'object' && json != null && !Array.isArray(json)) {
-        this.cells = new Map(
-          Object.entries(json).map(([key, info]) => [
-            key,
-            {
-              serial: key,
-              info: info as CellInfo,
-              state: { type: CellStateType.BLANK },
-            },
-          ]),
-        );
+        for (const [key, info] of Object.entries(json)) {
+          this.register(key, info as CellInfo);
+        }
       }
     } catch (err) {
+      console.error('Could not load CellManager data', err);
       // do nothing, just use blank data
     }
   }
-
-  async saveData() {
-    await writeFile(
-      this.path,
-      JSON.stringify(Object.fromEntries(this.cells)),
-      'utf8',
-    );
-  }
-
   get(serial: string) {
     return this.cells.get(serial);
   }
@@ -59,6 +64,10 @@ export class CellManager extends EventEmitter {
       state: { type: CellStateType.BLANK },
     };
     this.cells.set(serial, data);
+
+    this.updateCanvas(info, 'width');
+    this.updateCanvas(info, 'height');
+
     this.emit('register', data);
     return data;
   }

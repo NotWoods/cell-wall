@@ -45,7 +45,11 @@
       .filter(([_, value]) => value);
     const data = Object.fromEntries(formData);
 
-    await post(`${form.action}/${selectedDevice}`, {
+    const url = selectedDevice
+      ? `${form.action}/${selectedDevice}`
+      : form.action;
+
+    await post(url, {
       ...data,
       type: selectedType,
     });
