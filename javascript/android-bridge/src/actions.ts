@@ -1,6 +1,6 @@
 import ADB from 'appium-adb';
-import { checkIfOn, togglePower } from './device-action';
-import { DeviceMap } from './device-manager';
+import { checkIfOn, togglePower } from './device-action.js';
+import { DeviceMap } from './device-manager.js';
 
 async function setPowerOne(client: ADB, on?: boolean) {
   const isOn = await checkIfOn(client);

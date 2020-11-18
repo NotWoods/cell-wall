@@ -1,1 +1,1 @@
-export * from './async-map';
+export * from './async-map.js';

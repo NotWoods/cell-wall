@@ -4,9 +4,7 @@
   "references": [
     { "path": "../../android-bridge/src" },
     { "path": "../../cells/src" },
+    { "path": "../../iterators/src" },
     { "path": "../../storage/src" }
-  ],
-  "compilerOptions": {
-    "module": "esnext"
-  }
+  ]
 }

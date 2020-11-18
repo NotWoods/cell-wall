@@ -4,6 +4,7 @@
   "private": true,
   "main": "src/index.js",
   "types": "src/index.d.ts",
+  "type": "module",
   "scripts": {
     "build": "tsc --build src",
     "format": "prettier **/*.json **/*.ts --write",

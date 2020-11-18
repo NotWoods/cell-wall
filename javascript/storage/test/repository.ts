@@ -1,5 +1,5 @@
 import test from 'ava';
-import { repository } from '../src/repository';
+import { repository } from '../src/repository.js';
 
 test('insert and get tokens', async (t) => {
   const repo = await repository(':memory:');

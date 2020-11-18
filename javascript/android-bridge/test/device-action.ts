@@ -1,5 +1,5 @@
 import test from 'ava';
-import { checkIfOn, togglePower } from '../src/device-action';
+import { checkIfOn, togglePower } from '../src/device-action.js';
 
 test('checkIfOn', async (t) => {
   const adb: any = {};

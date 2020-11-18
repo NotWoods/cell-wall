@@ -1,3 +1,3 @@
-export * from './actions';
-export * from './device-action';
-export * from './device-manager';
+export * from './actions.js';
+export * from './device-action.js';
+export * from './device-manager.js';

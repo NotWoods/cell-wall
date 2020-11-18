@@ -1,5 +1,5 @@
-import { openDb } from './open-db';
-import { tokenDao } from './token-dao';
+import { openDb } from './open-db.js';
+import { tokenDao } from './token-dao.js';
 
 export type Awaited<T> = T extends undefined
   ? T

@@ -1,5 +1,5 @@
 import test from 'ava';
-import { transformMapAsync } from '../src/async-map';
+import { transformMapAsync } from '../src/async-map.js';
 
 test('transformMapAsync', async (t) => {
   const input = new Map(
