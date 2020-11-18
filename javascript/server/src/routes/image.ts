@@ -79,7 +79,7 @@ export const actionGetLoadedImage: RouteOptions<{
     }
 
     const mime = cached.getMIME();
-    const buffer = cached.getBufferAsync(mime);
+    const buffer = await cached.getBufferAsync(mime);
     reply.status(200).header('content-type', mime).send(buffer);
   },
 };
@@ -113,10 +113,13 @@ export const actionImage: RouteOptions<{
     const image = request.body;
 
     const { width, height } = this.cells.canvas;
-    const resized = await resize(image, width, height, request.query);
-    const cropped = await transformMapAsync(this.cells, async ({ info }) =>
-      crop(resized, info),
-    );
+    await resize(image, width, height, request.query);
+
+    const cropped = await transformMapAsync(this.cells, async ({ info }) => {
+      const copy = await Jimp.create(image);
+      return await crop(copy, info);
+    });
+
     const urls = await transformMapAsync(cropped, async (img, serial) => {
       imageCache.set(serial, img);
       return `/v3/action/image/${serial}`;
@@ -128,6 +131,7 @@ export const actionImage: RouteOptions<{
         src,
       });
     });
-    reply.status(201).send();
+
+    reply.status(200).send(Object.fromEntries(urls));
   },
 };

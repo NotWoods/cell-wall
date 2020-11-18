@@ -11,8 +11,8 @@ export const imageParser: FastifyPluginAsync<ImageParserOptions> = async (
 ) => {
   const { jimp = Jimp } = options;
 
-  function contentParser(_req: FastifyRequest, body: Buffer) {
-    return jimp.create(body);
+  async function contentParser(_request: FastifyRequest, body: Buffer) {
+    return await jimp.create(body);
   }
 
   for (const mimeType of Object.keys(Jimp.decoders)) {

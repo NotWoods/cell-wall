@@ -36,6 +36,6 @@ export default async function decorateServer(app: FastifyInstance) {
   app.decorate('deviceManager', deviceManager);
   app.decorate('cells', cells);
   app.decorate('googleAuth', auth);
-  await app.register(imageParser);
+  await imageParser(app, {});
   await app.register(sensible);
 }
