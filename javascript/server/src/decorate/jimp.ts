@@ -5,6 +5,8 @@ export interface ImageParserOptions {
   jimp?: Pick<typeof Jimp, 'create' | 'decoders'>;
 }
 
+const MB = 1048576;
+
 export const imageParser: FastifyPluginAsync<ImageParserOptions> = async (
   app,
   options,
@@ -16,6 +18,10 @@ export const imageParser: FastifyPluginAsync<ImageParserOptions> = async (
   }
 
   for (const mimeType of Object.keys(Jimp.decoders)) {
-    app.addContentTypeParser(mimeType, { parseAs: 'buffer' }, contentParser);
+    app.addContentTypeParser(
+      mimeType,
+      { parseAs: 'buffer', bodyLimit: 5 * MB },
+      contentParser,
+    );
   }
 };

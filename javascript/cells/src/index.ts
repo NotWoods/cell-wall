@@ -57,7 +57,10 @@ export class CellManager extends EventEmitter {
     this.cells.set(serial, data);
 
     for (const [axis, pos] of entries(AXIS_TO_POS)) {
-      this.canvas[axis] = Math.max(this.canvas[axis], info[pos] + info[axis]);
+      const value = info[pos] + info[axis];
+      if (!Number.isNaN(value)) {
+        this.canvas[axis] = Math.max(this.canvas[axis], info[pos] + info[axis]);
+      }
     }
 
     this.emit('register', data);
