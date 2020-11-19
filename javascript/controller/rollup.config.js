@@ -43,7 +43,7 @@ async function compile() {
 
   const [{ code }] = output;
   const wrapper = `const code = \`${code.replace(
-    /(`|\$)/g,
+    /(`|\$|\\)/g,
     '\\$&',
   )}\`; export default code`;
   await writeFile('dist/script.js', wrapper, 'utf8');

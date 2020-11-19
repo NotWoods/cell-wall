@@ -18,3 +18,15 @@ export async function post(action: string, body: object) {
     throw err;
   }
 }
+
+export function formData(form: HTMLFormElement) {
+  return (
+    Array.from(new FormData(form))
+      // no files allowed
+      .filter(
+        (entry): entry is [string, string] => typeof entry[1] === 'string',
+      )
+      // nor empty strings
+      .filter(([_, value]) => value)
+  );
+}

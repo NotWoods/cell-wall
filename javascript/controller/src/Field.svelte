@@ -1,6 +1,6 @@
 <script lang="ts">
   export let label: string;
-  export let htmlFor: string;
+  export let htmlFor: string | undefined = undefined;
   export let narrow = false;
 </script>
 
