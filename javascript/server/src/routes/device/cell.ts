@@ -1,4 +1,5 @@
-import { CellInfo } from '@cell-wall/cells';
+import { CellInfo, CellManager } from '@cell-wall/cells';
+import { filterMap, transformMap } from '@cell-wall/iterators';
 import { SerialParams } from '../helpers';
 import { MultiRouteOptions, RouteOptions } from '../register';
 
@@ -29,15 +30,16 @@ export const getCells: MultiRouteOptions<{
   async handler(request, reply) {
     const { serial } = request.params;
 
-    let cells = Array.from(this.cells.values());
+    let cells: Pick<CellManager, 'entries'> = this.cells;
     if (serial) {
-      cells = cells.filter((cell) => cell.serial === serial);
-      if (cells.length === 0) {
+      const filtered = filterMap(cells, (cell) => cell.serial === serial);
+      if (filtered.size === 0) {
         return reply.notFound(`Could not find cell ${serial}`);
       }
+      cells = filtered;
     }
 
-    const entries = cells.map((cell) => [cell.serial, cell.info] as const);
+    const entries = transformMap(cells, (cell) => cell.info);
     reply.status(200).send(Object.fromEntries(entries));
   },
 };

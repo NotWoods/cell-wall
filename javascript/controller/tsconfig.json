@@ -9,6 +9,7 @@
     "types": ["svelte"],
     "incremental": false,
     "declaration": false,
-    "composite": false
+    "composite": false,
+    "skipLibCheck": true
   }
 }

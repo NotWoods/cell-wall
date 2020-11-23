@@ -1,5 +1,7 @@
+import { MapLike } from './sync-map';
+
 export async function transformMapAsync<Key, Value, Result>(
-  map: { entries(): IterableIterator<[Key, Value]> },
+  map: MapLike<Key, Value>,
   transform: (value: Value, key: Key) => Promise<Result>,
 ): Promise<Map<Key, Result>> {
   return new Map(
@@ -8,5 +10,16 @@ export async function transformMapAsync<Key, Value, Result>(
         return [key, await transform(value, key)] as const;
       }),
     ),
+  );
+}
+
+export async function forEachMapAsync<Key, Value>(
+  map: MapLike<Key, Value>,
+  transform: (value: Value, key: Key) => Promise<void>,
+): Promise<void> {
+  await Promise.all(
+    Array.from(map.entries(), async ([key, value]) => {
+      await transform(value, key);
+    }),
   );
 }

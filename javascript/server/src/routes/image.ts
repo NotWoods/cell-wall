@@ -1,12 +1,16 @@
 import {
   cellCanvas,
-  shiftCell,
   CellCanvas,
+  CellData,
   CellInfo,
   CellStateType,
-  CellData,
+  shiftCell,
 } from '@cell-wall/cells';
-import { transformMapAsync } from '@cell-wall/iterators';
+import {
+  filterMap,
+  forEachMapAsync,
+  transformMapAsync,
+} from '@cell-wall/iterators';
 import Jimp from 'jimp';
 import { SerialParams } from './helpers';
 import { RouteOptions } from './register';
@@ -145,24 +149,19 @@ export const actionImage: RouteOptions<{
     const image = request.body;
     const included = parseDeviceQuery(request.query);
 
-    const cells = Array.from(this.cells.values()).filter(included);
+    const cells = filterMap(this.cells, included);
 
-    const canvas = cellCanvas(cells);
+    const canvas = cellCanvas(cells.values());
     await resize(image, canvas, request.query);
 
-    const cropped = new Map(
-      await Promise.all(
-        cells.map(async ({ serial, info }) => {
-          const copy = await Jimp.create(image);
-          const shifted = shiftCell(canvas, info);
-          const result = {
-            info: shifted,
-            img: await crop(copy, shifted),
-          };
-          return [serial, result] as const;
-        }),
-      ),
-    );
+    const cropped = await transformMapAsync(cells, async ({ info }) => {
+      const copy = await Jimp.create(image);
+      const shifted = shiftCell(canvas, info);
+      return {
+        info: shifted,
+        img: await crop(copy, shifted),
+      };
+    });
 
     imageCache.clear();
     const urls = await transformMapAsync(
@@ -179,7 +178,7 @@ export const actionImage: RouteOptions<{
       },
     );
 
-    await transformMapAsync(urls, async ({ src }, serial) => {
+    await forEachMapAsync(urls, async ({ src }, serial) => {
       this.cells.setState(serial, {
         type: CellStateType.IMAGE,
         src,

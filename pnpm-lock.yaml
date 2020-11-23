@@ -8,6 +8,7 @@ importers:
       typescript: 4.1.0-beta
   javascript/android-bridge:
     dependencies:
+      '@cell-wall/iterators': 'link:../iterators'
       '@types/appium-adb': 'link:../types-appium-adb'
       appium-adb: 8.9.0
       tslib: 2.0.3
@@ -16,6 +17,7 @@ importers:
       prettier: 2.1.2
       typescript: 4.1.0-beta
     specifiers:
+      '@cell-wall/iterators': '*'
       '@types/appium-adb': '*'
       appium-adb: ^8.7.3
       ava: ^3.13.0
@@ -39,6 +41,7 @@ importers:
   javascript/controller:
     devDependencies:
       '@cell-wall/cells': 'link:../cells'
+      '@cell-wall/iterators': 'link:../iterators'
       '@rollup/plugin-commonjs': 14.0.0_rollup@2.33.1
       '@rollup/plugin-node-resolve': 8.4.0_rollup@2.33.1
       '@rollup/plugin-typescript': 6.1.0_26db687484f694fdbb1d3a17aaf9841c
@@ -55,6 +58,7 @@ importers:
       typescript: 4.1.0-beta
     specifiers:
       '@cell-wall/cells': '*'
+      '@cell-wall/iterators': '*'
       '@rollup/plugin-commonjs': ^14.0.0
       '@rollup/plugin-node-resolve': ^8.0.0
       '@rollup/plugin-typescript': ^6.0.0

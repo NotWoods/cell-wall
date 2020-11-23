@@ -1,3 +1,5 @@
+import { filterValue } from '@cell-wall/iterators';
+
 export async function post(action: string, body: object) {
   try {
     const res = await fetch(action, {
@@ -24,9 +26,9 @@ export function formData(form: HTMLFormElement) {
     Array.from(new FormData(form))
       // no files allowed
       .filter(
-        (entry): entry is [string, string] => typeof entry[1] === 'string',
+        filterValue((value): value is string => typeof value === 'string'),
       )
       // nor empty strings
-      .filter(([_, value]) => value)
+      .filter(filterValue((value) => Boolean(value)))
   );
 }

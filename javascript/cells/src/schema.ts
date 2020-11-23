@@ -46,7 +46,6 @@ export const cellStateImageSchema = buildCellState({
   },
   required: ['src'],
 });
-
 export const cellStateSchema = {
   type: 'object',
   properties: {

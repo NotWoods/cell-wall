@@ -1,6 +1,7 @@
+import { cellStateSchema } from '@cell-wall/cells';
+import { notNullValue } from '@cell-wall/iterators';
 import { Preset, presets } from '../../static';
 import { RouteOptions } from '../register';
-import { cellStateSchema } from '@cell-wall/cells';
 
 interface PresetParams {
   presetname: keyof typeof presets;
@@ -82,13 +83,12 @@ export const actionPresetAll: RouteOptions<{
     const { presetname } = request.params;
     const preset = presets[presetname];
     if (preset) {
-      const devices: string[] = [];
-      for (const [serial, state] of Object.entries(preset)) {
-        if (state) {
+      const devices = Object.entries(preset)
+        .filter(notNullValue)
+        .map(([serial, state]) => {
           this.cells.setState(serial, state);
-          devices.push(serial);
-        }
-      }
+          return serial;
+        });
 
       reply.status(200).send({ preset, devices });
     } else {

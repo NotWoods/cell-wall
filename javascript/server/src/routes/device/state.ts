@@ -1,4 +1,5 @@
 import { cellStateSchema, CellData, CellState } from '@cell-wall/cells';
+import { transformMap } from '@cell-wall/iterators';
 import { SerialParams } from '../helpers';
 import { RouteOptions } from '../register';
 
@@ -71,11 +72,7 @@ export const statusStateAll: RouteOptions<{
     },
   },
   async handler(_request, reply) {
-    let cells = new Map(
-      Array.from(this.cells.values()).map(
-        (cell) => [cell.serial, cell.state] as const,
-      ),
-    );
+    const cells = transformMap(this.cells, (cell) => cell.state);
 
     reply.status(200).send({
       devices: Object.fromEntries(cells),
@@ -148,13 +145,12 @@ export const actionStateAll: RouteOptions<{
     },
   },
   async handler(request, reply) {
-    let deviceStates = request.body;
+    const deviceStates = request.body;
 
-    const devices: string[] = [];
-    for (const [serial, state] of Object.entries(deviceStates)) {
+    const devices = Object.entries(deviceStates).map(([serial, state]) => {
       this.cells.setState(serial, state);
-      devices.push(serial);
-    }
+      return serial;
+    });
 
     reply.status(200).send({ devices });
   },

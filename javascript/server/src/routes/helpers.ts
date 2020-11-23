@@ -1,30 +1,22 @@
-import { DeviceManager, DeviceMap } from '@cell-wall/android-bridge';
-import { FastifyReply, RawServerDefault } from 'fastify';
-import { RawRequestDefault, RawReplyDefault } from './register';
+import { DeviceMap } from '@cell-wall/android-bridge';
+import { FastifyInstance } from 'fastify';
 
 export interface SerialParams {
   serial?: string;
 }
 
 export function filterDevices(
-  deviceManager: DeviceManager,
-  reply: FastifyReply<
-    RawServerDefault,
-    RawRequestDefault,
-    RawReplyDefault,
-    { Reply: Error | unknown }
-  >,
+  app: FastifyInstance,
   serial: string | undefined,
-): DeviceMap | undefined {
+): DeviceMap {
   if (serial) {
-    const device = deviceManager.devices.get(serial);
+    const device = app.deviceManager.devices.get(serial);
     if (device) {
       return new Map().set(serial, device);
     } else {
-      reply.notFound(`Could not find device ${serial}`);
-      return undefined;
+      throw app.httpErrors.notFound(`Could not find device ${serial}`);
     }
   } else {
-    return deviceManager.devices;
+    return app.deviceManager.devices;
   }
 }

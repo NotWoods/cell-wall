@@ -25,30 +25,26 @@
 {/await}
 
 <div class="tile is-ancestor">
-  <div class="tile is-vertical">
-    <div class="tile">
-      <div class="tile is-parent is-vertical">
-        <PresetCard
-          title="Info"
-          action="/v3/device/state/presets/info"
-          on:activate={onActivate}>
-          Calendar indicators and the week's weather.
-        </PresetCard>
-        <PresetCard
-          title="Tea list"
-          action="/v3/device/state/presets/tea"
-          on:activate={onActivate}>
-          What's avaliable to drink?
-        </PresetCard>
-      </div>
-      <div class="tile is-parent">
-        <article class="tile is-child notification">
-          <figure class="image">
-            <img
-              src="https://raw.githubusercontent.com/NotWoods/cell-wall/main/images/finished.jpg" />
-          </figure>
-        </article>
-      </div>
-    </div>
+  <div class="tile is-parent is-vertical">
+    <PresetCard
+      title="Info"
+      action="/v3/device/state/presets/info"
+      on:activate={onActivate}>
+      Calendar indicators and the week's weather.
+    </PresetCard>
+    <PresetCard
+      title="Tea list"
+      action="/v3/device/state/presets/tea"
+      on:activate={onActivate}>
+      What's avaliable to drink?
+    </PresetCard>
+  </div>
+  <div class="tile is-parent">
+    <article class="tile is-child notification">
+      <figure class="image">
+        <img
+          src="https://raw.githubusercontent.com/NotWoods/cell-wall/main/images/finished.jpg" />
+      </figure>
+    </article>
   </div>
 </div>

@@ -1,5 +1,5 @@
 import { transformMapAsync } from '@cell-wall/iterators';
-import type { InstallOrUpgradeResult, AppInfo } from 'appium-adb';
+import type { AppInfo, InstallOrUpgradeResult } from 'appium-adb';
 import { PACKAGE_NAME } from '../../decorate/cell-bridge';
 import { filterDevices, SerialParams } from '../helpers';
 import { MultiRouteOptions } from '../register';
@@ -33,8 +33,7 @@ export const stateInstallAll: MultiRouteOptions<{
   async handler(request, reply) {
     const { serial } = request.params;
 
-    const devices = filterDevices(this.deviceManager, reply, serial);
-    if (!devices) return;
+    const devices = filterDevices(this, serial);
 
     reply.status(200).send({
       devices: Object.fromEntries(
@@ -82,8 +81,7 @@ export const actionInstallAll: MultiRouteOptions<{
     const { serial } = request.params;
     const { path = '/home/pi/cell-wall-deploy/app-debug.apk' } = request.body;
 
-    const devices = filterDevices(this.deviceManager, reply, serial);
-    if (!devices) return;
+    const devices = filterDevices(this, serial);
 
     reply.status(200).send({
       devices: Object.fromEntries(

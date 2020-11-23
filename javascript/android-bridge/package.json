@@ -12,6 +12,7 @@
     "test": "ava"
   },
   "dependencies": {
+    "@cell-wall/iterators": "*",
     "@types/appium-adb": "*",
     "appium-adb": "^8.7.3",
     "tslib": "^2.0.1"

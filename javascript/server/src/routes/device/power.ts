@@ -31,8 +31,7 @@ export const statusPower: MultiRouteOptions<{
   async handler(request, reply) {
     const { serial } = request.params;
 
-    const devices = filterDevices(this.deviceManager, reply, serial);
-    if (!devices) return;
+    const devices = filterDevices(this, serial);
 
     reply.status(200).send({
       devices: Object.fromEntries(
@@ -80,8 +79,7 @@ export const actionPower: MultiRouteOptions<{
     const { serial } = request.params;
     let { on } = request.body;
 
-    const devices = filterDevices(this.deviceManager, reply, serial);
-    if (!devices) return;
+    const devices = filterDevices(this, serial);
 
     const isOn = await setPower(devices, on);
     reply.status(200).send({
