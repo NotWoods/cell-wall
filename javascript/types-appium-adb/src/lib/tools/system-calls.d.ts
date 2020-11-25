@@ -1,12 +1,116 @@
-import { ApksUtils } from './appium-adb-apks-utils';
-import { ADBVersion, Device } from './appium-adb-core';
-import {
-  ShellExecOptions,
-  SubProcess,
-  TeenProcessExecOptions,
-} from './teen_process';
+import { SemVer } from 'semver';
+import { SubProcess, TeenProcessExecOptions } from '../../teen_process';
 
-export class SystemCalls extends ApksUtils {
+export { DEFAULT_ADB_EXEC_TIMEOUT } from '../helpers';
+
+export interface Device {
+  /** The device udid. */
+  udid: string;
+  /** Current device state, as it is visible in _adb devices -l_ output. */
+  state: string;
+}
+
+export interface ShellExecOptions extends TeenProcessExecOptions {
+  /** @default [falsy] Whether to run the given command as root. */
+  privileged?: boolean;
+  /** @default [falsy] Whether to keep root mode after command execution is completed. */
+  keepPrivileged?: boolean;
+}
+
+export interface AvdLaunchOptions {
+  /**
+   * Additional emulator command line arguments
+   */
+  args?: string | ReadonlyArray<string>;
+  /**
+   * Additional emulator environment variables
+   */
+  env?: Record<string, string>;
+  /**
+   * Emulator system language
+   */
+  language?: string;
+  /**
+   * Emulator system country
+   */
+  country?: string;
+  /**
+   * Emulator startup timeout in milliseconds
+   * @default 60000
+   */
+  launchTimeout?: number;
+  /**
+   * The maximum period of time to wait until Emulator
+   * is ready for usage in milliseconds
+   * @default 60000
+   */
+  readyTimeout?: number;
+  /**
+   * The maximum number of startup retries
+   * @default 1
+   */
+  retryTimes?: number;
+}
+
+export interface BinaryVersion {
+  /**
+   * The ADB binary version number
+   */
+  version: SemVer;
+  /**
+   * The ADB binary build number
+   */
+  build: number;
+}
+
+export interface BridgeVersion {
+  /**
+   * The Android Debug Bridge version number
+   */
+  version: SemVer;
+}
+
+export interface Version {
+  /**
+   * This version number might not be
+   * be present for older ADB releases.
+   */
+  binary?: BinaryVersion;
+  bridge: BridgeVersion;
+}
+
+export interface RootResult {
+  /**
+   * True if the call to root/unroot was successful
+   */
+  isSuccessful: boolean;
+  /**
+   * True if the device was already rooted
+   */
+  wasAlreadyRooted: boolean;
+}
+
+/**
+ * Retrieve full path to the given binary.
+ * This method does not have cache.
+ *
+ * @param {string} binaryName - Simple name of a binary file.
+ *                              e.g. 'adb', 'android'
+ * @return {string} Full path to the given binary. The method tries
+ *                  to enumerate all the known locations where the binary
+ *                  might be located and stops the search as soon as the first
+ *                  match is found on the local file system.
+ *                  e.g. '/Path/To/Android/sdk/platform-tools/adb'
+ * @throws {Error} If the binary with given name is not present at any
+ *                 of known locations or Android SDK is not installed on the
+ *                 local file system.
+ */
+export function getAndroidBinaryPath(binaryName: string): Promise<string>;
+
+declare const systemCallMethods: SystemCalls;
+export default systemCallMethods;
+
+interface SystemCalls {
   /**
    * Retrieve full path to the given binary.
    *
@@ -232,38 +336,19 @@ export class SystemCalls extends ApksUtils {
    * Start an emulator with given parameters and wait until it is full started.
    *
    * @param {string} avdName - The name of an existing emulator.
-   * @param {Array.<string>|string} avdArgs - Additional emulator command line argument.
-   * @param {?string} language - Emulator system language.
-   * @param {?country} country - Emulator system country.
-   * @param {number} avdLaunchTimeout [60000] - Emulator startup timeout in milliseconds.
-   * @param {number} retryTimes [1] - The maximum number of startup retries.
+   * @param {?AvdLaunchOptions} opts
+   * @returns {SubProcess} Emulator subprocess instance
    * @throws {Error} If the emulator fails to start within the given timeout.
    */
-  launchAVD(
-    avdName: string,
-    avdArgs: string | ReadonlyArray<string>,
-    language?: string,
-    country?: string,
-    avdLaunchTimeout?: number,
-    avdReadyTimeout?: number,
-    retryTimes?: number,
-  ): Promise<SubProcess>;
+  launchAVD(avdName: string, opts?: AvdLaunchOptions): Promise<SubProcess>;
 
   /**
    * Get the adb version. The result of this method is cached.
    *
-   * @return {ADBVersion} The current adb version.
+   * @return {Version} The current adb version.
    * @throws {Error} If it is not possible to parse adb version.
    */
-  getAdbVersion(): Promise<ADBVersion>;
-
-  /**
-   * Check if given emulator exists in the list of available avds.
-   *
-   * @param {string} avdName - The name of emulator to verify for existence.
-   * @throws {Error} If the emulator with given name does not exist.
-   */
-  checkAvdExist(avdName: string): Promise<void>;
+  getVersion(): Promise<Version>;
 
   /**
    * Check if the current emulator is ready to accept further commands (booting completed).
@@ -290,20 +375,21 @@ export class SystemCalls extends ApksUtils {
   reboot(retries?: number): Promise<void>;
 
   /**
-   * Switch adb server to root mode.
-   *
-   * @return {boolean} True of the switch was successful or false
-   *                   if the switch failed.
+   * Switch adb server root privileges.
+   * @param {boolean} isElevated - Should we elevate to to root or unroot? (default true)
+   * @return {RootResult}
    */
-  root(): Promise<boolean>;
+  changeUserPrivileges(isElevated: boolean): Promise<RootResult>;
+
+  /**
+   * Switch adb server to root mode.
+   */
+  root(): Promise<RootResult>;
 
   /**
    * Switch adb server to non-root mode.
-   *
-   * @return {boolean} True of the switch was successful or false
-   *                   if the switch failed.
    */
-  unroot(): Promise<boolean>;
+  unroot(): Promise<RootResult>;
 
   /**
    * Checks whether the current user is root

@@ -13,13 +13,6 @@ export interface TeenProcessExecOptions {
   shell?: boolean;
 }
 
-export interface ShellExecOptions extends TeenProcessExecOptions {
-  /** @default [falsy] Whether to run the given command as root. */
-  privileged?: boolean;
-  /** @default [falsy] Whether to keep root mode after command execution is completed. */
-  keepPrivileged?: boolean;
-}
-
 export class SubProcess extends EventEmitter {
   cmd: string;
   args: ReadonlyArray<string>;

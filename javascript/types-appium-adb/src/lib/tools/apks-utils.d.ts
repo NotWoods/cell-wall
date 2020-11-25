@@ -1,7 +1,32 @@
-import { InstallApksOptions } from './appium-adb-core';
-import { ApkUtils } from './appium-adb-apk-utils';
+export interface InstallApksOptions {
+  /**
+   * @default [20000] The count of milliseconds to wait until the
+   * installation is completed
+   */
+  timeout?: number;
+  /**
+   * @default [false] Set to true in order to allow test
+   * packages installation.
+   */
+  allowTestPackages?: boolean;
+  /**
+   * @default [false] Set to true to install the app on sdcard
+   * instead of the device memory.
+   */
+  useSdcard?: false;
+  /**
+   * @default [false] Set to true in order to grant all the
+   * permissions requested in the application's manifest
+   * automatically after the installation is completed
+   * under Android 6+.
+   */
+  grantPermissions?: boolean;
+}
 
-export class ApksUtils extends ApkUtils {
+declare const apksUtilsMethods: ApksUtils;
+export default apksUtilsMethods;
+
+interface ApksUtils {
   /**
    * Executes bundletool utility with given arguments and returns the actual stdout
    *

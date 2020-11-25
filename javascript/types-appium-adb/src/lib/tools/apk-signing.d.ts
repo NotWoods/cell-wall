@@ -1,6 +1,36 @@
-import { AdbEmuCommands } from './appium-adb-emu-commands';
+export interface CertCheckOptions {
+  /**
+   * Whether to require that the destination APK
+   * is signed with the default Appium certificate or any valid certificate. This option
+   * only has effect if `useKeystore` property is unset.
+   * @default true
+   */
+  requireDefaultCert?: boolean;
+}
 
-export class ApkSigning extends AdbEmuCommands {
+export interface KeystoreHash {
+  /**
+   * the md5 hash value of the keystore
+   */
+  md5?: string;
+  /**
+   * the sha1 hash value of the keystore
+   */
+  sha1?: string;
+  /**
+   * the sha256 hash value of the keystore
+   */
+  sha256?: string;
+  /**
+   * the sha512 hash value of the keystore
+   */
+  sha512?: string;
+}
+
+declare const apkSigningMethods: ApkSigning;
+export default apkSigningMethods;
+
+interface ApkSigning {
   /**
    * Execute apksigner utility with given arguments.
    *
@@ -54,43 +84,17 @@ export class ApkSigning extends AdbEmuCommands {
    * @param {string} pgk - The name of application package.
    * @return {boolean} True if given application is already signed.
    */
-  checkApkCert(appPath: string, pkg: string): Promise<boolean>;
-
-  /**
-   * Check if the app is already signed with a custom certificate.
-   *
-   * @param {string} appPath - The full path to the local apk(s) file.
-   * @param {string} pgk - The name of application package.
-   * @return {boolean} True if given application is already signed with a custom certificate.
-   */
-  checkCustomApkCert(appPath: string, pkg: string): Promise<boolean>;
-
-  /**
-   * Get the MD5 hash of the keystore.
-   *
-   * @param {string} keytool - The name of the keytool utility.
-   * @param {RegExp} md5re - The pattern used to match the result in _keytool_ output.
-   * @return {?string} Keystore MD5 hash or _null_ if the hash cannot be parsed.
-   * @throws {Error} If getting keystore MD5 hash fails.
-   */
-  getKeystoreMd5(keytool: string, md5re: RegExp): Promise<string | null>;
-
-  /**
-   * Check if the MD5 hash of the particular application matches to the given hash.
-   *
-   * @param {string} keytool - The name of the keytool utility.
-   * @param {RegExp} md5re - The pattern used to match the result in _keytool_ output.
-   * @param {string} keystoreHash - The expected hash value.
-   * @param {string} pkg - The name of the installed package.
-   * @param {string} apk - The full path to the existing apk file.
-   * @return {boolean} True if both hashes are equal.
-   * @throws {Error} If getting keystore MD5 hash fails.
-   */
-  checkApkKeystoreMatch(
-    keytool: string,
-    md5re: RegExp,
-    keystoreHash: string,
+  checkApkCert(
+    appPath: string,
     pkg: string,
-    apk: string,
+    opts?: CertCheckOptions,
   ): Promise<boolean>;
+
+  /**
+   * Retrieve the the hash of the given keystore.
+   *
+   * @return {KeystoreHash}
+   * @throws {Error} If getting keystore hash fails.
+   */
+  getKeystoreHash(keytool: string, md5re: RegExp): Promise<KeystoreHash>;
 }

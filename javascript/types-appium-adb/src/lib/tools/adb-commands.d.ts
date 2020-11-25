@@ -1,12 +1,79 @@
-import {
-  KeyboardState,
-  Location,
-  Log,
-  ScreenrecordOptions,
-} from './appium-adb-core';
-import { TeenProcessExecOptions, SubProcess } from './teen_process';
+import { SubProcess, TeenProcessExecOptions } from '../../teen_process';
+import { Log } from '../logcat';
 
-export class AdbCommands {
+export interface KeyboardState {
+  /** Whether soft keyboard is currently visible. */
+  isKeyboardShown: boolean;
+  /** Whether the keyboard can be closed. */
+  canCloseKeyboard: boolean;
+}
+
+export interface LogcatOpts {
+  /**
+   * The log print format, where <format> is one of:
+   *   brief process tag thread raw time threadtime long
+   * `threadtime` is the default value.
+   */
+  format?: string;
+  /**
+   * Series of <tag>[:priority]
+   * where <tag> is a log component tag (or * for all) and priority is:
+   *  V    Verbose
+   *  D    Debug
+   *  I    Info
+   *  W    Warn
+   *  E    Error
+   *  F    Fatal
+   *  S    Silent (supress all output)
+   *
+   * '*' means '*:d' and <tag> by itself means <tag>:v
+   *
+   * If not specified on the commandline, filterspec is set from ANDROID_LOG_TAGS.
+   * If no filterspec is found, filter defaults to '*:I'
+   */
+  filterSpecs?: ReadonlyArray<string>;
+}
+
+export interface ScreenrecordOptions {
+  /**
+   * The format is widthxheight.
+   *                  The default value is the device's native display resolution (if supported),
+   *                  1280x720 if not. For best results,
+   *                  use a size supported by your device's Advanced Video Coding (AVC) encoder.
+   *                  For example, "1280x720"
+   */
+  videoSize?: string;
+  /**
+   * Set it to `true` in order to display additional information on the video overlay,
+   *                                  such as a timestamp, that is helpful in videos captured to illustrate bugs.
+   *                                  This option is only supported since API level 27 (Android P).
+   */
+  bugReport?: boolean;
+  /**
+   * The maximum recording time, in seconds.
+   *                                        The default (and maximum) value is 180 (3 minutes).
+   */
+  timeLimit?: string | number;
+  /**
+   * The video bit rate for the video, in megabits per second.
+   *                The default value is 4. You can increase the bit rate to improve video quality,
+   *                but doing so results in larger movie files.
+   */
+  bitRate?: string | number;
+}
+
+export interface SetPropOptions {
+  /**
+   * Do we run setProp as a privileged command?
+   * @default true
+   */
+  privileged?: boolean;
+}
+
+declare const methods: AdbCommands;
+export default methods;
+
+interface AdbCommands {
   /**
    * Get the path to adb executable amd assign it
    * to this.executable.path and this.binaries.adb properties.
@@ -429,42 +496,6 @@ export class AdbCommands {
   isAnimationOn(): Promise<boolean>;
 
   /**
-   * Change the locale on the device under test. Don't need to reboot the device after changing the locale.
-   * This method sets an arbitrary locale following:
-   *   https://developer.android.com/reference/java/util/Locale.html
-   *   https://developer.android.com/reference/java/util/Locale.html#Locale(java.lang.String,%20java.lang.String)
-   *
-   * @param {string} language - Language. e.g. en, ja
-   * @param {string} country - Country. e.g. US, JP
-   * @param {?string} script - Script. e.g. Hans in `zh-Hans-CN`
-   */
-  setDeviceSysLocaleViaSettingApp(
-    language: string,
-    country: string,
-    script?: string | null,
-  ): Promise<void>;
-
-  /**
-   * Emulate geolocation coordinates on the device under test.
-   *
-   * @param {Location} location - Location object. The `altitude` value is ignored
-   * while mocking the position.
-   * @param {boolean} isEmulator [false] - Set it to true if the device under test
-   *                                       is an emulator rather than a real device.
-   */
-  setGeoLocation(location: Location, isEmulator?: boolean): Promise<string>;
-
-  /**
-   * Get the current geo location from the device under test.
-   *
-   * @returns {Location} The current location
-   * @throws {Error} If the current location cannot be retrieved
-   */
-  getGeoLocation(): Promise<
-    Location & { longitude: string; latitude: string; altitude: string }
-  >;
-
-  /**
    * Forcefully recursively remove a path on the device under test.
    * Be careful while calling this method.
    *
@@ -593,7 +624,7 @@ export class AdbCommands {
    *
    * @throws {error} If restart fails.
    */
-  startLogcat(): Promise<void>;
+  startLogcat(opts?: LogcatOpts): Promise<void>;
 
   /**
    * Stop the active logcat process which gathers logs.
@@ -727,7 +758,11 @@ export class AdbCommands {
    *
    * @throws {error} If _setprop_ utility fails to change property value.
    */
-  setDeviceProperty(prop: string, val: string): Promise<void>;
+  setDeviceProperty(
+    prop: string,
+    val: string,
+    opts?: SetPropOptions,
+  ): Promise<void>;
 
   /**
    * @return {string} Current system language on the device under test.

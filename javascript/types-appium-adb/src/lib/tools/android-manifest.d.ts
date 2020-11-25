@@ -1,7 +1,14 @@
-import { APKInfo } from './appium-adb-core';
-import { AdbEmuCommands } from './appium-adb-emu-commands';
+export interface APKInfo {
+  /** The name of application package, for example 'com.acme.app'. */
+  apkPackage: string;
+  /** The name of main application activity. */
+  apkActivity: string;
+}
 
-export class AndroidManifest extends AdbEmuCommands {
+declare const manifestMethods: AndroidManifest;
+export default manifestMethods;
+
+interface AndroidManifest {
   // android:process= may be defined in AndroidManifest.xml
   // http://developer.android.com/reference/android/R.attr.html#process
   // note that the process name when used with ps must be truncated to the last 15 chars
