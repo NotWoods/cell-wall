@@ -25,7 +25,7 @@ class CellStateManager(
 
   fun updateState(intent: Intent) {
     val data = intent.data
-    if (intent.action == "com.tigeroakes.cellwall.client.DISPLAY" && data != null) {
+    if (intent.action == ACTION_DISPLAY && data != null) {
       val state = try {
         CellState.from(data)
       } catch (err: NullPointerException) {
@@ -48,14 +48,14 @@ class CellStateManager(
     val directions = when (state) {
       is CellState.Text -> NavGraphDirections.actionGlobalLargeTextFragment(
         text = state.text,
-        backgroundColor = state.backgroundColor
+        backgroundColor = state.backgroundColor,
       )
       is CellState.Image -> NavGraphDirections.actionGlobalImageFragment(
         src = state.src,
-        scaleType = state.scaleType.name
+        scaleType = state.scaleType.name,
       )
       is CellState.Web -> NavGraphDirections.actionGlobalWebFragment(
-        url = state.url
+        url = state.url,
       )
       else -> NavGraphDirections.actionGlobalSplashFragment()
     }
@@ -71,4 +71,8 @@ class CellStateManager(
 
   private val FragmentManager.currentNavigationFragment: Fragment?
     get() = primaryNavigationFragment?.childFragmentManager?.fragments?.first()
+
+  companion object {
+    const val ACTION_DISPLAY = "com.tigeroakes.cellwall.client.DISPLAY"
+  }
 }
