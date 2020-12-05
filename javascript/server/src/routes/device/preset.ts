@@ -1,4 +1,4 @@
-import { cellStateSchema } from '@cell-wall/cells';
+import { cellStateSchema, CellStateType } from '@cell-wall/cells';
 import { notNullValue } from '@cell-wall/iterators';
 import { Preset, presets } from '../../static';
 import { RouteOptions } from '../register';
@@ -58,6 +58,7 @@ export const statePreset: RouteOptions<{
 
 export const actionPresetAll: RouteOptions<{
   Params: PresetParams;
+  Querystring: { blank_empty?: boolean };
   Reply: { preset: Preset; devices: string[] };
 }> = {
   method: 'POST',
@@ -78,21 +79,37 @@ export const actionPresetAll: RouteOptions<{
         },
       },
     },
+    querystring: {
+      type: 'object',
+      properties: {
+        blank_empty: { type: 'boolean' },
+      },
+    },
   },
   async handler(request, reply) {
     const { presetname } = request.params;
-    const preset = presets[presetname];
-    if (preset) {
-      const devices = Object.entries(preset)
-        .filter(notNullValue)
-        .map(([serial, state]) => {
-          this.cells.setState(serial, state);
-          return serial;
-        });
+    const { blank_empty } = request.query;
 
-      reply.status(200).send({ preset, devices });
-    } else {
-      reply.notFound(`Unknown preset ${presetname}`);
+    const preset = presets[presetname];
+    if (!preset) {
+      return reply.notFound(`Unknown preset ${presetname}`);
     }
+
+    const cells = new Set(this.cells.keys());
+    const devices = Object.entries(preset)
+      .filter(notNullValue)
+      .map(([serial, state]) => {
+        this.cells.setState(serial, state);
+        cells.delete(serial);
+        return serial;
+      });
+
+    if (blank_empty) {
+      for (const serial of cells) {
+        this.cells.setState(serial, { type: CellStateType.BLANK });
+      }
+    }
+
+    reply.status(200).send({ preset, devices });
   },
 };

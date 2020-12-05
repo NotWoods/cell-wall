@@ -64,6 +64,10 @@ export class CellManager extends EventEmitter {
     return this.cells.entries();
   }
 
+  keys() {
+    return this.cells.keys();
+  }
+
   values() {
     return this.cells.values();
   }
