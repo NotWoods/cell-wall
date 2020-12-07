@@ -20,13 +20,13 @@
   "dependencies": {
     "@microsoft/microsoft-graph-client": "^2.1.1",
     "appium-adb": "^8.7.3",
-    "googleapis": "^64.0.0",
     "fastify": "^3.7.0",
     "fastify-cli": "^2.5.1",
     "fastify-formbody": "^5.0.0",
-    "fastify-static": "^3.3.0",
     "fastify-sensible": "^3.0.1",
+    "fastify-static": "^3.3.0",
     "fastify-websocket": "^2.0.10",
+    "googleapis": "^64.0.0",
     "jimp": "^0.16.1",
     "node-fetch": "^3.0.0-beta.9",
     "proposal-temporal": "^0.5.0",
@@ -49,7 +49,7 @@
     "ava": "^3.13.0",
     "prettier": "^2.1.2",
     "tslib": "^2.0.1",
-    "typescript": "4.1.0-beta"
+    "typescript": "4.1.2"
   },
   "files": [
     "assets",

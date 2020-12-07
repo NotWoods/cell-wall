@@ -6,7 +6,7 @@ const svelte = require('rollup-plugin-svelte');
 const commonjs = require('@rollup/plugin-commonjs');
 const { nodeResolve } = require('@rollup/plugin-node-resolve');
 const typescript = require('@rollup/plugin-typescript');
-const autoPreprocess = require('svelte-preprocess');
+const { typescript: typescriptPreprocess } = require('svelte-preprocess');
 
 /** @type {import('rollup').OutputOptions} */
 const outputOptions = {
@@ -22,9 +22,10 @@ const config = {
   external: builtinModules,
   plugins: [
     svelte({
-      // @ts-ignore
-      dev: true,
-      preprocess: autoPreprocess(),
+      compilerOptions: {
+        // dev: true,
+      },
+      preprocess: typescriptPreprocess(),
     }),
     nodeResolve({
       browser: true,

@@ -2,10 +2,10 @@ importers:
   .:
     devDependencies:
       prettier: 2.1.2
-      typescript: 4.1.0-beta
+      typescript: 4.1.2
     specifiers:
       prettier: ^2.1.2
-      typescript: 4.1.0-beta
+      typescript: 4.1.2
   javascript/android-bridge:
     dependencies:
       '@cell-wall/iterators': 'link:../iterators'
@@ -15,7 +15,7 @@ importers:
     devDependencies:
       ava: 3.13.0
       prettier: 2.1.2
-      typescript: 4.1.0-beta
+      typescript: 4.1.2
     specifiers:
       '@cell-wall/iterators': '*'
       '@types/appium-adb': '*'
@@ -23,7 +23,7 @@ importers:
       ava: ^3.13.0
       prettier: ^2.1.2
       tslib: ^2.0.1
-      typescript: 4.1.0-beta
+      typescript: 4.1.2
   javascript/cells:
     dependencies:
       tslib: 2.0.3
@@ -31,31 +31,31 @@ importers:
       ajv: 6.12.6
       ava: 3.13.0
       prettier: 2.1.2
-      typescript: 4.1.0-beta
+      typescript: 4.1.2
     specifiers:
       ajv: ^6.12.2
       ava: ^3.13.0
       prettier: ^2.1.2
       tslib: ^2.0.1
-      typescript: 4.1.0-beta
+      typescript: 4.1.2
   javascript/controller:
     devDependencies:
       '@cell-wall/cells': 'link:../cells'
       '@cell-wall/iterators': 'link:../iterators'
       '@rollup/plugin-commonjs': 14.0.0_rollup@2.33.1
       '@rollup/plugin-node-resolve': 8.4.0_rollup@2.33.1
-      '@rollup/plugin-typescript': 6.1.0_26db687484f694fdbb1d3a17aaf9841c
+      '@rollup/plugin-typescript': 6.1.0_150f448e8bb8d4b2b1230e8c43767fb6
       '@types/lodash-es': 4.17.3
       ava: 3.13.0
       lodash-es: 4.17.15
       prettier: 2.1.2
       rollup: 2.33.1
-      rollup-plugin-svelte: 6.1.1_rollup@2.33.1+svelte@3.29.7
-      svelte: 3.29.7
-      svelte-check: 1.1.12_svelte@3.29.7
-      svelte-preprocess: 4.5.2_6cf47a03dd46cf26b3e5ca519cc6a34e
+      rollup-plugin-svelte: 7.0.0_rollup@2.33.1+svelte@3.31.0
+      svelte: 3.31.0
+      svelte-check: 1.1.19_svelte@3.31.0
+      svelte-preprocess: 4.6.1_svelte@3.31.0+typescript@4.1.2
       tslib: 2.0.3
-      typescript: 4.1.0-beta
+      typescript: 4.1.2
     specifiers:
       '@cell-wall/cells': '*'
       '@cell-wall/iterators': '*'
@@ -67,12 +67,12 @@ importers:
       lodash-es: ^4.17.15
       prettier: ^2.1.2
       rollup: ^2.3.4
-      rollup-plugin-svelte: ^6.0.0
-      svelte: ^3.29.7
-      svelte-check: ^1.0.0
-      svelte-preprocess: ^4.0.0
+      rollup-plugin-svelte: ^7.0.0
+      svelte: ^3.31.0
+      svelte-check: ^1.1.19
+      svelte-preprocess: ^4.6.1
       tslib: ^2.0.0
-      typescript: 4.1.0-beta
+      typescript: 4.1.2
   javascript/deploy:
     dependencies:
       '@rollup/plugin-commonjs': 15.1.0_rollup@2.33.1
@@ -80,15 +80,16 @@ importers:
       '@rollup/plugin-node-resolve': 9.0.0_rollup@2.33.1
       prettier: 2.1.2
       rollup: 2.33.1
-      typescript: 4.1.0-beta
       yargs-parser: 20.2.3
+    devDependencies:
+      typescript: 4.1.2
     specifiers:
       '@rollup/plugin-commonjs': ^15.1.0
       '@rollup/plugin-json': ^4.1.0
       '@rollup/plugin-node-resolve': ^9.0.0
       prettier: ^2.1.2
       rollup: ^2.33.1
-      typescript: 4.1.0-beta
+      typescript: 4.1.2
       yargs-parser: ^20.2.3
   javascript/iterators:
     dependencies:
@@ -96,12 +97,12 @@ importers:
     devDependencies:
       ava: 3.13.0
       prettier: 2.1.2
-      typescript: 4.1.0-beta
+      typescript: 4.1.2
     specifiers:
       ava: ^3.13.0
       prettier: ^2.1.2
       tslib: ^2.0.1
-      typescript: 4.1.0-beta
+      typescript: 4.1.2
   javascript/server:
     dependencies:
       '@microsoft/microsoft-graph-client': 2.1.1
@@ -134,7 +135,7 @@ importers:
       ava: 3.13.0
       prettier: 2.1.2
       tslib: 2.0.3
-      typescript: 4.1.0-beta
+      typescript: 4.1.2
     specifiers:
       '@cell-wall/android-bridge': '*'
       '@cell-wall/cells': '*'
@@ -165,7 +166,7 @@ importers:
       sqlite: ^4.0.17
       sqlite3: ^5.0.0
       tslib: ^2.0.1
-      typescript: 4.1.0-beta
+      typescript: 4.1.2
   javascript/storage:
     dependencies:
       sql-template-strings: 2.2.2
@@ -175,7 +176,7 @@ importers:
     devDependencies:
       ava: 3.13.0
       prettier: 2.1.2
-      typescript: 4.1.0-beta
+      typescript: 4.1.2
     specifiers:
       ava: ^3.13.0
       prettier: ^2.1.2
@@ -183,19 +184,19 @@ importers:
       sqlite: ^4.0.17
       sqlite3: ^5.0.0
       tslib: ^2.0.1
-      typescript: 4.1.0-beta
+      typescript: 4.1.2
   javascript/types-appium-adb:
     dependencies:
       '@types/node': 14.14.6
       '@types/semver': 7.3.4
     devDependencies:
       prettier: 2.1.2
-      typescript: 4.1.0-beta
+      typescript: 4.1.2
     specifiers:
       '@types/node': ^14.14.6
       '@types/semver': ^7.3.4
       prettier: ^2.1.2
-      typescript: 4.1.0-beta
+      typescript: 4.1.2
 lockfileVersion: 5.2
 packages:
   /@babel/code-frame/7.10.4:
@@ -1087,13 +1088,13 @@ packages:
       rollup: ^1.20.0||^2.0.0
     resolution:
       integrity: sha512-gPz+utFHLRrd41WMP13Jq5mqqzHL3OXrfj3/MkSyB6UBIcuNt9j60GCbarzMzdf1VHFpOxfQh/ez7wyadLMqkg==
-  /@rollup/plugin-typescript/6.1.0_26db687484f694fdbb1d3a17aaf9841c:
+  /@rollup/plugin-typescript/6.1.0_150f448e8bb8d4b2b1230e8c43767fb6:
     dependencies:
       '@rollup/pluginutils': 3.1.0_rollup@2.33.1
       resolve: 1.18.1
       rollup: 2.33.1
       tslib: 2.0.3
-      typescript: 4.1.0-beta
+      typescript: 4.1.2
     dev: true
     engines:
       node: '>=8.0.0'
@@ -1155,6 +1156,10 @@ packages:
     dev: true
     resolution:
       integrity: sha512-tjSSOTHhI5mCHTy/OOXYIhi2Wt1qcbHmuXD1Ha7q70CgI/I71afO4XtLb/cVexki1oVYchpul/TOuu3Arcdxrg==
+  /@types/node/14.14.10:
+    dev: true
+    resolution:
+      integrity: sha512-J32dgx2hw8vXrSbu4ZlVhn1Nm3GbeCFNw2FWL8S5QKucHGY0cyNwjdQdO+KMBZ4wpmC7KhLCiNsdk1RFRIYUQQ==
   /@types/node/14.14.6:
     resolution:
       integrity: sha512-6QlRuqsQ/Ox/aJEQWBEJG7A9+u7oSYl3mem/K8IzxXG/kAGbV1YPD9Bg9Zw3vyxC/YP+zONKwy8hGkSt1jxFMw==
@@ -1173,7 +1178,7 @@ packages:
       integrity: sha512-yy7HuzQhj0dhGpD8RLXSZWEkLsV9ibvxvi6EiJ3bkqLAO1RGo0WbkWQiwpRlSFymTJRz0d3k5LM3kkx8ArDbLw==
   /@types/sass/1.16.0:
     dependencies:
-      '@types/node': 14.14.6
+      '@types/node': 14.14.10
     dev: true
     resolution:
       integrity: sha512-2XZovu4NwcqmtZtsBR5XYLw18T8cBCnU2USFHTnYLLHz9fkhnoEMoDsqShJIOFsFhn5aJHjweiUUdTrDGujegA==
@@ -5190,19 +5195,20 @@ packages:
     hasBin: true
     resolution:
       integrity: sha512-JZkJMZkAGFFPP2YqXZXPbMlMBgsxzE8ILs4lMIX/2o0L9UBw9O/Y3o6wFw/i9YLapcUJWwqbi3kdxIPdC62TIA==
-  /rollup-plugin-svelte/6.1.1_rollup@2.33.1+svelte@3.29.7:
+  /rollup-plugin-svelte/7.0.0_rollup@2.33.1+svelte@3.31.0:
     dependencies:
       require-relative: 0.8.7
       rollup: 2.33.1
       rollup-pluginutils: 2.8.2
-      sourcemap-codec: 1.4.8
-      svelte: 3.29.7
+      svelte: 3.31.0
     dev: true
+    engines:
+      node: '>=10'
     peerDependencies:
-      rollup: '>=1.19.2'
-      svelte: '*'
+      rollup: '>=2.0.0'
+      svelte: '>=3.5.0'
     resolution:
-      integrity: sha512-ijnm0pH1ScrY4uxwaNXBpNVejVzpL2769hIEbAlnqNUWZrffLspu5/k9/l/Wsj3NrEHLQ6wCKGagVJonyfN7ow==
+      integrity: sha512-cw4yv/5v1NQV3nPbpOJtikgkB+9mfSJaqKUdq7x5fVQJnwLtcdc2JOszBs5pBY+SemTs5pmJbdEMseEavbUtjQ==
   /rollup-pluginutils/2.8.2:
     dependencies:
       estree-walker: 0.6.1
@@ -5688,7 +5694,7 @@ packages:
       node: '>=8'
     resolution:
       integrity: sha512-zoE5/e+dnEijk6ASB6/qrK+oYdm2do1hjoLWrqUC/8WEIW1gbxFcKuBof7sW8ArN6e+AYvsE8HBGiVRWL/F5CA==
-  /svelte-check/1.1.12_svelte@3.29.7:
+  /svelte-check/1.1.19_svelte@3.31.0:
     dependencies:
       chalk: 4.1.0
       chokidar: 3.4.3
@@ -5696,23 +5702,23 @@ packages:
       import-fresh: 3.2.2
       minimist: 1.2.5
       source-map: 0.7.3
-      svelte: 3.29.7
-      svelte-preprocess: 4.5.2_svelte@3.29.7+typescript@4.0.5
-      typescript: 4.0.5
+      svelte: 3.31.0
+      svelte-preprocess: 4.6.1_svelte@3.31.0+typescript@4.1.2
+      typescript: 4.1.2
     dev: true
     hasBin: true
     peerDependencies:
       svelte: ^3.24.0
     resolution:
-      integrity: sha512-Sr7mNkFWDI1kzJwjmsBUhXsakbfIEYJwnPHLhi7usbU8YAmSkI7e8BGnaqIn6xkAqON1q5QZQcqPTLjxIKiEZA==
-  /svelte-preprocess/4.5.2_6cf47a03dd46cf26b3e5ca519cc6a34e:
+      integrity: sha512-Ej0hM800sJ0PfJk0OFqhh2Pa4JOgkKjtY4fk5eC21iWCH5PH8BTKdzSOufi7MA5gY4j7zgpX6Wym37e4myZ8KA==
+  /svelte-preprocess/4.6.1_svelte@3.31.0+typescript@4.1.2:
     dependencies:
       '@types/pug': 2.0.4
       '@types/sass': 1.16.0
       detect-indent: 6.0.0
       strip-indent: 3.0.0
-      svelte: 3.29.7
-      typescript: 4.1.0-beta
+      svelte: 3.31.0
+      typescript: 4.1.2
     dev: true
     engines:
       node: '>= 9.11.2'
@@ -5750,71 +5756,17 @@ packages:
         optional: true
       sugarss:
         optional: true
-      svelte:
-        optional: true
       typescript:
         optional: true
     requiresBuild: true
     resolution:
-      integrity: sha512-ClUX5NecnGBwI+nJnnBvKKy0XutCq5uHTIKe6cPhpvuOj9AAnyvef9wOZAE93yr85OKPutGCNIJa/X1TrJ7O0Q==
-  /svelte-preprocess/4.5.2_svelte@3.29.7+typescript@4.0.5:
-    dependencies:
-      '@types/pug': 2.0.4
-      '@types/sass': 1.16.0
-      detect-indent: 6.0.0
-      strip-indent: 3.0.0
-      svelte: 3.29.7
-      typescript: 4.0.5
-    dev: true
-    engines:
-      node: '>= 9.11.2'
-    peerDependencies:
-      '@babel/core': ^7.10.2
-      coffeescript: ^2.5.1
-      less: ^3.11.3
-      node-sass: '*'
-      postcss: ^7 || ^8
-      postcss-load-config: ^2.1.0
-      pug: ^3.0.0
-      sass: ^1.26.8
-      stylus: ^0.54.7
-      sugarss: ^2.0.0
-      svelte: ^3.23.0
-      typescript: ^3.9.5 || ^4.0.0
-    peerDependenciesMeta:
-      '@babel/core':
-        optional: true
-      coffeescript:
-        optional: true
-      less:
-        optional: true
-      node-sass:
-        optional: true
-      postcss:
-        optional: true
-      postcss-load-config:
-        optional: true
-      pug:
-        optional: true
-      sass:
-        optional: true
-      stylus:
-        optional: true
-      sugarss:
-        optional: true
-      svelte:
-        optional: true
-      typescript:
-        optional: true
-    requiresBuild: true
-    resolution:
-      integrity: sha512-ClUX5NecnGBwI+nJnnBvKKy0XutCq5uHTIKe6cPhpvuOj9AAnyvef9wOZAE93yr85OKPutGCNIJa/X1TrJ7O0Q==
-  /svelte/3.29.7:
+      integrity: sha512-s7KdhR2pOsffyOzZIMEb315f6pfgeDnOWN47m6YKFeSEx3NMf/79Znc3vuG/Ai79SL/vsi86WDrjFPLGRfDesg==
+  /svelte/3.31.0:
     dev: true
     engines:
       node: '>= 8'
     resolution:
-      integrity: sha512-rx0g311kBODvEWUU01DFBUl3MJuJven04bvTVFUG/w0On/wuj0PajQY/QlXcJndFxG+W1s8iXKaB418tdHWc3A==
+      integrity: sha512-r+n8UJkDqoQm1b+3tA3Lh6mHXKpcfOSOuEuIo5gE2W9wQYi64RYX/qE6CZBDDsP/H4M+N426JwY7XGH4xASvGQ==
   /tar-stream/2.1.4:
     dependencies:
       bl: 4.0.3
@@ -6032,19 +5984,13 @@ packages:
     dev: true
     resolution:
       integrity: sha512-zdu8XMNEDepKKR+XYOXAVPtWui0ly0NtohUscw+UmaHiAWT8hrV1rr//H6V+0DvJ3OQ19S979M0laLfX8rm82Q==
-  /typescript/4.0.5:
+  /typescript/4.1.2:
     dev: true
     engines:
       node: '>=4.2.0'
     hasBin: true
     resolution:
-      integrity: sha512-ywmr/VrTVCmNTJ6iV2LwIrfG1P+lv6luD8sUJs+2eI9NLGigaN+nUQc13iHqisq7bra9lnmUSYqbJvegraBOPQ==
-  /typescript/4.1.0-beta:
-    engines:
-      node: '>=4.2.0'
-    hasBin: true
-    resolution:
-      integrity: sha512-b/LAttdVl3G6FEmnMkDsK0xvfvaftXpSKrjXn+OVCRqrwz5WD/6QJOiN+dTorqDY+hkaH+r2gP5wI1jBDmdQ7A==
+      integrity: sha512-thGloWsGH3SOxv1SoY7QojKi0tc+8FnOmiarEGMbd/lar7QOEd3hvlx3Fp5y6FlDUGl9L+pd4n2e+oToGMmhRQ==
   /unc-path-regex/0.1.2:
     dev: false
     engines:
