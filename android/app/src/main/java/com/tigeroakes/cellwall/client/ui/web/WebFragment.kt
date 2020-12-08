@@ -15,6 +15,12 @@ class WebFragment : Fragment(R.layout.fragment_web) {
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     web_view.setSession(viewModel.session)
+
+    viewModel.permissionRequests.observe(viewLifecycleOwner) { event ->
+      event.getContentIfNotHandled()?.let { permissions ->
+        requestPermissions(permissions, REQUEST_PERMISSIONS)
+      }
+    }
   }
 
   override fun onStart() {
@@ -24,5 +30,21 @@ class WebFragment : Fragment(R.layout.fragment_web) {
 
   fun openUrl(url: String) {
     viewModel.openUrl(url)
+  }
+
+  override fun onRequestPermissionsResult(
+    requestCode: Int,
+    permissions: Array<out String>,
+    grantResults: IntArray
+  ) {
+    if (requestCode == REQUEST_PERMISSIONS) {
+      viewModel.onRequestPermissionsResult(grantResults)
+    } else {
+      super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
+  }
+
+  companion object {
+    private const val REQUEST_PERMISSIONS = 1
   }
 }
