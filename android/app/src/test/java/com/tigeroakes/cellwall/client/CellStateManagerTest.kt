@@ -1,7 +1,11 @@
 package com.tigeroakes.cellwall.client
 
+import android.graphics.Color
 import androidx.fragment.app.FragmentManager
 import androidx.navigation.NavController
+import androidx.navigation.NavDirections
+import androidx.navigation.NavOptions
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.tigeroakes.cellwall.client.model.CellState
 import com.tigeroakes.cellwall.client.ui.CellStateManager
 import com.tigeroakes.cellwall.client.ui.web.WebFragment
@@ -13,9 +17,8 @@ import io.mockk.verify
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.robolectric.RobolectricTestRunner
 
-@RunWith(RobolectricTestRunner::class)
+@RunWith(AndroidJUnit4::class)
 class CellStateManagerTest {
 
   private lateinit var navController: NavController
@@ -24,9 +27,29 @@ class CellStateManagerTest {
 
   @Before
   fun setup() {
-    navController = mockk()
+    navController = mockk {
+      every { navigate(any<NavDirections>(), any<NavOptions>()) } just Runs
+    }
     fragmentManager = mockk()
     manager = CellStateManager(navController, fragmentManager)
+  }
+
+  @Test
+  fun openTextFragment() {
+    manager.updateState(CellState.Text(
+      text = "Hello world",
+      backgroundColor = Color.BLUE,
+    ))
+
+    verify {
+      navController.navigate(
+        NavGraphDirections.actionGlobalLargeTextFragment(
+          text = "Hello world",
+          backgroundColor = Color.BLUE,
+        ),
+        any<NavOptions>(),
+      )
+    }
   }
 
   @Test
@@ -41,5 +64,6 @@ class CellStateManagerTest {
     manager.updateState(CellState.Web("https://example.com"))
 
     verify { webFragment.openUrl("https://example.com") }
+    verify(exactly = 0) { navController.navigate(any<NavDirections>(), any<NavOptions>()) }
   }
 }
