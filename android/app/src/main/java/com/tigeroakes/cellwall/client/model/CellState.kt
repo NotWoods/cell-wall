@@ -83,7 +83,7 @@ sealed class CellState(val type: CellStateType) : Parcelable {
     const val STATE_KEY = "state"
     @ColorInt val COLOR_ACCENT = rgb(27, 94, 32)
 
-    @JvmStatic
+    @JvmField
     val CREATOR: Parcelable.Creator<CellState> = object : Parcelable.Creator<CellState> {
       override fun createFromParcel(source: Parcel): CellState =
         from(source.readBundle(javaClass.classLoader)!!)
