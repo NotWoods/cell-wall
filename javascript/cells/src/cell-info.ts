@@ -9,3 +9,12 @@ export interface CellInfo {
    */
   server?: string;
 }
+
+export function cellCoordsValid(info: CellInfo) {
+  return (
+    !isNaN(info.x) &&
+    !isNaN(info.y) &&
+    !isNaN(info.width) &&
+    !isNaN(info.height)
+  );
+}

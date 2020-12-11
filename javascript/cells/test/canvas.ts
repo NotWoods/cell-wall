@@ -25,18 +25,18 @@ const polaroid = {
 };
 
 test('cellCanvas', async (t) => {
-  const canvas1 = cellCanvas([pixel]);
+  const canvas1 = cellCanvas([pixel.info]);
   t.deepEqual(canvas1, { x: 0, y: 0, width: 392, height: 791 });
 
-  const canvas2 = cellCanvas([pixel, polaroid]);
+  const canvas2 = cellCanvas([pixel.info, polaroid.info]);
   t.deepEqual(canvas2, { x: 0, y: 0, width: 2785, height: 2220 });
 
-  const canvas3 = cellCanvas([polaroid]);
+  const canvas3 = cellCanvas([polaroid.info]);
   t.deepEqual(canvas3, { x: 2315, y: 1385, width: 470, height: 835 });
 });
 
 test('shiftCell', async (t) => {
-  const canvas = cellCanvas([polaroid]);
+  const canvas = cellCanvas([polaroid.info]);
   const shifted = shiftCell(canvas, polaroid.info);
   t.deepEqual(shifted, {
     deviceName: 'Polaroid A600',

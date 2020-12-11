@@ -41,6 +41,7 @@
     "@cell-wall/controller": "*",
     "@cell-wall/deploy": "*",
     "@cell-wall/iterators": "*",
+    "@cell-wall/split-image": "*",
     "@cell-wall/storage": "*",
     "@types/appium-adb": "*",
     "@types/socket.io": "^2.1.11",

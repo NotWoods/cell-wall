@@ -16,6 +16,7 @@
     "javascript/deploy/src/**/*.d.ts": true,
     "javascript/iterators/src/**/*.d.ts": true,
     "javascript/server/src/**/*.d.ts": true,
+    "javascript/split-image/src/**/*.d.ts": true,
     "javascript/storage/src/**/*.d.ts": true
   },
   "editor.formatOnSave": true,

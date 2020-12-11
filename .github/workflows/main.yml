@@ -21,8 +21,9 @@ jobs:
         with:
           name: lint-results
           path: android/app/build/reports/lint-results-debug.html
-      - run: ./gradlew testDebugUnitTest
-        working-directory: ./android
+          if-no-files-found: error
+      # - run: ./gradlew testDebugUnitTest
+      #   working-directory: ./android
 
   javascript:
     runs-on: ubuntu-latest

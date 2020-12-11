@@ -1,53 +1,12 @@
-import {
-  cellCanvas,
-  CellCanvas,
-  CellData,
-  CellInfo,
-  CellStateType,
-  shiftCell,
-} from '@cell-wall/cells';
-import {
-  filterMap,
-  forEachMapAsync,
-  transformMapAsync,
-} from '@cell-wall/iterators';
+import { cellCoordsValid, CellData, CellStateType } from '@cell-wall/cells';
+import { filterMap, transformMap } from '@cell-wall/iterators';
+import { RESIZE, ResizeOptions, splitImage } from '@cell-wall/split-image';
 import Jimp from 'jimp';
 import { SerialParams } from './helpers';
 import { RouteOptions } from './register';
 
-interface ImageQuerystring {
-  horizontalAlign?: string;
-  verticalAlign?: string;
-  resize?: string;
+interface ImageQuerystring extends ResizeOptions {
   device?: string[] | string;
-}
-
-const ALIGN_QUERY: Record<string, number> = {
-  left: Jimp.HORIZONTAL_ALIGN_LEFT,
-  right: Jimp.HORIZONTAL_ALIGN_RIGHT,
-  center: Jimp.HORIZONTAL_ALIGN_CENTER,
-  top: Jimp.VERTICAL_ALIGN_TOP,
-  bottom: Jimp.VERTICAL_ALIGN_BOTTOM,
-  middle: Jimp.VERTICAL_ALIGN_MIDDLE,
-};
-
-const RESIZE = new Set([
-  Jimp.RESIZE_NEAREST_NEIGHBOR,
-  Jimp.RESIZE_BILINEAR,
-  Jimp.RESIZE_BICUBIC,
-  Jimp.RESIZE_HERMITE,
-  Jimp.RESIZE_BEZIER,
-]);
-
-function parseImageQuery(query: ImageQuerystring = {}) {
-  const horizontalFlag = ALIGN_QUERY[query.horizontalAlign!] || 0;
-  const verticalFlag = ALIGN_QUERY[query.verticalAlign!] || 0;
-  const resize = RESIZE.has(query.resize as any) ? query.resize : undefined;
-
-  return {
-    alignBits: horizontalFlag | verticalFlag,
-    resizeMode: resize,
-  };
 }
 
 function parseDeviceQuery({ device: devices }: ImageQuerystring = {}): (
@@ -67,35 +26,7 @@ function parseDeviceQuery({ device: devices }: ImageQuerystring = {}): (
     included = () => true;
   }
 
-  return (cell) =>
-    included(cell.serial) &&
-    !isNaN(cell.info.x) &&
-    !isNaN(cell.info.y) &&
-    !isNaN(cell.info.width) &&
-    !isNaN(cell.info.height);
-}
-
-function resize(
-  image: Jimp,
-  { width, height }: Pick<CellCanvas, 'width' | 'height'>,
-  query: ImageQuerystring = {},
-) {
-  const { alignBits, resizeMode } = parseImageQuery(query);
-  return new Promise<Jimp>((resolve, reject) =>
-    image.cover(width, height, alignBits, resizeMode, (err, value) => {
-      if (err) reject(err);
-      else resolve(value);
-    }),
-  );
-}
-
-function crop(image: Jimp, cell: CellInfo) {
-  return new Promise<Jimp>((resolve, reject) =>
-    image.crop(cell.x, cell.y, cell.width, cell.height, (err, value) => {
-      if (err) reject(err);
-      else resolve(value);
-    }),
-  );
+  return (cell) => included(cell.serial) && cellCoordsValid(cell.info);
 }
 
 const imageCache = new Map<string, Jimp>();
@@ -149,36 +80,26 @@ export const actionImage: RouteOptions<{
     const image = request.body;
     const included = parseDeviceQuery(request.query);
 
-    const cells = filterMap(this.cells, included);
+    const cells = transformMap(
+      filterMap(this.cells, included),
+      (cell) => cell.info,
+    );
 
-    const canvas = cellCanvas(cells.values());
-    await resize(image, canvas, request.query);
+    const cropped = await splitImage(image, cells, request.query);
 
-    const cropped = await transformMapAsync(cells, async ({ info }) => {
-      const copy = await Jimp.create(image);
-      const shifted = shiftCell(canvas, info);
+    imageCache.clear();
+    const urls = transformMap(cropped, ({ info, img }, serial) => {
+      imageCache.set(serial, img);
       return {
-        info: shifted,
-        img: await crop(copy, shifted),
+        src: `/v3/action/image/${serial}`,
+        x: info.x,
+        y: info.y,
+        width: info.width,
+        height: info.height,
       };
     });
 
-    imageCache.clear();
-    const urls = await transformMapAsync(
-      cropped,
-      async ({ info, img }, serial) => {
-        imageCache.set(serial, img);
-        return {
-          src: `/v3/action/image/${serial}`,
-          x: info.x,
-          y: info.y,
-          width: info.width,
-          height: info.height,
-        };
-      },
-    );
-
-    await forEachMapAsync(urls, async ({ src }, serial) => {
+    urls.forEach(({ src }, serial) => {
       this.cells.setState(serial, {
         type: CellStateType.IMAGE,
         src,

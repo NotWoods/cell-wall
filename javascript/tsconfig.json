@@ -11,6 +11,8 @@
     { "path": "server/assets/js" },
     { "path": "server/src" },
     { "path": "server/test" },
+    { "path": "split-image/src" },
+    { "path": "split-image/test" },
     { "path": "storage/src" },
     { "path": "storage/test" }
   ]
