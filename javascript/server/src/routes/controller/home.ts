@@ -1,5 +1,5 @@
 import { RouteOptions } from '../register';
-import code from '@cell-wall/controller';
+import code from '@cell-wall/remote';
 
 export const controllerHome: RouteOptions = {
   method: 'GET',
@@ -12,7 +12,7 @@ export const controllerHome: RouteOptions = {
         <head>
           <meta charset="utf-8" />
           <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-          <title>CellWall Controller</title>
+          <title>CellWall Remote</title>
           <link
             rel="stylesheet"
             href="https://jenil.github.io/bulmaswatch/darkly/bulmaswatch.min.css" />

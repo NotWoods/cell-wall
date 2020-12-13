@@ -6,7 +6,7 @@
   <div class="navbar-brand">
     <a class="navbar-item" href="https://github.com/NotWoods/cell-wall">
       <img src="/assets/logo.png" alt="" width="28" height="28" />
-      <span style="margin-left: 0.5rem">CellWall Controller</span>
+      <span style="margin-left: 0.5rem">CellWall Remote</span>
     </a>
 
     <!-- svelte-ignore a11y-missing-attribute -->

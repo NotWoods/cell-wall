@@ -38,7 +38,7 @@ importers:
       prettier: ^2.1.2
       tslib: ^2.0.1
       typescript: 4.1.2
-  javascript/controller:
+  javascript/remote:
     devDependencies:
       '@cell-wall/cells': 'link:../cells'
       '@cell-wall/iterators': 'link:../iterators'
@@ -123,7 +123,7 @@ importers:
     devDependencies:
       '@cell-wall/android-bridge': 'link:../android-bridge'
       '@cell-wall/cells': 'link:../cells'
-      '@cell-wall/controller': 'link:../controller'
+      '@cell-wall/remote': 'link:../remote'
       '@cell-wall/deploy': 'link:../deploy'
       '@cell-wall/iterators': 'link:../iterators'
       '@cell-wall/split-image': 'link:../split-image'
@@ -139,7 +139,7 @@ importers:
     specifiers:
       '@cell-wall/android-bridge': '*'
       '@cell-wall/cells': '*'
-      '@cell-wall/controller': '*'
+      '@cell-wall/remote': '*'
       '@cell-wall/deploy': '*'
       '@cell-wall/iterators': '*'
       '@cell-wall/split-image': '*'

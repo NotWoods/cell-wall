@@ -1,5 +1,5 @@
 {
-  "name": "@cell-wall/controller",
+  "name": "@cell-wall/remote",
   "version": "1.0.0",
   "private": true,
   "main": "dist/script.js",

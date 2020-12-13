@@ -12,7 +12,7 @@
     "javascript/*/test/**/*.d.ts": true,
     "javascript/android-bridge/src/**/*.d.ts": true,
     "javascript/cells/src/**/*.d.ts": true,
-    "javascript/controller/src/**/*.d.ts": true,
+    "javascript/remote/src/**/*.d.ts": true,
     "javascript/deploy/src/**/*.d.ts": true,
     "javascript/iterators/src/**/*.d.ts": true,
     "javascript/server/src/**/*.d.ts": true,
