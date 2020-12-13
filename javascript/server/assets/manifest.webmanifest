@@ -2,8 +2,8 @@
   "$schema": "https://raw.githubusercontent.com/SchemaStore/schemastore/master/src/schemas/json/web-manifest.json",
   "name": "CellWall Remote",
   "short_name": "CellWall",
-  "start_url": "/controller",
-  "scope": "/controller",
+  "start_url": "/",
+  "scope": "/",
   "icons": [
     {
       "src": "/assets/logo.png",

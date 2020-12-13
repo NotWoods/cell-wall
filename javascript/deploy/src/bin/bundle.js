@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import yargs from 'yargs-parser';
-import { bundle } from '../index';
+const yargs = require('yargs-parser');
+const { bundle } = require('../index');
 
 bundle(yargs(process.argv.slice(2))).catch(console.error);

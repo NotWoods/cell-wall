@@ -1,4 +1,3 @@
-// @ts-check
 const { builtinModules } = require('module');
 const { writeFile } = require('fs/promises');
 const { rollup } = require('rollup');
@@ -50,4 +49,7 @@ async function compile() {
   await writeFile('dist/script.js', wrapper, 'utf8');
   return code;
 }
-compile();
+
+if (require.main === module) {
+  compile();
+}

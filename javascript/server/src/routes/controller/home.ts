@@ -3,7 +3,7 @@ import code from '@cell-wall/remote';
 
 export const controllerHome: RouteOptions = {
   method: 'GET',
-  url: '/controller',
+  url: '/',
   async handler(_request, reply) {
     const devices = Array.from(this.cells.values());
     reply.type('text/html').send(`
@@ -28,7 +28,7 @@ export const controllerHome: RouteOptions = {
               width: 6rem;
             }
           </style>
-          <script async defer src="/controller/script.js"></script>
+          <script async defer src="/remote.js"></script>
         </head>
         <body></body>
       </html>
@@ -38,7 +38,7 @@ export const controllerHome: RouteOptions = {
 
 export const controllerScript: RouteOptions = {
   method: 'GET',
-  url: '/controller/script.js',
+  url: '/remote.js',
   async handler(_request, reply) {
     reply.type('text/javascript').send(code);
   },
