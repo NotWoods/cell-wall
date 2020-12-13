@@ -117,6 +117,16 @@
     </div>
   </Field>
 
+  <Field htmlFor="control-rest" label="Remaining Cells">
+    <div class="select">
+      <select id="control-rest" name="rest">
+        <option value="ignore">Ignore</option>
+        <option value="blank">Blank</option>
+        <option value="off">Off</option>
+      </select>
+    </div>
+  </Field>
+
   <div class="field is-grouped is-grouped-right" style="margin-top: 3rem">
     <p class="control">
       <button type="reset" class="button is-light">Reset</button>

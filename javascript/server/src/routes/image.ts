@@ -1,11 +1,16 @@
-import { cellCoordsValid, CellData, CellStateType } from '@cell-wall/cells';
+import {
+  cellCoordsValid,
+  CellData,
+  CellStateType,
+  DiffSet,
+} from '@cell-wall/cells';
 import { filterMap, transformMap } from '@cell-wall/iterators';
 import { RESIZE, ResizeOptions, splitImage } from '@cell-wall/split-image';
 import Jimp from 'jimp';
-import { SerialParams } from './helpers';
+import { RestQuery, SerialParams, updateRest } from './helpers';
 import { RouteOptions } from './register';
 
-interface ImageQuerystring extends ResizeOptions {
+interface ImageQuerystring extends ResizeOptions, RestQuery {
   device?: string[] | string;
 }
 
@@ -73,12 +78,17 @@ export const actionImage: RouteOptions<{
           type: 'string',
           enum: Array.from(RESIZE),
         },
+        rest: {
+          type: 'string',
+          enum: ['ignore', 'blank', 'off'],
+        },
       },
     },
   },
   async handler(request, reply) {
     const image = request.body;
     const included = parseDeviceQuery(request.query);
+    const { rest } = request.query;
 
     const cells = transformMap(
       filterMap(this.cells, included),
@@ -105,6 +115,11 @@ export const actionImage: RouteOptions<{
         src,
       })),
     );
+
+    if (rest) {
+      const modified = new DiffSet(this.cells.keys(), urls.keys()).toResult();
+      await updateRest(this, modified.rest, rest);
+    }
 
     reply.status(200).send(Object.fromEntries(urls));
   },

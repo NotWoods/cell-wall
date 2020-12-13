@@ -37,9 +37,7 @@
   async function submit() {
     const data = Object.fromEntries(formData(form));
 
-    const url = selectedDevice
-      ? `${form.action}/${selectedDevice}`
-      : form.action;
+    const url = selectedDevice ? form.action + selectedDevice : form.action;
 
     await post(url, {
       ...data,
@@ -58,7 +56,7 @@
 
 <form
   method="post"
-  action="/v3/device/state"
+  action="/v3/device/state/"
   on:submit|preventDefault={() => {
     loading = submit();
   }}

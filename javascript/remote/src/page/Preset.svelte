@@ -1,7 +1,6 @@
 <script lang="ts">
   import { post } from '../post';
   import PresetCard from '../PresetCard.svelte';
-  import Field from '../Field.svelte';
 
   let loading: Promise<unknown> = Promise.resolve();
   let rest = 'ignore';
@@ -48,17 +47,18 @@
           alt=""
           src="https://raw.githubusercontent.com/NotWoods/cell-wall/main/images/finished.jpg" />
       </figure>
-      <Field
-        htmlFor="control-rest"
-        label="What to do with the rest of the cells?">
-        <div class="select">
-          <select id="control-rest" name="rest" bind:value={rest}>
-            <option value="ignore">Ignore</option>
-            <option value="blank">Blank</option>
-            <option value="off">Off</option>
-          </select>
+      <div class="field">
+        <label class="label" for="control-rest">Remaining cells</label>
+        <div class="control">
+          <div class="select">
+            <select id="control-rest" name="rest" bind:value={rest}>
+              <option value="ignore">Ignore</option>
+              <option value="blank">Blank</option>
+              <option value="off">Off</option>
+            </select>
+          </div>
         </div>
-      </Field>
+      </div>
     </article>
   </div>
 </div>

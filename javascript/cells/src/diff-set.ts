@@ -2,8 +2,11 @@ export class DiffSet<T> {
   private updated = new Set<T>();
   private rest: Set<T>;
 
-  constructor(initial: Iterable<T>) {
+  constructor(initial: Iterable<T>, updated: Iterable<T> = []) {
     this.rest = new Set(initial);
+    for (const value of updated) {
+      this.add(value);
+    }
   }
 
   /**

@@ -81,7 +81,7 @@ export const statusStateAll: RouteOptions<{
 };
 
 export const actionState: RouteOptions<{
-  Params: Required<SerialParams>;
+  Params: SerialParams;
   Body: CellState;
   Reply: { devices: string[] };
 }> = {
@@ -107,10 +107,17 @@ export const actionState: RouteOptions<{
     const { serial } = request.params;
     const state = request.body;
 
-    this.cells.setState(serial, state);
-    reply.status(200).send({
-      devices: [serial],
-    });
+    if (serial) {
+      this.cells.setState(serial, state);
+      reply.status(200).send({
+        devices: [serial],
+      });
+    } else {
+      const { updated } = this.cells.setStateAll(this.cells.keys(), state);
+      reply.status(200).send({
+        devices: Array.from(updated),
+      });
+    }
   },
 };
 
