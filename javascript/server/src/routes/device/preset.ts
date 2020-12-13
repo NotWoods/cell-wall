@@ -1,6 +1,6 @@
-import { cellStateSchema, CellStateType } from '@cell-wall/cells';
-import { notNullValue } from '@cell-wall/iterators';
+import { cellStateSchema } from '@cell-wall/cells';
 import { Preset, presets } from '../../static';
+import { updateRest, RestQuery } from '../helpers';
 import { RouteOptions } from '../register';
 
 interface PresetParams {
@@ -58,12 +58,18 @@ export const statePreset: RouteOptions<{
 
 export const actionPresetAll: RouteOptions<{
   Params: PresetParams;
-  Querystring: { blank_empty?: boolean };
+  Body: RestQuery;
   Reply: { preset: Preset; devices: string[] };
 }> = {
   method: 'POST',
   url: '/v3/device/state/presets/:presetname',
   schema: {
+    body: {
+      type: 'object',
+      properties: {
+        rest: { type: 'string', enum: ['ignore', 'blank', 'off'] },
+      },
+    },
     response: {
       200: {
         type: 'object',
@@ -79,37 +85,19 @@ export const actionPresetAll: RouteOptions<{
         },
       },
     },
-    querystring: {
-      type: 'object',
-      properties: {
-        blank_empty: { type: 'boolean' },
-      },
-    },
   },
   async handler(request, reply) {
     const { presetname } = request.params;
-    const { blank_empty } = request.query;
+    const { rest } = request.body;
 
     const preset = presets[presetname];
     if (!preset) {
       return reply.notFound(`Unknown preset ${presetname}`);
     }
 
-    const cells = new Set(this.cells.keys());
-    const devices = Object.entries(preset)
-      .filter(notNullValue)
-      .map(([serial, state]) => {
-        this.cells.setState(serial, state);
-        cells.delete(serial);
-        return serial;
-      });
+    const modified = this.cells.setStateMap(preset);
+    await updateRest(this, modified.rest, rest);
 
-    if (blank_empty) {
-      for (const serial of cells) {
-        this.cells.setState(serial, { type: CellStateType.BLANK });
-      }
-    }
-
-    reply.status(200).send({ preset, devices });
+    reply.status(200).send({ preset, devices: Array.from(modified.updated) });
   },
 };

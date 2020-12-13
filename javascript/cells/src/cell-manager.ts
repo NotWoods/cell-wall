@@ -1,7 +1,9 @@
-import { readFile } from 'fs/promises';
+import { entries } from '@cell-wall/iterators';
 import { EventEmitter } from 'events';
+import { readFile } from 'fs/promises';
 import { CellInfo } from './cell-info.js';
 import { CellState, CellStateType } from './cell-state.js';
+import { DiffSet } from './diff-set.js';
 
 export interface CellData {
   serial: string;
@@ -58,6 +60,34 @@ export class CellManager extends EventEmitter {
     };
     this.cells.set(serial, data);
     this.emit('state', data);
+  }
+
+  setStateMap(
+    states:
+      | { [serial: string]: CellState | undefined }
+      | Map<string, CellState>,
+  ) {
+    const modified = new DiffSet(this.cells.keys());
+
+    for (const [serial, state] of entries(states)) {
+      if (state) {
+        this.setState(serial, state);
+        modified.add(serial);
+      }
+    }
+
+    return modified.toResult();
+  }
+
+  setStateAll(serials: Iterable<string>, state: CellState) {
+    const modified = new DiffSet(this.cells.keys());
+
+    for (const serial of serials) {
+      this.setState(serial, state);
+      modified.add(serial);
+    }
+
+    return modified.toResult();
   }
 
   entries() {

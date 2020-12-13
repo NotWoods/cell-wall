@@ -1,7 +1,7 @@
 import { cellStateSchema, CellData, CellState } from '@cell-wall/cells';
 import { transformMap } from '@cell-wall/iterators';
-import { SerialParams } from '../helpers';
-import { RouteOptions } from '../register';
+import { updateRest, SerialParams, RestQuery } from '../helpers.js';
+import { RouteOptions } from '../register.js';
 
 export const statusState: RouteOptions<{
   Params: Required<SerialParams>;
@@ -116,6 +116,7 @@ export const actionState: RouteOptions<{
 
 export const actionStateAll: RouteOptions<{
   Body: Record<string, CellState>;
+  Querystring: RestQuery;
   Reply: { devices: string[] };
 }> = {
   method: 'POST',
@@ -146,12 +147,11 @@ export const actionStateAll: RouteOptions<{
   },
   async handler(request, reply) {
     const deviceStates = request.body;
+    const { rest } = request.query;
 
-    const devices = Object.entries(deviceStates).map(([serial, state]) => {
-      this.cells.setState(serial, state);
-      return serial;
-    });
+    const modified = this.cells.setStateMap(deviceStates);
+    await updateRest(this, modified.rest, rest);
 
-    reply.status(200).send({ devices });
+    reply.status(200).send({ devices: Array.from(modified.updated) });
   },
 };

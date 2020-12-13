@@ -1,8 +1,5 @@
+import { entries } from '@cell-wall/iterators';
 import { CellInfo } from './cell-info.js';
-
-function entries<T>(obj: T): [keyof T, T[keyof T]][] {
-  return Object.entries(obj) as any;
-}
 
 const AXIS_TO_POS = {
   width: 'x',

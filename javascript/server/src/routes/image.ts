@@ -99,12 +99,12 @@ export const actionImage: RouteOptions<{
       };
     });
 
-    urls.forEach(({ src }, serial) => {
-      this.cells.setState(serial, {
+    this.cells.setStateMap(
+      transformMap(urls, ({ src }) => ({
         type: CellStateType.IMAGE,
         src,
-      });
-    });
+      })),
+    );
 
     reply.status(200).send(Object.fromEntries(urls));
   },

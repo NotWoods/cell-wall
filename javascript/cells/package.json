@@ -12,6 +12,7 @@
     "test": "ava"
   },
   "dependencies": {
+    "@cell-wall/iterators": "*",
     "tslib": "^2.0.1"
   },
   "devDependencies": {
