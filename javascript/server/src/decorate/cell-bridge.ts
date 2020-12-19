@@ -29,7 +29,7 @@ export function cellBridge(deviceManager: DeviceManager, cells: CellManager) {
       action: `${PACKAGE_NAME}.DISPLAY`,
       dataUri: toUri(data.state, base)
         .replaceAll(`&`, '\\&')
-        .replaceAll(`&`, '%27'),
+        .replaceAll(`'`, '%27'),
     });
   });
 }
