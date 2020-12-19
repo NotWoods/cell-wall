@@ -7,8 +7,8 @@ import {
 import { filterMap, transformMap } from '@cell-wall/iterators';
 import { RESIZE, ResizeOptions, splitImage } from '@cell-wall/split-image';
 import Jimp from 'jimp';
-import { RestQuery, SerialParams, updateRest } from './helpers';
-import { RouteOptions } from './register';
+import { RestQuery, SerialParams, updateRest } from './helpers.js';
+import { RouteOptions } from './register.js';
 
 interface ImageQuerystring extends ResizeOptions, RestQuery {
   device?: string[] | string;

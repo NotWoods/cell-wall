@@ -1,5 +1,8 @@
 import { MapLike } from './sync-map';
 
+/**
+ * Run `transform` over every entry in the map in parallel.
+ */
 export async function transformMapAsync<Key, Value, Result>(
   map: MapLike<Key, Value>,
   transform: (value: Value, key: Key) => Promise<Result>,

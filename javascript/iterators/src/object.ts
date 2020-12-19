@@ -4,6 +4,11 @@ export type PairIterable<K, V> = Iterable<[K, V]>;
 
 type MapLikeUnknown = MapLike<unknown, unknown>;
 
+/**
+ * Returns entry iterator.
+ * If an object is provided, `Object.entries` is used.
+ * If a map is provided, the `map.entries` iterator is used.
+ */
 export function entries<K extends keyof any, V>(
   map: MapLike<K, V> | Record<K, V>,
 ): PairIterable<K, V>;
