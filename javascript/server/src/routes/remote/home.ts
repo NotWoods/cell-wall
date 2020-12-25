@@ -43,3 +43,11 @@ export const controllerScript: RouteOptions = {
     reply.type('text/javascript').send(code);
   },
 };
+
+export const controllerRedirect: RouteOptions = {
+  method: 'GET',
+  url: '/controller',
+  async handler(_request, reply) {
+    reply.redirect('/');
+  },
+};
