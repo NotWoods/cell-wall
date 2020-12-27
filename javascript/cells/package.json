@@ -13,13 +13,13 @@
   },
   "dependencies": {
     "@cell-wall/iterators": "*",
-    "tslib": "^2.0.1"
+    "tslib": "^2.0.3"
   },
   "devDependencies": {
-    "ajv": "^6.12.2",
-    "ava": "^3.13.0",
-    "prettier": "^2.1.2",
-    "typescript": "4.1.2"
+    "ajv": "^6.12.6",
+    "ava": "^3.14.0",
+    "prettier": "^2.2.1",
+    "typescript": "4.1.3"
   },
   "files": [
     "src"
