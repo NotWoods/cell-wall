@@ -6,7 +6,7 @@ A multi-device display for showing interactive data, such as photos, weather
 information, calendar appointments, and more.
 
 CellWall is my project to repurpose a batch of old hand-me-down cell phones into
-a useful display in my dorm room. It uses WebSockets to let each phone connect
+a useful display in my dorm room. It uses ADB to let each phone connect
 to a server and receive data about what to display.
 
 ![](images/finished.jpg)
@@ -19,7 +19,7 @@ how to deploy the project on a live system.
 
 ### Prerequisites
 
-- Node.js 14 or greater
+- Node.js 15 or greater
 - Android Studio 4.1 or greater
 
 ### Installing
@@ -69,6 +69,6 @@ Path to the Google OAuth2 credentials file, that holds the client ID and secret.
 ## Built with
 
 - [Fastify](https://www.fastify.io/) - Web server
-- [Socket.io](https://socket.io) - WebSocket library for client and server
+- [ADB](https://developer.android.com/studio/command-line/adb) - Communication from server to phones
 - [Android Architecture Components](https://developer.android.com/topic/libraries/architecture/) -
   Used for MVVM architecture on client
