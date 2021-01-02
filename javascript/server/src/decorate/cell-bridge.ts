@@ -1,5 +1,6 @@
-import { startIntent, DeviceManager } from '@cell-wall/android-bridge';
-import { toUri, CellManager, CellData } from '@cell-wall/cells';
+import { DeviceManager, startIntent } from '@cell-wall/android-bridge';
+import { CellData, CellManager, toUri } from '@cell-wall/cells';
+import { serverAddress } from '../env';
 
 export const PACKAGE_NAME = 'com.tigeroakes.cellwall.client';
 
@@ -23,7 +24,7 @@ export function cellBridge(deviceManager: DeviceManager, cells: CellManager) {
     if (!device) return;
 
     console.log(data);
-    const base = data.info?.server || process.env.SERVER_ADDRESS;
+    const base = data.info?.server || serverAddress;
 
     await startIntent(device, {
       action: `${PACKAGE_NAME}.DISPLAY`,

@@ -1,7 +1,7 @@
-import { FastifyInstance } from 'fastify';
-import { readFile } from 'fs/promises';
-import { google } from 'googleapis';
 import { Repository } from '@cell-wall/storage';
+import { FastifyInstance } from 'fastify';
+import { google } from 'googleapis';
+import { googleClientId, googleClientServer } from '../env';
 
 export type OAuth2Client = InstanceType<typeof google.auth.OAuth2>;
 
@@ -9,15 +9,9 @@ export async function googleAuth(
   app: FastifyInstance,
   repo: Repository,
 ): Promise<OAuth2Client> {
-  const credFile = await readFile(
-    process.env.GOOGLE_CREDENTIALS_PATH || 'google-credentials.json',
-    'utf8',
-  );
-  const credentials = JSON.parse(credFile);
-
   const oAuth2Client = new google.auth.OAuth2(
-    credentials.web.client_id,
-    credentials.web.client_secret,
+    googleClientId,
+    googleClientServer,
     'https://cellwall.tigeroakes.com/oauth2callback',
   );
 

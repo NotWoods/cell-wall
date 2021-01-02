@@ -19,7 +19,7 @@ how to deploy the project on a live system.
 
 ### Prerequisites
 
-- Node.js 15 or greater
+- Node.js 14 or greater
 - Android Studio 4.1 or greater
 
 ### Installing
@@ -54,17 +54,7 @@ your server. Enter the path to your node server, such as `http://10.0.2.2:3000`.
 
 ### Enviornment variables
 
-#### `CELLS_PATH`
-
-Default: `'cell-info.json'`
-
-Path to the cell info file.
-
-#### `GOOGLE_CREDENTIALS_PATH`
-
-Default: `'google-credentials.json'`
-
-Path to the Google OAuth2 credentials file, that holds the client ID and secret.
+See [env.ts](javascript/server/src/env.ts)
 
 ## Built with
 

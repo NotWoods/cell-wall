@@ -8,6 +8,7 @@ import {
   RawServerBase,
 } from 'fastify';
 import sensible from 'fastify-sensible';
+import { cellsPath } from '../env';
 import { cellBridge } from './cell-bridge';
 import { googleAuth, OAuth2Client } from './google-auth';
 import { imageParser } from './jimp';
@@ -28,7 +29,7 @@ declare module 'fastify' {
 export default async function decorateServer(app: FastifyInstance) {
   const repo = await repository('.database.db');
   const deviceManager = new DeviceManager();
-  const cells = new CellManager(process.env.CELLS_PATH || 'cell-info.json');
+  const cells = new CellManager(cellsPath);
   const auth = await googleAuth(app, repo);
   await Promise.all([deviceManager.refreshDevices(), cells.loadData()]);
   cellBridge(deviceManager, cells);
