@@ -1,5 +1,5 @@
 import { entries } from '@cell-wall/iterators';
-import { CellInfo } from './cell-info.js';
+import type { CellInfo } from './cell-info.js';
 
 const AXIS_TO_POS = {
   width: 'x',

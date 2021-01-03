@@ -1,7 +1,7 @@
 import { entries } from '@cell-wall/iterators';
 import { EventEmitter } from 'events';
 import { readFile } from 'fs/promises';
-import { CellInfo } from './cell-info.js';
+import type { CellInfo } from './cell-info.js';
 import { CellState, CellStateType } from './cell-state.js';
 import { DiffSet } from './diff-set.js';
 

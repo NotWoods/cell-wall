@@ -1,6 +1,6 @@
 import { DeviceManager, startIntent } from '@cell-wall/android-bridge';
 import { CellData, CellManager, toUri } from '@cell-wall/cells';
-import { serverAddress } from '../env';
+import { serverAddress } from '../env.js';
 
 export const PACKAGE_NAME = 'com.tigeroakes.cellwall.client';
 
@@ -18,8 +18,8 @@ String.prototype.replaceAll = function replaceAll(
   return this.replace(new RegExp(str, 'g'), newStr);
 };
 
-export function cellBridge(deviceManager: DeviceManager, cells: CellManager) {
-  cells.on('state', async (data: CellData) => {
+export function cellBridgeHandler(deviceManager: DeviceManager) {
+  return async (data: CellData) => {
     const device = deviceManager.devices.get(data.serial);
     if (!device) return;
 
@@ -32,5 +32,10 @@ export function cellBridge(deviceManager: DeviceManager, cells: CellManager) {
         .replaceAll(`&`, '\\&')
         .replaceAll(`'`, '%27'),
     });
-  });
+  };
+}
+
+export function cellBridge(deviceManager: DeviceManager, cells: CellManager) {
+  const handler = cellBridgeHandler(deviceManager);
+  cells.on('state', handler);
 }

@@ -2,6 +2,9 @@ import test from 'ava';
 import Ajv, { ValidateFunction } from 'ajv';
 import { cellStateSchema, cellStateBlankSchema } from '../src/schema.js';
 
+// @ts-ignore
+const ajv: Ajv = new (Ajv.default || Ajv)();
+
 function errorsToMsg({ errors }: ValidateFunction) {
   if (Array.isArray(errors)) {
     return JSON.stringify(errors, undefined, 2);
@@ -11,14 +14,14 @@ function errorsToMsg({ errors }: ValidateFunction) {
 }
 
 test('cellStateBlankSchema', async (t) => {
-  const validate = new Ajv().compile(cellStateBlankSchema);
+  const validate = ajv.compile(cellStateBlankSchema);
 
   t.true(validate({ type: 'BLANK' }), errorsToMsg(validate));
   t.false(validate({ type: 'WEB' }), errorsToMsg(validate));
 });
 
 test('cellStateSchema', async (t) => {
-  const validate = new Ajv().compile(cellStateSchema);
+  const validate = ajv.compile(cellStateSchema);
 
   t.true(validate({ type: 'BLANK' }), errorsToMsg(validate));
   t.true(
@@ -33,7 +36,7 @@ test('cellStateSchema', async (t) => {
 });
 
 test('cellStateSchema map', async (t) => {
-  const validate = new Ajv().compile({
+  const validate = ajv.compile({
     type: 'object',
     properties: {
       devices: {

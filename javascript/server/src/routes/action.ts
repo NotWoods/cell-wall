@@ -12,9 +12,7 @@ export const actionRefresh: RouteOptions<{
         properties: {
           devices: {
             type: 'array',
-            items: {
-              type: 'string',
-            },
+            items: { type: 'string' },
           },
         },
       },

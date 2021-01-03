@@ -1,5 +1,5 @@
-import { readFile } from 'fs/promises';
-import { RouteOptions } from './register';
+import { version } from '../env.js';
+import { RouteOptions } from './register.js';
 
 export const cellWallVersion: RouteOptions<{
   Reply: { version: string };
@@ -17,8 +17,6 @@ export const cellWallVersion: RouteOptions<{
     },
   },
   async handler(_request, reply) {
-    const json = await readFile('../../package.json', 'utf8');
-    const { version } = JSON.parse(json);
     return reply.send({ version });
   },
 };

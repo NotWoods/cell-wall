@@ -1,3 +1,5 @@
+export const version = '3.1.0';
+
 /**
  * Path to the cell info file.
  */

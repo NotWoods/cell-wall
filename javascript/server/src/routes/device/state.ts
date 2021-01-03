@@ -1,4 +1,4 @@
-import { cellStateSchema, CellData, CellState } from '@cell-wall/cells';
+import { cellStateSchema, CellState } from '@cell-wall/cells';
 import { transformMap } from '@cell-wall/iterators';
 import { updateRest, SerialParams, RestQuery } from '../helpers.js';
 import { RouteOptions } from '../register.js';
@@ -35,21 +35,6 @@ export const statusState: RouteOptions<{
     } else {
       reply.notFound(`Could not find device ${serial}`);
     }
-  },
-  wsHandler(connection, _req, params) {
-    const { serial } = params as Required<SerialParams>;
-    connection.setEncoding('utf8');
-
-    function onState(data: CellData) {
-      if (data.serial === serial) {
-        connection.socket.send(JSON.stringify(data.state));
-      }
-    }
-
-    this.cells.on('state', onState);
-    connection.socket.on('close', () => {
-      this.cells.off('state', onState);
-    });
   },
 };
 
