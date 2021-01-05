@@ -1,7 +1,16 @@
 export interface CellInfo {
+  /**
+   * User-friendly name for the device.
+   */
   deviceName: string;
+  /**
+   * Width and height in density independent pixels.
+   */
   width: number;
   height: number;
+  /**
+   * X/Y location relative to other cells.
+   */
   x: number;
   y: number;
   /**
