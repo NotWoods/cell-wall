@@ -33,6 +33,9 @@ jobs:
       - uses: actions/setup-node@v2-beta
         with:
           node-version: '15'
+      - uses: pnpm/action-setup@v1.2.1
+        with:
+          version: 5.13.5
 
       - name: pnpm cache
         uses: actions/cache@v2
@@ -42,12 +45,7 @@ jobs:
             node_modules
             */*/node_modules
           key: ${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
-      - name: pnpm install
-        uses: pnpm/action-setup@v1.2.1
+      - run: pnpm recursive ci
         if: steps.cache.outputs.cache-hit != 'true'
-        with:
-          version: 5.13.5
-          run_install: |
-            - recursive: true
 
       - run: pnpm recursive test
