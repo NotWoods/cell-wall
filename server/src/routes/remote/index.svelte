@@ -1,3 +1,7 @@
+<script context="module">
+	export const prerender = true;
+</script>
+
 <script lang="ts">
 	import { post } from './_form';
 	import PresetCard from './_PresetCard.svelte';

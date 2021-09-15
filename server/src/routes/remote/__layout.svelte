@@ -5,7 +5,6 @@
 <svelte:head>
 	<title>CellWall Remote</title>
 	<link rel="stylesheet" href="https://jenil.github.io/bulmaswatch/darkly/bulmaswatch.min.css" />
-	<link rel="stylesheet" href="/css/base.css" />
 </svelte:head>
 
 <nav class="navbar" role="navigation" aria-label="main navigation">

@@ -1,4 +1,4 @@
-import { google } from 'googleapis';
+import { google, calendar_v3 } from 'googleapis';
 import { Temporal } from '@js-temporal/polyfill';
 import { calendars } from '../../static/index.js';
 import { RouteOptions } from '../register.js';
