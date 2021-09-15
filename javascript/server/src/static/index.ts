@@ -1,7 +1,7 @@
 import { CellState } from '@cell-wall/cells';
-import calendars from './calendars.json';
-import info from './info.json';
-import tea from './tea.json';
+import calendars from './calendars.js';
+import info from './info.js';
+import tea from './tea.js';
 
 export type Preset = Partial<Record<string, CellState>>;
 

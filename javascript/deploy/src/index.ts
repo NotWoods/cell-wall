@@ -32,7 +32,7 @@ async function getConfig({
     input: resolve(cwd, input!),
     output: {
       file: resolve(cwd, out!),
-      format: 'cjs',
+      format: 'es',
       exports: 'named',
     },
     external: [...builtinModules, ...Object.keys(dependencies)],

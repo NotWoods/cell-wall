@@ -1,10 +1,10 @@
 import type { FastifyInstance, FastifyServerOptions } from 'fastify';
 import formbodyPlugin from 'fastify-formbody';
 import staticPlugin from 'fastify-static';
-import { resolve } from 'path';
-import decorateServer from './decorate';
-import * as routes from './routes';
-import { registerRoutes } from './routes/register';
+import { fileURLToPath } from 'url';
+import decorateServer from './decorate/index.js';
+import * as routes from './routes/index.js';
+import { registerRoutes } from './routes/register.js';
 
 export default async function server(
   app: FastifyInstance,
@@ -12,7 +12,7 @@ export default async function server(
 ) {
   app.register(formbodyPlugin);
   app.register(staticPlugin, {
-    root: resolve(__dirname, '../assets'),
+    root: fileURLToPath(new URL('../assets', import.meta.url)),
     prefix: '/assets/',
   });
   await decorateServer(app);

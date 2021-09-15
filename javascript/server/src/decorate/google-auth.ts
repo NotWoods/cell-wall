@@ -1,7 +1,7 @@
 import { Repository } from '@cell-wall/storage';
 import { FastifyInstance } from 'fastify';
 import { google } from 'googleapis';
-import { googleClientId, googleClientServer } from '../env';
+import { googleClientId, googleClientServer } from '../env.js';
 
 export type OAuth2Client = InstanceType<typeof google.auth.OAuth2>;
 

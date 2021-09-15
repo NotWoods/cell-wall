@@ -1,4 +1,4 @@
-import ADB, { Device } from 'appium-adb';
+import { ADB, Device } from 'appium-adb';
 
 export type DeviceMap = Map<string, ADB>;
 export type DeviceCallback<T> = (adb: ADB, udid: string) => Promise<T>;

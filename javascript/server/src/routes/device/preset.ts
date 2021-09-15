@@ -1,7 +1,7 @@
 import { cellStateSchema } from '@cell-wall/cells';
-import { Preset, presets } from '../../static';
-import { updateRest, RestQuery } from '../helpers';
-import { RouteOptions } from '../register';
+import { Preset, presets } from '../../static/index.js';
+import { updateRest, RestQuery } from '../helpers.js';
+import { RouteOptions } from '../register.js';
 
 interface PresetParams {
   presetname: keyof typeof presets;

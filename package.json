@@ -12,13 +12,13 @@
   "bugs": "https://github.com/NotWoods/cell-wall/issues",
   "homepage": "https://github.com/NotWoods/cell-wall#readme",
   "engines": {
-    "node": ">=14.15.0"
+    "node": ">=16"
   },
   "scripts": {
     "build": "tsc --build javascript",
     "build:server": "pnpm run build && pnpm run build --filter @cell-wall/remote && pnpm run build --filter @cell-wall/server",
     "format": "prettier *.json .vscode/*.json *.md javascript/*.json --write",
-    "start": "node javascript/server"
+    "start": "pnpm run --filter \"*/server\""
   },
   "devDependencies": {
     "prettier": "~2.4.0",

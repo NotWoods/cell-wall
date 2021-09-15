@@ -15,7 +15,7 @@
       class="navbar-burger burger"
       class:is-active={open}
       aria-label="menu"
-      aria-expanded={open.toString()}
+      aria-expanded={open}
       data-target="navMenu"
       on:click={() => {
         open = !open;

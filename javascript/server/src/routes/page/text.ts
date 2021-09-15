@@ -1,4 +1,4 @@
-import { RouteOptions } from '../register';
+import { RouteOptions } from '../register.js';
 
 interface TextQuery {
   text?: string;

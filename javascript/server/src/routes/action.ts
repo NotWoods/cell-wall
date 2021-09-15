@@ -1,4 +1,4 @@
-import { RouteOptions } from './register';
+import { RouteOptions } from './register.js';
 
 export const actionRefresh: RouteOptions<{
   Reply: { devices: string[] };

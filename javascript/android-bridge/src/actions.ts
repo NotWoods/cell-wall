@@ -1,4 +1,4 @@
-import ADB from 'appium-adb';
+import { ADB } from 'appium-adb';
 import { checkIfOn, togglePower } from './device-action.js';
 import { DeviceMap } from './device-manager.js';
 

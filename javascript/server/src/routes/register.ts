@@ -7,7 +7,7 @@ import {
   RawServerDefault,
   RouteShorthandOptionsWithHandler,
 } from 'fastify';
-import { RouteGenericInterface } from 'fastify/types/route';
+import { RouteGenericInterface } from 'fastify/types/route.js';
 
 export type RawRequestDefault = RawRequestDefaultExpression<RawServerDefault>;
 export type RawReplyDefault = RawReplyDefaultExpression<RawServerDefault>;

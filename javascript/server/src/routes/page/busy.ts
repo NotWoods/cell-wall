@@ -1,7 +1,7 @@
 import { google } from 'googleapis';
 import { Temporal } from '@js-temporal/polyfill';
-import { calendars } from '../../static';
-import { RouteOptions } from '../register';
+import { calendars } from '../../static/index.js';
+import { RouteOptions } from '../register.js';
 
 interface BusyParams {
   person: keyof typeof calendars;

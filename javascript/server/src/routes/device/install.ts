@@ -1,8 +1,8 @@
 import { transformMapAsync } from '@cell-wall/iterators';
 import type { AppInfo, InstallOrUpgradeResult } from 'appium-adb';
-import { PACKAGE_NAME } from '../../decorate/cell-bridge';
-import { filterDevices, SerialParams } from '../helpers';
-import { MultiRouteOptions } from '../register';
+import { PACKAGE_NAME } from '../../decorate/cell-bridge.js';
+import { filterDevices, SerialParams } from '../helpers.js';
+import { MultiRouteOptions } from '../register.js';
 
 export const stateInstallAll: MultiRouteOptions<{
   Params: SerialParams;

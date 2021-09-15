@@ -8,10 +8,10 @@ import {
   RawServerBase,
 } from 'fastify';
 import sensible from 'fastify-sensible';
-import { cellsPath } from '../env';
-import { cellBridge } from './cell-bridge';
-import { googleAuth, OAuth2Client } from './google-auth';
-import { imageParser } from './jimp';
+import { cellsPath } from '../env.js';
+import { cellBridge } from './cell-bridge.js';
+import { googleAuth, OAuth2Client } from './google-auth.js';
+import { imageParser } from './jimp.js';
 
 declare module 'fastify' {
   export interface FastifyInstance<

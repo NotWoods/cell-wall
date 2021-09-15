@@ -1,7 +1,7 @@
 import { CellInfo, CellManager } from '@cell-wall/cells';
 import { filterMap, transformMap } from '@cell-wall/iterators';
-import { SerialParams } from '../helpers';
-import { MultiRouteOptions, RouteOptions } from '../register';
+import { SerialParams } from '../helpers.js';
+import { MultiRouteOptions, RouteOptions } from '../register.js';
 
 const cellInfoSchema = {
   type: 'object',

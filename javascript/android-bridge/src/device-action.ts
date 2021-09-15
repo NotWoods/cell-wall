@@ -1,4 +1,4 @@
-import ADB from 'appium-adb';
+import { ADB } from 'appium-adb';
 
 const POWER_BUTTON = 26;
 

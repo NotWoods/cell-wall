@@ -1,5 +1,5 @@
-import { RouteOptions } from '../register';
 import code from '@cell-wall/remote';
+import { RouteOptions } from '../register.js';
 
 export const controllerHome: RouteOptions = {
   method: 'GET',
