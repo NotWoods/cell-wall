@@ -1,5 +1,5 @@
 import { google } from 'googleapis';
-import { Temporal } from 'proposal-temporal';
+import { Temporal } from '@js-temporal/polyfill';
 import { calendars } from '../../static';
 import { RouteOptions } from '../register';
 
@@ -30,7 +30,7 @@ export const pageBusy: RouteOptions<{
     const api = google.calendar({ version: 'v3', auth });
 
     const { person } = request.params;
-    const today = Temporal.now.zonedDateTimeISO('UTC').startOfDay();
+    const today = Temporal.Now.zonedDateTimeISO('UTC').startOfDay();
     const nextWeek = today.add({ days: 5 });
     const toStringOptions = {
       timeZoneName: 'never',

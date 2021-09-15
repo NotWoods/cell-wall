@@ -18,7 +18,7 @@ declare module 'fastify' {
     RawServer extends RawServerBase,
     RawRequest extends RawRequestDefaultExpression<RawServer>,
     RawReply extends RawReplyDefaultExpression<RawServer>,
-    Logger
+    Logger,
   > {
     deviceManager: DeviceManager;
     cells: CellManager;

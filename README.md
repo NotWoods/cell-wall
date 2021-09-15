@@ -61,7 +61,7 @@ pnpm recursive install
 Install Gradle dependencies for the client by opening the `./android` folder as
 an Android Studio project and syncing Gradle.
 
-Alternatively, rom the command line:
+Alternatively, from the command line:
 
 ```shell
 cd ./android

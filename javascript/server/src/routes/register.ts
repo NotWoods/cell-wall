@@ -12,7 +12,7 @@ import { RouteGenericInterface } from 'fastify/types/route';
 export type RawRequestDefault = RawRequestDefaultExpression<RawServerDefault>;
 export type RawReplyDefault = RawReplyDefaultExpression<RawServerDefault>;
 export type RouteOptions<
-  RouteGeneric extends RouteGenericInterface = RouteGenericInterface
+  RouteGeneric extends RouteGenericInterface = RouteGenericInterface,
 > = import('fastify').RouteOptions<
   RawServerDefault,
   RawRequestDefault,
@@ -21,7 +21,7 @@ export type RouteOptions<
   ContextConfigDefault
 >;
 export interface MultiRouteOptions<
-  RouteGeneric extends RouteGenericInterface = RouteGenericInterface
+  RouteGeneric extends RouteGenericInterface = RouteGenericInterface,
 > extends RouteShorthandOptionsWithHandler<
     RawServerDefault,
     RawRequestDefault,

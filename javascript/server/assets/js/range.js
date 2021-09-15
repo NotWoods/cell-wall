@@ -1,8 +1,8 @@
-import proposalTemporal from 'https://cdn.skypack.dev/proposal-temporal';
+import proposalTemporal from 'https://cdn.skypack.dev/@js-temporal/polyfill';
 const { Temporal } = proposalTemporal;
 
-/** @typedef {import('proposal-temporal').Temporal.Instant} Instant */
-/** @typedef {import('proposal-temporal').Temporal.ZonedDateTime} ZonedDateTime */
+/** @typedef {import('@js-temporal/polyfill').Temporal.Instant} Instant */
+/** @typedef {import('@js-temporal/polyfill').Temporal.ZonedDateTime} ZonedDateTime */
 
 /**
  * @typedef {object} TimeStampRange
@@ -65,7 +65,7 @@ export function isBusyInterval(ranges, callback) {
   const dateTimeRanges = ranges.map(convert);
 
   function checkBusy() {
-    const now = Temporal.now.zonedDateTimeISO('UTC');
+    const now = Temporal.Now.zonedDateTimeISO('UTC');
     const { busy, next } = isBusy(now, dateTimeRanges);
     callback(busy);
 
