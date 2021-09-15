@@ -1,17 +1,13 @@
 <script lang="ts" context="module">
-	import type { Load } from '@sveltejs/kit';
-
-	export const load: Load = async ({ page }) => ({
-		props: {
-			text: page.query.get('text'),
-			backgroundColor: page.query.get('backgroundColor')
-		}
-	});
+	export const router = false;
+	export const prerender = true;
 </script>
 
 <script lang="ts">
-	export let text = 'CellWall';
-	export let backgroundColor = '#429A46';
+	import { page } from '$app/stores';
+
+	$: text = $page.query.get('text') || 'CellWall';
+	$: backgroundColor = $page.query.get('backgroundColor') || '#429A46';
 </script>
 
 <main style="background: {backgroundColor};">

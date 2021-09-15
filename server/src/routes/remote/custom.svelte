@@ -3,21 +3,23 @@
 </script>
 
 <script lang="ts">
+	import type { CellInfo } from '$lib/cells';
 	import {
-		getTypeFromSchema,
 		cellStateBlankSchema,
-		cellStateWebSchema,
+		cellStateImageSchema,
 		cellStateTextSchema,
-		cellStateImageSchema
-	} from '@cell-wall/cells';
-	import type { CellInfo } from '@cell-wall/cells';
-	import { post, formData } from './_form';
-	import TypeTab from '../TypeTab.svelte';
+		cellStateWebSchema,
+		getTypeFromSchema
+	} from '$lib/cells';
+	import type { Readable } from 'svelte/store';
+	import ControllerFields from '../ControllerFields.svelte';
 	import Field from '../Field.svelte';
 	import PowerButton from '../PowerButton.svelte';
-	import ControllerFields from '../ControllerFields.svelte';
+	import TypeTab from '../TypeTab.svelte';
+	import { formData, post } from './_form';
 
-	export let devices: { serial: string; info: CellInfo }[];
+	export let devices: Readable<ReadonlyMap<string, CellInfo>>;
+	$: deviceArray = Array.from($devices.values());
 
 	const types = [
 		cellStateBlankSchema,
@@ -68,9 +70,9 @@
 		<div class="select">
 			<select bind:value={selectedDevice} id="control-serial">
 				<option value="">All devices</option>
-				{#each devices as device (device.serial)}
+				{#each deviceArray as device (device.serial)}
 					<option value={device.serial}>
-						{device.info.deviceName || device.serial}
+						{device.deviceName || device.serial}
 					</option>
 				{/each}
 			</select>
