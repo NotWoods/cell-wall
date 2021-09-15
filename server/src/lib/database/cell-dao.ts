@@ -4,8 +4,8 @@ import { Database } from 'sqlite';
 export interface Cell {
 	serial: string;
 	deviceName: string;
-	widthPixels?: number;
-	heightPixels?: number;
+	width?: number;
+	height?: number;
 	x?: number;
 	y?: number;
 	server?: string;
@@ -17,13 +17,13 @@ export interface CellDao {
 }
 
 export const cellTable = `Cell (
-  serial       TEXT PRIMARY KEY,
-  deviceName   TEXT NOT NULL,
-  widthPixels  INTEGER,
-  heightPixels INTEGER,
-  x            INTEGER,
-  y            INTEGER,
-  server       TEXT
+  serial     TEXT PRIMARY KEY,
+  deviceName TEXT NOT NULL,
+  width      INTEGER,
+  height     INTEGER,
+  x          INTEGER,
+  y          INTEGER,
+  server     TEXT
 )`;
 
 export function cellDao(db: Database): CellDao {
@@ -33,9 +33,9 @@ export function cellDao(db: Database): CellDao {
 			return cell;
 		},
 		async insertCell(cell) {
-			const { serial, deviceName, widthPixels, heightPixels, x, y, server, state } = cell;
+			const { serial, deviceName, width, height, x, y, server } = cell;
 			await db.run(
-				SQL`REPLACE INTO Cell(serial, deviceName, widthPixels, heightPixels, x, y, server, state) VALUES (${serial}, ${deviceName}, ${widthPixels}, ${heightPixels}. ${x}, ${y}, ${server}, ${state})`
+				SQL`REPLACE INTO Cell(serial, deviceName, width, height, x, y, server) VALUES (${serial}, ${deviceName}, ${width}, ${height}. ${x}, ${y}, ${server})`
 			);
 		}
 	};

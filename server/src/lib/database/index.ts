@@ -1,2 +1,2 @@
-export type { Cell } from './cell-dao';
-export * from './repository';
+export type { Cell, CellDao } from './cell-dao';
+export * from './database';

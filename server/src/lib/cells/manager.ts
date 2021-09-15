@@ -1,25 +1,16 @@
-import { Readable, Writable, writable } from 'svelte/store';
-import type { Cell, Repository } from '../database';
+import { Readable, writable } from 'svelte/store';
+import type { Cell, CellDao } from '../database';
 import type { CellState } from './state';
 
 export type CellInfo = Cell;
 
-export interface CellData {
-	serial: string;
-	info: CellInfo;
-	state: CellState;
-}
-
 export class CellManager {
-	private readonly _info: Writable<ReadonlyMap<string, CellInfo>>;
-	private readonly _state: Writable<ReadonlyMap<string, CellState>>;
+	private readonly _info = writable<ReadonlyMap<string, Cell>>(new Map());
+	private readonly _state = writable<ReadonlyMap<string, CellState>>(new Map());
 
-	constructor(private readonly repo: Repository) {
-		this._info = writable(new Map());
-		this._state = writable(new Map());
-	}
+	constructor(private readonly cellDao: CellDao) {}
 
-	get info(): Readable<ReadonlyMap<string, CellInfo>> {
+	get info(): Readable<ReadonlyMap<string, Cell>> {
 		return this._info;
 	}
 
@@ -31,7 +22,7 @@ export class CellManager {
 		// TODO load info
 	}
 
-	register(serial: string, info: CellInfo): void {
+	register(serial: string, info: Cell): void {
 		this._info.update((map) => new Map(map).set(serial, info));
 	}
 

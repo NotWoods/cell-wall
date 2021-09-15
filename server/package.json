@@ -28,6 +28,10 @@
 	"type": "module",
 	"dependencies": {
 		"@js-temporal/polyfill": "^0.2.0",
-		"googleapis": "^85.0.0"
+		"appium-adb": "^8.14.0",
+		"googleapis": "^85.0.0",
+		"sql-template-strings": "^2.2.2",
+		"sqlite": "^4.0.23",
+		"sqlite3": "^5.0.2"
 	}
 }
