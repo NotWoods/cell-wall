@@ -1,9 +1,31 @@
-import { describe, expect, it, jest } from '@jest/globals';
-import { checkIfOn, togglePower } from '../adb-action';
+import { afterEach, describe, expect, it, jest } from '@jest/globals';
+import { checkIfOn, startIntent, togglePower } from '../adb-action';
 
-describe('checkIfOn', () => {
+describe('startIntent', () => {
+	const shell = jest.fn().mockReturnValue('');
+	const adb = { shell } as any;
+
+	afterEach(() => {
+		shell.mockReset();
+		shell.mockReturnValue('');
+	});
+
+	it('runs command with no options', async () => {
+		await startIntent(adb, {});
+		expect(shell).toBeCalledWith(['am', 'start', '-W']);
+	});
+
+	it(`throws if intent doesn't resolve`, async () => {
+		shell.mockReturnValue('Unable to resolve intent');
+		await expect(startIntent(adb, {})).rejects.toMatchObject({
+			message: 'Unable to resolve intent'
+		});
+	});
+});
+
+describe('startIntent', () => {
 	it('check cmd output', async () => {
-		const adb = jest.fn();
+		const adb = jest.fn() as any;
 		const cmdOutput = `Power Manager State:
 Settings power_manager_constants:
   no_cached_wake_locks=true
@@ -33,7 +55,7 @@ mHoldingDisplaySuspendBlocker=true`;
 describe('togglePower', () => {
 	it('runs keyevent', async () => {
 		const keyevent = jest.fn();
-		const adb: any = { keyevent };
+		const adb = { keyevent } as any;
 
 		await togglePower(adb);
 

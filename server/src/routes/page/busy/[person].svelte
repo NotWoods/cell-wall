@@ -3,7 +3,7 @@
 	import type { calendar_v3 } from 'googleapis';
 	import { google } from 'googleapis';
 	import { Temporal } from '@js-temporal/polyfill';
-	import { isBusyInterval } from './_range.js';
+	import { isBusyInterval } from './_range';
 
 	const people = {
 		tiger: {

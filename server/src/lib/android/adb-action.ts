@@ -87,12 +87,13 @@ export async function startIntent(adb: ADB, options: StartIntentOptions): Promis
 		}
 	}
 
+	let res: string;
 	try {
-		const res = await adb.shell(args);
-		if (res.toLowerCase().includes('unable to resolve intent')) {
-			throw new Error(res);
-		}
-	} catch (e) {
-		throw new Error(`Error attempting to start intent. Original error: ${e}`);
+		res = await adb.shell(args);
+	} catch (err) {
+		throw new Error(`Error attempting to start intent. Original error: ${err}`);
+	}
+	if (res.toLowerCase().includes('unable to resolve intent')) {
+		throw new Error(res);
 	}
 }
