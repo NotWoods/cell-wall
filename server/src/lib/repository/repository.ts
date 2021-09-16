@@ -24,6 +24,8 @@ export interface Repository {
 	insertTokens(token: Auth.Credentials): Promise<void>;
 	getPower(serial: string): Promise<boolean>;
 	setPower(serial: string | readonly string[], on: boolean | 'toggle'): Promise<boolean>;
+	setState(serial: string, state: CellState): Promise<void>;
+	setStates(states: { [serial: string]: CellState } | Map<string, CellState>): Promise<void>;
 }
 
 function sendIntentOnStateChange(cellManager: CellManager, deviceManager: DeviceManager) {
@@ -126,6 +128,14 @@ export function repository(): Repository {
 			const devices = get(deviceManager.devices);
 			const serialList = asArray(serial);
 			return setPower(getAll(devices, serialList), on);
+		},
+		async setState(serial, state) {
+			const cellManager = await cellManagerPromise;
+			cellManager.setState(serial, state);
+		},
+		async setStates(states) {
+			const cellManager = await cellManagerPromise;
+			cellManager.setStateMap(states);
 		}
 	};
 }

@@ -30,6 +30,10 @@ export interface CellStateWeb {
 
 export type CellState = CellStateBlank | CellStateText | CellStateImage | CellStateWeb;
 
+export function blankState(): CellStateBlank {
+	return { type: CellStateType.BLANK };
+}
+
 export function toUri(state: CellState, base?: string | URL): string {
 	const { type, ...props } = state;
 	switch (type.toUpperCase()) {

@@ -1,6 +1,6 @@
 import { google } from 'googleapis';
 import type { Auth } from 'googleapis';
-import type { Repository } from './database';
+import type { Repository } from './repository';
 
 /** The Google API client ID for your application. */
 const googleClientId = process.env['GOOGLE_CLIENT_ID'];
