@@ -1,24 +1,40 @@
 <script lang="ts">
-  import { createEventDispatcher } from 'svelte';
+	import { post } from './_form';
 
-  const dispatch = createEventDispatcher();
+	export let title: string;
+	export let action: string;
+	export let rest: 'ignore' | 'blank' | 'off';
 
-  export let title: string;
-  export let action: string;
+	let loading: Promise<unknown> = Promise.resolve();
 
-  function handleClick() {
-    dispatch('activate', action);
-  }
+	async function onActivate() {
+		loading = post(action, { rest });
+	}
 </script>
 
-<article
-  class="tile is-child box"
-  style="display: flex; flex-direction: column">
-  <p class="title">{title}</p>
-  <p class="subtitle">
-    <slot />
-  </p>
-  <div class="buttons is-right" style="margin-top: auto">
-    <button class="button is-outlined" on:click={handleClick}>Activate</button>
-  </div>
-</article>
+<form class="tile is-child box" {action} on:submit|preventDefault={onActivate}>
+	<p class="title">{title}</p>
+	<p class="subtitle">
+		<slot />
+	</p>
+	<div class="buttons is-right">
+		{#await loading}
+			<button type="submit" class="button is-outlined is-primary is-loading">Loading</button>
+		{:then _}
+			<button type="submit" class="button is-outlined is-primary">Submit</button>
+		{:catch _}
+			<button type="submit" class="button is-outlined is-danger">Submit</button>
+		{/await}
+	</div>
+</form>
+
+<style>
+	form {
+		display: flex;
+		flex-direction: column;
+	}
+
+	.buttons {
+		margin-top: auto;
+	}
+</style>

@@ -1,29 +1,28 @@
-<script context="module">
-	export const prerender = true;
+<script lang="ts" context="module">
+	import { createLoadWithDevices, Props } from './_load';
+
+	export const load = createLoadWithDevices();
 </script>
 
 <script lang="ts">
-	import type { CellInfo } from '@cell-wall/cells';
-	import Field from '../Field.svelte';
+	import Field from './_Field.svelte';
+	import Form from './_Form.svelte';
+	import DeviceOption from './_DeviceOption.svelte';
 
-	export let devices: { serial: string; info: CellInfo }[];
+	export let devices: Props['devices'];
 
-	let form: HTMLFormElement;
-	let loading: Promise<void> = Promise.resolve();
 	let fileName = '';
 
-	async function submit() {
-		const data = new FormData(form);
+	async function submit(data: FormData, action: URL) {
 		const image = data.get('image') as File;
 		data.delete('image');
 
-		const url = new URL(form.action);
 		for (const [key, value] of data) {
-			url.searchParams.append(key, value as string);
+			action.searchParams.append(key, value as string);
 		}
 
 		try {
-			const res = await fetch(url.toString(), {
+			const res = await fetch(action.toString(), {
 				method: 'post',
 				headers: {
 					'content-type': image.type
@@ -41,14 +40,7 @@
 	}
 </script>
 
-<form
-	method="post"
-	action="/v3/action/image"
-	on:submit|preventDefault={() => {
-		loading = submit();
-	}}
-	bind:this={form}
->
+<Form action="/v3/action/image" onSubmit={submit} let:loading>
 	<Field htmlFor="control-image" label="Image">
 		<div class="file has-name">
 			<label class="file-label">
@@ -79,9 +71,7 @@
 		<div class="select is-multiple">
 			<select multiple name="device" id="control-serial">
 				{#each devices as device (device.serial)}
-					<option value={device.serial} selected>
-						{device.info.deviceName || device.serial}
-					</option>
+					<DeviceOption {device} />
 				{/each}
 			</select>
 		</div>
@@ -143,4 +133,4 @@
 			{/await}
 		</p>
 	</div>
-</form>
+</Form>

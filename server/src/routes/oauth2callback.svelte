@@ -1,9 +1,11 @@
 <script lang="ts" context="module">
 	import type { Load } from '@sveltejs/kit';
-	import { authenticateGoogle } from '$lib/google';
-	import type { Context } from './_kit';
+	import { initializeGoogle, authenticateGoogle } from '$lib/google';
+	import { repo } from '$lib/repository';
 
-	export const load: Load<{ context: Context }> = async ({ page, context }) => {
+	const authReady = initializeGoogle(repo);
+
+	export const load: Load = async ({ page }) => {
 		const code = page.query.get('code');
 		if (!code) {
 			return {
@@ -12,7 +14,7 @@
 			};
 		}
 
-		const { googleAuth, repo } = context;
+		const { googleAuth } = await authReady;
 		await authenticateGoogle(googleAuth, repo, code);
 
 		return {

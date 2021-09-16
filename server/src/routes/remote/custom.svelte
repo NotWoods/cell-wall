@@ -1,49 +1,38 @@
-<script context="module">
-	export const prerender = true;
+<script lang="ts" context="module">
+	import { allCellStateSchemas, getTypeFromSchema } from '$lib/cells';
+	import { createLoadWithDevices, Props } from './_load';
+
+	export const load = createLoadWithDevices();
 </script>
 
 <script lang="ts">
-	import type { CellInfo } from '$lib/cells';
-	import {
-		cellStateBlankSchema,
-		cellStateImageSchema,
-		cellStateTextSchema,
-		cellStateWebSchema,
-		getTypeFromSchema
-	} from '$lib/cells';
-	import type { Readable } from 'svelte/store';
-	import ControllerFields from '../ControllerFields.svelte';
-	import Field from '../Field.svelte';
-	import PowerButton from '../PowerButton.svelte';
-	import TypeTab from '../TypeTab.svelte';
-	import { formData, post } from './_form';
+	import ControllerFields from './custom/_ControllerFields.svelte';
+	import PowerButton from './custom/_PowerButton.svelte';
+	import TypeTab from './custom/_TypeTab.svelte';
+	import Field from './_Field.svelte';
+	import { post } from './_form';
+	import Form from './_Form.svelte';
+	import DeviceOption from './_DeviceOption.svelte';
 
-	export let devices: Readable<ReadonlyMap<string, CellInfo>>;
-	$: deviceArray = Array.from($devices.values());
+	export let devices: Props['devices'];
 
-	const types = [
-		cellStateBlankSchema,
-		cellStateWebSchema,
-		cellStateTextSchema,
-		cellStateImageSchema
-	];
+	// Selected schema type
 	let selectedType = 'BLANK';
+	// serial from selected device
 	let selectedDevice = '';
-	let form: HTMLFormElement;
-	let loading: Promise<void> = Promise.resolve();
 
-	$: activeSchema = types.find((schema) => getTypeFromSchema(schema) === selectedType);
+	$: activeSchema = allCellStateSchemas.find(
+		(schema) => getTypeFromSchema(schema) === selectedType
+	);
 
 	function handleSelect(event: CustomEvent<string>) {
 		selectedType = event.detail;
 	}
 
-	async function submit() {
-		const data = Object.fromEntries(formData(form));
+	async function submit(formData: FormData, action: URL) {
+		const data = Object.fromEntries(formData);
 
-		const url = selectedDevice ? form.action + selectedDevice : form.action;
-
-		await post(url, {
+		await post(action.toString(), {
 			...data,
 			type: selectedType
 		});
@@ -52,28 +41,19 @@
 
 <nav class="tabs is-centered">
 	<ul>
-		{#each types as schema (schema.properties.type.enum[0])}
+		{#each allCellStateSchemas as schema (getTypeFromSchema(schema))}
 			<TypeTab selected={selectedType} {schema} on:click={handleSelect} />
 		{/each}
 	</ul>
 </nav>
 
-<form
-	method="post"
-	action="/v3/device/state/"
-	on:submit|preventDefault={() => {
-		loading = submit();
-	}}
-	bind:this={form}
->
+<Form action="/v3/device/state/{selectedDevice}" onSubmit={submit} let:loading>
 	<Field htmlFor="control-serial" label="Device">
 		<div class="select">
 			<select bind:value={selectedDevice} id="control-serial">
 				<option value="">All devices</option>
-				{#each deviceArray as device (device.serial)}
-					<option value={device.serial}>
-						{device.deviceName || device.serial}
-					</option>
+				{#each devices as device (device.serial)}
+					<DeviceOption {device} />
 				{/each}
 			</select>
 		</div>
@@ -105,4 +85,4 @@
 			{/await}
 		</p>
 	</div>
-</form>
+</Form>

@@ -3,34 +3,17 @@
 </script>
 
 <script lang="ts">
-	import { post } from './_form';
 	import PresetCard from './_PresetCard.svelte';
 
-	let loading: Promise<unknown> = Promise.resolve();
-	let rest = 'ignore';
-
-	async function onActivate(event: CustomEvent<string>) {
-		const action = event.detail;
-		loading = post(action, { rest });
-	}
+	let rest: 'ignore' | 'blank' | 'off' = 'ignore';
 </script>
-
-{#await loading}
-	<progress class="progress is-small is-primary" max="100">Loading</progress>
-{:then res}
-	<progress class="progress is-small is-primary" value={res != undefined ? '100' : '0'} max="100"
-		>Done</progress
-	>
-{:catch _}
-	<progress class="progress is-small is-danger" value="100" max="100">Error</progress>
-{/await}
 
 <div class="tile is-ancestor">
 	<div class="tile is-parent is-vertical">
-		<PresetCard title="Info" action="/v3/device/state/presets/info" on:activate={onActivate}>
+		<PresetCard title="Info" action="/v3/device/state/presets/info" {rest}>
 			Calendar indicators and the week's weather.
 		</PresetCard>
-		<PresetCard title="Tea list" action="/v3/device/state/presets/tea" on:activate={onActivate}>
+		<PresetCard title="Tea list" action="/v3/device/state/presets/tea" {rest}>
 			What's avaliable to drink?
 		</PresetCard>
 	</div>
