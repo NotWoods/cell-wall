@@ -1,11 +1,11 @@
-import { setPower } from '$lib/android/power';
-import { asArray, getAll } from '$lib/map/get';
 import type { Auth } from 'googleapis';
 import { derived, get, Readable, writable } from 'svelte/store';
 import { DeviceManager, DeviceMap } from '../android/device-manager';
+import { setPower } from '../android/power';
 import { CellManager, CellState, toUri } from '../cells';
 import { Cell, database } from '../database';
 import { PACKAGE_NAME, SERVER_ADDRESS, SQLITE_FILENAME } from '../env';
+import { asArray, getAll } from '../map/get';
 import { subscribeToMapStore } from '../map/subscribe';
 
 export interface CellData {
