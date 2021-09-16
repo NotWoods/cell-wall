@@ -1,8 +1,8 @@
 import Jimp from 'jimp';
-import { cellCanvas, shiftCell } from '../cells/canvas.js';
-import { transformMapAsync } from '../map/transform.js';
-import { crop, resize, ResizeOptions } from './manipulate.js';
-import type { RectangleWithPosition } from './rect.js';
+import { cellCanvas, shiftCell } from '../cells/canvas';
+import { transformMapAsync } from '../map/transform';
+import { crop, resize, ResizeOptions } from './manipulate';
+import type { RectangleWithPosition } from './rect';
 
 export async function splitImage(
 	image: Jimp,

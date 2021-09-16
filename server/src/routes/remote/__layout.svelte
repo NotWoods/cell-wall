@@ -5,12 +5,13 @@
 <svelte:head>
 	<title>CellWall Remote</title>
 	<link rel="stylesheet" href="https://jenil.github.io/bulmaswatch/darkly/bulmaswatch.min.css" />
+	<link rel="manifest" href="/manifest.webmanifest" />
 </svelte:head>
 
 <nav class="navbar" role="navigation" aria-label="main navigation">
 	<div class="navbar-brand">
 		<a class="navbar-item" href="https://github.com/NotWoods/cell-wall">
-			<img src="/assets/logo.png" alt="" width="28" height="28" />
+			<img src="/logo.png" alt="" width="28" height="28" />
 			<span style="margin-left: 0.5rem">CellWall Remote</span>
 		</a>
 

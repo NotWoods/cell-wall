@@ -1,7 +1,7 @@
 <script lang="ts">
-	import startCase from 'lodash-es/startCase';
+	import startCase from 'lodash.startcase';
 	import type { CellStateJsonSchema } from '$lib/cells/schema';
-	import Field from './Field.svelte';
+	import Field from '../_Field.svelte';
 
 	function getInputType(
 		name: string,

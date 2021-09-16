@@ -1,35 +1,20 @@
 <script lang="ts">
-	import { post } from './_form';
-
 	export let title: string;
-	export let action: string;
-	export let rest: 'ignore' | 'blank' | 'off';
-
-	let loading: Promise<unknown> = Promise.resolve();
-
-	async function onActivate() {
-		loading = post(action, { rest });
-	}
+	export let preset: string;
 </script>
 
-<form class="tile is-child box" {action} on:submit|preventDefault={onActivate}>
+<article class="tile is-child box">
 	<p class="title">{title}</p>
 	<p class="subtitle">
 		<slot />
 	</p>
 	<div class="buttons is-right">
-		{#await loading}
-			<button type="submit" class="button is-outlined is-primary is-loading">Loading</button>
-		{:then _}
-			<button type="submit" class="button is-outlined is-primary">Submit</button>
-		{:catch _}
-			<button type="submit" class="button is-outlined is-danger">Submit</button>
-		{/await}
+		<button type="submit" name="preset" value={preset} class="button is-outlined">Activate</button>
 	</div>
-</form>
+</article>
 
 <style>
-	form {
+	article {
 		display: flex;
 		flex-direction: column;
 	}

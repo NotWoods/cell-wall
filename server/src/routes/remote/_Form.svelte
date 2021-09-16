@@ -5,8 +5,15 @@
 	let form: HTMLFormElement;
 	let loading: Promise<void> = Promise.resolve();
 
-	function handleSubmit() {
-		loading = onSubmit(new FormData(form), new URL(action));
+	function handleSubmit(evt: Event) {
+		const event = evt as SubmitEvent;
+		const formData = new FormData(form);
+
+		const submitter = event.submitter as HTMLButtonElement | HTMLInputElement | null;
+		if (submitter && submitter.name) {
+			formData.set(submitter.name, submitter.value);
+		}
+		loading = onSubmit(formData, new URL(form.action));
 	}
 </script>
 

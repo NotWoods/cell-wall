@@ -1,4 +1,4 @@
-import type { Rectangle, RectangleWithPosition } from '../image/rect.js';
+import type { Rectangle, RectangleWithPosition } from '../image/rect';
 
 const AXIS_TO_POS: ReadonlyMap<
 	keyof Rectangle,

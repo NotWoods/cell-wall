@@ -11,7 +11,9 @@
 		"format": "prettier --ignore-path .gitignore --write --plugin-search-dir=. ."
 	},
 	"devDependencies": {
+		"@sveltejs/adapter-node": "^1.0.0-next.48",
 		"@sveltejs/kit": "next",
+		"@types/lodash.startcase": "^4.4.6",
 		"@typescript-eslint/eslint-plugin": "^4.31.1",
 		"@typescript-eslint/parser": "^4.31.1",
 		"eslint": "^7.32.0",
@@ -30,6 +32,7 @@
 		"@js-temporal/polyfill": "^0.2.0",
 		"appium-adb": "^8.14.0",
 		"googleapis": "^85.0.0",
+		"lodash.startcase": "^4.4.0",
 		"sql-template-strings": "^2.2.2",
 		"sqlite": "^4.0.23",
 		"sqlite3": "^5.0.2"

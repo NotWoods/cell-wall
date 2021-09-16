@@ -1,6 +1,6 @@
-import { cellDao, CellDao } from './cell-dao.js';
-import { openDb } from './open-db.js';
-import { TokenDao, tokenDao } from './token-dao.js';
+import { cellDao, CellDao } from './cell-dao';
+import { openDb } from './open-db';
+import { TokenDao, tokenDao } from './token-dao';
 
 export interface Database {
 	tokenDao(): TokenDao;

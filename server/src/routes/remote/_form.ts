@@ -18,3 +18,13 @@ export async function post(action: string, body: object): Promise<Response> {
 		throw err;
 	}
 }
+
+export function formDataAsSearchParams(formData: FormData): URLSearchParams {
+	const params = new URLSearchParams();
+	for (const [key, value] of formData) {
+		if (typeof value === 'string') {
+			params.append(key, value);
+		}
+	}
+	return params;
+}

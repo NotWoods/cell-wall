@@ -1,5 +1,5 @@
 <script lang="ts">
-  import startCase from 'lodash-es/startCase';
+  import startCase from 'lodash.startcase';
   import type { CellStateJsonSchema } from '@cell-wall/cells';
   import Field from './Field.svelte';
 
@@ -44,7 +44,8 @@
   <Field
     htmlFor="control-{name}"
     label={getInputName(name)}
-    narrow={type === 'color'}>
+    narrow={type === 'color'}
+  >
     {#if Array.isArray(property.enum)}
       <div class="select">
         <select id="control-{name}" {name}>
@@ -59,7 +60,8 @@
         class="input"
         {name}
         {type}
-        required={required.has(name)} />
+        required={required.has(name)}
+      />
     {/if}
   </Field>
 {/each}

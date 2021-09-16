@@ -1,6 +1,6 @@
 import type { ADB } from 'appium-adb';
-import { checkIfOn, togglePower } from './adb-action.js';
-import type { DeviceMap } from './device-manager.js';
+import { checkIfOn, togglePower } from './adb-action';
+import type { DeviceMap } from './device-manager';
 
 export type Power = boolean | 'toggle';
 
