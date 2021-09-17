@@ -24,10 +24,19 @@ export const RESIZE = new Set([
 	Jimp.RESIZE_BEZIER
 ]);
 
-export function parseResizeOptions(query: ResizeOptions = {}) {
+type Item<T> = T extends ReadonlySet<infer I> ? I : never;
+
+function has<T>(set: ReadonlySet<T>, item: unknown): item is Item<T> {
+	return set.has(item as any);
+}
+
+export function parseResizeOptions(query: ResizeOptions = {}): {
+	alignBits: number;
+	resizeMode: Item<typeof RESIZE> | undefined;
+} {
 	const horizontalFlag = ALIGN_QUERY[query.horizontalAlign!] || 0;
 	const verticalFlag = ALIGN_QUERY[query.verticalAlign!] || 0;
-	const resize = RESIZE.has(query.resize as any) ? query.resize : undefined;
+	const resize = has(RESIZE, query.resize) ? query.resize : undefined;
 
 	return {
 		alignBits: horizontalFlag | verticalFlag,

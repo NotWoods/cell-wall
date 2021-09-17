@@ -25,14 +25,14 @@ type emuMethods = typeof emuMethods;
 type settingsClientCommands = typeof settingsClientCommands;
 
 export interface AdbMethods
-  extends methods,
-    manifestMethods,
-    systemCallMethods,
-    apkSigningMethods,
-    apkUtilsMethods,
-    apksUtilsMethods,
-    emuMethods,
-    settingsClientCommands {}
+	extends methods,
+		manifestMethods,
+		systemCallMethods,
+		apkSigningMethods,
+		apkUtilsMethods,
+		apksUtilsMethods,
+		emuMethods,
+		settingsClientCommands {}
 
 declare const adbMethods: AdbMethods;
 export default adbMethods;

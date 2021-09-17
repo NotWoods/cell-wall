@@ -4,11 +4,16 @@ import { transformMapAsync } from '../map/transform';
 import { crop, resize, ResizeOptions } from './manipulate';
 import type { RectangleWithPosition } from './rect';
 
+interface SplitImageResult {
+	info: RectangleWithPosition;
+	img: Jimp;
+}
+
 export async function splitImage(
 	image: Jimp,
 	cells: ReadonlyMap<string, RectangleWithPosition>,
 	options: ResizeOptions = {}
-) {
+): Promise<Map<string, SplitImageResult>> {
 	const canvas = cellCanvas(cells.values());
 	await resize(image, canvas, options);
 
