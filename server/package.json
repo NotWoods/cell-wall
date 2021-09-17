@@ -17,6 +17,7 @@
 		"appium-adb": "^8.14.0",
 		"googleapis": "^85.0.0",
 		"lodash.startcase": "^4.4.0",
+		"lowdb": "^3.0.0",
 		"sql-template-strings": "^2.2.2",
 		"sqlite": "^4.0.23",
 		"sqlite3": "^5.0.2"
@@ -41,10 +42,5 @@
 		"svelte-preprocess": "^4.9.4",
 		"tslib": "^2.3.1",
 		"typescript": "^4.4.3"
-	},
-	"jest": {
-		"transform": {
-			"^.+\\.tsx?$": "esbuild-jest"
-		}
 	}
 }

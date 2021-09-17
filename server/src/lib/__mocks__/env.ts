@@ -26,4 +26,4 @@ export const SERVER_ADDRESS = '';
 
 export const PACKAGE_NAME = 'com.tigeroakes.cellwall.client';
 
-export const SQLITE_FILENAME = ':memory:';
+export const SQLITE_FILENAME = undefined;

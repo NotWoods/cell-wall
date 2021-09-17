@@ -1,5 +1,5 @@
-import { Readable, writable } from 'svelte/store';
-import type { Cell, CellDao } from '../database';
+import { get, Readable, writable } from 'svelte/store';
+import type { Cell, Database } from '../database';
 import type { CellState } from './state';
 
 export type CellInfo = Cell;
@@ -7,8 +7,6 @@ export type CellInfo = Cell;
 export class CellManager {
 	private readonly _info = writable<ReadonlyMap<string, Cell>>(new Map());
 	private readonly _state = writable<ReadonlyMap<string, CellState>>(new Map());
-
-	constructor(private readonly cellDao: CellDao) {}
 
 	get info(): Readable<ReadonlyMap<string, Cell>> {
 		return this._info;
@@ -18,15 +16,24 @@ export class CellManager {
 		return this._state;
 	}
 
-	async loadInfo(): Promise<void> {
+	async loadInfo(db: Database): Promise<void> {
 		try {
-			for (const cell of await this.cellDao.getCells()) {
-				this.register(cell.serial, cell);
-			}
+			const cells = await db.getCells();
+			this._info.update((map) => {
+				const newMap = new Map(map);
+				for (const cell of cells) {
+					newMap.set(cell.serial, cell);
+				}
+				return newMap;
+			});
 		} catch (err) {
 			console.error('Could not load CellManager data', err);
 			// do nothing, just use blank data
 		}
+	}
+
+	async writeInfo(db: Database): Promise<void> {
+		await db.insertCells(Array.from(get(this.info).values()));
 	}
 
 	register(serial: string, info: Cell): void {

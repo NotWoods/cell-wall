@@ -26,4 +26,4 @@ export const SERVER_ADDRESS = import.meta.env['SERVER_ADDRESS'] as string;
 
 export const PACKAGE_NAME = 'com.tigeroakes.cellwall.client';
 
-export const SQLITE_FILENAME = import.meta.env['SQLITE_FILENAME'] as string;
+export const SQLITE_FILENAME = import.meta.env['SQLITE_FILENAME'] as string | undefined;

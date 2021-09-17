@@ -88,20 +88,19 @@ function deriveCellInfo(
 
 export function repository(): Repository {
 	const dbPromise = database(SQLITE_FILENAME);
-	const tokenDaoPromise = dbPromise.then((db) => db.tokenDao());
-	const cellDaoPromise = dbPromise.then((db) => db.cellDao());
 
 	const deviceManager = new DeviceManager();
 	let deviceManagerPromise = deviceManager.refreshDevices().then(() => deviceManager);
-	const cellManagerPromise = cellDaoPromise.then((cellDao) => new CellManager(cellDao));
+	const cellManager = new CellManager();
+	const cellManagerPromise = dbPromise
+		.then((db) => cellManager.loadInfo(db))
+		.then(() => cellManager);
 
 	const cellData = writable<CellDataMap>(new Map());
 
 	// Send intents whenever cell state changes
-	Promise.all([cellManagerPromise, deviceManagerPromise]).then(([cellManager, deviceManager]) => {
-		sendIntentOnStateChange(cellManager, deviceManager);
-		deriveCellInfo(cellManager, deviceManager).subscribe(cellData.set);
-	});
+	sendIntentOnStateChange(cellManager, deviceManager);
+	deriveCellInfo(cellManager, deviceManager).subscribe(cellData.set);
 
 	return {
 		cellData,
@@ -111,13 +110,13 @@ export function repository(): Repository {
 			return refreshPromise;
 		},
 		async getTokens() {
-			const tokenDao = await tokenDaoPromise;
-			const allString = await tokenDao.getToken('all_tokens');
+			const db = await dbPromise;
+			const allString = await db.getToken();
 			return allString ? JSON.parse(allString) : undefined;
 		},
 		async insertTokens(json) {
-			const tokenDao = await tokenDaoPromise;
-			return tokenDao.insertToken('all_tokens', JSON.stringify(json));
+			const db = await dbPromise;
+			return db.insertToken(JSON.stringify(json));
 		},
 		async getPower(serial) {
 			const deviceManager = await deviceManagerPromise;
