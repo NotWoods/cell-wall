@@ -19,7 +19,14 @@ export class CellManager {
 	}
 
 	async loadInfo(): Promise<void> {
-		// TODO load info
+		try {
+			for (const cell of await this.cellDao.getCells()) {
+				this.register(cell.serial, cell);
+			}
+		} catch (err) {
+			console.error('Could not load CellManager data', err);
+			// do nothing, just use blank data
+		}
 	}
 
 	register(serial: string, info: Cell): void {
