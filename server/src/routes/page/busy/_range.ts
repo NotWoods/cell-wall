@@ -1,27 +1,18 @@
 import { Temporal } from '@js-temporal/polyfill';
-
-/** @typedef {import('@js-temporal/polyfill').Temporal.Instant} Instant */
-/** @typedef {import('@js-temporal/polyfill').Temporal.ZonedDateTime} ZonedDateTime */
-
-/**
- * @typedef {object} TimeStampRange
- * @prop {string} start
- * @prop {string} end
- */
-
-export interface TimeStampRange {
-	start: string;
-	end: string;
-}
+import type { calendar_v3 } from 'googleapis';
 
 export interface DateTimeRange {
-	start: Temporal.ZonedDateTime;
-	end: Temporal.ZonedDateTime;
+	start: Temporal.ZonedDateTime | undefined;
+	end: Temporal.ZonedDateTime | undefined;
 }
 
-function convert(range: TimeStampRange): DateTimeRange {
-	function fromTimeStamp(timestamp: string | Temporal.Instant) {
-		return Temporal.Instant.from(timestamp).toZonedDateTimeISO('UTC');
+function convert(range: calendar_v3.Schema$TimePeriod): DateTimeRange {
+	function fromTimeStamp(timestamp: string | Temporal.Instant | null | undefined) {
+		if (timestamp) {
+			return Temporal.Instant.from(timestamp).toZonedDateTimeISO('UTC');
+		} else {
+			return undefined;
+		}
 	}
 
 	return {
@@ -39,10 +30,10 @@ function isBusy(time: Temporal.ZonedDateTime, ranges: readonly DateTimeRange[]) 
 	for (const range of ranges) {
 		const { start, end } = range;
 
-		if (Temporal.ZonedDateTime.compare(time, start) < 0) {
+		if (start && Temporal.ZonedDateTime.compare(time, start) < 0) {
 			// range is later, stop now because list is ordered
 			return { busy: false, next: range.start };
-		} else if (Temporal.ZonedDateTime.compare(time, end) <= 0) {
+		} else if (!end || Temporal.ZonedDateTime.compare(time, end) <= 0) {
 			// this is the current range
 			return { busy: true, next: range.end };
 		} else {
@@ -58,7 +49,7 @@ function isBusy(time: Temporal.ZonedDateTime, ranges: readonly DateTimeRange[]) 
  * @param callback
  */
 export function isBusyInterval(
-	ranges: readonly TimeStampRange[],
+	ranges: readonly calendar_v3.Schema$TimePeriod[],
 	callback: (inRange: boolean) => void
 ): void {
 	const dateTimeRanges = ranges.map(convert);

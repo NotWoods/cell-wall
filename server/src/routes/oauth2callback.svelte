@@ -1,11 +1,17 @@
 <script lang="ts" context="module">
 	import type { Load } from '@sveltejs/kit';
-	import { initializeGoogle, authenticateGoogle } from '$lib/google';
+	import { authenticateGoogle } from '$lib/google';
 	import { repo } from '$lib/repository';
+	import type { Context } from './__layout.svelte';
 
-	const authReady = initializeGoogle(repo);
+	export const load: Load<{ context: Context }> = async ({ page, context }) => {
+		if (!context.googleAuth) {
+			return {
+				status: 503,
+				error: `Google Auth not set up`
+			};
+		}
 
-	export const load: Load = async ({ page }) => {
 		const code = page.query.get('code');
 		if (!code) {
 			return {
@@ -14,8 +20,7 @@
 			};
 		}
 
-		const { googleAuth } = await authReady;
-		await authenticateGoogle(googleAuth, repo, code);
+		await authenticateGoogle(context.googleAuth, repo, code);
 
 		return {
 			status: 200

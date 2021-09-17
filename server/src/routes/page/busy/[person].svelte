@@ -1,8 +1,8 @@
 <script lang="ts" context="module">
-	import type { Load } from '@sveltejs/kit';
-	import type { calendar_v3 } from 'googleapis';
-	import { google } from 'googleapis';
 	import { Temporal } from '@js-temporal/polyfill';
+	import type { Load } from '@sveltejs/kit';
+	import { google, calendar_v3 } from 'googleapis';
+	import type { Context } from '../../__layout.svelte';
 	import { isBusyInterval } from './_range';
 
 	const people = {
@@ -35,8 +35,15 @@
 		return person in people;
 	}
 
-	export const load: Load = async ({ page }) => {
-		const api = google.calendar({ version: 'v3', auth });
+	export const load: Load<{ context: Context }> = async ({ page, context }) => {
+		if (!context.googleAuth) {
+			return {
+				status: 503,
+				error: `Google Auth not set up`
+			};
+		}
+
+		const api = google.calendar({ version: 'v3', auth: context.googleAuth });
 		const { person } = page.params;
 
 		if (!isPerson(person)) {

@@ -1,16 +1,15 @@
-import { google } from 'googleapis';
-import type { Auth } from 'googleapis';
+import { google, Auth } from 'googleapis';
 import type { Repository } from './repository';
 
-/** The Google API client ID for your application. */
-const googleClientId = process.env['GOOGLE_CLIENT_ID'];
-
-/** The Google API client secret for your application. */
-const googleClientServer = process.env['GOOGLE_CLIENT_SECRET'];
-
 export async function initializeGoogle(
-	repo: Repository
-): Promise<{ authorizeUrl?: string; googleAuth: Auth.OAuth2Client }> {
+	repo: Repository,
+	googleClientId: string | undefined,
+	googleClientServer: string | undefined
+): Promise<{ authorizeUrl?: string; googleAuth?: Auth.OAuth2Client }> {
+	if (!googleClientId || !googleClientServer) {
+		return {};
+	}
+
 	const googleAuth = new google.auth.OAuth2(
 		googleClientId,
 		googleClientServer,

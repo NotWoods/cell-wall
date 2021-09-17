@@ -15,12 +15,12 @@ export const CELLS_PATH = import.meta.env['CELLS_PATH'] as string;
 /**
  * The Google API client ID for your application.
  */
-export const GOOGLE_CLIENT_ID = import.meta.env['GOOGLE_CLIENT_ID'] as string;
+export const GOOGLE_CLIENT_ID = import.meta.env['GOOGLE_CLIENT_ID'] as string | undefined;
 
 /**
  * The Google API client secret for your application.
  */
-export const GOOGLE_CLIENT_SECRET = import.meta.env['GOOGLE_CLIENT_SECRET'] as string;
+export const GOOGLE_CLIENT_SECRET = import.meta.env['GOOGLE_CLIENT_SECRET'] as string | undefined;
 
 export const SERVER_ADDRESS = import.meta.env['SERVER_ADDRESS'] as string;
 
