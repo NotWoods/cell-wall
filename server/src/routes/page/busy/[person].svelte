@@ -1,8 +1,7 @@
 <script lang="ts" context="module">
 	import { Temporal } from '@js-temporal/polyfill';
 	import type { Load } from '@sveltejs/kit';
-	import { google, calendar_v3 } from 'googleapis';
-	import type { Context } from '../../__layout.svelte';
+	import type { calendar_v3 } from 'googleapis';
 	import { isBusyInterval } from './_range';
 
 	const people = {
@@ -35,15 +34,7 @@
 		return person in people;
 	}
 
-	export const load: Load<{ context: Context }> = async ({ page, context }) => {
-		if (!context.googleAuth) {
-			return {
-				status: 503,
-				error: `Google Auth not set up`
-			};
-		}
-
-		const api = google.calendar({ version: 'v3', auth: context.googleAuth });
+	export const load: Load = async ({ page }) => {
 		const { person } = page.params;
 
 		if (!isPerson(person)) {
@@ -60,33 +51,32 @@
 			smallestUnit: 'second'
 		} as const;
 
-		const res = await api.freebusy.query({
-			requestBody: {
-				timeMin: today.toString(toStringOptions),
-				timeMax: nextWeek.toString(toStringOptions),
-				items: [{ id: people[person].calendar }]
-			}
+		const body: calendar_v3.Schema$FreeBusyRequest = {
+			timeMin: today.toString(toStringOptions),
+			timeMax: nextWeek.toString(toStringOptions),
+			items: [{ id: people[person].calendar }]
+		};
+		const res = await fetch('/api/third_party/freebusy', {
+			method: 'post',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(body)
 		});
 
-		if (res.status < 200 || res.status >= 300) {
+		if (!res.ok) {
 			return {
 				status: res.status,
 				error: new Error(`Could not load calendar, ${res.statusText}`)
 			};
 		}
 
-		const { errors, busy } = Object.values(res.data.calendars!)[0];
-		if (errors && errors.length > 0) {
-			return {
-				status: 500,
-				error: new Error(errors.map((error) => error.reason).join())
-			};
-		}
+		const busy = await res.json();
 
 		return {
 			props: {
 				name: person,
-				busyRanges: busy!
+				busyRanges: busy
 			}
 		};
 	};

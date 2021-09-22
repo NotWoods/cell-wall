@@ -1,11 +1,16 @@
 import { google, Auth } from 'googleapis';
 import type { Repository } from './repository';
 
+export interface GoogleClient {
+	authorizeUrl?: string;
+	googleAuth?: Auth.OAuth2Client;
+}
+
 export async function initializeGoogle(
-	repo: Repository,
+	repo: Pick<Repository, 'getTokens'>,
 	googleClientId: string | undefined,
 	googleClientServer: string | undefined
-): Promise<{ authorizeUrl?: string; googleAuth?: Auth.OAuth2Client }> {
+): Promise<GoogleClient> {
 	if (!googleClientId || !googleClientServer) {
 		return {};
 	}
@@ -30,12 +35,13 @@ export async function initializeGoogle(
 	});
 
 	console.log(`\n---\nAuthenticate with Google:\n${authorizeUrl}\n---\n`);
+
 	return { googleAuth, authorizeUrl };
 }
 
 export async function authenticateGoogle(
 	googleAuth: Auth.OAuth2Client,
-	repo: Repository,
+	repo: Pick<Repository, 'insertTokens'>,
 	code: string
 ): Promise<void> {
 	const res = await googleAuth.getToken(code);

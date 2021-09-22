@@ -3,8 +3,8 @@
 </script>
 
 <script lang="ts">
+	import Form from '$lib/components/Form.svelte';
 	import { formDataAsSearchParams } from './_form';
-	import Form from './_Form.svelte';
 	import PresetCard from './_PresetCard.svelte';
 
 	async function submit(data: FormData, action: URL) {

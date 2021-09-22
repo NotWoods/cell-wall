@@ -1,10 +1,17 @@
+import { GoogleClient, initializeGoogle } from '$lib/google';
 import type { Auth } from 'googleapis';
 import { derived, get, Readable, writable } from 'svelte/store';
 import { DeviceManager, DeviceMap } from '../android/device-manager';
 import { setPower } from '../android/power';
 import { CellManager, CellState, toUri } from '../cells';
 import { Cell, database } from '../database';
-import { PACKAGE_NAME, SERVER_ADDRESS, SQLITE_FILENAME } from '../env';
+import {
+	GOOGLE_CLIENT_ID,
+	GOOGLE_CLIENT_SECRET,
+	PACKAGE_NAME,
+	SERVER_ADDRESS,
+	SQLITE_FILENAME
+} from '../env';
 import { asArray, getAll } from '../map/get';
 import { subscribeToMapStore } from '../map/subscribe';
 
@@ -19,6 +26,7 @@ type CellDataMap = ReadonlyMap<string, CellData>;
 
 export interface Repository {
 	cellData: Readable<CellDataMap>;
+	googleAuth(): Promise<GoogleClient>;
 	refreshDevices(): Promise<DeviceMap>;
 	getTokens(): Promise<Auth.Credentials | undefined>;
 	insertTokens(token: Auth.Credentials): Promise<void>;
@@ -102,21 +110,33 @@ export function repository(): Repository {
 	sendIntentOnStateChange(cellManager, deviceManager);
 	deriveCellInfo(cellManager, deviceManager).subscribe(cellData.set);
 
+	let googleClient: Promise<GoogleClient> | undefined;
+
+	const tokens = {
+		async getTokens() {
+			const db = await dbPromise;
+			const allString = await db.getToken();
+			return allString ? JSON.parse(allString) : undefined;
+		},
+		async insertTokens(json: Auth.Credentials) {
+			const db = await dbPromise;
+			return db.insertToken(JSON.stringify(json));
+		}
+	};
+
 	return {
+		...tokens,
 		cellData,
 		refreshDevices() {
 			const refreshPromise = deviceManager.refreshDevices();
 			deviceManagerPromise = refreshPromise.then(() => deviceManager);
 			return refreshPromise;
 		},
-		async getTokens() {
-			const db = await dbPromise;
-			const allString = await db.getToken();
-			return allString ? JSON.parse(allString) : undefined;
-		},
-		async insertTokens(json) {
-			const db = await dbPromise;
-			return db.insertToken(JSON.stringify(json));
+		googleAuth() {
+			if (!googleClient) {
+				googleClient = initializeGoogle(tokens, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET);
+			}
+			return googleClient;
 		},
 		async getPower(serial) {
 			const deviceManager = await deviceManagerPromise;

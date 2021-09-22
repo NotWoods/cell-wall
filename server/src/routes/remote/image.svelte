@@ -5,8 +5,8 @@
 </script>
 
 <script lang="ts">
+	import Form from '$lib/components/Form.svelte';
 	import Field from './_Field.svelte';
-	import Form from './_Form.svelte';
 	import DeviceOption from './_DeviceOption.svelte';
 
 	export let devices: Props['devices'];

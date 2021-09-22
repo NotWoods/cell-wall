@@ -6,12 +6,12 @@
 </script>
 
 <script lang="ts">
+	import Form from '$lib/components/Form.svelte';
 	import ControllerFields from './custom/_ControllerFields.svelte';
 	import PowerButton from './custom/_PowerButton.svelte';
 	import TypeTab from './custom/_TypeTab.svelte';
 	import Field from './_Field.svelte';
 	import { post } from './_form';
-	import Form from './_Form.svelte';
 	import DeviceOption from './_DeviceOption.svelte';
 
 	export let devices: Props['devices'];
