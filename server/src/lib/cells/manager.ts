@@ -1,4 +1,5 @@
-import { get, Readable, writable } from 'svelte/store';
+import { get, writable } from 'svelte/store';
+import type { Readable } from 'svelte/store';
 import type { Cell, Database } from '../database';
 import type { CellState } from './state';
 

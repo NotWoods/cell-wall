@@ -35,9 +35,9 @@
 
 	<div id="navMenu" class="navbar-menu" class:is-active={open}>
 		<div class="navbar-start">
-			<a class="navbar-item" href="#preset"> Preset </a>
-			<a class="navbar-item" href="#image"> Image </a>
-			<a class="navbar-item" href="#custom"> Custom </a>
+			<a class="navbar-item" href="/remote/"> Preset </a>
+			<a class="navbar-item" href="/remote/image"> Image </a>
+			<a class="navbar-item" href="/remote/custom"> Custom </a>
 		</div>
 	</div>
 </nav>

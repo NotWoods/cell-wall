@@ -7,6 +7,6 @@ import { get as getState } from 'svelte/store';
  */
 export const get: RequestHandler = async function get() {
 	return {
-		body: JSON.stringify(Object.entries(getState(repo.cellData)))
+		body: JSON.stringify(Object.fromEntries(getState(repo.cellData)))
 	};
 };

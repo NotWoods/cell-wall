@@ -1,10 +1,11 @@
 import { GoogleClient, initializeGoogle } from '$lib/google';
 import type { Auth } from 'googleapis';
-import { derived, get, Readable, writable } from 'svelte/store';
-import { DeviceManager, DeviceMap } from '../android/device-manager';
+import type { Readable } from 'svelte/store';
+import { derived, get, writable } from 'svelte/store';
+import { DeviceManager } from '../android/device-manager';
 import { setPower } from '../android/power';
-import { CellManager, CellState, toUri } from '../cells';
-import { Cell, database } from '../database';
+import { CellManager, toUri } from '../cells';
+import { database } from '../database';
 import {
 	GOOGLE_CLIENT_ID,
 	GOOGLE_CLIENT_SECRET,
@@ -14,27 +15,7 @@ import {
 } from '../env';
 import { asArray, getAll } from '../map/get';
 import { subscribeToMapStore } from '../map/subscribe';
-
-export interface CellData {
-	serial: string;
-	info?: Cell;
-	state?: CellState;
-	connected: boolean;
-}
-
-type CellDataMap = ReadonlyMap<string, CellData>;
-
-export interface Repository {
-	cellData: Readable<CellDataMap>;
-	googleAuth(): Promise<GoogleClient>;
-	refreshDevices(): Promise<DeviceMap>;
-	getTokens(): Promise<Auth.Credentials | undefined>;
-	insertTokens(token: Auth.Credentials): Promise<void>;
-	getPower(serial: string): Promise<boolean>;
-	setPower(serial: string | readonly string[], on: boolean | 'toggle'): Promise<boolean>;
-	setState(serial: string, state: CellState): Promise<void>;
-	setStates(states: { [serial: string]: CellState } | Map<string, CellState>): Promise<void>;
-}
+import type { CellData, CellDataMap, Repository } from './interface';
 
 function sendIntentOnStateChange(cellManager: CellManager, deviceManager: DeviceManager) {
 	subscribeToMapStore(cellManager.state, (newStates, oldStates) => {
@@ -90,7 +71,9 @@ function deriveCellInfo(
 					cellInfoMap.set(serial, { serial, connected: true });
 				}
 			}
-		}
+			return cellInfoMap;
+		},
+		new Map()
 	);
 }
 

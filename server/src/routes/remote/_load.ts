@@ -1,4 +1,4 @@
-import type { CellData } from '$lib/repository';
+import type { CellData } from '$lib/repository/interface';
 import type { Load } from '@sveltejs/kit';
 
 export interface Props {
