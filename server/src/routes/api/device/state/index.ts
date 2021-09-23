@@ -1,8 +1,8 @@
+import type { RequestHandler } from '@sveltejs/kit';
+import { get as getState } from 'svelte/store';
 import { blankState } from '$lib/cells';
 import { transformMap } from '$lib/map/transform';
 import { repo } from '$lib/repository';
-import type { RequestHandler } from '@sveltejs/kit';
-import { get as getState } from 'svelte/store';
 
 /**
  * Get states from all cells

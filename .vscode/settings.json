@@ -21,10 +21,12 @@
   },
   "editor.formatOnSave": true,
   "search.exclude": {
-    "**/node_modules": true,
-    "**/lib": true,
     "**/coverge": true,
-    "package-lock.json": true
+    "**/lib": true,
+    "**/node_modules": true,
+    "package-lock.json": true,
+    "server/.svelte-kit": true,
+    "server/build": true
   },
   "typescript.referencesCodeLens.enabled": true,
   "typescript.tsdk": "node_modules\\typescript\\lib"

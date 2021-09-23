@@ -1,7 +1,8 @@
-import { GoogleClient, initializeGoogle } from '$lib/google';
 import type { Auth } from 'googleapis';
 import type { Readable } from 'svelte/store';
 import { derived, get, writable } from 'svelte/store';
+import type { GoogleClient } from '$lib/google';
+import { initializeGoogle } from '$lib/google';
 import { DeviceManager } from '../android/device-manager';
 import { setPower } from '../android/power';
 import { CellManager, toUri } from '../cells';

@@ -1,4 +1,5 @@
-import { google, Auth } from 'googleapis';
+import { google } from 'googleapis';
+import type { Auth } from 'googleapis';
 import type { Repository } from './repository';
 
 export interface GoogleClient {

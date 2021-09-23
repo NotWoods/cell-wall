@@ -1,4 +1,5 @@
-import { JSONFile, Memory, Low, Adapter } from 'lowdb';
+import type { Adapter } from 'lowdb';
+import { JSONFile, Memory, Low } from 'lowdb';
 
 interface LowData {
 	token?: string | undefined;

@@ -1,9 +1,13 @@
-import type { RawBody } from '@sveltejs/kit';
 import type { ParameterizedBody } from '@sveltejs/kit/types/app';
 
 interface BodyTypeRaw {
 	type: 'raw';
-	body: RawBody;
+	body: Uint8Array;
+}
+
+interface BodyTypeNull {
+	type: 'null';
+	body: null;
 }
 
 interface BodyTypeString {
@@ -21,7 +25,12 @@ interface BodyTypeJson {
 	body: unknown;
 }
 
-export type BodyType = BodyTypeRaw | BodyTypeString | BodyTypeFormData | BodyTypeJson;
+export type BodyType =
+	| BodyTypeRaw
+	| BodyTypeNull
+	| BodyTypeString
+	| BodyTypeFormData
+	| BodyTypeJson;
 
 interface PartialInput {
 	headers: { 'content-type'?: string };
@@ -52,7 +61,9 @@ export function bodyType({ headers, body }: PartialInput): BodyType {
 				return { type: 'form', body };
 			}
 		default:
-			if (body === null || body instanceof Uint8Array) {
+			if (body === null) {
+				return { type: 'null', body };
+			} else if (body instanceof Uint8Array) {
 				return { type: 'raw', body };
 			} else {
 				throw new Error(`Content-Type ${type} does not match ${typeof body} body`);

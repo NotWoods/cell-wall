@@ -1,6 +1,9 @@
-import { ADB, Device } from 'appium-adb';
-import { Readable, writable } from 'svelte/store';
-import { checkIfOn, startIntent, StartIntentOptions, togglePower } from './adb-action';
+import type { Device } from 'appium-adb';
+import { ADB } from 'appium-adb';
+import type { Readable } from 'svelte/store';
+import { writable } from 'svelte/store';
+import type { StartIntentOptions } from './adb-action';
+import { checkIfOn, startIntent, togglePower } from './adb-action';
 
 export type DeviceMap = ReadonlyMap<string, ADB>;
 export type DeviceCallback<T> = (adb: ADB, udid: string) => Promise<T>;

@@ -1,8 +1,9 @@
-import { bodyType } from '$lib/body';
-import { blankState, CellState } from '$lib/cells';
-import { repo } from '$lib/repository';
 import type { RequestHandler } from '@sveltejs/kit';
 import { get as getState } from 'svelte/store';
+import { bodyType } from '$lib/body';
+import type { CellState } from '$lib/cells';
+import { blankState } from '$lib/cells';
+import { repo } from '$lib/repository';
 import { asCellState } from './_body';
 
 /**
