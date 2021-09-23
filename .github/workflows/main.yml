@@ -60,3 +60,13 @@ jobs:
 
       - run: npm build
         working-directory: ./server
+
+      - run: deploy to branch
+        uses: peaceiris/actions-gh-pages@v3
+        if: ${{ github.event_name == 'push' }}
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./server/build
+          publish_branch: pi-deploy
+          user_name: 'github-actions[bot]'
+          user_email: 'github-actions[bot]@users.noreply.github.com'
