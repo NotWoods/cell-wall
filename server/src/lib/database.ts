@@ -7,7 +7,7 @@ interface LowData {
 
 export interface Cell {
 	serial: string;
-	deviceName: string;
+	deviceName?: string;
 	width?: number;
 	height?: number;
 	x?: number;

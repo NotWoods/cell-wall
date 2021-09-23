@@ -39,6 +39,9 @@
 			<a class="navbar-item" href="/remote/image"> Image </a>
 			<a class="navbar-item" href="/remote/custom"> Custom </a>
 		</div>
+		<div class="navbar-end">
+			<a class="navbar-item" href="/remote/edit"> Edit </a>
+		</div>
 	</div>
 </nav>
 

@@ -138,6 +138,13 @@ export function repository(): Repository {
 		async setStates(states) {
 			const cellManager = await cellManagerPromise;
 			cellManager.setStateMap(states);
+		},
+		async registerCell(info) {
+			const cellManager = await cellManagerPromise;
+			cellManager.register(info.serial, info);
+
+			const db = await dbPromise;
+			await cellManager.writeInfo(db);
 		}
 	};
 }

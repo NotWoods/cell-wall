@@ -1,9 +1,9 @@
 import { asPower, Power } from '$lib/android/power';
+import type { ParameterizedBody } from '@sveltejs/kit/types/app';
+import { isRawBody } from '../state/_body';
 
-export function parsePowerBody(body: unknown): Power | undefined {
-	if (body instanceof FormData) {
-		return asPower(body.get('on'));
-	} else if (typeof body === 'string') {
+export function parsePowerBody(body: ParameterizedBody): Power | undefined {
+	if (typeof body === 'string') {
 		const json: unknown = JSON.parse(body);
 		if (typeof json === 'boolean' || typeof json === 'string') {
 			return asPower(json);
@@ -11,6 +11,8 @@ export function parsePowerBody(body: unknown): Power | undefined {
 			const { on } = json as { on?: unknown };
 			return asPower(on);
 		}
+	} else if (!isRawBody(body)) {
+		return asPower(body.get('on'));
 	}
 	return undefined;
 }

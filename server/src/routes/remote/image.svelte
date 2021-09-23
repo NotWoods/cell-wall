@@ -6,6 +6,7 @@
 
 <script lang="ts">
 	import Form from '$lib/components/Form.svelte';
+	import SubmitButton from '$lib/components/SubmitButton.svelte';
 	import Field from './_Field.svelte';
 	import DeviceOption from './_DeviceOption.svelte';
 
@@ -123,14 +124,6 @@
 		<p class="control">
 			<button type="reset" class="button is-light">Reset</button>
 		</p>
-		<p class="control">
-			{#await loading}
-				<button type="submit" class="button is-primary is-loading">Loading</button>
-			{:then _}
-				<button type="submit" class="button is-primary">Submit</button>
-			{:catch _}
-				<button type="submit" class="button is-danger">Submit</button>
-			{/await}
-		</p>
+		<SubmitButton {loading} />
 	</div>
 </Form>

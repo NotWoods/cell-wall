@@ -1,7 +1,7 @@
 import type { Auth } from 'googleapis';
 import type { Readable } from 'svelte/store';
 import type { DeviceMap } from '../android/device-manager';
-import type { CellState } from '../cells';
+import type { CellInfo, CellState } from '../cells';
 import type { Cell } from '../database';
 import type { GoogleClient } from '../google';
 
@@ -24,4 +24,5 @@ export interface Repository {
 	setPower(serial: string | readonly string[], on: boolean | 'toggle'): Promise<boolean>;
 	setState(serial: string, state: CellState): Promise<void>;
 	setStates(states: { [serial: string]: CellState } | Map<string, CellState>): Promise<void>;
+	registerCell(info: CellInfo): Promise<void>;
 }

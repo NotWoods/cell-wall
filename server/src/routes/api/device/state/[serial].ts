@@ -1,3 +1,4 @@
+import { bodyType } from '$lib/body';
 import { blankState, CellState } from '$lib/cells';
 import { repo } from '$lib/repository';
 import type { RequestHandler } from '@sveltejs/kit';
@@ -20,13 +21,18 @@ export const get: RequestHandler = async function get({ params }) {
 /**
  * Set state for a cell
  */
-export const post: RequestHandler = async function post({ params, body }) {
-	const { serial } = params;
+export const post: RequestHandler = async function post(input) {
+	const { serial } = input.params;
+
 	let state: CellState | undefined;
-	if (typeof body === 'string') {
-		state = asCellState(JSON.parse(body));
-	} else if (body instanceof FormData) {
-		state = asCellState(Object.fromEntries(body.entries()));
+	const body = bodyType(input);
+	switch (body.type) {
+		case 'json':
+			state = asCellState(body.body as object);
+			break;
+		case 'form':
+			state = asCellState(Object.fromEntries(body.body.entries()));
+			break;
 	}
 
 	if (!state) {
