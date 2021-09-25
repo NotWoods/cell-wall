@@ -27,43 +27,30 @@ jobs:
 
   server:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./server
 
     steps:
       - uses: actions/checkout@v2
+
+      # Install dependencies
       - uses: actions/setup-node@v2
         with:
           node-version: "16"
-
-      # Install dependencies
-      - name: npm cache
-        uses: actions/cache@v2
-        env:
-          cache-name: cache-node-modules
-        id: cache
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
+          cache: npm
+          cache-dependency-path: server/package-lock.json
       - run: npm ci
-        working-directory: ./server
         if: steps.cache.outputs.cache-hit != 'true'
 
       # Validate the source code
       - run: npm run lint
-        working-directory: ./server
       - run: npm run check
-        working-directory: ./server
       - run: npm run test
-        working-directory: ./server
 
       # Build production code
       - run: npm run build
-        working-directory: ./server
       - run: cp ./{package.json,.gitignore} ./build
-        working-directory: ./server
 
       # Publish the code
       - name: deploy to branch
