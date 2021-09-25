@@ -62,7 +62,7 @@ jobs:
       # Build production code
       - run: npm run build
         working-directory: ./server
-      - run: cp package.json build
+      - run: cp ./{package.json,.gitignore} ./build
         working-directory: ./server
 
       # Publish the code
