@@ -1,0 +1,24 @@
+<script lang="ts" context="module">
+	export const router = false;
+	export const prerender = true;
+</script>
+
+<script lang="ts">
+	import { page } from '$app/stores';
+
+	$: text = $page.query.get('text') || 'CellWall';
+	$: backgroundColor = $page.query.get('backgroundColor') || '#429A46';
+</script>
+
+<main style="background: {backgroundColor};">
+	<h1 class="headline-1">{text}</h1>
+</main>
+
+<style>
+	main {
+		display: flex;
+	}
+	h1 {
+		margin: 8px;
+	}
+</style>

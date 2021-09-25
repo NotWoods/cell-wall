@@ -1,8 +1,0 @@
-version: '3.7'
-services:
-  caddy:
-    image: notwoods/cell-wall
-    restart: always
-    container_name: cell-wall
-    ports:
-      - '3000:3000'

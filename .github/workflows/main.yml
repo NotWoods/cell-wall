@@ -25,27 +25,48 @@ jobs:
       # - run: ./gradlew testDebugUnitTest
       #   working-directory: ./android
 
-  javascript:
+  server:
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2-beta
+      - uses: actions/setup-node@v2
         with:
-          node-version: '15'
-      - uses: pnpm/action-setup@v1.2.1
-        with:
-          version: 5.13.5
+          node-version: '16'
 
-      - name: pnpm cache
+      - name: npm cache
+        working-directory: ./server
         uses: actions/cache@v2
+        env:
+          cache-name: cache-node-modules
         id: cache
         with:
-          path: |
-            node_modules
-            */*/node_modules
-          key: ${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
-      - run: pnpm recursive ci
+          path: ~/.npm
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+      - run: npm ci
+        working-directory: ./server
         if: steps.cache.outputs.cache-hit != 'true'
 
-      - run: pnpm recursive test
+      - run: npm lint
+        working-directory: ./server
+      - run: npm check
+        working-directory: ./server
+      - run: npm test
+        working-directory: ./server
+
+      - run: npm build
+        working-directory: ./server
+
+      - run: deploy to branch
+        uses: peaceiris/actions-gh-pages@v3
+        if: ${{ github.event_name == 'push' }}
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./server/build
+          publish_branch: pi-deploy
+          user_name: 'github-actions[bot]'
+          user_email: 'github-actions[bot]@users.noreply.github.com'
