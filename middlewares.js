@@ -1027,6 +1027,7 @@ Object.defineProperty(globalThis, "require", {
 // .svelte-kit/output/server/app.js
 import { google } from "googleapis";
 import { ADB } from "appium-adb";
+import { config } from "dotenv";
 import fs from "fs";
 import path from "path";
 import startCase from "lodash.startcase";
@@ -3151,10 +3152,26 @@ function toUri(state, base2) {
     }
   }
 }
+config();
 var VERSION = "4.0.0";
-var SERVER_ADDRESS = { "VITE_SVELTEKIT_AMP": "", "BASE_URL": "/_app/", "MODE": "production", "DEV": false, "PROD": true }["SERVER_ADDRESS"];
+var SERVER_ADDRESS = process.env["SERVER_ADDRESS"];
 var PACKAGE_NAME = "com.tigeroakes.cellwall.client";
-var SQLITE_FILENAME = { "VITE_SVELTEKIT_AMP": "", "BASE_URL": "/_app/", "MODE": "production", "DEV": false, "PROD": true }["SQLITE_FILENAME"];
+var GOOGLE_CLIENT_ID = process.env["GOOGLE_CLIENT_ID"];
+var GOOGLE_CLIENT_SECRET = process.env["GOOGLE_CLIENT_SECRET"];
+var DATABASE_FILENAME = process.env["DATABASE_FILENAME"];
+function initializeGoogle(credentials, googleClientId, googleClientServer) {
+  const client = new google.auth.OAuth2(googleClientId, googleClientServer, "https://cellwall.tigeroakes.com/oauth2callback");
+  if (credentials) {
+    console.log("Loading Google authentication from storage");
+    client.setCredentials(credentials);
+    return { client };
+  }
+  const authorizeUrl = client.generateAuthUrl({
+    access_type: "offline",
+    scope: ["https://www.googleapis.com/auth/calendar.readonly"]
+  });
+  return { client, authorizeUrl };
+}
 async function authenticateGoogle(client, code) {
   const res = await client.getToken(code);
   client.setCredentials(res.tokens);
@@ -3482,7 +3499,7 @@ function deriveCellInfo(cellManager, deviceManager) {
   }, new Map());
 }
 function repository() {
-  const dbPromise = database(SQLITE_FILENAME);
+  const dbPromise = database(DATABASE_FILENAME);
   const deviceManager = new DeviceManager();
   let deviceManagerPromise = deviceManager.refreshDevices().then(() => deviceManager);
   const cellManager = new CellManager();
@@ -3492,8 +3509,19 @@ function repository() {
   let googleClient;
   async function googleApi() {
     if (!googleClient) {
-      {
+      if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET) {
         throw new Error(`Missing Google API keys`);
+      }
+      const db = await dbPromise;
+      const credentials = await db.getGoogleCredentials();
+      googleClient = initializeGoogle(credentials, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET);
+      if (googleClient.authorizeUrl) {
+        console.log(`
+---
+Authenticate with Google:
+${googleClient.authorizeUrl}
+---
+`);
       }
     }
     return googleClient;
