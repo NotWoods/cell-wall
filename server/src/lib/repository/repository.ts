@@ -8,7 +8,7 @@ import {
 	GOOGLE_CLIENT_SECRET,
 	PACKAGE_NAME,
 	SERVER_ADDRESS,
-	SQLITE_FILENAME
+	DATABASE_FILENAME
 } from '../env';
 import type { GoogleClient } from '../google';
 import { authenticateGoogle, initializeGoogle } from '../google';
@@ -78,7 +78,7 @@ function deriveCellInfo(
 }
 
 export function repository(): Repository {
-	const dbPromise = database(SQLITE_FILENAME);
+	const dbPromise = database(DATABASE_FILENAME);
 
 	const deviceManager = new DeviceManager();
 	let deviceManagerPromise = deviceManager.refreshDevices().then(() => deviceManager);

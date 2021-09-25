@@ -7,6 +7,11 @@ interface LowData {
 	cells: Record<string, Cell>;
 }
 
+/**
+ * Cell info includes the user-friendly name of a device,
+ * the width and height of the display in density independent pixels,
+ * and the x/y location relative to other phones.
+ */
 export interface Cell {
 	serial: string;
 	deviceName?: string;
