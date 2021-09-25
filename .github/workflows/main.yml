@@ -50,7 +50,7 @@ jobs:
 
       # Build production code
       - run: npm run build
-      - run: cp ./{package.json,.gitignore} ./build
+      - run: cp ./{package.json,package-lock.json,.gitignore} ./build
 
       # Publish the code
       - name: deploy to branch
