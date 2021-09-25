@@ -1,5 +1,5 @@
 {
-	"name": "@cell-wall/server2",
+	"name": "@cell-wall/server",
 	"version": "4.0.0",
 	"type": "module",
 	"scripts": {

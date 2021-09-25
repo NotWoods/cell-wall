@@ -45,17 +45,17 @@ local machine for development and testing purposes.
 
 ### Prerequisites
 
-- Node.js 14 or greater
+- Node.js 16 or greater
 - Android Studio 4.1 or greater
 - Android Debug Bridge
-- PNPM
 
 ### Installing dependencies
 
 Install NPM dependencies for the server:
 
 ```shell
-pnpm recursive install
+cd server
+npm install
 ```
 
 Install Gradle dependencies for the client by opening the `./android` folder as
@@ -75,19 +75,20 @@ The server communicates with phones over ADB. ADB should be installed and the ph
 Run the server by compiling the TypeScript code and launching it with node:
 
 ```shell
-pnpm run build # Runs `tsc` to compile TypeScript
-pnpm start
+cd server
+npm run build # Runs `tsc` to compile TypeScript
+node build/index.js
 ```
 
 ### Environment variables
 
 Some paths and API keys are set via environment variables. The project uses `dotenv`, so an `.env` file will automatically be loaded by the server.
 
-See [env.ts](javascript/server/src/env.ts) for a list of environment variables.
+See [env.ts](server/src/lib/env.ts) for a list of environment variables.
 
 ## Built with
 
-- [Fastify](https://www.fastify.io/) - Web server
+- [SveleteKit](https://kit.svelte.dev/) - Web server
 - [ADB](https://developer.android.com/studio/command-line/adb) - Communication from server to phones
 - [Android Architecture Components](https://developer.android.com/topic/libraries/architecture/) -
   Used for MVVM architecture on client

@@ -34,6 +34,7 @@ jobs:
         with:
           node-version: "16"
 
+      # Install dependencies
       - name: npm cache
         uses: actions/cache@v2
         env:
@@ -50,6 +51,7 @@ jobs:
         working-directory: ./server
         if: steps.cache.outputs.cache-hit != 'true'
 
+      # Validate the source code
       - run: npm run lint
         working-directory: ./server
       - run: npm run check
@@ -57,9 +59,13 @@ jobs:
       - run: npm run test
         working-directory: ./server
 
+      # Build production code
       - run: npm run build
         working-directory: ./server
+      - run: cp package.json build
+        working-directory: ./server
 
+      # Publish the code
       - name: deploy to branch
         uses: peaceiris/actions-gh-pages@v3
         if: ${{ github.event_name == 'push' }}
