@@ -1,6 +1,6 @@
 import { get, writable } from 'svelte/store';
 import type { Readable } from 'svelte/store';
-import type { Cell, Database } from '../database';
+import type { Cell, Database } from '../repository/database';
 import type { CellState } from './state';
 
 export type CellInfo = Cell;
@@ -17,7 +17,7 @@ export class CellManager {
 		return this._state;
 	}
 
-	async loadInfo(db: Database): Promise<void> {
+	async loadInfo(db: Database): Promise<CellManager> {
 		try {
 			const cells = await db.getCells();
 			this._info.update((map) => {
@@ -31,6 +31,7 @@ export class CellManager {
 			console.error('Could not load CellManager data', err);
 			// do nothing, just use blank data
 		}
+		return this;
 	}
 
 	async writeInfo(db: Database): Promise<void> {
@@ -45,7 +46,7 @@ export class CellManager {
 		this._state.update((map) => new Map(map).set(serial, state));
 	}
 
-	setStateMap(states: { [serial: string]: CellState } | Map<string, CellState>): void {
+	setStateMap(states: Readonly<Record<string, CellState>> | ReadonlyMap<string, CellState>): void {
 		const entries: Iterable<[string, CellState]> =
 			typeof states.entries === 'function' ? states.entries() : Object.entries(states);
 

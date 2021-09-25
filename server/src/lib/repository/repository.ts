@@ -1,12 +1,8 @@
-import type { Auth } from 'googleapis';
 import type { Readable } from 'svelte/store';
-import { derived, get, writable } from 'svelte/store';
-import type { GoogleClient } from '$lib/google';
-import { initializeGoogle } from '$lib/google';
+import { derived, get } from 'svelte/store';
 import { DeviceManager } from '../android/device-manager';
 import { setPower } from '../android/power';
 import { CellManager, toUri } from '../cells';
-import { database } from '../database';
 import {
 	GOOGLE_CLIENT_ID,
 	GOOGLE_CLIENT_SECRET,
@@ -14,8 +10,11 @@ import {
 	SERVER_ADDRESS,
 	SQLITE_FILENAME
 } from '../env';
+import type { GoogleClient } from '../google';
+import { authenticateGoogle, initializeGoogle } from '../google';
 import { asArray, getAll } from '../map/get';
 import { subscribeToMapStore } from '../map/subscribe';
+import { database } from './database';
 import type { CellData, CellDataMap, Repository } from './interface';
 
 function sendIntentOnStateChange(cellManager: CellManager, deviceManager: DeviceManager) {
@@ -84,43 +83,47 @@ export function repository(): Repository {
 	const deviceManager = new DeviceManager();
 	let deviceManagerPromise = deviceManager.refreshDevices().then(() => deviceManager);
 	const cellManager = new CellManager();
-	const cellManagerPromise = dbPromise
-		.then((db) => cellManager.loadInfo(db))
-		.then(() => cellManager);
-
-	const cellData = writable<CellDataMap>(new Map());
+	const cellManagerPromise = dbPromise.then((db) => cellManager.loadInfo(db));
 
 	// Send intents whenever cell state changes
 	sendIntentOnStateChange(cellManager, deviceManager);
-	deriveCellInfo(cellManager, deviceManager).subscribe(cellData.set);
+	const cellData = deriveCellInfo(cellManager, deviceManager);
 
-	let googleClient: Promise<GoogleClient> | undefined;
+	let googleClient: GoogleClient | undefined;
+	async function googleApi(): Promise<GoogleClient> {
+		if (!googleClient) {
+			if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET) {
+				throw new Error(`Missing Google API keys`);
+			}
 
-	const tokens = {
-		async getTokens() {
 			const db = await dbPromise;
-			const allString = await db.getToken();
-			return allString ? JSON.parse(allString) : undefined;
-		},
-		async insertTokens(json: Auth.Credentials) {
-			const db = await dbPromise;
-			return db.insertToken(JSON.stringify(json));
+			const credentials = await db.getGoogleCredentials();
+			googleClient = initializeGoogle(credentials, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET);
+
+			if (googleClient.authorizeUrl) {
+				console.log(`\n---\nAuthenticate with Google:\n${googleClient.authorizeUrl}\n---\n`);
+			}
 		}
-	};
+
+		return googleClient;
+	}
 
 	return {
-		...tokens,
 		cellData,
 		refreshDevices() {
 			const refreshPromise = deviceManager.refreshDevices();
 			deviceManagerPromise = refreshPromise.then(() => deviceManager);
 			return refreshPromise;
 		},
-		googleAuth() {
+		googleApi,
+		async authenticateGoogleApi(code: string) {
 			if (!googleClient) {
-				googleClient = initializeGoogle(tokens, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET);
+				googleClient = await googleApi();
 			}
-			return googleClient;
+
+			const db = await dbPromise;
+			const credentials = await authenticateGoogle(googleClient.client, code);
+			await db.setGoogleCredentials(credentials);
 		},
 		async getPower(serial) {
 			const deviceManager = await deviceManagerPromise;

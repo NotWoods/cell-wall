@@ -11,7 +11,7 @@ interface BodyTypeNull {
 }
 
 interface BodyTypeString {
-	type: 'string';
+	type: 'text';
 	body: string;
 }
 
@@ -47,7 +47,7 @@ export function bodyType({ headers, body }: PartialInput): BodyType {
 	switch (type) {
 		case 'text/plain':
 			if (typeof body === 'string') {
-				return { type: 'string', body };
+				return { type: 'text', body };
 			} else {
 				throw new Error(`Content-Type ${type} does not match ${typeof body} body`);
 			}
@@ -71,6 +71,20 @@ export function bodyType({ headers, body }: PartialInput): BodyType {
 	}
 }
 
-export function isObject(maybe: object): maybe is object {
+export function isObject(maybe: unknown): maybe is object {
 	return typeof maybe === 'object' && maybe !== null;
+}
+
+export function bodyAsJson(input: PartialInput): unknown | undefined {
+	const body = bodyType(input);
+	switch (body.type) {
+		case 'json':
+			return body.body;
+		case 'text':
+			return JSON.parse(body.body);
+		case 'form':
+			return Object.fromEntries(body.body.entries());
+		default:
+			return undefined;
+	}
 }

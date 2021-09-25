@@ -1,5 +1,4 @@
 import type { RequestHandler } from '@sveltejs/kit';
-import { authenticateGoogle } from '$lib/google';
 import { repo } from '$lib/repository';
 
 export const get: RequestHandler = async function get({ query }) {
@@ -11,15 +10,7 @@ export const get: RequestHandler = async function get({ query }) {
 		};
 	}
 
-	const { googleAuth } = await repo.googleAuth();
-	if (!googleAuth) {
-		return {
-			status: 503,
-			error: `Missing API keys for Google`
-		};
-	}
-
-	await authenticateGoogle(googleAuth, repo, code);
+	await repo.authenticateGoogleApi(code);
 
 	return {
 		body: 'Authentication successful! Please return to the console.'

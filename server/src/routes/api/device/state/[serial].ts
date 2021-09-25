@@ -1,6 +1,6 @@
 import type { RequestHandler } from '@sveltejs/kit';
 import { get as getState } from 'svelte/store';
-import { bodyType } from '$lib/body';
+import { bodyAsJson } from '$lib/body';
 import type { CellState } from '$lib/cells';
 import { blankState } from '$lib/cells';
 import { repo } from '$lib/repository';
@@ -25,21 +25,12 @@ export const get: RequestHandler = async function get({ params }) {
 export const post: RequestHandler = async function post(input) {
 	const { serial } = input.params;
 
-	let state: CellState | undefined;
-	const body = bodyType(input);
-	switch (body.type) {
-		case 'json':
-			state = asCellState(body.body as object);
-			break;
-		case 'form':
-			state = asCellState(Object.fromEntries(body.body.entries()));
-			break;
-	}
+	const state = asCellState(bodyAsJson(input)) as CellState | undefined;
 
 	if (!state) {
 		return {
 			status: 400,
-			error: new Error(`Invalid body ${body}`)
+			error: new Error(`Invalid body ${input.body}`)
 		};
 	}
 

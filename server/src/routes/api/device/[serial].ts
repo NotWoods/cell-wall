@@ -1,4 +1,4 @@
-import { bodyType } from '$lib/body';
+import { bodyAsJson } from '$lib/body';
 import type { CellInfo } from '$lib/cells';
 import { repo } from '$lib/repository';
 import type { RequestHandler } from '@sveltejs/kit';
@@ -20,21 +20,12 @@ export const get: RequestHandler = async function get({ params }) {
  */
 export const post: RequestHandler = async function post(input) {
 	const { serial } = input.params;
-	let info: Partial<CellInfo> | undefined;
-	const body = bodyType(input);
-	switch (body.type) {
-		case 'json':
-			info = body.body as Partial<CellInfo>;
-			break;
-		case 'form':
-			info = Object.fromEntries(body.body.entries());
-			break;
-	}
+	const info = bodyAsJson(input) as Partial<CellInfo> | undefined;
 
 	if (!info) {
 		return {
 			status: 400,
-			error: new Error(`Invalid body ${body}`)
+			error: new Error(`Invalid body ${input.body}`)
 		};
 	}
 

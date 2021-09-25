@@ -1,8 +1,9 @@
+import type { Auth } from 'googleapis';
 import type { Adapter } from 'lowdb';
 import { JSONFile, Memory, Low } from 'lowdb';
 
 interface LowData {
-	token?: string | undefined;
+	googleCredentials?: Auth.Credentials | undefined;
 	cells: Record<string, Cell>;
 }
 
@@ -17,8 +18,8 @@ export interface Cell {
 }
 
 export interface Database {
-	getToken(): Promise<string | undefined>;
-	insertToken(value: string): Promise<void>;
+	getGoogleCredentials(): Promise<Auth.Credentials | undefined>;
+	setGoogleCredentials(credentials: Auth.Credentials): Promise<void>;
 	getCell(serial: string): Promise<Cell | undefined>;
 	getCells(): Promise<Cell[]>;
 	insertCell(cell: Cell): Promise<void>;
@@ -35,11 +36,11 @@ export async function database(filename?: string | undefined): Promise<Database>
 	}
 
 	return {
-		async getToken() {
-			return db.data?.token;
+		async getGoogleCredentials() {
+			return db.data?.googleCredentials;
 		},
-		async insertToken(value) {
-			initData().token = value;
+		async setGoogleCredentials(credentials) {
+			initData().googleCredentials = credentials;
 			await db.write();
 		},
 		async getCell(name) {

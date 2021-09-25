@@ -1,29 +1,27 @@
-import { repo } from '$lib/repository';
 import type { RequestHandler } from '@sveltejs/kit';
+import type { calendar_v3 } from 'googleapis';
 import { google } from 'googleapis';
+import { bodyAsJson } from '$lib/body';
+import { repo } from '$lib/repository';
 
 /**
  * Query the Google Calendar Free/Busy API
  */
-export const post: RequestHandler = async function post({ body }) {
-	const { googleAuth } = await repo.googleAuth();
+export const post: RequestHandler = async function post(input) {
+	const { client } = await repo.googleApi();
+	const requestBody = bodyAsJson(input);
 
-	if (!googleAuth) {
-		return {
-			status: 503,
-			error: `Google Auth not set up`
-		};
-	} else if (typeof body !== 'string') {
+	if (!requestBody) {
 		return {
 			status: 400,
 			error: `Request body should be JSON`
 		};
 	}
 
-	const api = google.calendar({ version: 'v3', auth: googleAuth });
+	const api = google.calendar({ version: 'v3', auth: client });
 
 	const res = await api.freebusy.query({
-		requestBody: JSON.parse(body)
+		requestBody: requestBody as calendar_v3.Schema$FreeBusyRequest
 	});
 
 	if (res.status < 200 || res.status >= 300) {
