@@ -35,7 +35,6 @@ jobs:
           node-version: "16"
 
       - name: npm cache
-        working-directory: ./server
         uses: actions/cache@v2
         env:
           cache-name: cache-node-modules
@@ -51,14 +50,14 @@ jobs:
         working-directory: ./server
         if: steps.cache.outputs.cache-hit != 'true'
 
-      - run: npm lint
+      - run: npm run lint
         working-directory: ./server
-      - run: npm check
+      - run: npm run check
         working-directory: ./server
-      - run: npm test
+      - run: npm run test
         working-directory: ./server
 
-      - run: npm build
+      - run: npm run build
         working-directory: ./server
 
       - name: deploy to branch
