@@ -1,0 +1,1 @@
+async function t(t,o){try{const n=await fetch(t,{method:"post",headers:{"content-type":"application/json"},body:JSON.stringify(o)});if(!n.ok)throw new Error(n.statusText);return n}catch(n){throw console.error(n),n}}function o(t){const o=new URLSearchParams;for(const[n,r]of t)"string"==typeof r&&o.append(n,r);return o}export{o as f,t as p};
