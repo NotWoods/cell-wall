@@ -1,18 +1,20 @@
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import WebSocket, { WebSocketServer } from 'ws';
+import type { IncomingMessage } from 'http';
+import type { Socket } from 'net';
+import type { Duplex } from 'stream';
+import type { Readable, Unsubscriber } from 'svelte/store';
 import { get } from 'svelte/store';
+import WebSocket, { ServerOptions, WebSocketServer } from 'ws';
 
 /**
  * Broadcast a svelte store state to all WebSockets connected to a given server.
- * @param {import('svelte/store').Readable<unknown>} store
- * @param {import('ws').ServerOptions} [options]
- * @returns {{ wss: WebSocketServer, unsubscribe: import('svelte/store').Unsubscriber }}
  */
-export function broadcastStoreState(store, options) {
+export function broadcastStoreState(
+	store: Readable<unknown>,
+	options?: ServerOptions
+): { wss: WebSocketServer; unsubscribe: Unsubscriber } {
 	const wss = new WebSocketServer(options);
 
-	/** @param {WebSocket} ws */
-	function onConnection(ws) {
+	function onConnection(ws: WebSocket) {
 		console.log('connection');
 
 		ws.send(get(store));
@@ -39,15 +41,15 @@ export function broadcastStoreState(store, options) {
 
 /**
  * Function to pass to server.on('upgrade') to link a HTTP server with a WebSocket server.
- * @param {(request: import('http').IncomingMessage) => WebSocketServer | undefined} match
- * @returns {(request: import('http').IncomingMessage, socket: import('stream').Duplex, head: Buffer) => void}
  */
-export function upgradeToWebsocket(match) {
-	return (request, socket, head) => {
+export function upgradeToWebsocket(
+	match: (request: IncomingMessage) => WebSocketServer | undefined
+) {
+	return (request: IncomingMessage, socket: Duplex, head: Buffer): void => {
 		console.log('Socket req', request);
 		const wss = match(request);
 		if (wss) {
-			wss.handleUpgrade(request, /** @type {import('net').Socket} */ (socket), head, (ws) =>
+			wss.handleUpgrade(request, socket as Socket, head, (ws) =>
 				wss.emit('connection', ws, request)
 			);
 		} else {

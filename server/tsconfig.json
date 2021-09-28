@@ -30,5 +30,5 @@
 		},
 		"typeRoots": ["**/node_modules/@types", "./@types"]
 	},
-	"include": ["src/**/*.d.ts", "src/**/*.ts", "src/**/*.svelte", "node/**/*.js"]
+	"include": ["src/**/*.d.ts", "src/**/*.ts", "src/**/*.svelte"]
 }
