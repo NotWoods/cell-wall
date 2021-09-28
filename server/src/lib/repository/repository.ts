@@ -14,6 +14,7 @@ import type { GoogleClient } from '../google';
 import { authenticateGoogle, initializeGoogle } from '../google';
 import { asArray, getAll } from '../map/get';
 import { subscribeToMapStore } from '../map/subscribe';
+import { memo } from '../memo';
 import { database } from './database';
 import type { CellData, CellDataMap, Repository } from './interface';
 
@@ -89,24 +90,21 @@ export function repository(): Repository {
 	sendIntentOnStateChange(cellManager, deviceManager);
 	const cellData = deriveCellInfo(cellManager, deviceManager);
 
-	let googleClient: GoogleClient | undefined;
-	async function googleApi(): Promise<GoogleClient> {
-		if (!googleClient) {
-			if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET) {
-				throw new Error(`Missing Google API keys`);
-			}
+	const googleApi = memo(async function googleApi(): Promise<GoogleClient> {
+		if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET) {
+			throw new Error(`Missing Google API keys`);
+		}
 
-			const db = await dbPromise;
-			const credentials = await db.getGoogleCredentials();
-			googleClient = initializeGoogle(credentials, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET);
+		const db = await dbPromise;
+		const credentials = await db.getGoogleCredentials();
+		const googleClient = initializeGoogle(credentials, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET);
 
-			if (googleClient.authorizeUrl) {
-				console.log(`\n---\nAuthenticate with Google:\n${googleClient.authorizeUrl}\n---\n`);
-			}
+		if (googleClient.authorizeUrl) {
+			console.log(`\n---\nAuthenticate with Google:\n${googleClient.authorizeUrl}\n---\n`);
 		}
 
 		return googleClient;
-	}
+	});
 
 	return {
 		cellData,
@@ -117,11 +115,8 @@ export function repository(): Repository {
 		},
 		googleApi,
 		async authenticateGoogleApi(code: string) {
-			if (!googleClient) {
-				googleClient = await googleApi();
-			}
-
 			const db = await dbPromise;
+			const googleClient = await googleApi();
 			const credentials = await authenticateGoogle(googleClient.client, code);
 			await db.setGoogleCredentials(credentials);
 		},
