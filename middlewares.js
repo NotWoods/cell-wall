@@ -3197,6 +3197,15 @@ function subscribeToMapStore(store, subscription) {
     oldMap = newMap;
   });
 }
+function memo(func) {
+  let result;
+  return function memoized(...args) {
+    if (result === void 0) {
+      result = func.apply(this, args);
+    }
+    return result;
+  };
+}
 var __classPrivateFieldSet$3 = function(receiver, state, value, kind, f) {
   if (kind === "m")
     throw new TypeError("Private method is not writable");
@@ -3506,26 +3515,23 @@ function repository() {
   const cellManagerPromise = dbPromise.then((db) => cellManager.loadInfo(db));
   sendIntentOnStateChange(cellManager, deviceManager);
   const cellData = deriveCellInfo(cellManager, deviceManager);
-  let googleClient;
-  async function googleApi() {
-    if (!googleClient) {
-      if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET) {
-        throw new Error(`Missing Google API keys`);
-      }
-      const db = await dbPromise;
-      const credentials = await db.getGoogleCredentials();
-      googleClient = initializeGoogle(credentials, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET);
-      if (googleClient.authorizeUrl) {
-        console.log(`
+  const googleApi = memo(async function googleApi2() {
+    if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET) {
+      throw new Error(`Missing Google API keys`);
+    }
+    const db = await dbPromise;
+    const credentials = await db.getGoogleCredentials();
+    const googleClient = initializeGoogle(credentials, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET);
+    if (googleClient.authorizeUrl) {
+      console.log(`
 ---
 Authenticate with Google:
 ${googleClient.authorizeUrl}
 ---
 `);
-      }
     }
     return googleClient;
-  }
+  });
   return {
     cellData,
     refreshDevices() {
@@ -3535,10 +3541,8 @@ ${googleClient.authorizeUrl}
     },
     googleApi,
     async authenticateGoogleApi(code) {
-      if (!googleClient) {
-        googleClient = await googleApi();
-      }
       const db = await dbPromise;
+      const googleClient = await googleApi();
       const credentials = await authenticateGoogle(googleClient.client, code);
       await db.setGoogleCredentials(credentials);
     },
@@ -3569,6 +3573,7 @@ ${googleClient.authorizeUrl}
   };
 }
 var repo = repository();
+globalThis._repo = repo;
 var get$7 = async function get2({ query }) {
   const code = query.get("code");
   if (!code) {
