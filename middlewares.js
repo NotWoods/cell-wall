@@ -2560,9 +2560,9 @@ function init(settings = default_settings) {
     amp: false,
     dev: false,
     entry: {
-      file: assets + "/_app/start-1ea19df1.js",
+      file: assets + "/_app/start-b9685f25.js",
       css: [assets + "/_app/assets/start-61d1577b.css"],
-      js: [assets + "/_app/start-1ea19df1.js", assets + "/_app/chunks/vendor-36a8e545.js"]
+      js: [assets + "/_app/start-b9685f25.js", assets + "/_app/chunks/vendor-c77ecffb.js"]
     },
     fetched: void 0,
     floc: false,
@@ -2643,14 +2643,14 @@ var manifest = {
       type: "page",
       pattern: /^\/page\/busy\/([^/]+?)\/?$/,
       params: (m) => ({ person: d(m[1]) }),
-      a: [".svelte-kit/build/components/layout.svelte", "src/routes/page/busy/[person].svelte"],
+      a: [".svelte-kit/build/components/layout.svelte", "src/routes/page/__layout.svelte", "src/routes/page/busy/[person].svelte"],
       b: [".svelte-kit/build/components/error.svelte"]
     },
     {
       type: "page",
       pattern: /^\/page\/text\/?$/,
       params: empty,
-      a: [".svelte-kit/build/components/layout.svelte", "src/routes/page/text.svelte"],
+      a: [".svelte-kit/build/components/layout.svelte", "src/routes/page/__layout.svelte", "src/routes/page/text.svelte"],
       b: [".svelte-kit/build/components/error.svelte"]
     },
     {
@@ -2752,7 +2752,7 @@ var module_lookup = {
     return index$1;
   }),
   "src/routes/remote/__layout.svelte": () => Promise.resolve().then(function() {
-    return __layout;
+    return __layout$1;
   }),
   "src/routes/remote/index.svelte": () => Promise.resolve().then(function() {
     return index;
@@ -2766,6 +2766,9 @@ var module_lookup = {
   "src/routes/remote/edit.svelte": () => Promise.resolve().then(function() {
     return edit;
   }),
+  "src/routes/page/__layout.svelte": () => Promise.resolve().then(function() {
+    return __layout;
+  }),
   "src/routes/page/busy/[person].svelte": () => Promise.resolve().then(function() {
     return _person_;
   }),
@@ -2773,7 +2776,7 @@ var module_lookup = {
     return text;
   })
 };
-var metadata_lookup = { ".svelte-kit/build/components/layout.svelte": { "entry": "layout.svelte-bb46699b.js", "css": [], "js": ["layout.svelte-bb46699b.js", "chunks/vendor-36a8e545.js"], "styles": [] }, ".svelte-kit/build/components/error.svelte": { "entry": "error.svelte-3bcec080.js", "css": [], "js": ["error.svelte-3bcec080.js", "chunks/vendor-36a8e545.js"], "styles": [] }, "src/routes/index.svelte": { "entry": "pages/index.svelte-6005547b.js", "css": [], "js": ["pages/index.svelte-6005547b.js", "chunks/vendor-36a8e545.js"], "styles": [] }, "src/routes/remote/__layout.svelte": { "entry": "pages/remote/__layout.svelte-37a52353.js", "css": [], "js": ["pages/remote/__layout.svelte-37a52353.js", "chunks/vendor-36a8e545.js"], "styles": [] }, "src/routes/remote/index.svelte": { "entry": "pages/remote/index.svelte-783cc4b6.js", "css": ["assets/pages/remote/index.svelte-3d98ee13.css"], "js": ["pages/remote/index.svelte-783cc4b6.js", "chunks/vendor-36a8e545.js", "chunks/Form-4cd59509.js", "chunks/_form-52443b97.js"], "styles": [] }, "src/routes/remote/custom.svelte": { "entry": "pages/remote/custom.svelte-08ca040a.js", "css": [], "js": ["pages/remote/custom.svelte-08ca040a.js", "chunks/vendor-36a8e545.js", "chunks/_DeviceOption-06f580d4.js", "chunks/Form-4cd59509.js", "chunks/_PowerButton-524faf87.js", "chunks/_form-52443b97.js"], "styles": [] }, "src/routes/remote/image.svelte": { "entry": "pages/remote/image.svelte-0475b593.js", "css": [], "js": ["pages/remote/image.svelte-0475b593.js", "chunks/vendor-36a8e545.js", "chunks/_DeviceOption-06f580d4.js", "chunks/Form-4cd59509.js"], "styles": [] }, "src/routes/remote/edit.svelte": { "entry": "pages/remote/edit.svelte-78de809a.js", "css": [], "js": ["pages/remote/edit.svelte-78de809a.js", "chunks/vendor-36a8e545.js", "chunks/_DeviceOption-06f580d4.js", "chunks/Form-4cd59509.js", "chunks/_PowerButton-524faf87.js", "chunks/_form-52443b97.js"], "styles": [] }, "src/routes/page/busy/[person].svelte": { "entry": "pages/page/busy/[person].svelte-f5906d77.js", "css": ["assets/pages/page/busy/[person].svelte-eab96ff7.css"], "js": ["pages/page/busy/[person].svelte-f5906d77.js", "chunks/vendor-36a8e545.js"], "styles": [] }, "src/routes/page/text.svelte": { "entry": "pages/page/text.svelte-5169b6f8.js", "css": ["assets/pages/page/text.svelte-363a9749.css"], "js": ["pages/page/text.svelte-5169b6f8.js", "chunks/vendor-36a8e545.js"], "styles": [] } };
+var metadata_lookup = { ".svelte-kit/build/components/layout.svelte": { "entry": "layout.svelte-eacce105.js", "css": [], "js": ["layout.svelte-eacce105.js", "chunks/vendor-c77ecffb.js"], "styles": [] }, ".svelte-kit/build/components/error.svelte": { "entry": "error.svelte-6cda78b1.js", "css": [], "js": ["error.svelte-6cda78b1.js", "chunks/vendor-c77ecffb.js"], "styles": [] }, "src/routes/index.svelte": { "entry": "pages/index.svelte-7923e694.js", "css": [], "js": ["pages/index.svelte-7923e694.js", "chunks/vendor-c77ecffb.js"], "styles": [] }, "src/routes/remote/__layout.svelte": { "entry": "pages/remote/__layout.svelte-bded134e.js", "css": [], "js": ["pages/remote/__layout.svelte-bded134e.js", "chunks/vendor-c77ecffb.js"], "styles": [] }, "src/routes/remote/index.svelte": { "entry": "pages/remote/index.svelte-fede2d47.js", "css": ["assets/pages/remote/index.svelte-3d98ee13.css"], "js": ["pages/remote/index.svelte-fede2d47.js", "chunks/vendor-c77ecffb.js", "chunks/Form-b849c358.js", "chunks/_form-52443b97.js"], "styles": [] }, "src/routes/remote/custom.svelte": { "entry": "pages/remote/custom.svelte-fe08e09f.js", "css": [], "js": ["pages/remote/custom.svelte-fe08e09f.js", "chunks/vendor-c77ecffb.js", "chunks/_DeviceOption-fe3247c8.js", "chunks/state-33679332.js", "chunks/Form-b849c358.js", "chunks/_PowerButton-155af822.js", "chunks/_form-52443b97.js"], "styles": [] }, "src/routes/remote/image.svelte": { "entry": "pages/remote/image.svelte-40be2477.js", "css": [], "js": ["pages/remote/image.svelte-40be2477.js", "chunks/vendor-c77ecffb.js", "chunks/_DeviceOption-fe3247c8.js", "chunks/Form-b849c358.js"], "styles": [] }, "src/routes/remote/edit.svelte": { "entry": "pages/remote/edit.svelte-53c12672.js", "css": [], "js": ["pages/remote/edit.svelte-53c12672.js", "chunks/vendor-c77ecffb.js", "chunks/_DeviceOption-fe3247c8.js", "chunks/Form-b849c358.js", "chunks/_PowerButton-155af822.js", "chunks/_form-52443b97.js"], "styles": [] }, "src/routes/page/__layout.svelte": { "entry": "pages/page/__layout.svelte-1936997b.js", "css": [], "js": ["pages/page/__layout.svelte-1936997b.js", "chunks/vendor-c77ecffb.js", "chunks/state-33679332.js"], "styles": [] }, "src/routes/page/busy/[person].svelte": { "entry": "pages/page/busy/[person].svelte-0a2d01f7.js", "css": ["assets/pages/page/busy/[person].svelte-eab96ff7.css"], "js": ["pages/page/busy/[person].svelte-0a2d01f7.js", "chunks/vendor-c77ecffb.js"], "styles": [] }, "src/routes/page/text.svelte": { "entry": "pages/page/text.svelte-e67ba09c.js", "css": ["assets/pages/page/text.svelte-690dba16.css"], "js": ["pages/page/text.svelte-e67ba09c.js", "chunks/vendor-c77ecffb.js"], "styles": [] } };
 async function load_component(file) {
   const { entry, css: css2, js, styles } = metadata_lookup[file];
   return {
@@ -3534,6 +3537,7 @@ ${googleClient.authorizeUrl}
   });
   return {
     cellData,
+    cellDataJson: derived(cellData, (map) => JSON.stringify(Object.fromEntries(map))),
     refreshDevices() {
       const refreshPromise = deviceManager.refreshDevices();
       deviceManagerPromise = refreshPromise.then(() => deviceManager);
@@ -3970,7 +3974,7 @@ var index$1 = /* @__PURE__ */ Object.freeze({
   "default": Routes,
   load: load$4
 });
-var _layout = create_ssr_component(($$result, $$props, $$bindings, slots) => {
+var _layout$1 = create_ssr_component(($$result, $$props, $$bindings, slots) => {
   let open = false;
   return `${$$result.head += `${$$result.title = `<title>CellWall Remote</title>`, ""}<link rel="${"stylesheet"}" href="${"https://jenil.github.io/bulmaswatch/darkly/bulmaswatch.min.css"}" data-svelte="svelte-1nhegv1"><link rel="${"manifest"}" href="${"/manifest.webmanifest"}" data-svelte="svelte-1nhegv1">`, ""}
 
@@ -3989,10 +3993,10 @@ var _layout = create_ssr_component(($$result, $$props, $$bindings, slots) => {
 
 <main class="${"section"}"><div class="${"container"}">${slots.default ? slots.default({}) : ``}</div></main>`;
 });
-var __layout = /* @__PURE__ */ Object.freeze({
+var __layout$1 = /* @__PURE__ */ Object.freeze({
   __proto__: null,
   [Symbol.toStringTag]: "Module",
-  "default": _layout
+  "default": _layout$1
 });
 var Form = create_ssr_component(($$result, $$props, $$bindings, slots) => {
   let { action } = $$props;
@@ -4614,6 +4618,47 @@ var edit = /* @__PURE__ */ Object.freeze({
   "default": Edit,
   load: load$1
 });
+function socketStore(url, defaultValue) {
+  {
+    return readable(defaultValue);
+  }
+}
+var ws = derived(socketStore("ws://localhost:3000", "{}"), (json) => JSON.parse(json));
+function stateToUrl({ state, info } = {}) {
+  switch (state === null || state === void 0 ? void 0 : state.type) {
+    case CellStateType.WEB:
+      return new URL(state.url, info === null || info === void 0 ? void 0 : info.server);
+    default:
+      return void 0;
+  }
+}
+var _layout = create_ssr_component(($$result, $$props, $$bindings, slots) => {
+  let cellData;
+  let href;
+  let $ws, $$unsubscribe_ws;
+  $$unsubscribe_ws = subscribe(ws, (value) => $ws = value);
+  var _a, _b;
+  let { serial } = $$props;
+  let anchor;
+  if ($$props.serial === void 0 && $$bindings.serial && serial !== void 0)
+    $$bindings.serial(serial);
+  cellData = $ws[serial];
+  href = (_b = (_a = stateToUrl(cellData)) === null || _a === void 0 ? void 0 : _a.href) !== null && _b !== void 0 ? _b : "#";
+  {
+    {
+      console.log(cellData);
+    }
+  }
+  $$unsubscribe_ws();
+  return `<a hidden${add_attribute("href", href, 0)}${add_attribute("this", anchor, 0)}>Refresh</a>
+
+${slots.default ? slots.default({}) : ``}`;
+});
+var __layout = /* @__PURE__ */ Object.freeze({
+  __proto__: null,
+  [Symbol.toStringTag]: "Module",
+  "default": _layout
+});
 function convert(range) {
   function fromTimeStamp(timestamp) {
     if (timestamp) {
@@ -4818,8 +4863,8 @@ var page = {
   }
 };
 var css = {
-  code: "main.svelte-tgpngk{display:flex}h1.svelte-tgpngk{margin:8px}",
-  map: `{"version":3,"file":"text.svelte","sources":["text.svelte"],"sourcesContent":["<script lang=\\"ts\\" context=\\"module\\">export const router = false;\\nexport const prerender = true;\\n<\/script>\\n\\n<script lang=\\"ts\\">import { page } from '$app/stores';\\n$: text = $page.query.get('text') || 'CellWall';\\n$: backgroundColor = $page.query.get('backgroundColor') || '#429A46';\\n<\/script>\\n\\n<main style=\\"background: {backgroundColor};\\">\\n\\t<h1 class=\\"headline-1\\">{text}</h1>\\n</main>\\n\\n<style>\\n\\tmain {\\n\\t\\tdisplay: flex;\\n\\t}\\n\\th1 {\\n\\t\\tmargin: 8px;\\n\\t}\\n</style>\\n"],"names":[],"mappings":"AAcC,IAAI,cAAC,CAAC,AACL,OAAO,CAAE,IAAI,AACd,CAAC,AACD,EAAE,cAAC,CAAC,AACH,MAAM,CAAE,GAAG,AACZ,CAAC"}`
+  code: "main.svelte-12o3ebn{display:flex;height:100vh;align-items:center}h1.svelte-12o3ebn{margin:8px}",
+  map: `{"version":3,"file":"text.svelte","sources":["text.svelte"],"sourcesContent":["<script lang=\\"ts\\" context=\\"module\\">export const router = false;\\nexport const prerender = true;\\n<\/script>\\n\\n<script lang=\\"ts\\">import { page } from '$app/stores';\\n$: text = $page.query.get('text') || 'CellWall';\\n$: backgroundColor = $page.query.get('backgroundColor') || '#429A46';\\n<\/script>\\n\\n<main style=\\"background: {backgroundColor};\\">\\n\\t<h1 class=\\"headline-1\\">{text}</h1>\\n</main>\\n\\n<style>\\n\\tmain {\\n\\t\\tdisplay: flex;\\n\\t\\theight: 100vh;\\n\\t\\talign-items: center;\\n\\t}\\n\\th1 {\\n\\t\\tmargin: 8px;\\n\\t}\\n</style>\\n"],"names":[],"mappings":"AAcC,IAAI,eAAC,CAAC,AACL,OAAO,CAAE,IAAI,CACb,MAAM,CAAE,KAAK,CACb,WAAW,CAAE,MAAM,AACpB,CAAC,AACD,EAAE,eAAC,CAAC,AACH,MAAM,CAAE,GAAG,AACZ,CAAC"}`
 };
 var router = false;
 var prerender = true;
@@ -4832,7 +4877,7 @@ var Text = create_ssr_component(($$result, $$props, $$bindings, slots) => {
   text2 = $page.query.get("text") || "CellWall";
   backgroundColor = $page.query.get("backgroundColor") || "#429A46";
   $$unsubscribe_page();
-  return `<main style="${"background: " + escape(backgroundColor) + ";"}" class="${"svelte-tgpngk"}"><h1 class="${"headline-1 svelte-tgpngk"}">${escape(text2)}</h1>
+  return `<main style="${"background: " + escape(backgroundColor) + ";"}" class="${"svelte-12o3ebn"}"><h1 class="${"headline-1 svelte-12o3ebn"}">${escape(text2)}</h1>
 </main>`;
 });
 var text = /* @__PURE__ */ Object.freeze({

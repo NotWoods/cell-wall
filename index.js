@@ -141,7 +141,6 @@ function broadcastStoreState(store, options) {
 }
 function upgradeToWebsocket(match) {
   return (request, socket, head) => {
-    console.log("Socket req", request);
     const wss2 = match(request);
     if (wss2) {
       wss2.handleUpgrade(request, socket, head, (ws) => wss2.emit("connection", ws, request));
@@ -153,7 +152,7 @@ function upgradeToWebsocket(match) {
 
 // src/server/index.js
 var repo = globalThis._repo;
-var { wss } = broadcastStoreState(repo.cellData, { noServer: true });
+var { wss } = broadcastStoreState(repo.cellDataJson, { noServer: true });
 var server = polka().use(assetsMiddleware, kitMiddleware, prerenderedMiddleware);
 var listenOpts = { path, host, port };
 server.listen(listenOpts, () => {
