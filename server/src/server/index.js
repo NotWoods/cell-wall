@@ -6,7 +6,7 @@ import { broadcastStoreState, upgradeToWebsocket } from './socket';
 
 /** @type {import('$lib/repository').Repository} */
 const repo = /** @type {any} */ (globalThis)._repo;
-const { wss } = broadcastStoreState(repo.cellData, { noServer: true });
+const { wss } = broadcastStoreState(repo.cellDataJson, { noServer: true });
 
 const server = polka().use(assetsMiddleware, kitMiddleware, prerenderedMiddleware);
 

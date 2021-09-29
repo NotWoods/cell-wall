@@ -46,7 +46,6 @@ export function upgradeToWebsocket(
 	match: (request: IncomingMessage) => WebSocketServer | undefined
 ) {
 	return (request: IncomingMessage, socket: Duplex, head: Buffer): void => {
-		console.log('Socket req', request);
 		const wss = match(request);
 		if (wss) {
 			wss.handleUpgrade(request, socket as Socket, head, (ws) =>

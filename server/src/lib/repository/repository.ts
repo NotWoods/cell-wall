@@ -108,6 +108,7 @@ export function repository(): Repository {
 
 	return {
 		cellData,
+		cellDataJson: derived(cellData, (map) => JSON.stringify(Object.fromEntries(map))),
 		refreshDevices() {
 			const refreshPromise = deviceManager.refreshDevices();
 			deviceManagerPromise = refreshPromise.then(() => deviceManager);
