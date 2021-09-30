@@ -48,7 +48,7 @@
 	</ul>
 </nav>
 
-<Form action="/v3/device/state/{selectedDevice}" onSubmit={submit} let:loading>
+<Form action="/api/device/state/{selectedDevice}" onSubmit={submit} let:loading>
 	<Field htmlFor="control-serial" label="Device">
 		<div class="select">
 			<select bind:value={selectedDevice} id="control-serial">

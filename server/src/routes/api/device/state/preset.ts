@@ -8,12 +8,12 @@ export const post: RequestHandler<Record<string, never>, FormData> = async funct
 }) {
 	const preset = body.get('preset');
 
-	const presetResponse = await fetch(`https://${host}${assets}/preset/${preset}.json`);
+	const presetResponse = await fetch(`http://${host}${assets}/preset/${preset}.json`);
 	const presetStates = await presetResponse.json();
 
 	await repo.setStates(presetStates);
 
 	return {
-		body: Object.keys(presetStates)
+		body: presetStates
 	};
 };

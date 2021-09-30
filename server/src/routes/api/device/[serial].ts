@@ -30,6 +30,7 @@ export const post: RequestHandler = async function post(input) {
 	}
 
 	info.serial = serial;
+	info.server ||= `http://${input.host}`;
 	await repo.registerCell(info as CellInfo);
 
 	return {

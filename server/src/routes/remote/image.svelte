@@ -41,7 +41,7 @@
 	}
 </script>
 
-<Form action="/v3/action/image" onSubmit={submit} let:loading>
+<Form action="/api/action/image" onSubmit={submit} let:loading>
 	<Field htmlFor="control-image" label="Image">
 		<div class="file has-name">
 			<label class="file-label">

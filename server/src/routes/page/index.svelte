@@ -35,4 +35,3 @@
 
 <a hidden {href} bind:this={anchor}>Refresh</a>
 
-<slot />

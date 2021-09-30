@@ -46,7 +46,12 @@ const config = {
 					].filter(Boolean)
 				};
 			}
-		})
+		}),
+		vite: {
+			ssr: {
+				noExternal: ['lowdb']
+			}
+		}
 	}
 };
 

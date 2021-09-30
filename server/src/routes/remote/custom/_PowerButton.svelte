@@ -12,8 +12,12 @@
 
 	let loading: Promise<void> = Promise.resolve();
 
+	function handleClick() {
+		loading = setPower();
+	}
+
 	async function setPower() {
-		await post(`/v3/device/power/${serial}`, {
+		await post(`/api/device/power/${serial}`, {
 			on: value
 		});
 	}
@@ -22,30 +26,30 @@
 {#await loading}
 	<button
 		{...props}
+		type="submit"
+		formaction="/api/device/power/${serial}"
 		class="button is-loading"
-		on:click={() => {
-			loading = setPower();
-		}}
+		on:click={handleClick}
 	>
 		<slot />
 	</button>
 {:then _}
 	<button
 		{...props}
+		type="submit"
+		formaction="/api/device/power/${serial}"
 		class="button"
-		on:click={() => {
-			loading = setPower();
-		}}
+		on:click={handleClick}
 	>
 		<slot />
 	</button>
 {:catch _}
 	<button
 		{...props}
+		type="submit"
+		formaction="/api/device/power/${serial}"
 		class="button is-danger"
-		on:click={() => {
-			loading = setPower();
-		}}
+		on:click={handleClick}
 	>
 		<slot />
 	</button>
