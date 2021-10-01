@@ -1,5 +1,5 @@
-import { repo } from '$lib/repository';
 import type { RequestHandler } from '@sveltejs/kit';
+import { repo } from '$lib/repository';
 
 /**
  * Refresh the ADB devices

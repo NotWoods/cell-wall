@@ -1,11 +1,11 @@
-import { CellStateType } from '$lib/cells';
-import type { ResizeOptions } from '$lib/image/manipulate';
-import { RectangleWithPosition, validRect } from '$lib/image/rect';
-import { filterMap, transformMap } from '$lib/map/transform';
-import { repo } from '$lib/repository';
 import type { RequestHandler } from '@sveltejs/kit';
 import Jimp from 'jimp';
 import { get as getState } from 'svelte/store';
+import { CellStateType } from '$lib/cells';
+import type { RectangleWithPosition, ResizeOptions } from '$lib/image';
+import { validRect } from '$lib/image';
+import { filterMap, transformMap } from '$lib/map/transform';
+import { repo } from '$lib/repository';
 
 type RemainingBehaviour = 'blank' | 'off' | 'ignore';
 
