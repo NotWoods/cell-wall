@@ -1,5 +1,5 @@
 import type Jimp from 'jimp';
-import { transformMapAsync } from '../map/transform';
+import { transformMap } from '../map/transform';
 import type { ResizeOptions } from './manipulate';
 import type { RectangleWithPosition } from './rect';
 import { splitImage } from './split';
@@ -23,7 +23,7 @@ export class SplitImageCache {
 		const cropped = await splitImage(image, rects, options);
 
 		this.clear();
-		return await transformMapAsync(cropped, async ({ info, img }, serial) => {
+		return transformMap(cropped, ({ info, img }, serial) => {
 			this.cache.set(serial, img);
 			return info;
 		});

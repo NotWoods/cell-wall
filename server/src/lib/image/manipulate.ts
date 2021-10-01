@@ -2,9 +2,9 @@ import Jimp from 'jimp';
 import type { Rectangle, RectangleWithPosition } from './rect';
 
 export interface ResizeOptions {
-	horizontalAlign?: string;
-	verticalAlign?: string;
-	resize?: string;
+	horizontalAlign?: string | null;
+	verticalAlign?: string | null;
+	resize?: string | null;
 }
 
 export const ALIGN_QUERY: Record<string, number> = {

@@ -1,6 +1,7 @@
 import type { Readable } from 'svelte/store';
 import type { DeviceMap } from '../android/device-manager';
 import type { CellInfo, CellState } from '../cells';
+import type { SplitImageCache } from '../image/cache';
 import type { GoogleClient } from '../google';
 import type { Cell } from './database';
 
@@ -16,6 +17,7 @@ export type CellDataMap = ReadonlyMap<string, CellData>;
 export interface Repository {
 	cellData: Readable<CellDataMap>;
 	cellDataJson: Readable<string>;
+	images: SplitImageCache;
 	googleApi(): Promise<GoogleClient>;
 	authenticateGoogleApi(code: string): Promise<void>;
 	refreshDevices(): Promise<DeviceMap>;

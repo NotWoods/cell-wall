@@ -4,14 +4,15 @@ import { DeviceManager } from '../android/device-manager';
 import { setPower } from '../android/power';
 import { CellManager, toUri } from '../cells';
 import {
+	DATABASE_FILENAME,
 	GOOGLE_CLIENT_ID,
 	GOOGLE_CLIENT_SECRET,
 	PACKAGE_NAME,
-	SERVER_ADDRESS,
-	DATABASE_FILENAME
+	SERVER_ADDRESS
 } from '../env';
 import type { GoogleClient } from '../google';
 import { authenticateGoogle, initializeGoogle } from '../google';
+import { SplitImageCache } from '../image/cache';
 import { asArray, getAll } from '../map/get';
 import { subscribeToMapStore } from '../map/subscribe';
 import { memo } from '../memo';
@@ -109,6 +110,7 @@ export function repository(): Repository {
 	return {
 		cellData,
 		cellDataJson: derived(cellData, (map) => JSON.stringify(Object.fromEntries(map))),
+		images: new SplitImageCache(),
 		refreshDevices() {
 			const refreshPromise = deviceManager.refreshDevices();
 			deviceManagerPromise = refreshPromise.then(() => deviceManager);

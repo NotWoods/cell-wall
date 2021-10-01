@@ -12,6 +12,21 @@ export function transformMap<Key, Value, Result>(
 	);
 }
 
+export function filterMap<Key, Value, Result extends Value>(
+	map: ReadonlyMap<Key, Value>,
+	predicate: (value: Value, key: Key) => value is Result
+): Map<Key, Result>;
+export function filterMap<Key, Value>(
+	map: ReadonlyMap<Key, Value>,
+	predicate: (value: Value, key: Key) => boolean
+): Map<Key, Value>;
+export function filterMap<Key, Value>(
+	map: ReadonlyMap<Key, Value>,
+	predicate: (value: Value, key: Key) => boolean
+): Map<Key, Value> {
+	return new Map(Array.from(map.entries()).filter(([key, value]) => predicate(value, key)));
+}
+
 /**
  * Run `transform` over every entry in the map in parallel.
  */

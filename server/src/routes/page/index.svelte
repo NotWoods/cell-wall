@@ -34,4 +34,3 @@
 </script>
 
 <a hidden {href} bind:this={anchor}>Refresh</a>
-
