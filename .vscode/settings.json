@@ -8,23 +8,12 @@
     },
     "**/*.js.map": {
       "when": "$(basename)"
-    },
-    "javascript/*/test/**/*.d.ts": true,
-    "javascript/android-bridge/src/**/*.d.ts": true,
-    "javascript/cells/src/**/*.d.ts": true,
-    "javascript/remote/src/**/*.d.ts": true,
-    "javascript/deploy/src/**/*.d.ts": true,
-    "javascript/iterators/src/**/*.d.ts": true,
-    "javascript/server/src/**/*.d.ts": true,
-    "javascript/split-image/src/**/*.d.ts": true,
-    "javascript/storage/src/**/*.d.ts": true
+    }
   },
   "editor.formatOnSave": true,
   "search.exclude": {
-    "**/coverge": true,
-    "**/lib": true,
     "**/node_modules": true,
-    "package-lock.json": true,
+    "pnpm-lock.yaml": true,
     "server/.svelte-kit": true,
     "server/build": true
   },

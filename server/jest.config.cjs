@@ -10,7 +10,7 @@ const config = {
 	},
 	// Transform ES modules
 	transformIgnorePatterns: [
-		`node_modules/(?!${Object.keys(esModules).join('|')})`,
+		`node_modules/(?!${Object.keys(esModules).join('|')})/`,
 		'\\.pnp\\.[^\\/]+$'
 	],
 	// Map modules without a "main" field
