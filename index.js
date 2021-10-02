@@ -9,7 +9,7 @@ var port = process.env["PORT"] || !path && 3e3;
 // src/server/index.js
 import { assetsMiddleware, kitMiddleware, prerenderedMiddleware } from "./middlewares.js";
 
-// node_modules/svelte/internal/index.mjs
+// node_modules/.pnpm/svelte@3.43.1/node_modules/svelte/internal/index.mjs
 function noop() {
 }
 function run(fn) {
