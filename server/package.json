@@ -24,6 +24,7 @@
 		"ws": "^8.2.2"
 	},
 	"devDependencies": {
+		"@jest/globals": "^27.2.4",
 		"@sveltejs/adapter-node": "next",
 		"@sveltejs/kit": "next",
 		"@types/lodash.startcase": "^4.4.6",
