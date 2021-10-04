@@ -14,7 +14,8 @@ const config = {
 		'\\.pnp\\.[^\\/]+$'
 	],
 	// Map modules without a "main" field
-	moduleNameMapper: esModules
+	moduleNameMapper: esModules,
+	setupFiles: ['./src/jest.setup.ts']
 };
 
 module.exports = config;
