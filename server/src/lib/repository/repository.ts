@@ -38,8 +38,10 @@ function sendIntentOnStateChange(cellManager: CellManager, deviceManager: Device
 				const base = info.get(serial)?.server || SERVER_ADDRESS;
 
 				return deviceManager.startIntent(serial, {
+					pkg: PACKAGE_NAME,
 					action: `${PACKAGE_NAME}.DISPLAY`,
-					dataUri: toUri(state, base).replace(/&/g, '\\&').replace(/'/g, '%27')
+					dataUri: toUri(state, base),
+					waitForLaunch: true
 				});
 			})
 		);

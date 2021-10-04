@@ -3,7 +3,7 @@ import { ADB } from 'appium-adb';
 import type { Readable } from 'svelte/store';
 import { writable } from 'svelte/store';
 import type { StartIntentOptions } from './adb-action';
-import { checkIfOn, startIntent, togglePower } from './adb-action';
+import { checkIfOn, startIntent } from './adb-action';
 
 export type DeviceMap = ReadonlyMap<string, ADB>;
 export type DeviceCallback<T> = (adb: ADB, udid: string) => Promise<T>;
@@ -26,7 +26,7 @@ export class DeviceManager {
 		const adbGlobal = await ADB.createADB({
 			allowOfflineDevices: false
 		});
-		const devices: Device[] = await adbGlobal.getConnectedDevices();
+		const devices: Device[] = await adbGlobal.getDevicesWithRetry();
 
 		const clients = await Promise.all(
 			devices.map(async (device) => {
@@ -52,7 +52,7 @@ export class DeviceManager {
 		const adb = this._lastMap.get(serial);
 		if (!adb) return false;
 
-		await togglePower(adb);
+		await adb.cycleWakeUp();
 		return true;
 	}
 

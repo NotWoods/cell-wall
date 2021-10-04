@@ -34,12 +34,12 @@ export function blankState(): CellStateBlank {
 	return { type: CellStateType.BLANK };
 }
 
-export function toUri(state: CellState, base?: string | URL): string {
+export function toUri(state: CellState, base?: string | URL): URL {
 	const { type, ...props } = state;
 	switch (type.toUpperCase()) {
 		case CellStateType.WEB: {
 			const web = props as CellStateWeb;
-			return new URL(web.url, base).toString();
+			return new URL(web.url, base);
 		}
 		case CellStateType.IMAGE: {
 			const imgProps = props as CellStateImage;
@@ -51,7 +51,7 @@ export function toUri(state: CellState, base?: string | URL): string {
 			for (const [key, value] of Object.entries(props)) {
 				url.searchParams.append(key, value);
 			}
-			return url.toString();
+			return url;
 		}
 	}
 }

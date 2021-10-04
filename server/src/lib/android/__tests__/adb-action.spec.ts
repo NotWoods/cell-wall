@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, jest } from '@jest/globals';
-import { checkIfOn, startIntent, togglePower } from '../adb-action';
+import { checkIfOn, startIntent } from '../adb-action';
 
 describe('startIntent', () => {
 	const shell = jest.fn().mockReturnValue('');
@@ -11,13 +11,13 @@ describe('startIntent', () => {
 	});
 
 	it('runs command with no options', async () => {
-		await startIntent(adb, {});
-		expect(shell).toBeCalledWith(['am', 'start', '-W']);
+		await startIntent(adb, { pkg: 'package' });
+		expect(shell).toBeCalledWith(['am', 'start']);
 	});
 
 	it(`throws if intent doesn't resolve`, async () => {
 		shell.mockReturnValue('Unable to resolve intent');
-		await expect(startIntent(adb, {})).rejects.toMatchObject({
+		await expect(startIntent(adb, { pkg: 'package' })).rejects.toMatchObject({
 			message: 'Unable to resolve intent'
 		});
 	});
@@ -49,16 +49,5 @@ mHoldingWakeLockSuspendBlocker=false
 mHoldingDisplaySuspendBlocker=true`;
 
 		expect(await checkIfOn(adb, cmdOutput)).toBe(true);
-	});
-});
-
-describe('togglePower', () => {
-	it('runs keyevent', async () => {
-		const keyevent = jest.fn();
-		const adb = { keyevent } as any;
-
-		await togglePower(adb);
-
-		expect(keyevent).toHaveBeenCalledWith(26);
 	});
 });

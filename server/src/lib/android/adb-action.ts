@@ -1,6 +1,5 @@
-import type { ADB } from 'appium-adb';
-
-const POWER_BUTTON = 26;
+import type { ADB, StartAppOptions } from 'appium-adb';
+import { buildStartCmd } from 'appium-adb/lib/helpers';
 
 /**
  * Checks if an Android device is on.
@@ -14,52 +13,24 @@ export async function checkIfOn(
 	return wakefulness === 'Awake';
 }
 
-/**
- * Press the power button on the given Android device.
- */
-export async function togglePower(adb: ADB): Promise<void> {
-	await adb.keyevent(POWER_BUTTON);
-}
-
-export interface StartIntentOptions {
-	action?: string;
-	dataUri?: string;
-	mimeType?: string;
-	category?: string;
-	component?: string;
-	flags?: readonly string[];
+export interface StartIntentOptions extends StartAppOptions {
+	dataUri?: string | URL | undefined;
+	mimeType?: string | undefined;
 	extras?: {
 		[key: string]: string | boolean | number | null | undefined | number[];
 	};
-	waitForLaunch?: boolean;
 }
 
 export async function startIntent(adb: ADB, options: StartIntentOptions): Promise<void> {
-	const { waitForLaunch = true, flags = [], extras = {} } = options;
+	const args = buildStartCmd(options, 21);
 
-	const args = ['am', 'start'];
-	if (waitForLaunch) {
-		args.push('-W');
-	}
-	if (options.action) {
-		args.push('-a', options.action);
-	}
 	if (options.dataUri) {
-		args.push('-d', options.dataUri);
+		args.push('-d', options.dataUri.toString());
 	}
 	if (options.mimeType) {
 		args.push('-t', options.mimeType);
 	}
-	if (options.category) {
-		args.push('-c', options.category);
-	}
-	if (options.component) {
-		args.push('-n', options.component);
-	}
-	for (const flag of flags) {
-		args.push('-f', flag);
-	}
-	for (const [key, extra] of Object.entries(extras)) {
+	for (const [key, extra] of Object.entries(options.extras || {})) {
 		switch (typeof extra) {
 			case 'string':
 				args.push('--es', key, extra);

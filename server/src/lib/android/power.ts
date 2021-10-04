@@ -1,5 +1,5 @@
 import type { ADB } from 'appium-adb';
-import { checkIfOn, togglePower } from './adb-action';
+import { checkIfOn } from './adb-action';
 import type { DeviceMap } from './device-manager';
 
 export type Power = boolean | 'toggle';
@@ -21,7 +21,7 @@ export function asPower(primitive: unknown): Power | undefined {
 async function setPowerOne(client: ADB, on?: boolean) {
 	const isOn = await checkIfOn(client);
 	if (isOn !== on) {
-		await togglePower(client);
+		await client.cycleWakeUp();
 		return !isOn;
 	}
 	return on;

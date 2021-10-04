@@ -26,7 +26,8 @@
 		"paths": {
 			"$lib": ["src/lib"],
 			"$lib/*": ["src/lib/*"],
-			"appium-adb": ["types/appium-adb"]
+			"appium-adb": ["types/appium-adb"],
+			"appium-adb/*": ["types/appium-adb/*"]
 		},
 		"typeRoots": ["**/node_modules/@types", "./@types"]
 	},
