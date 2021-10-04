@@ -13,16 +13,16 @@ export async function checkIfOn(
 }
 
 export interface StartIntentOptions {
-	action?: string;
-	dataUri?: string;
-	mimeType?: string;
-	category?: string;
-	component?: string;
-	flags?: readonly string[];
+	action?: string | undefined;
+	dataUri?: string | URL | undefined;
+	mimeType?: string | undefined;
+	category?: string | undefined;
+	component?: string | undefined;
+	flags?: readonly string[] | undefined;
 	extras?: {
-		[key: string]: string | boolean | number | null | undefined | number[];
+		[key: string]: string | boolean | number | null | undefined | readonly number[];
 	};
-	waitForLaunch?: boolean;
+	waitForLaunch?: boolean | undefined;
 }
 
 export async function startIntent(adb: ADB, options: StartIntentOptions): Promise<void> {
@@ -36,7 +36,7 @@ export async function startIntent(adb: ADB, options: StartIntentOptions): Promis
 		args.push('-a', options.action);
 	}
 	if (options.dataUri) {
-		args.push('-d', options.dataUri);
+		args.push('-d', options.dataUri.toString());
 	}
 	if (options.mimeType) {
 		args.push('-t', options.mimeType);

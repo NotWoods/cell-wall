@@ -31,7 +31,7 @@ sealed class Container {
     getString(name)?.let(Color::parseColor)
 
   inline fun <reified T : Enum<T>> getEnum(name: String): T? =
-    getString(name)?.toUpperCase(Locale.ROOT)?.let { enumValueOf<T>(it) }
+    getString(name)?.uppercase(Locale.ROOT)?.let { enumValueOf<T>(it) }
 }
 
 class JsonContainer(private val obj: JSONObject) : Container() {
@@ -41,7 +41,7 @@ class JsonContainer(private val obj: JSONObject) : Container() {
 
 class DataUriContainer(private val uri: Uri) : Container() {
   override val type: CellStateType
-    get() = CellStateType.valueOf(uri.host!!.toUpperCase(Locale.ROOT))
+    get() = CellStateType.valueOf(uri.host!!.uppercase(Locale.ROOT))
   override fun getString(name: String) =
     uri.getQueryParameter(name)
 }

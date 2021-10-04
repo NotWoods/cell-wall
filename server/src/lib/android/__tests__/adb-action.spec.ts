@@ -11,13 +11,13 @@ describe('startIntent', () => {
 	});
 
 	it('runs command with no options', async () => {
-		await startIntent(adb, { pkg: 'package' });
+		await startIntent(adb, {});
 		expect(shell).toBeCalledWith(['am', 'start']);
 	});
 
 	it(`throws if intent doesn't resolve`, async () => {
 		shell.mockReturnValue('Unable to resolve intent');
-		await expect(startIntent(adb, { pkg: 'package' })).rejects.toMatchObject({
+		await expect(startIntent(adb, {})).rejects.toMatchObject({
 			message: 'Unable to resolve intent'
 		});
 	});

@@ -13,11 +13,12 @@ import java.util.*
 fun deviceName(): String {
   val manufacturer = Build.MANUFACTURER
   val model = Build.MODEL
+  val modelFormatted = model.replaceFirstChar { it.titlecase(Locale.ROOT) }
 
   return if (model.startsWith(manufacturer)) {
-    model.capitalize(Locale.ROOT)
+    modelFormatted
   } else {
-    manufacturer.capitalize(Locale.ROOT) + " " + model.capitalize(Locale.ROOT)
+    manufacturer.replaceFirstChar { it.titlecase(Locale.ROOT) } + " " + modelFormatted
   }
 }
 
