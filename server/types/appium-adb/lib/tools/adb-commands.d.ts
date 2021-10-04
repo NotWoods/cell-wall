@@ -1,73 +1,45 @@
-import { SubProcess, TeenProcessExecOptions } from '../../teen_process';
-import { Log } from '../logcat';
+import { SubProcess, ExecOptions } from '../../teen_process';
+import { LogcatOpts, Log } from '../logcat';
 
-export interface KeyboardState {
-	/** Whether soft keyboard is currently visible. */
-	isKeyboardShown: boolean;
-	/** Whether the keyboard can be closed. */
-	canCloseKeyboard: boolean;
-}
-
-export interface LogcatOpts {
-	/**
-	 * The log print format, where <format> is one of:
-	 *   brief process tag thread raw time threadtime long
-	 * `threadtime` is the default value.
-	 */
-	format?: string;
-	/**
-	 * Series of <tag>[:priority]
-	 * where <tag> is a log component tag (or * for all) and priority is:
-	 *  V    Verbose
-	 *  D    Debug
-	 *  I    Info
-	 *  W    Warn
-	 *  E    Error
-	 *  F    Fatal
-	 *  S    Silent (supress all output)
-	 *
-	 * '*' means '*:d' and <tag> by itself means <tag>:v
-	 *
-	 * If not specified on the commandline, filterspec is set from ANDROID_LOG_TAGS.
-	 * If no filterspec is found, filter defaults to '*:I'
-	 */
-	filterSpecs?: ReadonlyArray<string>;
-}
-
-export interface ScreenrecordOptions {
-	/**
-	 * The format is widthxheight.
-	 *                  The default value is the device's native display resolution (if supported),
-	 *                  1280x720 if not. For best results,
-	 *                  use a size supported by your device's Advanced Video Coding (AVC) encoder.
-	 *                  For example, "1280x720"
-	 */
-	videoSize?: string;
-	/**
-	 * Set it to `true` in order to display additional information on the video overlay,
-	 *                                  such as a timestamp, that is helpful in videos captured to illustrate bugs.
-	 *                                  This option is only supported since API level 27 (Android P).
-	 */
-	bugReport?: boolean;
-	/**
-	 * The maximum recording time, in seconds.
-	 *                                        The default (and maximum) value is 180 (3 minutes).
-	 */
-	timeLimit?: string | number;
-	/**
-	 * The video bit rate for the video, in megabits per second.
-	 *                The default value is 4. You can increase the bit rate to improve video quality,
-	 *                but doing so results in larger movie files.
-	 */
-	bitRate?: string | number;
-}
+export { LogcatOpts };
 
 export interface SetPropOptions {
 	/**
 	 * Do we run setProp as a privileged command?
 	 * @default true
 	 */
-	privileged?: boolean;
+	privileged?: boolean | undefined;
+}
+
+export interface ScreenrecordOptions {
+	/**
+	 * The format is widthxheight.
+	 * The default value is the device's native display resolution (if supported),
+	 * 1280x720 if not. For best results,
+	 * use a size supported by your device's Advanced Video Coding (AVC) encoder.
+	 * For example, "1280x720"
+	 */
+	videoSize?: string;
+	/**
+	 * Set it to `true` in order to display additional information on the video overlay,
+	 * such as a timestamp, that is helpful in videos captured to illustrate bugs.
+	 * This option is only supported since API level 27 (Android P).
+	 * @default false
+	 */
+	bugReport?: boolean | undefined;
+	/**
+	 * The maximum recording time, in seconds.
+	 * The default (and maximum) value is 180 (3 minutes).
+	 * @default 180
+	 */
+	timeLimit?: string | number | undefined;
+	/**
+	 * The video bit rate for the video, in megabits per second.
+	 * You can increase the bit rate to improve video quality,
+	 * but doing so results in larger movie files.
+	 * @default 4
+	 */
+	bitRate?: string | number | undefined;
 }
 
 declare const methods: AdbCommands;
@@ -75,18 +47,43 @@ export default methods;
 
 interface AdbCommands {
 	/**
-	 * Get the path to adb executable amd assign it
+	 * Creates chunks for the given arguments and executes them in `adb shell`.
+	 * This is faster than calling `adb shell` separately for each arg, however
+	 * there is a limit for a maximum length of a single adb command. that is why
+	 * we need all this complicated logic.
+	 *
+	 * @param {Function} argTransformer A function, that receives single argument
+	 * from the `args` array and transforms it into a shell command. The result
+	 * of the function must be an array, where each item is a part of a single command.
+	 * The last item of the array could be ';'. If this is not a semicolon then it is going to
+	 * be added automatically.
+	 * @param {Array<number|string>} args Array of argument values to create chunks for
+	 * @throws {Error} If any of the chunks returns non-zero exit code after being executed
+	 */
+	shellChunks<A extends number | string>(
+		argTransformer: (arg: A) => ReadonlyArray<string>,
+		args: ReadonlyArray<A>
+	): Promise<void>;
+
+	/**
+	 * Get the path to adb executable and assign it
 	 * to this.executable.path and this.binaries.adb properties.
 	 *
-	 * @return {string} Full path to adb executable.
+	 * @return {ADB} ADB instance.
 	 */
-	getAdbWithCorrectAdbPath(): Promise<string>;
+	getAdbWithCorrectAdbPath(): Promise<void>;
 
 	/**
 	 * Get the full path to aapt tool and assign it to
 	 * this.binaries.aapt property
 	 */
 	initAapt(): Promise<void>;
+
+	/**
+	 * Get the full path to aapt2 tool and assign it to
+	 * this.binaries.aapt2 property
+	 */
+	initAapt2(): Promise<void>;
 
 	/**
 	 * Get the full path to zipalign tool and assign it to
@@ -257,20 +254,38 @@ interface AdbCommands {
 	 * https://developer.android.com/preview/restrictions-non-sdk-interfaces
 	 *
 	 * @param {number|string} value - The API enforcement policy.
-	 *     0: Disable non-SDK API usage detection. This will also disable logging, and also break the strict mode API,
-	 *        detectNonSdkApiUsage(). Not recommended.
-	 *     1: "Just warn" - permit access to all non-SDK APIs, but keep warnings in the log.
-	 *        The strict mode API will keep working.
-	 *     2: Disallow usage of dark grey and black listed APIs.
-	 *     3: Disallow usage of blacklisted APIs, but allow usage of dark grey listed APIs.
+	 * ### For Android P
+	 * - 0: Disable non-SDK API usage detection. This will also disable logging, and also break the strict mode API,
+	 *      detectNonSdkApiUsage(). Not recommended.
+	 * - 1: "Just warn" - permit access to all non-SDK APIs, but keep warnings in the log.
+	 *      The strict mode API will keep working.
+	 * - 2: Disallow usage of dark grey and black listed APIs.
+	 * - 3: Disallow usage of blacklisted APIs, but allow usage of dark grey listed APIs.
+	 *
+	 * ### For Android Q
+	 * https://developer.android.com/preview/non-sdk-q#enable-non-sdk-access
+	 * - 0: Disable all detection of non-SDK interfaces. Using this setting disables all log messages for non-SDK interface usage
+	 *      and prevents you from testing your app using the StrictMode API. This setting is not recommended.
+	 * - 1: Enable access to all non-SDK interfaces, but print log messages with warnings for any non-SDK interface usage.
+	 *      Using this setting also allows you to test your app using the StrictMode API.
+	 * - 2: Disallow usage of non-SDK interfaces that belong to either the black list
+	 *      or to a restricted greylist for your target API level.
+	 *
+	 * @param {boolean} ignoreError [false] Whether to ignore an exception in 'adb shell settings put global' command
+	 * @throws {error} If there was an error and ignoreError was true while executing 'adb shell settings put global'
+	 *                 command on the device under test.
 	 */
-	setHiddenApiPolicy(value: number | string): Promise<void>;
+	setHiddenApiPolicy(value: number | string, ignoreError?: boolean): Promise<void>;
 
 	/**
 	 * Reset access to non-SDK APIs to its default setting.
 	 * https://developer.android.com/preview/restrictions-non-sdk-interfaces
+	 *
+	 * @param {boolean} ignoreError [false] Whether to ignore an exception in 'adb shell settings delete global' command
+	 * @throws {error} If there was an error and ignoreError was true while executing 'adb shell settings delete global'
+	 *                 command on the device under test.
 	 */
-	setDefaultHiddenApiPolicy(): Promise<void>;
+	setDefaultHiddenApiPolicy(ignoreError?: boolean): Promise<void>;
 
 	/**
 	 * Stop the particular package if it is running and clears its application data.
@@ -319,7 +334,7 @@ interface AdbCommands {
 	 *
 	 * @return {string} The name of the default input method.
 	 */
-	defaultIME(): Promise<string>;
+	defaultIME(): Promise<string | null>;
 
 	/**
 	 * Send the particular keycode to the device under test.
@@ -380,13 +395,6 @@ interface AdbCommands {
 	isScreenLocked(): Promise<boolean>;
 
 	/**
-	 * Retrieve the state of the software keyboard on the device under test.
-	 *
-	 * @return {KeyboardState} The keyboard state.
-	 */
-	isSoftKeyboardPresent(): Promise<KeyboardState>;
-
-	/**
 	 * Send an arbitrary Telnet command to the device under test.
 	 *
 	 * @param {string} command - The command to be sent.
@@ -426,15 +434,6 @@ interface AdbCommands {
 	isWifiOn(): Promise<boolean>;
 
 	/**
-	 * Change the state of WiFi on the device under test.
-	 *
-	 * @param {boolean} on - True to enable and false to disable it.
-	 * @param {boolean} isEmulator [false] - Set it to true if the device under test
-	 *                                       is an emulator rather than a real device.
-	 */
-	setWifiState(on: boolean, isEmulator?: boolean): Promise<void>;
-
-	/**
 	 * Check the state of Data transfer on the device under test.
 	 *
 	 * @return {boolean} True if Data transfer is enabled.
@@ -458,22 +457,10 @@ interface AdbCommands {
 	 * @param {boolean} isEmulator [false] - Set it to true if the device under test
 	 *                                       is an emulator rather than a real device.
 	 */
-	setWifiAndData(options: { wifi?: boolean; data?: boolean }, isEmulator?: boolean): Promise<void>;
-
-	/**
-	 * Change the state of animation on the device under test.
-	 * Animation on the device is controlled by the following global properties:
-	 * [ANIMATOR_DURATION_SCALE]{@link https://developer.android.com/reference/android/provider/Settings.Global.html#ANIMATOR_DURATION_SCALE},
-	 * [TRANSITION_ANIMATION_SCALE]{@link https://developer.android.com/reference/android/provider/Settings.Global.html#TRANSITION_ANIMATION_SCALE},
-	 * [WINDOW_ANIMATION_SCALE]{@link https://developer.android.com/reference/android/provider/Settings.Global.html#WINDOW_ANIMATION_SCALE}.
-	 * This method sets all this properties to 0.0 to disable (1.0 to enable) animation.
-	 *
-	 * Turning off animation might be useful to improve stability
-	 * and reduce tests execution time.
-	 *
-	 * @param {boolean} on - True to enable and false to disable it.
-	 */
-	setAnimationState(on: boolean): Promise<void>;
+	setWifiAndData(
+		options: { wifi?: boolean | undefined; data?: boolean | undefined },
+		isEmulator?: boolean
+	): Promise<void>;
 
 	/**
 	 * Check the state of animation on the device under test.
@@ -501,15 +488,19 @@ interface AdbCommands {
 	 *                        _exec_ method options, for more information about available
 	 *                        options.
 	 */
-	push(localPath: string, remotePath: string, opts?: TeenProcessExecOptions): Promise<void>;
+	push(localPath: string, remotePath: string, opts?: ExecOptions): Promise<void>;
 
 	/**
 	 * Receive a file from the device under test.
 	 *
 	 * @param {string} remotePath - The source path on the remote device.
 	 * @param {string} localPath - The destination path to the file on the local file system.
+	 * @param {object} opts - Additional options mapping. See
+	 *                        https://github.com/appium/node-teen_process,
+	 *                        _exec_ method options, for more information about available
+	 *                        options.
 	 */
-	pull(remotePath: string, localPath: string): Promise<void>;
+	pull(remotePath: string, localPath: string, opts?: ExecOptions): Promise<void>;
 
 	/**
 	 * Check whether the process with the particular name is running on the device
@@ -635,10 +626,31 @@ interface AdbCommands {
 	removeLogcatListener(listener: (outputObj: Log) => void): void;
 
 	/**
+	 * At some point of time Google has changed the default `ps` behaviour, so it only
+	 * lists processes that belong to the current shell user rather to all
+	 * users. It is necessary to execute ps with -A command line argument
+	 * to mimic the previous behaviour.
+	 *
+	 * @returns {string} the output of `ps` command where all processes are included
+	 */
+	listProcessStatus(): Promise<string>;
+
+	/**
+	 * Returns process name for the given process identifier
+	 *
+	 * @param {string|number} pid - The valid process identifier
+	 * @throws {Error} If the given PID is either invalid or is not present
+	 * in the active processes list
+	 * @returns {string} The process name
+	 */
+	getNameByPid(pid: string | number): Promise<string>;
+
+	/**
 	 * Get the list of process ids for the particular process on the device under test.
 	 *
 	 * @param {string} name - The part of process name.
 	 * @return {Array.<number>} The list of matched process IDs or an empty list.
+	 * @throws {Error} If the passed process name is not a valid one
 	 */
 	getPIDsByName(name: string): Promise<number[]>;
 
@@ -656,10 +668,9 @@ interface AdbCommands {
 	 * to properly kill the process.
 	 *
 	 * @param {string|number} pid - The ID of the process to be killed.
-	 * @return {string} Kill command stdout.
-	 * @throws {Error} If the process with given ID is not present or cannot be killed.
+	 * @throws {Error} If the process cannot be killed.
 	 */
-	killProcessByPID(pid: string | number): Promise<string>;
+	killProcessByPID(pid: string | number): Promise<void>;
 
 	/**
 	 * Broadcast process killing on the device under test.
@@ -839,14 +850,87 @@ interface AdbCommands {
 	screenrecord(destination: string, options?: ScreenrecordOptions): SubProcess;
 
 	/**
-	 * Performs the given editor action on the focused input field.
-	 * This method requires Appium Settings helper to be installed on the device.
-	 * No exception is thrown if there was a failure while performing the action.
-	 * You must investigate the logcat output if something did not work as expected.
+	 * Executes the given function with the given input method context
+	 * and then restores the IME to the original value
 	 *
-	 * @param {string|number} action - Either action code or name. The following action
-	 *                                 names are supported: `normal, unspecified, none,
-	 *                                 go, search, send, next, done, previous`
+	 * @param {string} ime - Valid IME identifier
+	 * @param {Function} fn - Function to execute
+	 * @returns {*} The result of the given function
 	 */
-	performEditorAction(action: string | number): Promise<void>;
+	runInImeContext<T>(ime: string, fn: () => Promise<T>): Promise<T>;
+
+	/**
+	 * Get tz database time zone formatted timezone
+	 *
+	 * @returns {string} TZ database Time Zones format
+	 *
+	 * @throws {error} If any exception is reported by adb shell.
+	 */
+	getTimeZone(): Promise<string>;
+
+	/**
+	 * Retrieves the list of features supported by the device under test
+	 *
+	 * @returns {Array<string>} the list of supported feature names or an empty list.
+	 * @example
+	 * ['cmd',
+	 * 'ls_v2',
+	 * 'fixed_push_mkdir',
+	 * 'shell_v2',
+	 * 'abb',
+	 * 'stat_v2',
+	 * 'apex',
+	 * 'abb_exec',
+	 * 'remount_shell',
+	 * 'fixed_push_symlink_timestamp']
+	 * ```
+	 * @throws {Error} if there was an error while retrieving the list
+	 */
+	listFeatures(): Promise<string[]>;
+
+	/**
+	 * Checks the state of streamed install feature.
+	 * This feature allows to speed up apk installation
+	 * since it does not require the original apk to be pushed to
+	 * the device under test first, which also saves space.
+	 * Although, it is required that both the device under test
+	 * and the adb server have the mentioned functionality.
+	 * See https://github.com/aosp-mirror/platform_system_core/blob/master/adb/client/adb_install.cpp
+	 * for more details
+	 *
+	 * @returns {boolean} `true` if the feature is supported by both adb and the
+	 * device under test
+	 */
+	isStreamedInstallSupported(): Promise<boolean>;
+
+	/**
+	 * Checks whether incremental install feature is supported by ADB.
+	 * Read https://developer.android.com/preview/features#incremental
+	 * for more details on it.
+	 *
+	 * @returns {boolean} `true` if the feature is supported by both adb and the
+	 * device under test
+	 */
+	isIncrementalInstallSupported(): Promise<boolean>;
+
+	/**
+	 * Retrieves the list of packages from Doze whitelist on Android 8+
+	 *
+	 * @returns {Array<string>} The list of whitelisted packages. An example output:
+	 * system,com.android.shell,2000
+	 * system,com.google.android.cellbroadcastreceiver,10143
+	 * user,io.appium.settings,10157
+	 */
+	getDeviceIdleWhitelist(): Promise<string[]>;
+
+	/**
+	 * Adds an existing package(s) into the Doze whitelist on Android 8+
+	 *
+	 * @param  {...string} packages One or more packages to add. If the package
+	 * already exists in the whitelist then it is only going to be added once.
+	 * If the package with the given name is not installed/not known then an error
+	 * will be thrown.
+	 * @returns {Boolean} `true` if the command to add package(s) has been executed
+	 */
+	addToDeviceIdleWhitelist(...packages: string[]): Promise<boolean>;
 }

@@ -23,7 +23,9 @@ export class DeviceManager {
 	}
 
 	async refreshDevices(): Promise<DeviceMap> {
-		const adbGlobal = await ADB.createADB();
+		const adbGlobal = await ADB.createADB({
+			allowOfflineDevices: false
+		});
 		const devices: Device[] = await adbGlobal.getConnectedDevices();
 
 		const clients = await Promise.all(

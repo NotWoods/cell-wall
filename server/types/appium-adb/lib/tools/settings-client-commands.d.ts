@@ -21,8 +21,46 @@ export interface SmsListOptions {
 	max?: number;
 }
 
-declare const settingsClientCommands: SettingsClientCommands;
-export default settingsClientCommands;
+export interface StatusBarNotification {
+	isGroup: boolean;
+	packageName: string;
+	isClearable: boolean;
+	isOngoing: boolean;
+	id: number;
+	tag: string | null;
+	notification: {
+		title: string | null;
+		bigTitle: string | null;
+		text: string | null;
+		bigText: string | null;
+		tickerText: string | null;
+		subText: string | null;
+		infoText: string | null;
+		template: string | null;
+	};
+	userHandle: number;
+	groupKey: string;
+	overrideGroupKey: string | null;
+	postTime: number;
+	key: string;
+	isRemoved: boolean;
+}
+
+export interface SmsItem {
+	id: string;
+	address: string;
+	person: string | null;
+	date: string;
+	read: string;
+	status: string;
+	type: string;
+	subject: string | null;
+	body: string;
+	serviceCenter: string | null;
+}
+
+declare const commands: SettingsClientCommands;
+export default commands;
 
 interface SettingsClientCommands {
 	/**
@@ -176,7 +214,7 @@ interface SettingsClientCommands {
 	 * ```
 	 * @throws {Error} If there was an error while getting the notifications list
 	 */
-	getNotifications(): Promise<object>;
+	getNotifications(): Promise<{ statusBarNotifications: StatusBarNotification[] }>;
 
 	/**
 	 * Retrieves the list of the most recent SMS
@@ -218,7 +256,7 @@ interface SettingsClientCommands {
 	 * ```
 	 * @throws {Error} If there was an error while getting the SMS list
 	 */
-	getSmsList(opts?: SmsListOptions): Promise<object>;
+	getSmsList(opts?: SmsListOptions): Promise<{ items: SmsItem[]; total: number }>;
 
 	/**
 	 * Types the given Unicode string.

@@ -1,31 +1,30 @@
-import { SubProcess } from '../teen_process';
-import { AdbMethods } from './tools';
+import { SubProcess } from 'teen_process';
+import { AdbMethods, BinaryName } from './tools';
 
 export * from './tools';
 export { getSdkRootFromEnv } from './helpers';
 
-type DeepRequired<T> = {
-	[P in keyof T]-?: T[P] extends object ? DeepRequired<T[P]> : T[P];
-};
-
 export const DEFAULT_ADB_PORT: number;
+
+export interface AdbExecutable {
+	path: string;
+	defaultArgs: ReadonlyArray<string>;
+}
 
 export interface CreateAdbOptions {
 	sdkRoot?: string | null;
+	udid?: string | null;
 	appDeviceReadyTimeout?: number | null;
 	useKeystore?: boolean | null;
 	keystorePath?: string | null;
 	keystorePassword?: string | null;
 	keyAlias?: string | null;
 	keyPassword?: string | null;
-	executable?: {
-		path?: string;
-		defaultArgs?: ReadonlyArray<string>;
-	};
+	executable?: Partial<AdbExecutable>;
 	tmpDir?: string;
 	curDeviceId?: string | null;
 	emulatorPort?: number | null;
-	binaries?: { [binaryName: string]: string | undefined };
+	binaries?: Partial<Record<BinaryName, string>>;
 	instrumentProc?: SubProcess | null;
 	suppressKillServer?: boolean | null;
 	adbPort?: number;
@@ -33,9 +32,12 @@ export interface CreateAdbOptions {
 	remoteAppsCacheLimit?: number;
 	buildToolsVersion?: string | null;
 	allowOfflineDevices?: boolean;
+	allowDelayAdb?: boolean;
 }
 
-interface ADB extends AdbMethods, DeepRequired<CreateAdbOptions> {}
+interface ADB extends AdbMethods, Required<CreateAdbOptions> {
+	executable: AdbExecutable;
+}
 
 declare const ADB: {
 	prototype: ADB;

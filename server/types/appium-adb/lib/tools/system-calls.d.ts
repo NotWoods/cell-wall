@@ -1,5 +1,5 @@
 import { SemVer } from 'semver';
-import { SubProcess, TeenProcessExecOptions } from '../../teen_process';
+import { SubProcess, ExecOptions } from '../../teen_process';
 
 export { DEFAULT_ADB_EXEC_TIMEOUT } from '../helpers';
 
@@ -10,7 +10,17 @@ export interface Device {
 	state: string;
 }
 
-export interface ShellExecOptions extends TeenProcessExecOptions {
+export interface AdbExecOptions extends ExecOptions {
+	exclusive?: boolean;
+	outputFormat?: 'stdout' | 'full' | 'undefined';
+}
+
+export interface ExecResult {
+	stdout: string;
+	stderr: string;
+}
+
+export interface ShellExecOptions extends ExecOptions {
 	/** @default [falsy] Whether to run the given command as root. */
 	privileged?: boolean;
 	/** @default [falsy] Whether to keep root mode after command execution is completed. */
@@ -90,6 +100,8 @@ export interface RootResult {
 	wasAlreadyRooted: boolean;
 }
 
+export type BinaryName = 'aapt' | 'aapt2' | 'adb' | 'bundletool' | 'zipalign';
+
 /**
  * Retrieve full path to the given binary.
  * This method does not have cache.
@@ -111,6 +123,11 @@ declare const systemCallMethods: SystemCalls;
 export default systemCallMethods;
 
 interface SystemCalls {
+	EXEC_OUTPUT_FORMAT: {
+		readonly STDOUT: 'stdout';
+		readonly FULL: 'full';
+	};
+
 	/**
 	 * Retrieve full path to the given binary.
 	 *
@@ -118,15 +135,6 @@ interface SystemCalls {
 	 * @return {string} Full path to the given binary including current SDK root.
 	 */
 	getSdkBinaryPath(binaryName: string): Promise<string>;
-
-	/**
-	 * Retrieve the name of the tool,
-	 * which prints full path to the given command shortcut.
-	 *
-	 * @return {string} Depending on the current platform this is
-	 *                  supposed to be either 'which' or 'where'.
-	 */
-	getCommandForOS(): 'where' | 'which';
 
 	/**
 	 * Retrieve full binary name for the current operating system.
@@ -149,7 +157,7 @@ interface SystemCalls {
 	 *                 of known locations or Android SDK is not installed on the
 	 *                 local file system.
 	 */
-	getBinaryFromSdkRoot(binaryName: string): Promise<string>;
+	getBinaryFromSdkRoot(binaryName: BinaryName): Promise<string>;
 
 	/**
 	 * Retrieve full path to a binary file using the standard system lookup tool.
@@ -179,6 +187,18 @@ interface SystemCalls {
 	 * @throws {Error} If no connected devices can be detected within the given timeout.
 	 */
 	getDevicesWithRetry(timeoutMs?: number): Promise<Device[]>;
+
+	/**
+	 * Kick current connection from host/device side and make it reconnect
+	 *
+	 * @param {?string} target [offline] One of possible targets to reconnect:
+	 * offline, device or null
+	 * Providing `null` will cause reconnection to happen from the host side.
+	 *
+	 * @throws {Error} If either ADB version is too old and does not support this
+	 * command or there was a failure during reconnect.
+	 */
+	reconnect(target?: 'offline' | 'device' | 'null'): Promise<void>;
 
 	/**
 	 * Restart adb server, unless _this.suppressKillServer_ property is true.
@@ -216,7 +236,11 @@ interface SystemCalls {
 	 * @return {string} - Command's stdout.
 	 * @throws {Error} If the command returned non-zero exit code.
 	 */
-	adbExec(cmd: ReadonlyArray<string>, opts?: TeenProcessExecOptions): Promise<string>;
+	adbExec(
+		cmd: ReadonlyArray<string>,
+		opts?: AdbExecOptions & { outputFormat: 'full' }
+	): Promise<ExecResult>;
+	adbExec(cmd: ReadonlyArray<string>, opts?: AdbExecOptions): Promise<string>;
 
 	/**
 	 * Execute the given command using _adb shell_ prefix.

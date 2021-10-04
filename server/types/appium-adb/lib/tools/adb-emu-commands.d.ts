@@ -211,7 +211,18 @@ interface AdbEmuCommands {
 	 * @throws {Error} If there was an error while connecting to the Telnet console
 	 * or if the given command returned non-OK response
 	 */
-	execTelnet(cmd: string | ReadonlyArray<string>, opts?: ExecTelnetOptions): Promise<string>;
+	execEmuConsoleCommand(
+		cmd: string | ReadonlyArray<string>,
+		opts?: ExecTelnetOptions
+	): Promise<string>;
+
+	/**
+	 * Retrieves emulator version from the file system
+	 *
+	 * @returns {EmuVersionInfo} If no version info could be parsed then an empty
+	 * object is returned
+	 */
+	getEmuVersionInfo(): Promise<EmuVersionInfo>;
 
 	/**
 	 * Retrieves emulator image properties from the local file system
@@ -226,14 +237,6 @@ interface AdbEmuCommands {
 	 *   target=android-30
 	 */
 	getEmuImageProperties(avdName: string): Promise<object>;
-
-	/**
-	 * Retrieves emulator version from the file system
-	 *
-	 * @returns {EmuVersionInfo} If no version info could be parsed then an empty
-	 * object is returned
-	 */
-	getEmuVersionInfo(): Promise<EmuVersionInfo>;
 
 	/**
 	 * Check if given emulator exists in the list of available avds.

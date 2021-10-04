@@ -1,4 +1,4 @@
-import { TeenProcessExecOptions } from '../../teen_process';
+import { ExecOptions } from '../../teen_process';
 
 export const enum APP_INSTALL_STATE {
 	UNKNOWN = 'unknown',
@@ -9,45 +9,63 @@ export const enum APP_INSTALL_STATE {
 }
 
 export interface StartAppOptions {
-	/** The name of the main application activity */
-	activity: string;
-	/** The name of the application package */
+	/**
+	 * The name of the application package
+	 */
 	pkg: string;
 	/**
-	 * @default [true] - If this property is set to `true`
+	 * The name of the main application activity.
+	 * This or action is required in order to be able to launch an app.
+	 */
+	activity?: string | undefined;
+	/**
+	 * The name of the intent action that will launch the required app.
+	 * This or activity is required in order to be able to launch an app.
+	 */
+	action?: string | undefined;
+	/**
+	 * If this property is set to `true`
 	 * and the activity name does not start with '.' then the method
 	 * will try to add the missing dot and start the activity once more
 	 * if the first startup try fails.
+	 * @default true
 	 */
-	retry?: boolean;
+	retry?: boolean | undefined;
 	/**
-	 * @default [true] - Set it to `true` in order to forcefully
+	 * Set it to `true` in order to forcefully
 	 * stop the activity if it is already running.
+	 * @default true
 	 */
-	stopApp?: boolean;
+	stopApp?: boolean | undefined;
 	/**
 	 * The name of the package to wait to on startup
 	 * (this only makes sense if this name is different from the one,
 	 * which is set as `pkg`)
 	 */
-	waitPkg?: string;
+	waitPkg?: string | undefined;
 	/**
 	 * The name of the activity to wait to on startup
 	 * (this only makes sense if this name is different from the one,
 	 * which is set as `activity`)
 	 */
-	waitActivity?: string;
+	waitActivity?: string | undefined;
 	/**
 	 * The number of milliseconds to wait until the
 	 * `waitActivity` is focused
 	 */
-	waitDuration?: string;
+	waitDuration?: string | undefined;
 	/**
 	 * The number of the user profile to start
 	 * the given activity with. The default OS user profile (usually zero) is used
 	 * when this property is unset
 	 */
-	user?: string | number;
+	user?: string | number | undefined;
+	/**
+	 * if `false` then adb won't wait
+	 * for the started activity to return the control
+	 * @default true
+	 */
+	waitForLaunch?: boolean | undefined;
 }
 
 export interface StartUriOptions {
@@ -169,12 +187,14 @@ export interface AppInfo {
 	/**
 	 * Version code.
 	 */
-	versionCode?: number;
+	versionCode: number;
 	/**
 	 * Version name, for example '1.0'.
 	 */
-	versionName?: string;
+	versionName: string | null;
 }
+
+export const REMOTE_CACHE_ROOT = '/data/local/tmp/appium_cache';
 
 declare const apkUtilsMethods: ApkUtils;
 export default apkUtilsMethods;
@@ -209,11 +229,9 @@ interface ApkUtils {
 	startApp(startAppOptions?: StartAppOptions): Promise<string>;
 
 	/**
-	 * @typedef {Object} PackageActivityInfo
-	 * @property {?string} appPackage - The name of application package,
-	 *                                  for example 'com.acme.app'.
-	 * @property {?string} appActivity - The name of main application activity.
+	 * Helper method to call `adb dumpsys window windows/displays`
 	 */
+	dumpWindows(): Promise<string>;
 
 	/**
 	 * Get the name of currently focused package and activity.
@@ -281,7 +299,17 @@ interface ApkUtils {
 	 *                             for more details on this parameter.
 	 * @throws {error} If there was a failure during application install.
 	 */
-	installFromDevicePath(apkPathOnDevice: string, opts?: TeenProcessExecOptions): Promise<void>;
+	installFromDevicePath(apkPathOnDevice: string, opts?: ExecOptions): Promise<void>;
+
+	/**
+	 * Caches the given APK at a remote location to speed up further APK deployments.
+	 *
+	 * @param {string} apkPath - Full path to the apk on the local FS
+	 * @param {?CachingOptions} options - Caching options
+	 * @returns {string} - Full path to the cached apk on the remote file system
+	 * @throws {Error} if there was a failure while caching the app
+	 */
+	cacheApk(apkPath: string, options?: CachingOptions): Promise<string>;
 
 	/**
 	 * Install the package from the local file system.

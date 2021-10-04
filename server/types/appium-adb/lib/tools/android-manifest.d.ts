@@ -9,12 +9,6 @@ declare const manifestMethods: AndroidManifest;
 export default manifestMethods;
 
 interface AndroidManifest {
-	// android:process= may be defined in AndroidManifest.xml
-	// http://developer.android.com/reference/android/R.attr.html#process
-	// note that the process name when used with ps must be truncated to the last 15 chars
-	// ps -c com.example.android.apis becomes ps -c le.android.apis
-	processFromManifest(localApk: string): Promise<string>;
-
 	/**
 	 * Extract package and main activity name from application manifest.
 	 *
@@ -78,12 +72,4 @@ interface AndroidManifest {
 	 * @return {boolean} True if the manifest requires Internet access permission.
 	 */
 	hasInternetPermissionFromManifest(appPath: string): Promise<boolean>;
-
-	/**
-	 * Prints out the manifest extracted from the apk
-	 *
-	 * @param {string} appPath - The full path to application package.
-	 * @param {?string} logLevel - The level at which to log. E.g., 'debug'
-	 */
-	printManifestFromApk(appPath: string, logLevel?: string): Promise<void>;
 }
