@@ -6572,15 +6572,11 @@ function derived(stores, fn, initial_value) {
     };
   });
 }
-var POWER_BUTTON = 26;
 async function checkIfOn(adb, cmdOutput = void 0) {
   var _a;
   const stdout = cmdOutput || await adb.shell(["dumpsys", "power"]);
   const wakefulness = (_a = /mWakefulness=(\w+)/.exec(stdout)) == null ? void 0 : _a[1];
   return wakefulness === "Awake";
-}
-async function togglePower(adb) {
-  await adb.keyevent(POWER_BUTTON);
 }
 async function startIntent(adb, options2) {
   const { waitForLaunch = true, flags = [], extras = {} } = options2;
@@ -6592,7 +6588,7 @@ async function startIntent(adb, options2) {
     args.push("-a", options2.action);
   }
   if (options2.dataUri) {
-    args.push("-d", options2.dataUri);
+    args.push("-d", options2.dataUri.toString());
   }
   if (options2.mimeType) {
     args.push("-t", options2.mimeType);
@@ -6654,8 +6650,10 @@ var DeviceManager = class {
     return this._devices;
   }
   async refreshDevices() {
-    const adbGlobal = await ADB.createADB();
-    const devices = await adbGlobal.getConnectedDevices();
+    const adbGlobal = await ADB.createADB({
+      allowOfflineDevices: false
+    });
+    const devices = await adbGlobal.getDevicesWithRetry();
     const clients = await Promise.all(devices.map(async (device) => {
       const adb = await ADB.createADB();
       adb.setDevice(device);
@@ -6675,7 +6673,7 @@ var DeviceManager = class {
     const adb = this._lastMap.get(serial);
     if (!adb)
       return false;
-    await togglePower(adb);
+    await adb.cycleWakeUp();
     return true;
   }
   async startIntent(serial, options2) {
@@ -6702,7 +6700,7 @@ function asPower(primitive) {
 async function setPowerOne(client, on) {
   const isOn = await checkIfOn(client);
   if (isOn !== on) {
-    await togglePower(client);
+    await client.cycleWakeUp();
     return !isOn;
   }
   return on;
@@ -6834,7 +6832,7 @@ function toUri(state, base2) {
   switch (type.toUpperCase()) {
     case CellStateType.WEB: {
       const web = props;
-      return new URL(web.url, base2).toString();
+      return new URL(web.url, base2);
     }
     case CellStateType.IMAGE: {
       const imgProps = props;
@@ -6845,7 +6843,7 @@ function toUri(state, base2) {
       for (const [key, value] of Object.entries(props)) {
         url.searchParams.append(key, value);
       }
-      return url.toString();
+      return url;
     }
   }
 }
@@ -7284,7 +7282,8 @@ function sendIntentOnStateChange(cellManager, deviceManager) {
       const base2 = ((_a = info.get(serial)) == null ? void 0 : _a.server) || SERVER_ADDRESS;
       return deviceManager.startIntent(serial, {
         action: `${PACKAGE_NAME}.DISPLAY`,
-        dataUri: toUri(state, base2).replace(/&/g, "\\&").replace(/'/g, "%27")
+        dataUri: toUri(state, base2),
+        waitForLaunch: true
       });
     }));
   });
