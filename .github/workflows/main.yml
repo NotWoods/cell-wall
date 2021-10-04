@@ -26,7 +26,6 @@ jobs:
           if-no-files-found: error
       # - run: ./gradlew testDebugUnitTest
       #   working-directory: ./android
-
       - run: ./gradlew assembleDebug --stacktrace
         name: build apk
         working-directory: ./android
@@ -66,33 +65,13 @@ jobs:
       - run: pnpm run build
       - run: cp ./{package.json,pnpm-lock.yaml,.gitignore} ./build
 
-      - name: upload build
-        uses: actions/upload-artifact@v2
-        if: ${{ github.event_name == 'push' }}
-        with:
-          name: server
-          path: server/build
-          if-no-files-found: error
-
-  deploy:
-    runs-on: ubuntu-latest
-    needs: [android, server]
-    if: ${{ github.event_name == 'push' }}
-
-    steps:
-      - uses: actions/download-artifact@v2
-        with:
-          name: apk
-      - uses: actions/download-artifact@v2
-        with:
-          name: server
-
       # Publish the code
       - name: deploy to branch
         uses: peaceiris/actions-gh-pages@v3
+        if: ${{ github.event_name == 'push' }}
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: .
+          publish_dir: ./server/build
           publish_branch: pi-deploy
           user_name: "github-actions[bot]"
           user_email: "github-actions[bot]@users.noreply.github.com"
