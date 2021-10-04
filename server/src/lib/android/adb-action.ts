@@ -1,5 +1,4 @@
-import type { ADB, StartAppOptions } from 'appium-adb';
-import { buildStartCmd } from 'appium-adb/lib/helpers';
+import type { ADB } from 'appium-adb';
 
 /**
  * Checks if an Android device is on.
@@ -13,24 +12,45 @@ export async function checkIfOn(
 	return wakefulness === 'Awake';
 }
 
-export interface StartIntentOptions extends StartAppOptions {
-	dataUri?: string | URL | undefined;
-	mimeType?: string | undefined;
+export interface StartIntentOptions {
+	action?: string;
+	dataUri?: string;
+	mimeType?: string;
+	category?: string;
+	component?: string;
+	flags?: readonly string[];
 	extras?: {
 		[key: string]: string | boolean | number | null | undefined | number[];
 	};
+	waitForLaunch?: boolean;
 }
 
 export async function startIntent(adb: ADB, options: StartIntentOptions): Promise<void> {
-	const args = buildStartCmd(options, 21);
+	const { waitForLaunch = true, flags = [], extras = {} } = options;
 
+	const args = ['am', 'start'];
+	if (waitForLaunch) {
+		args.push('-W');
+	}
+	if (options.action) {
+		args.push('-a', options.action);
+	}
 	if (options.dataUri) {
-		args.push('-d', options.dataUri.toString());
+		args.push('-d', options.dataUri);
 	}
 	if (options.mimeType) {
 		args.push('-t', options.mimeType);
 	}
-	for (const [key, extra] of Object.entries(options.extras || {})) {
+	if (options.category) {
+		args.push('-c', options.category);
+	}
+	if (options.component) {
+		args.push('-n', options.component);
+	}
+	for (const flag of flags) {
+		args.push('-f', flag);
+	}
+	for (const [key, extra] of Object.entries(extras)) {
 		switch (typeof extra) {
 			case 'string':
 				args.push('--es', key, extra);
