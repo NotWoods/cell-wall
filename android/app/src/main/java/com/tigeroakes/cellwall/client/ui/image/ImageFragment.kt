@@ -1,18 +1,24 @@
 package com.tigeroakes.cellwall.client.ui.image
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
-import com.tigeroakes.cellwall.client.R
-import kotlinx.android.synthetic.main.fragment_image.*
+import com.tigeroakes.cellwall.client.databinding.FragmentImageBinding
+import com.tigeroakes.cellwall.client.ui.ViewBindingFragment
 
-class ImageFragment : Fragment(R.layout.fragment_image) {
+class ImageFragment : ViewBindingFragment<FragmentImageBinding>() {
 
   private val args by navArgs<ImageFragmentArgs>()
   private val viewModel by viewModels<ImageViewModel>()
+
+  override fun inflateLayout(
+    inflater: LayoutInflater,
+    container: ViewGroup?
+  ) = FragmentImageBinding.inflate(inflater, container, false)
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -20,14 +26,14 @@ class ImageFragment : Fragment(R.layout.fragment_image) {
   }
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-    image.scaleType = try {
+    binding?.image?.scaleType = try {
       ImageView.ScaleType.valueOf(args.scaleType)
     } catch (err: IllegalArgumentException) {
       ImageView.ScaleType.FIT_CENTER
     }
 
     viewModel.image.observe(viewLifecycleOwner) {
-      image.setImageBitmap(it)
+      binding?.image?.setImageBitmap(it)
     }
   }
 }

@@ -1,23 +1,29 @@
 package com.tigeroakes.cellwall.client.ui.splash
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
-import androidx.fragment.app.Fragment
+import android.view.ViewGroup
 import com.tigeroakes.cellwall.client.R
+import com.tigeroakes.cellwall.client.databinding.FragmentSplashBinding
 import com.tigeroakes.cellwall.client.device.getCellInfo
-import kotlinx.android.synthetic.main.activity_login.*
+import com.tigeroakes.cellwall.client.ui.ViewBindingFragment
 
-class SplashFragment : Fragment(R.layout.fragment_splash) {
+class SplashFragment : ViewBindingFragment<FragmentSplashBinding>() {
+
+  override fun inflateLayout(
+    inflater: LayoutInflater,
+    container: ViewGroup?
+  ) = FragmentSplashBinding.inflate(inflater, container, false)
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-    super.onViewCreated(view, savedInstanceState)
     setupDebugText()
   }
 
   /** Update the debug text */
   private fun setupDebugText() {
     val info = getCellInfo(resources.displayMetrics)
-    debug_density.text = getString(R.string.debug_density, info.density)
-    debug_display.text = getString(R.string.debug_display_dp, info.width, info.height)
+    binding!!.debugDensity.text = getString(R.string.debug_density, info.density)
+    binding!!.debugDisplay.text = getString(R.string.debug_display_dp, info.width, info.height)
   }
 }

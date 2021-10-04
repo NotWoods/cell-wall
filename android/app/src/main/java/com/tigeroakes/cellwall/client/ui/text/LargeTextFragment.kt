@@ -2,17 +2,24 @@ package com.tigeroakes.cellwall.client.ui.text
 
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
-import androidx.fragment.app.Fragment
+import android.view.ViewGroup
 import androidx.navigation.fragment.navArgs
-import com.tigeroakes.cellwall.client.R
-import kotlinx.android.synthetic.main.fragment_large_text.*
+import com.tigeroakes.cellwall.client.databinding.FragmentLargeTextBinding
+import com.tigeroakes.cellwall.client.ui.ViewBindingFragment
 
-class LargeTextFragment : Fragment(R.layout.fragment_large_text) {
+class LargeTextFragment : ViewBindingFragment<FragmentLargeTextBinding>() {
+
   private val args: LargeTextFragmentArgs by navArgs()
 
+  override fun inflateLayout(
+    inflater: LayoutInflater,
+    container: ViewGroup?
+  ) = FragmentLargeTextBinding.inflate(inflater, container, false)
+
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-    text_container.background = ColorDrawable(args.backgroundColor)
-    large_text.text = args.text
+    binding!!.textContainer.background = ColorDrawable(args.backgroundColor)
+    binding!!.largeText.text = args.text
   }
 }

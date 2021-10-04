@@ -2,13 +2,11 @@ package com.tigeroakes.cellwall.client.ui
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import com.tigeroakes.cellwall.client.R
 import com.tigeroakes.cellwall.client.device.Immersive
 import com.tigeroakes.cellwall.client.model.CellState
-import com.tigeroakes.cellwall.client.ui.web.WebViewModel
 
 class MainActivity : AppCompatActivity(R.layout.activity_main) {
 

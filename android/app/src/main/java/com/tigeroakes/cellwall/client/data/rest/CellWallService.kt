@@ -8,10 +8,10 @@ import retrofit2.http.PUT
 import retrofit2.http.Path
 
 interface CellWallService {
-  @GET("/v3/cellwall-version")
+  @GET("/api/cellwall-version")
   suspend fun isCellWall(): Response<JSONObject>
 
-  @PUT("/v3/device/{serial}")
+  @PUT("/api/device/{serial}")
   suspend fun putCell(
     @Path("serial") serial: String,
     @Body cell: JSONObject

@@ -2,18 +2,12 @@ package com.tigeroakes.cellwall.client.data
 
 import android.content.Context
 import android.net.Uri
+import android.os.Build
 import androidx.annotation.Keep
 import androidx.core.net.toUri
-import com.tigeroakes.cellwall.client.data.prefs.Settings
-import com.tigeroakes.cellwall.client.data.rest.CellWallService
-import com.tigeroakes.cellwall.client.data.rest.Reason
-import com.tigeroakes.cellwall.client.data.rest.ServerUrlValidator
-import com.tigeroakes.cellwall.client.data.web.ServiceGenerator
+import com.tigeroakes.cellwall.client.data.prefs.settingsDataStore
 import com.tigeroakes.cellwall.client.device.CellInfo
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.withContext
-import retrofit2.create
 
 @Keep
 class CellWallRepository(context: Context) {
@@ -29,25 +23,25 @@ class CellWallRepository(context: Context) {
     }
   }
 
-  private val settings = Settings(context)
+  private val settings = context.settingsDataStore
 
-  val serverAddress = settings.serverAddress.asFlow()
-    .map { address -> address.takeIf { it.isNotEmpty() } }
-  val serial = settings.serial.asFlow()
+  val serverAddress = settings.data
+    .map { settings -> settings.serverAddress.takeIf { it.isNotEmpty() } }
+  val serial = settings.data
+    .map { settings -> settings.serial ?: Build.UNKNOWN }
   val isUrlSaved = serverAddress.map { !it.isNullOrEmpty() }
 
   suspend fun attemptToConnect(address: String): Uri {
     val url = address.toUri()
-
-    withContext(Dispatchers.IO) {
-      settings.serverAddress.set(url.toString())
+    settings.updateData { settings ->
+      settings.toBuilder().setServerAddress(url.toString()).build()
     }
     return url
   }
 
   suspend fun register(serial: String, info: CellInfo) {
-    withContext(Dispatchers.IO) {
-      settings.serial.set(serial)
+    settings.updateData { settings ->
+      settings.toBuilder().setSerial(serial).build()
     }
   }
 }

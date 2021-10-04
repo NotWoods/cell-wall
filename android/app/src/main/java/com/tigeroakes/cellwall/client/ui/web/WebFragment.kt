@@ -1,24 +1,34 @@
 package com.tigeroakes.cellwall.client.ui.web
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
-import androidx.fragment.app.Fragment
+import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts.RequestMultiplePermissions
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.navArgs
-import com.tigeroakes.cellwall.client.R
-import kotlinx.android.synthetic.main.fragment_web.*
+import com.tigeroakes.cellwall.client.databinding.FragmentWebBinding
+import com.tigeroakes.cellwall.client.ui.ViewBindingFragment
 
-class WebFragment : Fragment(R.layout.fragment_web) {
+class WebFragment : ViewBindingFragment<FragmentWebBinding>() {
 
   private val args by navArgs<WebFragmentArgs>()
   private val viewModel by activityViewModels<WebViewModel>()
 
+  private val requestPermissions = registerForActivityResult(RequestMultiplePermissions()) { grantResults ->
+    viewModel.onRequestPermissionsResult(grantResults)
+  }
+
+  override fun inflateLayout(
+    inflater: LayoutInflater, container: ViewGroup?
+  ) = FragmentWebBinding.inflate(inflater, container, false)
+
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-    web_view.setSession(viewModel.session)
+    binding!!.webView.setSession(viewModel.session)
 
     viewModel.permissionRequests.observe(viewLifecycleOwner) { event ->
       event.getContentIfNotHandled()?.let { permissions ->
-        requestPermissions(permissions, REQUEST_PERMISSIONS)
+        requestPermissions.launch(permissions)
       }
     }
   }
@@ -30,21 +40,5 @@ class WebFragment : Fragment(R.layout.fragment_web) {
 
   fun openUrl(url: String) {
     viewModel.openUrl(url)
-  }
-
-  override fun onRequestPermissionsResult(
-    requestCode: Int,
-    permissions: Array<out String>,
-    grantResults: IntArray
-  ) {
-    if (requestCode == REQUEST_PERMISSIONS) {
-      viewModel.onRequestPermissionsResult(grantResults)
-    } else {
-      super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-    }
-  }
-
-  companion object {
-    private const val REQUEST_PERMISSIONS = 1
   }
 }

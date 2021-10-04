@@ -2,23 +2,17 @@ package com.tigeroakes.cellwall.client.ui.web
 
 import android.Manifest
 import android.app.Application
-import android.content.Context
-import android.content.pm.PackageManager
 import android.content.pm.PackageManager.PERMISSION_GRANTED
-import android.util.Log
 import android.webkit.WebView
 import androidx.core.content.ContextCompat
-import androidx.core.net.toUri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tigeroakes.cellwall.client.device.contentBlocking
-import com.tigeroakes.cellwall.client.device.contentBlockingSettings
 import com.tigeroakes.cellwall.client.device.geckoRuntimeSettings
 import com.tigeroakes.cellwall.client.model.Event
 import org.mozilla.geckoview.ContentBlocking
 import org.mozilla.geckoview.GeckoRuntime
-import org.mozilla.geckoview.GeckoRuntimeSettings
 import org.mozilla.geckoview.GeckoSession
 
 class WebViewModel(application: Application): AndroidViewModel(application), GeckoSession.PermissionDelegate {
@@ -55,15 +49,15 @@ class WebViewModel(application: Application): AndroidViewModel(application), Gec
     session.loadUri(urlToOpen)
   }
 
-  fun onRequestPermissionsResult(grantResults: IntArray) {
+  fun onRequestPermissionsResult(grantResults: Map<String, Boolean>) {
     val callback = this.callback ?: return
     this.callback = null
 
-    if (grantResults.any { it != PERMISSION_GRANTED }) {
+    if (grantResults.values.all { it }) {
+      callback.grant()
+    } else {
       // At least one permission was not granted.
       callback.reject()
-    } else {
-      callback.grant()
     }
   }
 
