@@ -12,7 +12,7 @@ describe('startIntent', () => {
 
 	it('runs command with no options', async () => {
 		await startIntent(adb, {});
-		expect(shell).toBeCalledWith(['am', 'start']);
+		expect(shell).toBeCalledWith(['am', 'start', '-W']);
 	});
 
 	it(`throws if intent doesn't resolve`, async () => {
