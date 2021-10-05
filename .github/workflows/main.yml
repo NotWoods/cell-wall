@@ -26,15 +26,6 @@ jobs:
           if-no-files-found: error
       # - run: ./gradlew testDebugUnitTest
       #   working-directory: ./android
-      - run: ./gradlew assembleDebug --stacktrace
-        name: build apk
-        working-directory: ./android
-      - name: upload apk
-        uses: actions/upload-artifact@v2
-        with:
-          name: apk
-          path: android/app/build/outputs/apk/debug/app-debug.apk
-          if-no-files-found: error
 
   server:
     runs-on: ubuntu-latest
