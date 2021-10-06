@@ -9,18 +9,18 @@
 
 		
 
-		<link rel="modulepreload" href="/_app/start-b6f0ccf0.js">
+		<link rel="modulepreload" href="/_app/start-8582331f.js">
 		<link rel="modulepreload" href="/_app/chunks/vendor-e69d1c9d.js">
 		<link rel="modulepreload" href="/_app/layout.svelte-48330d5b.js">
 		<link rel="modulepreload" href="/_app/pages/remote/__layout.svelte-73ba7c06.js">
-		<link rel="modulepreload" href="/_app/pages/remote/index.svelte-512201e1.js">
-		<link rel="modulepreload" href="/_app/chunks/Form-6bbf49bf.js">
+		<link rel="modulepreload" href="/_app/pages/remote/index.svelte-5de43ef9.js">
+		<link rel="modulepreload" href="/_app/chunks/_Field-2ba58279.js">
 		<link rel="modulepreload" href="/_app/chunks/_form-52443b97.js">
 		<link rel="stylesheet" href="/_app/assets/start-61d1577b.css">
-		<link rel="stylesheet" href="/_app/assets/pages/remote/index.svelte-3d98ee13.css">
+		<link rel="stylesheet" href="/_app/assets/pages/remote/index.svelte-15ea8fff.css">
 
 		<script type="module">
-			import { start } from "/_app/start-b6f0ccf0.js";
+			import { start } from "/_app/start-8582331f.js";
 			start({
 				target: document.querySelector("#svelte"),
 				paths: {"base":"","assets":""},
@@ -35,7 +35,7 @@
 					nodes: [
 						import("/_app/layout.svelte-48330d5b.js"),
 						import("/_app/pages/remote/__layout.svelte-73ba7c06.js"),
-						import("/_app/pages/remote/index.svelte-512201e1.js")
+						import("/_app/pages/remote/index.svelte-5de43ef9.js")
 					],
 					page: {
 						host: location.host, // TODO this is redundant
@@ -70,13 +70,19 @@
 		<progress class="progress is-small is-primary" max="100">Loading</progress>
 	
 
-	<div class="tile is-ancestor"><div class="tile is-parent is-vertical"><article class="tile is-child box svelte-dvwrrs"><p class="title">Info</p>
-	<p class="subtitle">Calendar indicators and the week&#39;s weather.</p>
-	<div class="buttons is-right svelte-dvwrrs"><button type="submit" name="preset" value="info" class="button is-outlined">Activate</button></div>
+	<div class="tile is-ancestor"><div class="tile is-parent is-vertical"><article class="tile card is-child"><header class="card-header"><h3 class="card-header-title title">Info</h3></header>
+	<div class="card-content">Calendar indicators and the week&#39;s weather.
+			</div>
+	<footer class="card-footer"><button type="submit" name="preset" value="info" class="card-footer-item svelte-cdkl4v">Activate</button></footer>
 </article>
-			<article class="tile is-child box svelte-dvwrrs"><p class="title">Tea list</p>
-	<p class="subtitle">What&#39;s avaliable to drink?</p>
-	<div class="buttons is-right svelte-dvwrrs"><button type="submit" name="preset" value="tea" class="button is-outlined">Activate</button></div>
+			<article class="tile card is-child"><header class="card-header"><h3 class="card-header-title title">Tea list</h3></header>
+	<div class="card-content">What&#39;s avaliable to drink?</div>
+	<footer class="card-footer"><button type="submit" name="preset" value="tea" class="card-footer-item svelte-cdkl4v">Activate</button></footer>
+</article>
+			<article class="tile card is-child"><header class="card-header"><h3 class="card-header-title">Install Android update</h3></header>
+	<div class="card-content"><div class="field is-horizontal"><div class="field-label is-normal"><label class="label" for="control-tag">Tag</label></div>
+	<div class="field-body"><div class="field is-narrow"><div class="control"><input id="control-tag" class="input" name="tag" type="text" placeholder="Latest"></div></div></div></div></div>
+	<footer class="card-footer"><button type="submit" name="preset" formaction="/api/action/install" class="card-footer-item svelte-cdkl4v">Install</button></footer>
 </article></div>
 		<div class="tile is-parent"><article class="tile is-child notification"><figure class="image"><img alt="" src="https://raw.githubusercontent.com/NotWoods/cell-wall/main/images/finished.jpg"></figure>
 				<div class="field"><label class="label" for="control-rest">Remaining cells</label>

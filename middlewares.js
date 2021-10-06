@@ -40,7 +40,7 @@ var __objRest = (source, exclude) => {
 // node_modules/.pnpm/@sveltejs+adapter-node@1.0.0-next.53/node_modules/@sveltejs/adapter-node/files/shims.js
 import { createRequire } from "module";
 
-// node_modules/.pnpm/@sveltejs+kit@1.0.0-next.179_svelte@3.43.1/node_modules/@sveltejs/kit/dist/install-fetch.js
+// node_modules/.pnpm/@sveltejs+kit@1.0.0-next.180_svelte@3.43.1/node_modules/@sveltejs/kit/dist/install-fetch.js
 import http from "http";
 import https from "https";
 import zlib from "zlib";
@@ -4685,9 +4685,12 @@ Object.defineProperty(globalThis, "require", {
 import { google } from "googleapis";
 import Jimp from "jimp";
 import { ADB } from "appium-adb";
+import { Octokit } from "@octokit/core";
+import fs, { createWriteStream, promises as promises$1 } from "fs";
+import { tmpdir } from "os";
+import path, { join } from "path";
+import { promises } from "stream";
 import { config } from "dotenv";
-import fs from "fs";
-import path from "path";
 import startCase from "lodash.startcase";
 import { Temporal } from "@js-temporal/polyfill";
 var __accessCheck = (obj, member, msg) => {
@@ -6231,9 +6234,9 @@ function init(settings = default_settings) {
     amp: false,
     dev: false,
     entry: {
-      file: assets + "/_app/start-b6f0ccf0.js",
+      file: assets + "/_app/start-8582331f.js",
       css: [assets + "/_app/assets/start-61d1577b.css"],
-      js: [assets + "/_app/start-b6f0ccf0.js", assets + "/_app/chunks/vendor-e69d1c9d.js"]
+      js: [assets + "/_app/start-8582331f.js", assets + "/_app/chunks/vendor-e69d1c9d.js"]
     },
     fetched: void 0,
     floc: false,
@@ -6345,6 +6348,14 @@ var manifest = {
       params: empty,
       load: () => Promise.resolve().then(function() {
         return freebusy;
+      })
+    },
+    {
+      type: "endpoint",
+      pattern: /^\/api\/action\/install\/?$/,
+      params: empty,
+      load: () => Promise.resolve().then(function() {
+        return install;
       })
     },
     {
@@ -6470,7 +6481,7 @@ var module_lookup = {
     return text;
   })
 };
-var metadata_lookup = { ".svelte-kit/build/components/layout.svelte": { "entry": "layout.svelte-48330d5b.js", "css": [], "js": ["layout.svelte-48330d5b.js", "chunks/vendor-e69d1c9d.js"], "styles": [] }, ".svelte-kit/build/components/error.svelte": { "entry": "error.svelte-8156a93a.js", "css": [], "js": ["error.svelte-8156a93a.js", "chunks/vendor-e69d1c9d.js"], "styles": [] }, "src/routes/index.svelte": { "entry": "pages/index.svelte-9adab6ba.js", "css": [], "js": ["pages/index.svelte-9adab6ba.js", "chunks/vendor-e69d1c9d.js"], "styles": [] }, "src/routes/remote/__layout.svelte": { "entry": "pages/remote/__layout.svelte-73ba7c06.js", "css": [], "js": ["pages/remote/__layout.svelte-73ba7c06.js", "chunks/vendor-e69d1c9d.js"], "styles": [] }, "src/routes/remote/index.svelte": { "entry": "pages/remote/index.svelte-512201e1.js", "css": ["assets/pages/remote/index.svelte-3d98ee13.css"], "js": ["pages/remote/index.svelte-512201e1.js", "chunks/vendor-e69d1c9d.js", "chunks/Form-6bbf49bf.js", "chunks/_form-52443b97.js"], "styles": [] }, "src/routes/remote/custom.svelte": { "entry": "pages/remote/custom.svelte-585434e0.js", "css": [], "js": ["pages/remote/custom.svelte-585434e0.js", "chunks/vendor-e69d1c9d.js", "chunks/_DeviceOption-4a2c3971.js", "chunks/state-33679332.js", "chunks/Form-6bbf49bf.js", "chunks/_PowerButton-fcb1151c.js", "chunks/_form-52443b97.js"], "styles": [] }, "src/routes/remote/image.svelte": { "entry": "pages/remote/image.svelte-fdac0b18.js", "css": [], "js": ["pages/remote/image.svelte-fdac0b18.js", "chunks/vendor-e69d1c9d.js", "chunks/_DeviceOption-4a2c3971.js", "chunks/Form-6bbf49bf.js"], "styles": [] }, "src/routes/remote/edit.svelte": { "entry": "pages/remote/edit.svelte-eb5799fd.js", "css": [], "js": ["pages/remote/edit.svelte-eb5799fd.js", "chunks/vendor-e69d1c9d.js", "chunks/_DeviceOption-4a2c3971.js", "chunks/Form-6bbf49bf.js", "chunks/_PowerButton-fcb1151c.js", "chunks/_form-52443b97.js"], "styles": [] }, "src/routes/page/index.svelte": { "entry": "pages/page/index.svelte-f5b7d415.js", "css": [], "js": ["pages/page/index.svelte-f5b7d415.js", "chunks/vendor-e69d1c9d.js", "chunks/state-33679332.js"], "styles": [] }, "src/routes/page/busy/[person].svelte": { "entry": "pages/page/busy/[person].svelte-ea95371c.js", "css": ["assets/pages/page/busy/[person].svelte-eab96ff7.css"], "js": ["pages/page/busy/[person].svelte-ea95371c.js", "chunks/vendor-e69d1c9d.js"], "styles": [] }, "src/routes/page/text.svelte": { "entry": "pages/page/text.svelte-e08061a9.js", "css": ["assets/pages/page/text.svelte-690dba16.css"], "js": ["pages/page/text.svelte-e08061a9.js", "chunks/vendor-e69d1c9d.js"], "styles": [] } };
+var metadata_lookup = { ".svelte-kit/build/components/layout.svelte": { "entry": "layout.svelte-48330d5b.js", "css": [], "js": ["layout.svelte-48330d5b.js", "chunks/vendor-e69d1c9d.js"], "styles": [] }, ".svelte-kit/build/components/error.svelte": { "entry": "error.svelte-8156a93a.js", "css": [], "js": ["error.svelte-8156a93a.js", "chunks/vendor-e69d1c9d.js"], "styles": [] }, "src/routes/index.svelte": { "entry": "pages/index.svelte-9adab6ba.js", "css": [], "js": ["pages/index.svelte-9adab6ba.js", "chunks/vendor-e69d1c9d.js"], "styles": [] }, "src/routes/remote/__layout.svelte": { "entry": "pages/remote/__layout.svelte-73ba7c06.js", "css": [], "js": ["pages/remote/__layout.svelte-73ba7c06.js", "chunks/vendor-e69d1c9d.js"], "styles": [] }, "src/routes/remote/index.svelte": { "entry": "pages/remote/index.svelte-5de43ef9.js", "css": ["assets/pages/remote/index.svelte-15ea8fff.css"], "js": ["pages/remote/index.svelte-5de43ef9.js", "chunks/vendor-e69d1c9d.js", "chunks/_Field-2ba58279.js", "chunks/_form-52443b97.js"], "styles": [] }, "src/routes/remote/custom.svelte": { "entry": "pages/remote/custom.svelte-5861946a.js", "css": [], "js": ["pages/remote/custom.svelte-5861946a.js", "chunks/vendor-e69d1c9d.js", "chunks/_DeviceOption-d5cc9729.js", "chunks/state-33679332.js", "chunks/_Field-2ba58279.js", "chunks/_PowerButton-fcb1151c.js", "chunks/_form-52443b97.js"], "styles": [] }, "src/routes/remote/image.svelte": { "entry": "pages/remote/image.svelte-c4cba862.js", "css": [], "js": ["pages/remote/image.svelte-c4cba862.js", "chunks/vendor-e69d1c9d.js", "chunks/_DeviceOption-d5cc9729.js", "chunks/_Field-2ba58279.js"], "styles": [] }, "src/routes/remote/edit.svelte": { "entry": "pages/remote/edit.svelte-967134df.js", "css": [], "js": ["pages/remote/edit.svelte-967134df.js", "chunks/vendor-e69d1c9d.js", "chunks/_DeviceOption-d5cc9729.js", "chunks/_Field-2ba58279.js", "chunks/_PowerButton-fcb1151c.js", "chunks/_form-52443b97.js"], "styles": [] }, "src/routes/page/index.svelte": { "entry": "pages/page/index.svelte-f5b7d415.js", "css": [], "js": ["pages/page/index.svelte-f5b7d415.js", "chunks/vendor-e69d1c9d.js", "chunks/state-33679332.js"], "styles": [] }, "src/routes/page/busy/[person].svelte": { "entry": "pages/page/busy/[person].svelte-ea95371c.js", "css": ["assets/pages/page/busy/[person].svelte-eab96ff7.css"], "js": ["pages/page/busy/[person].svelte-ea95371c.js", "chunks/vendor-e69d1c9d.js"], "styles": [] }, "src/routes/page/text.svelte": { "entry": "pages/page/text.svelte-e08061a9.js", "css": ["assets/pages/page/text.svelte-690dba16.css"], "js": ["pages/page/text.svelte-e08061a9.js", "chunks/vendor-e69d1c9d.js"], "styles": [] } };
 async function load_component(file) {
   const { entry, css: css2, js, styles } = metadata_lookup[file];
   return {
@@ -6572,6 +6583,19 @@ function derived(stores, fn, initial_value) {
     };
   });
 }
+function transformMap(map, transform) {
+  return new Map(Array.from(map.entries(), ([key, value]) => {
+    return [key, transform(value, key)];
+  }));
+}
+function filterMap(map, predicate) {
+  return new Map(Array.from(map.entries()).filter(([key, value]) => predicate(value, key)));
+}
+async function transformMapAsync(map, transform) {
+  return new Map(await Promise.all(Array.from(map.entries(), async ([key, value]) => {
+    return [key, await transform(value, key)];
+  })));
+}
 async function checkIfOn(adb, cmdOutput = void 0) {
   var _a;
   const stdout = cmdOutput || await adb.shell(["dumpsys", "power"]);
@@ -6663,6 +6687,11 @@ var DeviceManager = class {
     this._devices.set(result);
     return result;
   }
+  async installApkToAll(path2, pkg) {
+    return transformMapAsync(this._lastMap, (adb) => adb.installOrUpgrade(path2, pkg, {
+      enforceCurrentBuild: true
+    }));
+  }
   async checkIfOn(serial) {
     const adb = this._lastMap.get(serial);
     if (!adb)
@@ -6682,6 +6711,50 @@ var DeviceManager = class {
       return false;
     await startIntent(adb, options2);
     return true;
+  }
+};
+function memo(func) {
+  let result;
+  return function memoized(...args) {
+    if (result === void 0) {
+      result = func.apply(this, args);
+    }
+    return result;
+  };
+}
+var buildTempDir = memo(() => promises$1.mkdtemp(join(tmpdir(), "apk-")));
+var GithubApi = class {
+  constructor(options2) {
+    this.octokit = new Octokit(options2);
+  }
+  fetchRelease(tag) {
+    if (tag) {
+      return this.octokit.request("GET /repos/{owner}/{repo}/releases/tags/{tag}", {
+        owner: "NotWooods",
+        repo: "cell-wall",
+        tag
+      });
+    } else {
+      return this.octokit.request("GET /repos/{owner}/{repo}/releases/latest", {
+        owner: "NotWooods",
+        repo: "cell-wall"
+      });
+    }
+  }
+  async downloadApk(tag) {
+    const tmpDirReady = buildTempDir();
+    const response = await this.fetchRelease(tag);
+    const release = response.data;
+    const asset = release.assets.find((asset2) => asset2.name.endsWith(".apk"));
+    if (asset) {
+      const res = await fetch(asset.browser_download_url);
+      const tmpDirPath = await tmpDirReady;
+      const destPath = join(tmpDirPath, asset.name);
+      await promises.pipeline(res.body, createWriteStream(destPath));
+      return destPath;
+    } else {
+      throw new Error(`Could not find APK attached to release ${release.tag_name}`);
+    }
   }
 };
 function asPower(primitive) {
@@ -6853,6 +6926,7 @@ var SERVER_ADDRESS = process.env["SERVER_ADDRESS"];
 var PACKAGE_NAME = "com.tigeroakes.cellwall.client";
 var GOOGLE_CLIENT_ID = process.env["GOOGLE_CLIENT_ID"];
 var GOOGLE_CLIENT_SECRET = process.env["GOOGLE_CLIENT_SECRET"];
+var GITHUB_TOKEN = process.env["GITHUB_TOKEN"];
 var DATABASE_FILENAME = process.env["DATABASE_FILENAME"];
 function initializeGoogle(credentials, googleClientId, googleClientServer) {
   const client = new google.auth.OAuth2(googleClientId, googleClientServer, "https://cellwall.tigeroakes.com/oauth2callback");
@@ -6871,19 +6945,6 @@ async function authenticateGoogle(client, code) {
   const res = await client.getToken(code);
   client.setCredentials(res.tokens);
   return res.tokens;
-}
-function transformMap(map, transform) {
-  return new Map(Array.from(map.entries(), ([key, value]) => {
-    return [key, transform(value, key)];
-  }));
-}
-function filterMap(map, predicate) {
-  return new Map(Array.from(map.entries()).filter(([key, value]) => predicate(value, key)));
-}
-async function transformMapAsync(map, transform) {
-  return new Map(await Promise.all(Array.from(map.entries(), async ([key, value]) => {
-    return [key, await transform(value, key)];
-  })));
 }
 var AXIS_TO_POS = new Map().set("width", "x").set("height", "y");
 function cellCanvas(cells) {
@@ -7001,15 +7062,6 @@ function subscribeToMapStore(store, subscription) {
     subscription(newMap, oldMap);
     oldMap = newMap;
   });
-}
-function memo(func) {
-  let result;
-  return function memoized(...args) {
-    if (result === void 0) {
-      result = func.apply(this, args);
-    }
-    return result;
-  };
 }
 var __classPrivateFieldSet$3 = function(receiver, state, value, kind, f) {
   if (kind === "m")
@@ -7338,6 +7390,12 @@ ${googleClient.authorizeUrl}
     }
     return googleClient;
   });
+  const github = memo(() => {
+    if (!GITHUB_TOKEN) {
+      throw new Error(`Missing GitHub API keys`);
+    }
+    return new GithubApi({ auth: GITHUB_TOKEN });
+  });
   return {
     cellData,
     cellDataJson: derived(cellData, (map) => JSON.stringify(Object.fromEntries(map))),
@@ -7346,6 +7404,14 @@ ${googleClient.authorizeUrl}
       const refreshPromise = deviceManager.refreshDevices();
       deviceManagerPromise = refreshPromise.then(() => deviceManager);
       return refreshPromise;
+    },
+    async installApk(tag) {
+      const apkPath = await github().downloadApk(tag);
+      if (apkPath) {
+        return await deviceManager.installApkToAll(apkPath, PACKAGE_NAME);
+      } else {
+        return new Map();
+      }
     },
     googleApi,
     async authenticateGoogleApi(code) {
@@ -7454,7 +7520,7 @@ function bodyAsJson(input) {
       return void 0;
   }
 }
-var post$9 = async function post2(input) {
+var post$a = async function post2(input) {
   const { client } = await repo.googleApi();
   const requestBody = bodyAsJson(input);
   if (!requestBody) {
@@ -7491,9 +7557,21 @@ var post$9 = async function post2(input) {
 var freebusy = /* @__PURE__ */ Object.freeze({
   __proto__: null,
   [Symbol.toStringTag]: "Module",
+  post: post$a
+});
+var post$9 = async function post22({ body }) {
+  var _a;
+  const results = await repo.installApk((_a = body.get("tag")) != null ? _a : void 0);
+  return {
+    body: JSON.stringify(Object.fromEntries(results))
+  };
+};
+var install = /* @__PURE__ */ Object.freeze({
+  __proto__: null,
+  [Symbol.toStringTag]: "Module",
   post: post$9
 });
-var post$8 = async function post22() {
+var post$8 = async function post23() {
   const devices = await repo.refreshDevices();
   return {
     body: Array.from(devices.keys())
@@ -7520,7 +7598,7 @@ async function updateRemainingCells(remaining, behaviour) {
       break;
   }
 }
-var post$7 = async function post23(input) {
+var post$7 = async function post24(input) {
   const image2 = await Jimp.create(Buffer.from(input.body));
   const devices = new Set(input.query.getAll("device"));
   const includes = devices.size > 0 ? devices.has.bind(devices) : () => true;
@@ -7624,7 +7702,7 @@ var get$4 = async function get25() {
     }
   };
 };
-var post$6 = async function post24({ body }) {
+var post$6 = async function post25({ body }) {
   const power = parsePowerBody(body);
   if (power === void 0) {
     return {
@@ -7653,7 +7731,7 @@ var get$3 = async function get26({ params }) {
     }
   };
 };
-var post$5 = async function post25({ params, body }) {
+var post$5 = async function post26({ params, body }) {
   const { serial } = params;
   const power = parsePowerBody(body);
   if (power === void 0) {
@@ -7680,7 +7758,7 @@ var get$2 = async function get27() {
     }))
   };
 };
-var post$4 = async function post26({ body }) {
+var post$4 = async function post27({ body }) {
   if (typeof body !== "string") {
     return {
       status: 400,
@@ -7699,7 +7777,7 @@ var index$3 = /* @__PURE__ */ Object.freeze({
   get: get$2,
   post: post$4
 });
-var post$3 = async function post27({
+var post$3 = async function post28({
   host,
   body
 }) {
@@ -7725,7 +7803,7 @@ var get$1 = async function get28({ params }) {
     })
   };
 };
-var post$2 = async function post28(input) {
+var post$2 = async function post29(input) {
   const { serial } = input.params;
   const state = asCellState(bodyAsJson(input));
   if (!state) {
@@ -7752,7 +7830,7 @@ var get = async function get29({ params }) {
     body: JSON.stringify((_a = get_store_value(repo.cellData).get(serial)) != null ? _a : null)
   };
 };
-var post$1 = async function post29(input) {
+var post$1 = async function post210(input) {
   const { serial } = input.params;
   const info = bodyAsJson(input);
   if (!info) {
@@ -7881,21 +7959,43 @@ function formDataAsSearchParams(formData) {
   }
   return params;
 }
+var Field = create_ssr_component(($$result, $$props, $$bindings, slots) => {
+  let { label } = $$props;
+  let { htmlFor = void 0 } = $$props;
+  let { narrow = false } = $$props;
+  if ($$props.label === void 0 && $$bindings.label && label !== void 0)
+    $$bindings.label(label);
+  if ($$props.htmlFor === void 0 && $$bindings.htmlFor && htmlFor !== void 0)
+    $$bindings.htmlFor(htmlFor);
+  if ($$props.narrow === void 0 && $$bindings.narrow && narrow !== void 0)
+    $$bindings.narrow(narrow);
+  return `<div class="${"field is-horizontal"}"><div class="${"field-label is-normal"}"><label class="${"label"}"${add_attribute("for", htmlFor, 0)}>${escape(label)}</label></div>
+	<div class="${"field-body"}"><div class="${["field", narrow ? "is-narrow" : ""].join(" ").trim()}"><div class="${"control"}">${slots.default ? slots.default({}) : ``}</div></div></div></div>`;
+});
 var css$2 = {
-  code: "article.svelte-dvwrrs{display:flex;flex-direction:column}.buttons.svelte-dvwrrs{margin-top:auto}",
-  map: '{"version":3,"file":"_PresetCard.svelte","sources":["_PresetCard.svelte"],"sourcesContent":["<script lang=\\"ts\\">export let title;\\nexport let preset;\\n<\/script>\\n\\n<article class=\\"tile is-child box\\">\\n\\t<p class=\\"title\\">{title}</p>\\n\\t<p class=\\"subtitle\\">\\n\\t\\t<slot />\\n\\t</p>\\n\\t<div class=\\"buttons is-right\\">\\n\\t\\t<button type=\\"submit\\" name=\\"preset\\" value={preset} class=\\"button is-outlined\\">Activate</button>\\n\\t</div>\\n</article>\\n\\n<style>\\n\\tarticle {\\n\\t\\tdisplay: flex;\\n\\t\\tflex-direction: column;\\n\\t}\\n\\n\\t.buttons {\\n\\t\\tmargin-top: auto;\\n\\t}\\n</style>\\n"],"names":[],"mappings":"AAeC,OAAO,cAAC,CAAC,AACR,OAAO,CAAE,IAAI,CACb,cAAc,CAAE,MAAM,AACvB,CAAC,AAED,QAAQ,cAAC,CAAC,AACT,UAAU,CAAE,IAAI,AACjB,CAAC"}'
+  code: "button.card-footer-item.svelte-cdkl4v{background:none;border:0;font:inherit;color:inherit;cursor:pointer}",
+  map: `{"version":3,"file":"_PresetCard.svelte","sources":["_PresetCard.svelte"],"sourcesContent":["<script lang=\\"ts\\">export let title;\\nexport let large = false;\\nexport let preset = undefined;\\nexport let formAction = undefined;\\nexport let button = 'Activate';\\n<\/script>\\n\\n<article class=\\"tile card is-child\\">\\n\\t<header class=\\"card-header\\">\\n\\t\\t<h3 class=\\"card-header-title\\" class:title={large}>{title}</h3>\\n\\t</header>\\n\\t<div class=\\"card-content\\">\\n\\t\\t<slot />\\n\\t</div>\\n\\t<footer class=\\"card-footer\\">\\n\\t\\t<button\\n\\t\\t\\ttype=\\"submit\\"\\n\\t\\t\\tname=\\"preset\\"\\n\\t\\t\\tvalue={preset}\\n\\t\\t\\tformaction={formAction}\\n\\t\\t\\tclass=\\"card-footer-item\\"\\n\\t\\t>\\n\\t\\t\\t{button}\\n\\t\\t</button>\\n\\t</footer>\\n</article>\\n\\n<style>\\n\\tbutton.card-footer-item {\\n\\t\\tbackground: none;\\n\\t\\tborder: 0;\\n\\t\\tfont: inherit;\\n\\t\\tcolor: inherit;\\n\\t\\tcursor: pointer;\\n\\t}\\n</style>\\n"],"names":[],"mappings":"AA4BC,MAAM,iBAAiB,cAAC,CAAC,AACxB,UAAU,CAAE,IAAI,CAChB,MAAM,CAAE,CAAC,CACT,IAAI,CAAE,OAAO,CACb,KAAK,CAAE,OAAO,CACd,MAAM,CAAE,OAAO,AAChB,CAAC"}`
 };
 var PresetCard = create_ssr_component(($$result, $$props, $$bindings, slots) => {
   let { title } = $$props;
-  let { preset: preset2 } = $$props;
+  let { large = false } = $$props;
+  let { preset: preset2 = void 0 } = $$props;
+  let { formAction = void 0 } = $$props;
+  let { button = "Activate" } = $$props;
   if ($$props.title === void 0 && $$bindings.title && title !== void 0)
     $$bindings.title(title);
+  if ($$props.large === void 0 && $$bindings.large && large !== void 0)
+    $$bindings.large(large);
   if ($$props.preset === void 0 && $$bindings.preset && preset2 !== void 0)
     $$bindings.preset(preset2);
+  if ($$props.formAction === void 0 && $$bindings.formAction && formAction !== void 0)
+    $$bindings.formAction(formAction);
+  if ($$props.button === void 0 && $$bindings.button && button !== void 0)
+    $$bindings.button(button);
   $$result.css.add(css$2);
-  return `<article class="${"tile is-child box svelte-dvwrrs"}"><p class="${"title"}">${escape(title)}</p>
-	<p class="${"subtitle"}">${slots.default ? slots.default({}) : ``}</p>
-	<div class="${"buttons is-right svelte-dvwrrs"}"><button type="${"submit"}" name="${"preset"}"${add_attribute("value", preset2, 0)} class="${"button is-outlined"}">Activate</button></div>
+  return `<article class="${"tile card is-child"}"><header class="${"card-header"}"><h3 class="${["card-header-title", large ? "title" : ""].join(" ").trim()}">${escape(title)}</h3></header>
+	<div class="${"card-content"}">${slots.default ? slots.default({}) : ``}</div>
+	<footer class="${"card-footer"}"><button type="${"submit"}" name="${"preset"}"${add_attribute("value", preset2, 0)}${add_attribute("formaction", formAction, 0)} class="${"card-footer-item svelte-cdkl4v"}">${escape(button)}</button></footer>
 </article>`;
 });
 var prerender$1 = true;
@@ -7928,11 +8028,33 @@ var Remote = create_ssr_component(($$result, $$props, $$bindings, slots) => {
       }(__value);
     }(loading)}
 
-	<div class="${"tile is-ancestor"}"><div class="${"tile is-parent is-vertical"}">${validate_component(PresetCard, "PresetCard").$$render($$result, { title: "Info", preset: "info" }, {}, {
-      default: () => `Calendar indicators and the week&#39;s weather.`
+	<div class="${"tile is-ancestor"}"><div class="${"tile is-parent is-vertical"}">${validate_component(PresetCard, "PresetCard").$$render($$result, {
+      title: "Info",
+      preset: "info",
+      large: true
+    }, {}, {
+      default: () => `Calendar indicators and the week&#39;s weather.
+			`
     })}
-			${validate_component(PresetCard, "PresetCard").$$render($$result, { title: "Tea list", preset: "tea" }, {}, {
+			${validate_component(PresetCard, "PresetCard").$$render($$result, {
+      title: "Tea list",
+      preset: "tea",
+      large: true
+    }, {}, {
       default: () => `What&#39;s avaliable to drink?`
+    })}
+			${validate_component(PresetCard, "PresetCard").$$render($$result, {
+      title: "Install Android update",
+      button: "Install",
+      formAction: "/api/action/install"
+    }, {}, {
+      default: () => `${validate_component(Field, "Field").$$render($$result, {
+        label: "Tag",
+        htmlFor: "control-tag",
+        narrow: true
+      }, {}, {
+        default: () => `<input id="${"control-tag"}" class="${"input"}" name="${"tag"}" type="${"text"}" placeholder="${"Latest"}">`
+      })}`
     })}</div>
 		<div class="${"tile is-parent"}"><article class="${"tile is-child notification"}"><figure class="${"image"}"><img alt="${""}" src="${"https://raw.githubusercontent.com/NotWoods/cell-wall/main/images/finished.jpg"}"></figure>
 				<div class="${"field"}"><label class="${"label"}" for="${"control-rest"}">Remaining cells</label>
@@ -7979,19 +8101,6 @@ var SubmitButton = create_ssr_component(($$result, $$props, $$bindings, slots) =
 	`;
     }();
   }(loading)}</p>`;
-});
-var Field = create_ssr_component(($$result, $$props, $$bindings, slots) => {
-  let { label } = $$props;
-  let { htmlFor = void 0 } = $$props;
-  let { narrow = false } = $$props;
-  if ($$props.label === void 0 && $$bindings.label && label !== void 0)
-    $$bindings.label(label);
-  if ($$props.htmlFor === void 0 && $$bindings.htmlFor && htmlFor !== void 0)
-    $$bindings.htmlFor(htmlFor);
-  if ($$props.narrow === void 0 && $$bindings.narrow && narrow !== void 0)
-    $$bindings.narrow(narrow);
-  return `<div class="${"field is-horizontal"}"><div class="${"field-label is-normal"}"><label class="${"label"}"${add_attribute("for", htmlFor, 0)}>${escape(label)}</label></div>
-	<div class="${"field-body"}"><div class="${["field", narrow ? "is-narrow" : ""].join(" ").trim()}"><div class="${"control"}">${slots.default ? slots.default({}) : ``}</div></div></div></div>`;
 });
 function getInputType(name, property) {
   if (Array.isArray(property.enum))
@@ -8561,7 +8670,7 @@ import {
   statSync
 } from "fs";
 import fs__default, { readdirSync, statSync as statSync2 } from "fs";
-import { resolve as resolve2, join, normalize as normalize2, dirname } from "path";
+import { resolve as resolve2, join as join2, normalize as normalize2, dirname } from "path";
 import {
   parse
 } from "querystring";
@@ -8664,9 +8773,9 @@ function list(dir, callback, pre = "") {
   let arr = readdirSync(dir);
   let i = 0, abs, stats;
   for (; i < arr.length; i++) {
-    abs = join(dir, arr[i]);
+    abs = join2(dir, arr[i]);
     stats = statSync2(abs);
-    stats.isDirectory() ? list(abs, callback, join(pre, arr[i])) : callback(join(pre, arr[i]), abs, stats);
+    stats.isDirectory() ? list(abs, callback, join2(pre, arr[i])) : callback(join2(pre, arr[i]), abs, stats);
   }
 }
 function Mime$1() {
@@ -8750,7 +8859,7 @@ function viaLocal(dir, isEtag, uri, extns) {
   let i = 0, arr = toAssume(uri, extns);
   let abs, stats, name, headers;
   for (; i < arr.length; i++) {
-    abs = normalize2(join(dir, name = arr[i]));
+    abs = normalize2(join2(dir, name = arr[i]));
     if (abs.startsWith(dir) && existsSync(abs)) {
       stats = statSync(abs);
       if (stats.isDirectory())
@@ -8886,8 +8995,8 @@ function sirv(dir, opts = {}) {
 var __dirname = dirname(fileURLToPath(import.meta.url));
 var noop_handler = (_req, _res, next) => next();
 var paths = {
-  assets: join(__dirname, "/assets"),
-  prerendered: join(__dirname, "/prerendered")
+  assets: join2(__dirname, "/assets"),
+  prerendered: join2(__dirname, "/prerendered")
 };
 var prerenderedMiddleware = fs__default.existsSync(paths.prerendered) ? sirv(paths.prerendered, {
   etag: true,
