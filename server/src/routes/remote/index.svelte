@@ -5,6 +5,7 @@
 <script lang="ts">
 	import Form from '$lib/components/Form.svelte';
 	import { formDataAsSearchParams } from './_form';
+	import Field from './_Field.svelte';
 	import PresetCard from './_PresetCard.svelte';
 
 	async function submit(data: FormData, action: URL) {
@@ -33,9 +34,15 @@
 
 	<div class="tile is-ancestor">
 		<div class="tile is-parent is-vertical">
-			<PresetCard title="Info" preset="info">Calendar indicators and the week's weather.</PresetCard
-			>
-			<PresetCard title="Tea list" preset="tea">What's avaliable to drink?</PresetCard>
+			<PresetCard title="Info" preset="info" large>
+				Calendar indicators and the week's weather.
+			</PresetCard>
+			<PresetCard title="Tea list" preset="tea" large>What's avaliable to drink?</PresetCard>
+			<PresetCard title="Install Android update" button="Install" formAction="/api/action/install">
+				<Field label="Tag" htmlFor="control-tag" narrow>
+					<input id="control-tag" class="input" name="tag" type="text" placeholder="Latest" />
+				</Field>
+			</PresetCard>
 		</div>
 		<div class="tile is-parent">
 			<article class="tile is-child notification">

@@ -22,6 +22,11 @@ export const GOOGLE_CLIENT_ID = process.env['GOOGLE_CLIENT_ID'] as string | unde
 export const GOOGLE_CLIENT_SECRET = process.env['GOOGLE_CLIENT_SECRET'] as string | undefined;
 
 /**
+ * GitHub API personal access token
+ */
+export const GITHUB_TOKEN = process.env['GITHUB_TOKEN'] as string | undefined;
+
+/**
  * Path where the database file will be stored
  */
 export const DATABASE_FILENAME = process.env['DATABASE_FILENAME'] as string | undefined;

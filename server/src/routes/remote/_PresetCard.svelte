@@ -1,25 +1,37 @@
 <script lang="ts">
 	export let title: string;
-	export let preset: string;
+	export let large = false;
+	export let preset: string | undefined = undefined;
+	export let formAction: string | undefined = undefined;
+	export let button = 'Activate';
 </script>
 
-<article class="tile is-child box">
-	<p class="title">{title}</p>
-	<p class="subtitle">
+<article class="tile card is-child">
+	<header class="card-header">
+		<h3 class="card-header-title" class:title={large}>{title}</h3>
+	</header>
+	<div class="card-content">
 		<slot />
-	</p>
-	<div class="buttons is-right">
-		<button type="submit" name="preset" value={preset} class="button is-outlined">Activate</button>
 	</div>
+	<footer class="card-footer">
+		<button
+			type="submit"
+			name="preset"
+			value={preset}
+			formaction={formAction}
+			class="card-footer-item"
+		>
+			{button}
+		</button>
+	</footer>
 </article>
 
 <style>
-	article {
-		display: flex;
-		flex-direction: column;
-	}
-
-	.buttons {
-		margin-top: auto;
+	button.card-footer-item {
+		background: none;
+		border: 0;
+		font: inherit;
+		color: inherit;
+		cursor: pointer;
 	}
 </style>

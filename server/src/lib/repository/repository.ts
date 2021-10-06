@@ -1,10 +1,12 @@
 import type { Readable } from 'svelte/store';
 import { derived, get } from 'svelte/store';
 import { DeviceManager } from '../android/device-manager';
+import { GithubApi } from '../android/github';
 import { setPower } from '../android/power';
 import { CellManager, toUri } from '../cells';
 import {
 	DATABASE_FILENAME,
+	GITHUB_TOKEN,
 	GOOGLE_CLIENT_ID,
 	GOOGLE_CLIENT_SECRET,
 	PACKAGE_NAME,
@@ -108,6 +110,14 @@ export function repository(): Repository {
 		return googleClient;
 	});
 
+	const github = memo(() => {
+		if (!GITHUB_TOKEN) {
+			throw new Error(`Missing GitHub API keys`);
+		}
+
+		return new GithubApi({ auth: GITHUB_TOKEN });
+	});
+
 	return {
 		cellData,
 		cellDataJson: derived(cellData, (map) => JSON.stringify(Object.fromEntries(map))),
@@ -116,6 +126,14 @@ export function repository(): Repository {
 			const refreshPromise = deviceManager.refreshDevices();
 			deviceManagerPromise = refreshPromise.then(() => deviceManager);
 			return refreshPromise;
+		},
+		async installApk(tag) {
+			const apkPath = await github().downloadApk(tag);
+			if (apkPath) {
+				return await deviceManager.installApkToAll(apkPath, PACKAGE_NAME);
+			} else {
+				return new Map();
+			}
 		},
 		googleApi,
 		async authenticateGoogleApi(code: string) {

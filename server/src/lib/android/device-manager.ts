@@ -1,7 +1,8 @@
-import type { Device } from 'appium-adb';
+import type { Device, InstallOrUpgradeResult } from 'appium-adb';
 import { ADB } from 'appium-adb';
 import type { Readable } from 'svelte/store';
 import { writable } from 'svelte/store';
+import { transformMapAsync } from '../map/transform';
 import type { StartIntentOptions } from './adb-action';
 import { checkIfOn, startIntent } from './adb-action';
 
@@ -39,6 +40,17 @@ export class DeviceManager {
 		const result = new Map(clients);
 		this._devices.set(result);
 		return result;
+	}
+
+	async installApkToAll(
+		path: string,
+		pkg?: string | null
+	): Promise<Map<string, InstallOrUpgradeResult>> {
+		return transformMapAsync(this._lastMap, (adb) =>
+			adb.installOrUpgrade(path, pkg, {
+				enforceCurrentBuild: true
+			})
+		);
 	}
 
 	async checkIfOn(serial: string): Promise<boolean> {

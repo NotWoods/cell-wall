@@ -10,10 +10,12 @@
 		const formData = new FormData(form);
 
 		const submitter = event.submitter as HTMLButtonElement | HTMLInputElement | null;
+		let action = form.action;
 		if (submitter && submitter.name) {
 			formData.set(submitter.name, submitter.value);
+			action = submitter.formAction ?? action;
 		}
-		loading = onSubmit(formData, new URL(form.action));
+		loading = onSubmit(formData, new URL(action));
 	}
 </script>
 
