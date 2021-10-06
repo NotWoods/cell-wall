@@ -20,6 +20,7 @@ import { subscribeToMapStore } from '../map/subscribe';
 import { memo } from '../memo';
 import { database } from './database';
 import type { CellData, CellDataMap, Repository } from './interface';
+import { computeInfo } from './known';
 
 function sendIntentOnStateChange(cellManager: CellManager, deviceManager: DeviceManager) {
 	subscribeToMapStore(cellManager.state, (newStates, oldStates) => {
@@ -69,22 +70,18 @@ function deriveCellInfo(
 				}
 			}
 			for (const [serial, { model, manufacturer }] of devices) {
-				const automaticDeviceName = `${manufacturer} ${model}`;
 				const existing = cellInfoMap.get(serial);
 				if (existing) {
 					existing.connected = true;
-					existing.info ||= {
-						serial,
-						deviceName: automaticDeviceName
+					existing.info = {
+						...computeInfo(serial, model, manufacturer),
+						...existing.info
 					};
 				} else {
 					cellInfoMap.set(serial, {
 						serial,
 						connected: true,
-						info: {
-							serial,
-							deviceName: automaticDeviceName
-						}
+						info: computeInfo(serial, model, manufacturer)
 					});
 				}
 			}

@@ -36,7 +36,7 @@ export async function setPower(device: ADB | DeviceMap, on: Power): Promise<bool
 		let allOn: boolean;
 		if (on === 'toggle') {
 			const powerStates = await Promise.all(
-				Array.from(devices.values()).map(async (client) => ({
+				Array.from(devices.values()).map(async ({ adb: client }) => ({
 					on: await checkIfOn(client),
 					client
 				}))
@@ -48,7 +48,9 @@ export async function setPower(device: ADB | DeviceMap, on: Power): Promise<bool
 			allOn = on;
 		}
 
-		await Promise.all(Array.from(devices.values()).map((client) => setPowerOne(client, allOn)));
+		await Promise.all(
+			Array.from(devices.values()).map(({ adb: client }) => setPowerOne(client, allOn))
+		);
 		return allOn;
 	} else {
 		return await setPowerOne(device as ADB);
