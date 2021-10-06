@@ -3,11 +3,12 @@ name: Build APK
 on:
   push:
     branches: [main]
+    paths:
+      - "android/app/build.gradle"
 
 jobs:
   apk:
     runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/tags/')
 
     steps:
       - uses: actions/checkout@v2
@@ -18,7 +19,29 @@ jobs:
       - run: ./gradlew assembleDebug --stacktrace
         name: build apk
         working-directory: ./android
+
+      - name: get output metadata
+        id: metadata
+        run: |
+          JSON=$(cat android/app/build/outputs/apk/debug/output-metadata.json)
+          echo "::set-output name=metadata::${JSON//'%'/'%25'}"
+      - name: get version name
+        id: version
+        run: |
+          echo "::set-output name=code::${{fromJson(steps.metadata.outputs.metadata).elements[0].versionCode}}"
+          echo "::set-output name=name::${{fromJson(steps.metadata.outputs.metadata).elements[0].versionName}}"
+
+      - uses: mukunku/tag-exists-action@v1
+        id: checkTag
+        with:
+          tag: "v${{steps.version.outputs.name}}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: release apk
         uses: softprops/action-gh-release@v1
+        if: steps.checkTag.outputs.exists == false
         with:
           files: android/app/build/outputs/apk/debug/app-debug.apk
+          fail_on_unmatched_files: true
+          tag_name: "${{steps.version.outputs.name}}"
