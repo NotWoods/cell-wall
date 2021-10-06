@@ -6,7 +6,13 @@ import { transformMapAsync } from '../map/transform';
 import type { StartIntentOptions } from './adb-action';
 import { checkIfOn, startIntent } from './adb-action';
 
-export type DeviceMap = ReadonlyMap<string, ADB>;
+interface AdbDevice {
+	adb: ADB;
+	model: string;
+	manufacturer: string;
+}
+
+export type DeviceMap = ReadonlyMap<string, AdbDevice>;
 export type DeviceCallback<T> = (adb: ADB, udid: string) => Promise<T>;
 
 export class DeviceManager {
@@ -33,7 +39,14 @@ export class DeviceManager {
 			devices.map(async (device) => {
 				const adb = await ADB.createADB();
 				adb.setDevice(device);
-				return [device.udid, adb] as const;
+
+				const [model, manufacturer] = await Promise.all([adb.getModel(), adb.getManufacturer()]);
+				const adbDevice = {
+					adb,
+					model,
+					manufacturer
+				};
+				return [device.udid, adbDevice] as const;
 			})
 		);
 
@@ -46,33 +59,38 @@ export class DeviceManager {
 		path: string,
 		pkg?: string | null
 	): Promise<Map<string, InstallOrUpgradeResult>> {
-		return transformMapAsync(this._lastMap, (adb) =>
+		return transformMapAsync(this._lastMap, ({ adb }) =>
 			adb.installOrUpgrade(path, pkg, {
 				enforceCurrentBuild: true
 			})
 		);
 	}
 
-	async checkIfOn(serial: string): Promise<boolean> {
-		const adb = this._lastMap.get(serial);
+	private async run(
+		serial: string,
+		action: (adb: ADB) => boolean | PromiseLike<boolean>
+	): Promise<boolean> {
+		const { adb } = this._lastMap.get(serial) ?? {};
 		if (!adb) return false;
 
-		return checkIfOn(adb);
+		return action(adb);
+	}
+
+	async checkIfOn(serial: string): Promise<boolean> {
+		return this.run(serial, checkIfOn);
 	}
 
 	async togglePower(serial: string): Promise<boolean> {
-		const adb = this._lastMap.get(serial);
-		if (!adb) return false;
-
-		await adb.cycleWakeUp();
-		return true;
+		return this.run(serial, async (adb) => {
+			await adb.cycleWakeUp();
+			return true;
+		});
 	}
 
 	async startIntent(serial: string, options: StartIntentOptions): Promise<boolean> {
-		const adb = this._lastMap.get(serial);
-		if (!adb) return false;
-
-		await startIntent(adb, options);
-		return true;
+		return this.run(serial, async (adb) => {
+			await startIntent(adb, options);
+			return true;
+		});
 	}
 }

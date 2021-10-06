@@ -68,12 +68,24 @@ function deriveCellInfo(
 					cellInfoMap.set(serial, { serial, state, connected: false });
 				}
 			}
-			for (const serial of devices.keys()) {
+			for (const [serial, { model, manufacturer }] of devices) {
+				const automaticDeviceName = `${manufacturer} ${model}`;
 				const existing = cellInfoMap.get(serial);
 				if (existing) {
 					existing.connected = true;
+					existing.info ||= {
+						serial,
+						deviceName: automaticDeviceName
+					};
 				} else {
-					cellInfoMap.set(serial, { serial, connected: true });
+					cellInfoMap.set(serial, {
+						serial,
+						connected: true,
+						info: {
+							serial,
+							deviceName: automaticDeviceName
+						}
+					});
 				}
 			}
 			return cellInfoMap;
