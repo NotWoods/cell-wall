@@ -6681,36 +6681,44 @@ var DeviceManager = class {
     const clients = await Promise.all(devices.map(async (device) => {
       const adb = await ADB.createADB();
       adb.setDevice(device);
-      return [device.udid, adb];
+      const [model, manufacturer] = await Promise.all([adb.getModel(), adb.getManufacturer()]);
+      const adbDevice = {
+        adb,
+        model,
+        manufacturer
+      };
+      return [device.udid, adbDevice];
     }));
     const result = new Map(clients);
     this._devices.set(result);
     return result;
   }
   async installApkToAll(path2, pkg) {
-    return transformMapAsync(this._lastMap, (adb) => adb.installOrUpgrade(path2, pkg, {
+    return transformMapAsync(this._lastMap, ({ adb }) => adb.installOrUpgrade(path2, pkg, {
       enforceCurrentBuild: true
     }));
   }
-  async checkIfOn(serial) {
-    const adb = this._lastMap.get(serial);
+  async run(serial, action) {
+    var _a;
+    const { adb } = (_a = this._lastMap.get(serial)) != null ? _a : {};
     if (!adb)
       return false;
-    return checkIfOn(adb);
+    return action(adb);
+  }
+  async checkIfOn(serial) {
+    return this.run(serial, checkIfOn);
   }
   async togglePower(serial) {
-    const adb = this._lastMap.get(serial);
-    if (!adb)
-      return false;
-    await adb.cycleWakeUp();
-    return true;
+    return this.run(serial, async (adb) => {
+      await adb.cycleWakeUp();
+      return true;
+    });
   }
   async startIntent(serial, options2) {
-    const adb = this._lastMap.get(serial);
-    if (!adb)
-      return false;
-    await startIntent(adb, options2);
-    return true;
+    return this.run(serial, async (adb) => {
+      await startIntent(adb, options2);
+      return true;
+    });
   }
 };
 function memo(func) {
@@ -6783,7 +6791,7 @@ async function setPower(device, on) {
     const devices = device;
     let allOn;
     if (on === "toggle") {
-      const powerStates = await Promise.all(Array.from(devices.values()).map(async (client) => ({
+      const powerStates = await Promise.all(Array.from(devices.values()).map(async ({ adb: client }) => ({
         on: await checkIfOn(client),
         client
       })));
@@ -6793,7 +6801,7 @@ async function setPower(device, on) {
     } else {
       allOn = on;
     }
-    await Promise.all(Array.from(devices.values()).map((client) => setPowerOne(client, allOn)));
+    await Promise.all(Array.from(devices.values()).map(({ adb: client }) => setPowerOne(client, allOn)));
     return allOn;
   } else {
     return await setPowerOne(device);
@@ -7317,6 +7325,53 @@ async function database(filename) {
     }
   };
 }
+var knownDevices = [
+  {
+    model: "A0001",
+    manufacturer: "OnePlus_One",
+    deviceName: "OnePlus One",
+    width: 470,
+    height: 835
+  },
+  {
+    model: "Amazon_OtterX",
+    manufacturer: "Amazon",
+    deviceName: "Amazon Kindle",
+    width: 1024,
+    height: 552
+  },
+  {
+    model: "Moto_G XT1034",
+    manufacturer: "Motorola",
+    deviceName: "Moto G XT1034",
+    width: 598,
+    height: 360
+  },
+  {
+    model: "A600",
+    manufacturer: "Polaroid",
+    deviceName: "Polaroid A600",
+    width: 470,
+    height: 835
+  }
+];
+function computeInfo(serial, model, manufacturer) {
+  const known = knownDevices.find((device) => device.model === model && device.manufacturer === manufacturer);
+  const autoDeviceName = model.startsWith(manufacturer) ? model : `${manufacturer} ${model}`;
+  if (known) {
+    return {
+      serial,
+      deviceName: known.deviceName || autoDeviceName,
+      width: known.width,
+      height: known.height
+    };
+  } else {
+    return {
+      serial,
+      deviceName: autoDeviceName
+    };
+  }
+}
 function sendIntentOnStateChange(cellManager, deviceManager) {
   subscribeToMapStore(cellManager.state, (newStates, oldStates) => {
     const changes = new Map(newStates);
@@ -7354,12 +7409,17 @@ function deriveCellInfo(cellManager, deviceManager) {
         cellInfoMap.set(serial, { serial, state, connected: false });
       }
     }
-    for (const serial of devices.keys()) {
+    for (const [serial, { model, manufacturer }] of devices) {
       const existing = cellInfoMap.get(serial);
       if (existing) {
         existing.connected = true;
+        existing.info = __spreadValues(__spreadValues({}, computeInfo(serial, model, manufacturer)), existing.info);
       } else {
-        cellInfoMap.set(serial, { serial, connected: true });
+        cellInfoMap.set(serial, {
+          serial,
+          connected: true,
+          info: computeInfo(serial, model, manufacturer)
+        });
       }
     }
     return cellInfoMap;
