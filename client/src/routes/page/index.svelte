@@ -1,7 +1,7 @@
 <script context="module" lang="ts">
 	import { CellStateType } from '$lib/cells';
-	import { socketStore } from '$lib/repository/client';
-	import type { CellData } from '$lib/repository/interface';
+	import { socketStore } from '$lib/socket';
+	import type { CellData } from '$lib/cells/data';
 	import { derived } from 'svelte/store';
 
 	const ws = derived(

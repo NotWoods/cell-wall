@@ -13,6 +13,7 @@ javascript/*/src/**/*.d.ts
 javascript/*/test/**/*.d.ts
 !javascript/types-appium-adb/src/**/*.d.ts
 dist
+.svelte-kit
 
 # Logs
 *.log
