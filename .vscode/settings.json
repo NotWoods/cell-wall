@@ -1,22 +1,23 @@
 {
-  "files.exclude": {
-    "**/.git": true,
-    "**/.DS_Store": true,
-    "**/tsconfig.tsbuildinfo": true,
-    "**/*.js": {
-      "when": "$(basename).ts"
-    },
-    "**/*.js.map": {
-      "when": "$(basename)"
-    }
-  },
-  "editor.formatOnSave": true,
-  "search.exclude": {
-    "**/node_modules": true,
-    "pnpm-lock.yaml": true,
-    "server/.svelte-kit": true,
-    "server/build": true
-  },
-  "typescript.referencesCodeLens.enabled": true,
-  "typescript.tsdk": "node_modules\\typescript\\lib"
+	"files.exclude": {
+		"**/.git": true,
+		"**/.DS_Store": true,
+		"**/tsconfig.tsbuildinfo": true,
+		"**/*.js": {
+			"when": "$(basename).ts"
+		},
+		"**/*.js.map": {
+			"when": "$(basename)"
+		}
+	},
+	"editor.formatOnSave": true,
+	"search.exclude": {
+		"**/node_modules": true,
+		"pnpm-lock.yaml": true,
+		"server/.svelte-kit": true,
+		"server/build": true
+	},
+	"typescript.referencesCodeLens.enabled": true,
+	"typescript.tsdk": "node_modules\\typescript\\lib",
+	"cSpell.words": ["fastify"]
 }

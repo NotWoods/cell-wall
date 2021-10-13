@@ -1,37 +1,46 @@
-import { repo } from '$lib/repository';
-import type { RequestHandler } from '@sveltejs/kit';
+import type { FastifyInstance } from 'fastify';
+import { repo } from '../../../../lib/repository';
 import { parsePowerBody } from './_body';
 
-/**
- * Check if a cell is turned on or off.
- */
-export const get: RequestHandler = async function get({ params }) {
-	const { serial } = params;
+export default function (fastify: FastifyInstance): void {
+	fastify.route<{
+		Params: { serial: string };
+		Reply: Record<string, boolean>;
+	}>({
+		method: 'GET',
+		url: '/api/device/power/:serial',
+		/**
+		 * Check if a cell is turned on or off.
+		 */
+		async handler(request, reply) {
+			const { serial } = request.params;
 
-	return {
-		body: {
-			devices: {
+			reply.send({
 				[serial]: await repo.getPower(serial)
-			}
+			});
 		}
-	};
-};
+	});
 
-/**
- * Set a cell to be on or off.
- */
-export const post: RequestHandler = async function post({ params, body }) {
-	const { serial } = params;
-	const power = parsePowerBody(body);
+	fastify.route<{
+		Params: { serial: string };
+		Body: string | boolean | { on: string | boolean } | URLSearchParams;
+		Reply: boolean | Error;
+	}>({
+		method: 'POST',
+		url: '/api/device/power/:serial',
+		/**
+		 * Set a cell to be on or off.
+		 */
+		async handler(request, reply) {
+			const { serial } = request.params;
+			const power = parsePowerBody(request.body);
 
-	if (power === undefined) {
-		return {
-			status: 400,
-			error: new Error(`Invalid body ${body}`)
-		};
-	}
+			if (power === undefined) {
+				reply.status(400).send(new Error(`Invalid body ${request.body}`));
+				return;
+			}
 
-	return {
-		body: await repo.setPower(serial, power)
-	};
-};
+			reply.send(await repo.setPower(serial, power));
+		}
+	});
+}

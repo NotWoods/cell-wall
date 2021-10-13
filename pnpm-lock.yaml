@@ -8,6 +8,7 @@ importers:
       '@js-temporal/polyfill': ^0.2.0
       '@sveltejs/adapter-node': next
       '@sveltejs/kit': next
+      '@types/connect': ^3.4.35
       '@types/lodash.startcase': ^4.4.6
       '@types/node': ^16.10.2
       '@types/ws': ^8.2.0
@@ -30,12 +31,13 @@ importers:
       typescript: ^4.4.3
     dependencies:
       '@js-temporal/polyfill': 0.2.0
+      '@types/connect': 3.4.35
       dotenv: 10.0.0
       lodash.startcase: 4.4.0
     devDependencies:
       '@jest/globals': 27.2.5
       '@sveltejs/adapter-node': 1.0.0-next.54
-      '@sveltejs/kit': 1.0.0-next.182_svelte@3.43.2
+      '@sveltejs/kit': 1.0.0-next.183_svelte@3.43.2
       '@types/lodash.startcase': 4.4.6
       '@types/node': 16.10.7
       '@types/ws': 8.2.0
@@ -61,11 +63,7 @@ importers:
       '@jest/globals': ^27.2.4
       '@js-temporal/polyfill': ^0.2.0
       '@octokit/core': ^3.5.1
-      '@sveltejs/adapter-node': next
-      '@sveltejs/kit': next
-      '@types/lodash.startcase': ^4.4.6
       '@types/node': ^16.10.2
-      '@types/polka': ^0.5.3
       '@types/semver': ^7.3.8
       '@types/teen_process': ^1.16.0
       '@types/ws': ^8.2.0
@@ -78,21 +76,17 @@ importers:
       eslint-config-prettier: ^8.3.0
       eslint-plugin-svelte3: ^3.2.1
       fastify: ^3.22.0
+      fastify-websocket: ^4.0.0
       googleapis: ^88.2.0
       jest: ^27.2.4
       jimp: ^0.16.1
-      lodash.startcase: ^4.4.0
       lowdb: ^3.0.0
       middie: ^5.3.0
       node-fetch: ^3.0.0
       prettier: ~2.4.1
-      prettier-plugin-svelte: ^2.4.0
       svelte: ^3.43.1
-      svelte-check: ^2.2.6
-      svelte-preprocess: ^4.9.8
       tslib: ^2.3.1
       typescript: ^4.4.3
-      ws: ^8.2.3
     dependencies:
       '@cell-wall/client': link:../client
       '@js-temporal/polyfill': 0.2.0
@@ -100,20 +94,15 @@ importers:
       appium-adb: 8.16.2
       dotenv: 10.0.0
       fastify: 3.22.0
+      fastify-websocket: 4.0.0
       googleapis: 88.2.0
       jimp: 0.16.1
-      lodash.startcase: 4.4.0
       lowdb: 3.0.0
       middie: 5.3.0
       node-fetch: 3.0.0
-      ws: 8.2.3
     devDependencies:
       '@jest/globals': 27.2.5
-      '@sveltejs/adapter-node': 1.0.0-next.54
-      '@sveltejs/kit': 1.0.0-next.182_svelte@3.43.2
-      '@types/lodash.startcase': 4.4.6
       '@types/node': 16.10.7
-      '@types/polka': 0.5.3
       '@types/semver': 7.3.8
       '@types/teen_process': 1.16.0
       '@types/ws': 8.2.0
@@ -125,10 +114,7 @@ importers:
       eslint-plugin-svelte3: 3.2.1_eslint@7.32.0+svelte@3.43.2
       jest: 27.2.5
       prettier: 2.4.1
-      prettier-plugin-svelte: 2.4.0_prettier@2.4.1+svelte@3.43.2
       svelte: 3.43.2
-      svelte-check: 2.2.6_svelte@3.43.2
-      svelte-preprocess: 4.9.8_svelte@3.43.2+typescript@4.4.3
       tslib: 2.3.1
       typescript: 4.4.3
 
@@ -1667,8 +1653,8 @@ packages:
       tiny-glob: 0.2.9
     dev: true
 
-  /@sveltejs/kit/1.0.0-next.182_svelte@3.43.2:
-    resolution: {integrity: sha512-XR8SYJTDD84wN89ynRmP/FBwUWY61dAXsveKPI4JcW9njgnDN6mplDqh4lTZ0CvexV/Yv5Fd910Pm3IPV6SEBw==}
+  /@sveltejs/kit/1.0.0-next.183_svelte@3.43.2:
+    resolution: {integrity: sha512-XS115RLu8mQk0wZ33BF6sKHEQD8BUFhErfxJhEkXoR4m2bW1h1JBLKHaZ1qnG9eAPkalmccCXDMxJjuYVCh/oQ==}
     engines: {node: ^12.20 || >=14.13}
     hasBin: true
     peerDependencies:
@@ -1744,35 +1730,11 @@ packages:
       '@babel/types': 7.15.6
     dev: true
 
-  /@types/body-parser/1.19.1:
-    resolution: {integrity: sha512-a6bTJ21vFOGIkwM0kzh9Yr89ziVxq4vYH2fQ6N8AeipEzai/cFK6aGMArIkUeIdRIgpwQa+2bXiLuUJCpSf2Cg==}
-    dependencies:
-      '@types/connect': 3.4.35
-      '@types/node': 16.10.7
-    dev: true
-
   /@types/connect/3.4.35:
     resolution: {integrity: sha512-cdeYyv4KWoEgpBISTxWvqYsVy444DOqehiF3fM3ne10AmJ62RSyNkUnxMJXHQWRQQX2eR94m5y1IZyDwBjV9FQ==}
     dependencies:
       '@types/node': 16.10.7
-    dev: true
-
-  /@types/express-serve-static-core/4.17.24:
-    resolution: {integrity: sha512-3UJuW+Qxhzwjq3xhwXm2onQcFHn76frIYVbTu+kn24LFxI+dEhdfISDFovPB8VpEgW8oQCTpRuCe+0zJxB7NEA==}
-    dependencies:
-      '@types/node': 16.10.7
-      '@types/qs': 6.9.7
-      '@types/range-parser': 1.2.4
-    dev: true
-
-  /@types/express/4.17.13:
-    resolution: {integrity: sha512-6bSZTPaTIACxn48l50SR+axgrqm6qXFIxrdAKaG6PaJk3+zuUr35hBlgT7vOmJcum+OEaIBLtHV/qloEAFITeA==}
-    dependencies:
-      '@types/body-parser': 1.19.1
-      '@types/express-serve-static-core': 4.17.24
-      '@types/qs': 6.9.7
-      '@types/serve-static': 1.13.10
-    dev: true
+    dev: false
 
   /@types/graceful-fs/4.1.5:
     resolution: {integrity: sha512-anKkLmZZ+xm4p8JWBf4hElkM4XR+EZeA2M9BAkkTldmcyDY4mbdIJnRghDJH3Ov5ooY7/UAoENtmdMSkaAd7Cw==}
@@ -1810,22 +1772,8 @@ packages:
     resolution: {integrity: sha512-A3YT/c1oTlyvvW/GQqG86EyqWNrT/tisOIh2mW3YCgcx71TNjiTZA3zYZWA5BCmtsOTXjhliy4c4yEkErw6njA==}
     dev: true
 
-  /@types/mime/1.3.2:
-    resolution: {integrity: sha512-YATxVxgRqNH6nHEIsvg6k2Boc1JHI9ZbH5iWFFv/MTkchz3b1ieGDa5T0a9RznNdI0KhVbdbWSN+KWWrQZRxTw==}
-    dev: true
-
   /@types/node/16.10.7:
     resolution: {integrity: sha512-rySHHlZYHNydt9yRm7AhmGAivzxL1M/fdUzMrt2rhl0yLJJLYdamh6Asl3bFzzcJ0r+pEwYrx9KnHiY4CDiXeQ==}
-    dev: true
-
-  /@types/polka/0.5.3:
-    resolution: {integrity: sha512-Myj8ztBAH63xXhff5OMGiHIj37O4RG7GTDmFL/Amb05BAdG8IYFC90vp9IpdN7hjpZ5tkepsSvQkPvWwB8IRwQ==}
-    dependencies:
-      '@types/express': 4.17.13
-      '@types/express-serve-static-core': 4.17.24
-      '@types/node': 16.10.7
-      '@types/trouter': 3.1.0
-    dev: true
 
   /@types/prettier/2.4.1:
     resolution: {integrity: sha512-Fo79ojj3vdEZOHg3wR9ksAMRz4P3S5fDB5e/YWZiFnyFQI1WY2Vftu9XoXVVtJfxB7Bpce/QTqWSSntkz2Znrw==}
@@ -1833,14 +1781,6 @@ packages:
 
   /@types/pug/2.0.4:
     resolution: {integrity: sha1-h3L80EGOPNLMFxVV1zAHQVBR9LI=}
-    dev: true
-
-  /@types/qs/6.9.7:
-    resolution: {integrity: sha512-FGa1F62FT09qcrueBA6qYTrJPVDzah9a+493+o2PCXsesWHIn27G98TsSMs3WPNbZIEj4+VJf6saSFpvD+3Zsw==}
-    dev: true
-
-  /@types/range-parser/1.2.4:
-    resolution: {integrity: sha512-EEhsLsD6UsDM1yFhAvy0Cjr6VwmpMWqFBCb9w07wVugF7w9nfajxLuVmngTIpgS6svCnm6Vaw+MZhoDCKnOfsw==}
     dev: true
 
   /@types/sass/1.16.0:
@@ -1853,13 +1793,6 @@ packages:
     resolution: {integrity: sha512-D/2EJvAlCEtYFEYmmlGwbGXuK886HzyCc3nZX/tkFTQdEU8jZDAgiv08P162yB17y4ZXZoq7yFAnW4GDBb9Now==}
     dev: true
 
-  /@types/serve-static/1.13.10:
-    resolution: {integrity: sha512-nCkHGI4w7ZgAdNkrEu0bv+4xNV/XDqW+DydknebMOQwkpDGx8G+HTlj7R7ABI8i8nKxVw0wtKPi1D+lPOkh4YQ==}
-    dependencies:
-      '@types/mime': 1.3.2
-      '@types/node': 16.10.7
-    dev: true
-
   /@types/stack-utils/2.0.1:
     resolution: {integrity: sha512-Hl219/BT5fLAaz6NDkSuhzasy49dwQS/DSdu4MdggFB8zcXv7vflBI3xp7FEmkmdDkBUI2bPUNeMttp2knYdxw==}
     dev: true
@@ -1868,10 +1801,6 @@ packages:
     resolution: {integrity: sha512-CAr/68ankuVnPVtc7TvDme3gK/ItIDfZqbM8anohyHUKrN5he1q7soeWS3RzbwsEfrd24XUldhrwq9sidoKKMA==}
     dependencies:
       '@types/node': 16.10.7
-    dev: true
-
-  /@types/trouter/3.1.0:
-    resolution: {integrity: sha512-4LPNrqSJknLzILMVXn2P/mh0djNgFvom4T9Y1hmhaB8OBm1cY71bMMSrGRu1q5qF4JZzY6iaGT11BHmCMY/NZg==}
     dev: true
 
   /@types/ws/8.2.0:
@@ -3623,6 +3552,16 @@ packages:
 
   /fastify-warning/0.2.0:
     resolution: {integrity: sha512-s1EQguBw/9qtc1p/WTY4eq9WMRIACkj+HTcOIK1in4MV5aFaQC9ZCIt0dJ7pr5bIf4lPpHvAtP2ywpTNgs7hqw==}
+    dev: false
+
+  /fastify-websocket/4.0.0:
+    resolution: {integrity: sha512-XeeE2r4SkkLBp83NZ3BKCEdR6KFPEtiiIAUrvJhsvLJFRCV6BCnF5ZdchZ6ghPQ5rJ1VwcWlajuXHlQWwXX/YQ==}
+    dependencies:
+      fastify-plugin: 3.0.0
+      ws: 8.2.3
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
     dev: false
 
   /fastify/3.22.0:

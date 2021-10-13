@@ -1,18 +1,21 @@
-import type { RequestHandler } from '@sveltejs/kit';
-import { repo } from '$lib/repository';
+import type { FastifyInstance } from 'fastify';
+import { repo } from '../lib/repository';
 
-export const get: RequestHandler = async function get({ query }) {
-	const code = query.get('code');
-	if (!code) {
-		return {
-			status: 400,
-			error: new Error('Missing code')
-		};
-	}
-
-	await repo.authenticateGoogleApi(code);
-
-	return {
-		body: 'Authentication successful! Please return to the console.'
-	};
-};
+export default function (fastify: FastifyInstance): void {
+	fastify.route<{
+		Querystring: { code: string };
+	}>({
+		method: 'GET',
+		url: '/oauth2callback',
+		schema: {
+			querystring: {
+				code: { type: 'string' }
+			}
+		},
+		async handler(request, reply) {
+			const { code } = request.query;
+			await repo.authenticateGoogleApi(code);
+			reply.send('Authentication successful! Please return to the console.');
+		}
+	});
+}

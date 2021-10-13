@@ -1,12 +1,26 @@
-import type { RequestHandler } from '@sveltejs/kit';
-import { repo } from '$lib/repository';
+import type { FastifyInstance } from 'fastify';
+import { repo } from '../../../lib/repository';
 
-/**
- * Refresh the ADB devices
- */
-export const post: RequestHandler = async function post() {
-	const devices = await repo.refreshDevices();
-	return {
-		body: Array.from(devices.keys())
-	};
-};
+export default function (fastify: FastifyInstance): void {
+	fastify.route<{
+		Reply: readonly string[];
+	}>({
+		method: ['GET', 'POST'],
+		url: '/api/action/refresh',
+		schema: {
+			response: {
+				200: {
+					type: 'array',
+					items: { type: 'string' }
+				}
+			}
+		},
+		/**
+		 * Refresh the ADB devices
+		 */
+		async handler(request, reply) {
+			const devices = await repo.refreshDevices();
+			reply.send(Array.from(devices.keys()));
+		}
+	});
+}

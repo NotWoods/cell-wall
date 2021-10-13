@@ -1,42 +1,53 @@
-import type { RequestHandler } from '@sveltejs/kit';
+import type { FastifyInstance } from 'fastify';
 import { get as getState } from 'svelte/store';
-import { bodyAsJson } from '$lib/body';
-import type { CellState } from '$lib/cells';
-import { blankState } from '$lib/cells';
-import { repo } from '$lib/repository';
+import type { CellState } from '../../../../lib/cells';
+import { blankState } from '../../../../lib/cells';
+import { repo } from '../../../../lib/repository';
 import { asCellState } from './_body';
 
-/**
- * Get state from a cell
- */
-export const get: RequestHandler = async function get({ params }) {
-	const { serial } = params;
+export default function (fastify: FastifyInstance): void {
+	fastify.route<{
+		Params: { serial: string };
+		Reply: Record<string, CellState>;
+	}>({
+		method: 'GET',
+		url: '/api/device/state/:serial',
+		/**
+		 * Get state from a cell
+		 */
+		async handler(request, reply) {
+			const { serial } = request.params;
 
-	return {
-		body: JSON.stringify({
-			[serial]: getState(repo.cellData).get(serial)?.state ?? blankState()
-		})
-	};
-};
+			reply.send({
+				[serial]: getState(repo.cellData).get(serial)?.state ?? blankState()
+			});
+		}
+	});
 
-/**
- * Set state for a cell
- */
-export const post: RequestHandler = async function post(input) {
-	const { serial } = input.params;
+	fastify.route<{
+		Params: { serial: string };
+		Body: CellState | URLSearchParams;
+		Reply: readonly string[] | Error;
+	}>({
+		method: 'POST',
+		url: '/api/device/state/:serial',
+		/**
+		 * Set state for a cell
+		 */
+		async handler(request, reply) {
+			const { serial } = request.params;
+			const state = asCellState(
+				request.body instanceof URLSearchParams ? Object.fromEntries(request.body) : request.body
+			) as CellState | undefined;
 
-	const state = asCellState(bodyAsJson(input)) as CellState | undefined;
+			if (!state) {
+				reply.status(400).send(new Error(`Invalid body ${request.body}`));
+				return;
+			}
 
-	if (!state) {
-		return {
-			status: 400,
-			error: new Error(`Invalid body ${input.body}`)
-		};
-	}
+			await repo.setState(serial, state);
 
-	await repo.setState(serial, state);
-
-	return {
-		body: [serial]
-	};
-};
+			reply.send([serial]);
+		}
+	});
+}

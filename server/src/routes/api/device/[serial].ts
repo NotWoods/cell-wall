@@ -1,39 +1,71 @@
-import { bodyAsJson } from '$lib/body';
-import type { CellInfo } from '$lib/cells';
-import { repo } from '$lib/repository';
-import type { RequestHandler } from '@sveltejs/kit';
+import type { FastifyInstance } from 'fastify';
 import { get as getState } from 'svelte/store';
+import type { CellInfo } from '../../../lib/cells';
+import { repo } from '../../../lib/repository';
 
-/**
- * Get info about a single cell
- */
-export const get: RequestHandler = async function get({ params }) {
-	const { serial } = params;
+export default function (fastify: FastifyInstance): void {
+	fastify.route<{
+		Params: { serial: string };
+		Reply: CellInfo | null;
+	}>({
+		method: 'GET',
+		url: '/api/device/:serial',
+		schema: {
+			response: {
+				200: {
+					type: 'object',
+					nullable: true,
+					properties: {
+						deviceName: { type: 'string' },
+						width: { type: 'number' },
+						height: { type: 'number' },
+						server: { type: 'string' }
+					}
+				}
+			}
+		},
+		/**
+		 * Get info about a single cell
+		 */
+		async handler(request, reply) {
+			const { serial } = request.params;
+			reply.send(getState(repo.cellData).get(serial) ?? null);
+		}
+	});
 
-	return {
-		body: JSON.stringify(getState(repo.cellData).get(serial) ?? null)
-	};
-};
+	fastify.route<{
+		Params: { serial: string };
+		Body: Partial<CellInfo>;
+		Reply: readonly string[];
+	}>({
+		method: 'POST',
+		url: '/api/device/:serial',
+		schema: {
+			response: {
+				200: {
+					type: 'object',
+					nullable: true,
+					properties: {
+						deviceName: { type: 'string' },
+						width: { type: 'number' },
+						height: { type: 'number' },
+						server: { type: 'string' }
+					}
+				}
+			}
+		},
+		/**
+		 * Register a new cell
+		 */
+		async handler(request, reply) {
+			const { serial } = request.params;
+			const info = request.body;
 
-/**
- * Register a new cell
- */
-export const post: RequestHandler = async function post(input) {
-	const { serial } = input.params;
-	const info = bodyAsJson(input) as Partial<CellInfo> | undefined;
+			info.serial = serial;
+			info.server ||= `${request.protocol}://${request.hostname}`;
+			await repo.registerCell(info as CellInfo);
 
-	if (!info) {
-		return {
-			status: 400,
-			error: new Error(`Invalid body ${input.body}`)
-		};
-	}
-
-	info.serial = serial;
-	info.server ||= `http://${input.host}`;
-	await repo.registerCell(info as CellInfo);
-
-	return {
-		body: [serial]
-	};
-};
+			reply.send([serial]);
+		}
+	});
+}

@@ -1,35 +1,41 @@
-import type { RequestHandler } from '@sveltejs/kit';
+import type { FastifyInstance } from 'fastify';
 import { get as getState } from 'svelte/store';
-import { blankState } from '$lib/cells';
-import { transformMap } from '$lib/map/transform';
-import { repo } from '$lib/repository';
+import type { CellState } from '../../../../lib/cells';
+import { blankState } from '../../../../lib/cells';
+import { transformMap } from '../../../../lib/map/transform';
+import { repo } from '../../../../lib/repository';
 
-/**
- * Get states from all cells
- */
-export const get: RequestHandler = async function get() {
-	return {
-		body: Object.entries(
-			transformMap(getState(repo.cellData), (data) => data.state ?? blankState())
-		)
-	};
-};
+export default function (fastify: FastifyInstance): void {
+	fastify.route<{
+		Reply: Record<string, CellState>;
+	}>({
+		method: 'GET',
+		url: '/api/device/state/',
+		/**
+		 * Get states from all cells
+		 */
+		async handler(request, reply) {
+			reply.send(
+				Object.fromEntries(
+					transformMap(getState(repo.cellData), (data) => data.state ?? blankState())
+				)
+			);
+		}
+	});
 
-/**
- * Set state for multiple cells
- */
-export const post: RequestHandler = async function post({ body }) {
-	if (typeof body !== 'string') {
-		return {
-			status: 400,
-			error: new Error(`Invalid body ${body}`)
-		};
-	}
+	fastify.route<{
+		Body: Record<string, CellState>;
+		Reply: readonly string[];
+	}>({
+		method: 'POST',
+		url: '/api/device/state/:serial',
+		/**
+		 * Set state for multiple cells
+		 */
+		async handler(request, reply) {
+			await repo.setStates(request.body);
 
-	const states = JSON.parse(body);
-	await repo.setStates(states);
-
-	return {
-		body: Object.keys(states)
-	};
-};
+			reply.send(Object.keys(request.body));
+		}
+	});
+}

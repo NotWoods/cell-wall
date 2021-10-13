@@ -1,49 +1,40 @@
-import type { RequestHandler } from '@sveltejs/kit';
+import type { FastifyInstance } from 'fastify';
 import type { calendar_v3 } from 'googleapis';
 import { google } from 'googleapis';
-import { bodyAsJson } from '$lib/body';
-import { repo } from '$lib/repository';
+import { repo } from '../../../lib/repository';
 
-/**
- * Query the Google Calendar Free/Busy API
- */
-export const post: RequestHandler = async function post(input) {
-	const { client } = await repo.googleApi();
-	const requestBody = bodyAsJson(input);
+export default function (fastify: FastifyInstance): void {
+	fastify.route<{
+		Reply: readonly calendar_v3.Schema$TimePeriod[] | Error;
+	}>({
+		method: 'GET',
+		url: '/api/third_party/freebusy',
+		/**
+		 * Query the Google Calendar Free/Busy API
+		 */
+		async handler(request, reply) {
+			const { client } = await repo.googleApi();
+			const requestBody =
+				request.body instanceof URLSearchParams ? Object.fromEntries(request.body) : request.body;
 
-	if (!requestBody) {
-		return {
-			status: 400,
-			error: `Request body should be JSON`
-		};
-	}
+			const api = google.calendar({ version: 'v3', auth: client });
 
-	const api = google.calendar({ version: 'v3', auth: client });
+			const res = await api.freebusy.query({
+				requestBody: requestBody as calendar_v3.Schema$FreeBusyRequest
+			});
 
-	const res = await api.freebusy.query({
-		requestBody: requestBody as calendar_v3.Schema$FreeBusyRequest
+			if (res.status < 200 || res.status >= 300) {
+				reply.status(res.status).send(new Error(`Could not load calendar, ${res.statusText}`));
+				return;
+			}
+
+			const { errors = [], busy = [] } = Object.values(res.data.calendars!)[0];
+			if (errors.length > 0) {
+				reply.status(500).send(new Error(errors.map((error) => error.reason).join()));
+				return;
+			}
+
+			reply.status(res.status).header('content-type', 'application/json').send(busy);
+		}
 	});
-
-	if (res.status < 200 || res.status >= 300) {
-		return {
-			status: res.status,
-			error: new Error(`Could not load calendar, ${res.statusText}`)
-		};
-	}
-
-	const { errors, busy } = Object.values(res.data.calendars!)[0];
-	if (errors && errors.length > 0) {
-		return {
-			status: 500,
-			error: new Error(errors.map((error) => error.reason).join())
-		};
-	}
-
-	return {
-		status: res.status,
-		headers: {
-			'Content-Type': 'application/json'
-		},
-		body: JSON.stringify(busy)
-	};
-};
+}

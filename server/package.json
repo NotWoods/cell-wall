@@ -8,8 +8,8 @@
 		"preview": "svelte-kit preview",
 		"check": "svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-check --tsconfig ./tsconfig.json --watch",
-		"lint": "prettier --check --plugin-search-dir=. . && eslint --ignore-path .gitignore .",
-		"format": "prettier --write --plugin-search-dir=. .",
+		"lint": "prettier --check . && eslint --ignore-path .gitignore .",
+		"format": "prettier --write .",
 		"test": "jest"
 	},
 	"dependencies": {
@@ -19,12 +19,12 @@
 		"appium-adb": "^8.16.1",
 		"dotenv": "^10.0.0",
 		"fastify": "^3.22.0",
+		"fastify-websocket": "^4.0.0",
 		"googleapis": "^88.2.0",
 		"jimp": "^0.16.1",
 		"lowdb": "^3.0.0",
 		"middie": "^5.3.0",
-		"node-fetch": "^3.0.0",
-		"ws": "^8.2.3"
+		"node-fetch": "^3.0.0"
 	},
 	"devDependencies": {
 		"@jest/globals": "^27.2.4",
@@ -40,10 +40,7 @@
 		"eslint-plugin-svelte3": "^3.2.1",
 		"jest": "^27.2.4",
 		"prettier": "~2.4.1",
-		"prettier-plugin-svelte": "^2.4.0",
 		"svelte": "^3.43.1",
-		"svelte-check": "^2.2.6",
-		"svelte-preprocess": "^4.9.8",
 		"tslib": "^2.3.1",
 		"typescript": "^4.4.3"
 	}

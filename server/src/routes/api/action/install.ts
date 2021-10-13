@@ -1,12 +1,30 @@
-import type { RequestHandler } from '@sveltejs/kit';
-import { repo } from '$lib/repository';
+import type { FastifyInstance } from 'fastify';
+import { repo } from '../../../lib/repository';
+import type { ReadonlyURLSearchParams } from '../../../parser/urlencoded';
 
-/**
- * Install an updated APK to all devices
- */
-export const post: RequestHandler<unknown, FormData> = async function post({ body }) {
-	const results = await repo.installApk(body.get('tag') ?? undefined);
-	return {
-		body: JSON.stringify(Object.fromEntries(results))
-	};
-};
+export default function (fastify: FastifyInstance): void {
+	fastify.route<{
+		Body: ReadonlyURLSearchParams;
+	}>({
+		method: 'POST',
+		url: '/api/action/install',
+		schema: {
+			response: {
+				200: {
+					type: 'object',
+					additionalProperties: {
+						type: 'object',
+						properties: {
+							wasUninstalled: { type: 'boolean' },
+							appState: { type: 'string' }
+						}
+					}
+				}
+			}
+		},
+		async handler(request, reply) {
+			const results = await repo.installApk(request.body.get('tag') ?? undefined);
+			reply.send(Object.fromEntries(results));
+		}
+	});
+}

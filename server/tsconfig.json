@@ -2,8 +2,6 @@
 	"extends": "../tsconfig.base.json",
 	"compilerOptions": {
 		"paths": {
-			"$lib": ["src/lib"],
-			"$lib/*": ["src/lib/*"],
 			"appium-adb": ["./types/appium-adb"],
 			"appium-adb/*": ["./types/appium-adb/*"]
 		}

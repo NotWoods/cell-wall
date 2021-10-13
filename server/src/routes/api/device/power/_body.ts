@@ -1,19 +1,16 @@
-import type { ParameterizedBody } from '@sveltejs/kit/types/app';
-import type { Power } from '$lib/android/power';
-import { asPower } from '$lib/android/power';
-import { isRawBody } from '../state/_body';
+import type { Power } from '../../../../lib/android/power';
+import { asPower } from '../../../../lib/android/power';
 
-export function parsePowerBody(body: ParameterizedBody): Power | undefined {
-	if (typeof body === 'string') {
-		const json: unknown = JSON.parse(body);
-		if (typeof json === 'boolean' || typeof json === 'string') {
-			return asPower(json);
-		} else if (typeof json === 'object' && json !== null) {
-			const { on } = json as { on?: unknown };
+export function parsePowerBody(body: unknown): Power | undefined {
+	if (typeof body === 'boolean' || typeof body === 'string') {
+		return asPower(body);
+	} else if (typeof body === 'object' && body !== null) {
+		if (body instanceof URLSearchParams) {
+			return asPower(body.get('on'));
+		} else {
+			const { on } = body as { on?: unknown };
 			return asPower(on);
 		}
-	} else if (!isRawBody(body)) {
-		return asPower(body.get('on'));
 	}
 	return undefined;
 }

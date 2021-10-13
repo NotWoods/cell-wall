@@ -1,38 +1,47 @@
-import { transformMapAsync } from '$lib/map/transform';
-import { repo } from '$lib/repository';
-import type { RequestHandler } from '@sveltejs/kit';
+import type { FastifyInstance } from 'fastify';
 import { get as getState } from 'svelte/store';
+import { transformMapAsync } from '../../../../lib/map/transform';
+import { repo } from '../../../../lib/repository';
 import { parsePowerBody } from './_body';
 
-/**
- * Check if all cells are turned on or off.
- */
-export const get: RequestHandler = async function get() {
-	return {
-		body: {
-			devices: Object.entries(
-				await transformMapAsync(getState(repo.cellData), (_data, serial) => repo.getPower(serial))
-			)
+export default function (fastify: FastifyInstance): void {
+	fastify.route<{
+		Reply: Record<string, boolean>;
+	}>({
+		method: 'GET',
+		url: '/api/device/power/',
+		/**
+		 * Check if all cells are turned on or off.
+		 */
+		async handler(request, reply) {
+			reply.send(
+				Object.fromEntries(
+					await transformMapAsync(getState(repo.cellData), (_data, serial) => repo.getPower(serial))
+				)
+			);
 		}
-	};
-};
+	});
 
-/**
- * Set all cells to be on or off.
- */
-export const post: RequestHandler = async function post({ body }) {
-	const power = parsePowerBody(body);
+	fastify.route<{
+		Body: string | boolean | { on: string | boolean } | URLSearchParams;
+		Reply: boolean | Error;
+	}>({
+		method: 'POST',
+		url: '/api/device/power/',
+		/**
+		 * Set all cells to be on or off.
+		 */
+		async handler(request, reply) {
+			const power = parsePowerBody(request.body);
 
-	if (power === undefined) {
-		return {
-			status: 400,
-			error: new Error(`Invalid body ${body}`)
-		};
-	}
+			if (power === undefined) {
+				reply.status(400).send(new Error(`Invalid body ${request.body}`));
+				return;
+			}
 
-	const serials = Array.from(getState(repo.cellData).keys());
+			const serials = Array.from(getState(repo.cellData).keys());
 
-	return {
-		body: await repo.setPower(serials, power)
-	};
-};
+			reply.send(await repo.setPower(serials, power));
+		}
+	});
+}

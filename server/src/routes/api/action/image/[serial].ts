@@ -1,22 +1,24 @@
-import type { RequestHandler } from '@sveltejs/kit';
-import { repo } from '$lib/repository';
+import type { FastifyInstance } from 'fastify';
+import { repo } from '../../../../lib/repository';
 
-export const get: RequestHandler<unknown, unknown, Uint8Array> = async function get(input) {
-	const { serial } = input.params;
+export default function (fastify: FastifyInstance): void {
+	fastify.route<{
+		Params: { serial: string };
+	}>({
+		method: 'GET',
+		url: '/api/action/image/:serial',
+		async handler(request, reply) {
+			const { serial } = request.params;
 
-	const cached = repo.images.get(serial);
-	if (!cached) {
-		return {
-			status: 404
-		};
-	}
+			const cached = repo.images.get(serial);
+			if (!cached) {
+				reply.status(404);
+				return;
+			}
 
-	const mime = cached.getMIME();
-	const buffer = await cached.getBufferAsync(mime);
-	return {
-		headers: {
-			'Content-Type': mime
-		},
-		body: buffer
-	};
-};
+			const mime = cached.getMIME();
+			const buffer = await cached.getBufferAsync(mime);
+			reply.status(200).header('content-type', mime).send(buffer);
+		}
+	});
+}

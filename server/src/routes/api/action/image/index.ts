@@ -1,11 +1,11 @@
-import type { RequestHandler } from '@sveltejs/kit';
-import Jimp from 'jimp';
+import type { FastifyInstance } from 'fastify';
+import type Jimp from 'jimp';
 import { get as getState } from 'svelte/store';
-import { CellStateType } from '$lib/cells';
-import type { RectangleWithPosition, ResizeOptions } from '$lib/image';
-import { validRect } from '$lib/image';
-import { filterMap, transformMap } from '$lib/map/transform';
-import { repo } from '$lib/repository';
+import { CellStateType } from '../../../../lib/cells';
+import { RectangleWithPosition, RESIZE, ResizeOptions, validRect } from '../../../../lib/image';
+import { filterMap, transformMap } from '../../../../lib/map/transform';
+import { repo } from '../../../../lib/repository';
+import { imagePlugin } from '../../../../parser/image';
 
 type RemainingBehaviour = 'blank' | 'off' | 'ignore';
 
@@ -27,45 +27,86 @@ async function updateRemainingCells(
 	}
 }
 
-export const post: RequestHandler<unknown, Uint8Array> = async function post(input) {
-	const image = await Jimp.create(Buffer.from(input.body));
+interface ImageQuerystring extends ResizeOptions {
+	rest?: RemainingBehaviour;
+	device?: string[] | string;
+}
 
-	const devices = new Set(input.query.getAll('device'));
-	const includes = devices.size > 0 ? devices.has.bind(devices) : () => true;
-	const cellData = getState(repo.cellData);
-	const cells = filterMap(cellData, (cell) => validRect(cell.info) && includes(cell.serial));
-	const rects = transformMap(cells, (cell) => cell.info as RectangleWithPosition);
+export default function (fastify: FastifyInstance): void {
+	fastify.register(imagePlugin);
 
-	const options: ResizeOptions = {
-		horizontalAlign: input.query.get('horizontalAlign'),
-		verticalAlign: input.query.get('verticalAlign'),
-		resize: input.query.get('resize')
-	};
+	fastify.route<{
+		Body: Jimp;
+		Querystring: ImageQuerystring;
+	}>({
+		method: 'POST',
+		url: '/api/action/image/',
+		schema: {
+			querystring: {
+				type: 'object',
+				properties: {
+					horizontalAlign: {
+						type: 'string',
+						enum: ['left', 'center', 'right']
+					},
+					verticalAlign: {
+						type: 'string',
+						enum: ['top', 'middle', 'bottom']
+					},
+					resize: {
+						type: 'string',
+						enum: Array.from(RESIZE)
+					},
+					rest: {
+						type: 'string',
+						enum: ['ignore', 'blank', 'off']
+					}
+				}
+			}
+		},
+		async handler(request, reply) {
+			const image = request.body;
 
-	repo.images.clear();
-	await repo.images.insert(image, rects, options);
+			const devices = new Set(
+				Array.isArray(request.query.device) ? request.query.device : [request.query.device]
+			);
+			const includes = devices.size > 0 ? devices.has.bind(devices) : () => true;
+			const cellData = getState(repo.cellData);
+			const cells = filterMap(cellData, (cell) => validRect(cell.info) && includes(cell.serial));
+			const rects = transformMap(cells, (cell) => cell.info as RectangleWithPosition);
 
-	repo.setStates(
-		transformMap(rects, (_, serial) => ({
-			type: CellStateType.IMAGE,
-			src: `/api/action/image/${serial}`
-		}))
-	);
+			const options: ResizeOptions = {
+				horizontalAlign: request.query.horizontalAlign,
+				verticalAlign: request.query.verticalAlign,
+				resize: request.query.resize
+			};
 
-	if (input.query.has('rest')) {
-		const remaining = Array.from(cellData.keys()).filter((serial) => !rects.has(serial));
-		const rest = input.query.get('rest') as RemainingBehaviour | null;
-		await updateRemainingCells(remaining, rest ?? 'ignore');
-	}
+			repo.images.clear();
+			await repo.images.insert(image, rects, options);
 
-	return {
-		body: Array.from(rects.keys())
-	};
-};
+			repo.setStates(
+				transformMap(rects, (_, serial) => ({
+					type: CellStateType.IMAGE,
+					src: `/api/action/image/${serial}`
+				}))
+			);
 
-export const del: RequestHandler = async function del() {
-	repo.images.clear();
-	return {
-		status: 201
-	};
-};
+			if (request.query.rest) {
+				const remaining = Array.from(cellData.keys()).filter((serial) => !rects.has(serial));
+				const rest = request.query.rest;
+				await updateRemainingCells(remaining, rest ?? 'ignore');
+			}
+
+			reply.send(Array.from(rects.keys()));
+		}
+	});
+
+	fastify.route({
+		method: 'DELETE',
+		url: '/api/action/image/',
+		async handler(_request, reply) {
+			repo.images.clear();
+			reply.status(201).send();
+		}
+	});
+}
