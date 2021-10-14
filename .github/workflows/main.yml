@@ -54,7 +54,6 @@ jobs:
 
       # Build production code
       - run: pnpm run build -r
-      - run: cp ./{package.json,pnpm-lock.yaml,.gitignore} ./build
 
       # Publish the code
       - name: deploy to branch
