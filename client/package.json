@@ -3,11 +3,8 @@
 	"version": "4.0.0",
 	"type": "module",
 	"types": "index.d.ts",
-	"exports": {
-		"*": {
-			"import": "./build/middlewares.js"
-		}
-	},
+	"exports": "./build/middlewares.js",
+	"module": "./build/middlewares.js",
 	"scripts": {
 		"dev": "svelte-kit dev",
 		"build": "svelte-kit build",
