@@ -14,6 +14,7 @@ var __spreadValues = (a, b) => {
     }
   return a;
 };
+var __markAsModule = (target) => __defProp(target, "__esModule", { value: true });
 var __objRest = (source, exclude) => {
   var target = {};
   for (var prop in source)
@@ -26,20 +27,14 @@ var __objRest = (source, exclude) => {
     }
   return target;
 };
-
-// src/index.ts
-import Fastify from "fastify";
-
-// src/client.ts
-import middie from "middie";
-import { assetsMiddleware, kitMiddleware, prerenderedMiddleware } from "@cell-wall/client";
-var CLIENT_PATHS = ["/remote/*", "/page/*", "/index.html"];
-async function clientSubsystem(fastify2) {
-  await fastify2.register(middie);
-  fastify2.use(assetsMiddleware);
-  fastify2.use(CLIENT_PATHS, kitMiddleware);
-  fastify2.use(CLIENT_PATHS, prerenderedMiddleware);
-}
+var __esm = (fn, res) => function __init() {
+  return fn && (res = (0, fn[Object.keys(fn)[0]])(fn = 0)), res;
+};
+var __export = (target, all) => {
+  __markAsModule(target);
+  for (var name in all)
+    __defProp(target, name, { get: all[name], enumerable: true });
+};
 
 // ../../node_modules/.pnpm/svelte@3.43.2/node_modules/svelte/internal/index.mjs
 function noop() {
@@ -71,38 +66,6 @@ function get_store_value(store) {
   subscribe(store, (_) => value = _)();
   return value;
 }
-var tasks = new Set();
-var active_docs = new Set();
-var resolved_promise = Promise.resolve();
-var seen_callbacks = new Set();
-var outroing = new Set();
-var globals = typeof window !== "undefined" ? window : typeof globalThis !== "undefined" ? globalThis : global;
-var boolean_attributes = new Set([
-  "allowfullscreen",
-  "allowpaymentrequest",
-  "async",
-  "autofocus",
-  "autoplay",
-  "checked",
-  "controls",
-  "default",
-  "defer",
-  "disabled",
-  "formnovalidate",
-  "hidden",
-  "ismap",
-  "loop",
-  "multiple",
-  "muted",
-  "nomodule",
-  "novalidate",
-  "open",
-  "playsinline",
-  "readonly",
-  "required",
-  "reversed",
-  "selected"
-]);
 function destroy_component(component, detaching) {
   const $$ = component.$$;
   if ($$.fragment !== null) {
@@ -112,51 +75,86 @@ function destroy_component(component, detaching) {
     $$.ctx = [];
   }
 }
-var SvelteElement;
-if (typeof HTMLElement === "function") {
-  SvelteElement = class extends HTMLElement {
-    constructor() {
-      super();
-      this.attachShadow({ mode: "open" });
-    }
-    connectedCallback() {
-      const { on_mount } = this.$$;
-      this.$$.on_disconnect = on_mount.map(run).filter(is_function);
-      for (const key in this.$$.slotted) {
-        this.appendChild(this.$$.slotted[key]);
-      }
-    }
-    attributeChangedCallback(attr, _oldValue, newValue) {
-      this[attr] = newValue;
-    }
-    disconnectedCallback() {
-      run_all(this.$$.on_disconnect);
-    }
-    $destroy() {
-      destroy_component(this, 1);
-      this.$destroy = noop;
-    }
-    $on(type, callback) {
-      const callbacks = this.$$.callbacks[type] || (this.$$.callbacks[type] = []);
-      callbacks.push(callback);
-      return () => {
-        const index = callbacks.indexOf(callback);
-        if (index !== -1)
-          callbacks.splice(index, 1);
+var tasks, active_docs, resolved_promise, seen_callbacks, outroing, globals, boolean_attributes, SvelteElement;
+var init_internal = __esm({
+  "../../node_modules/.pnpm/svelte@3.43.2/node_modules/svelte/internal/index.mjs"() {
+    tasks = new Set();
+    active_docs = new Set();
+    resolved_promise = Promise.resolve();
+    seen_callbacks = new Set();
+    outroing = new Set();
+    globals = typeof window !== "undefined" ? window : typeof globalThis !== "undefined" ? globalThis : global;
+    boolean_attributes = new Set([
+      "allowfullscreen",
+      "allowpaymentrequest",
+      "async",
+      "autofocus",
+      "autoplay",
+      "checked",
+      "controls",
+      "default",
+      "defer",
+      "disabled",
+      "formnovalidate",
+      "hidden",
+      "ismap",
+      "loop",
+      "multiple",
+      "muted",
+      "nomodule",
+      "novalidate",
+      "open",
+      "playsinline",
+      "readonly",
+      "required",
+      "reversed",
+      "selected"
+    ]);
+    if (typeof HTMLElement === "function") {
+      SvelteElement = class extends HTMLElement {
+        constructor() {
+          super();
+          this.attachShadow({ mode: "open" });
+        }
+        connectedCallback() {
+          const { on_mount } = this.$$;
+          this.$$.on_disconnect = on_mount.map(run).filter(is_function);
+          for (const key in this.$$.slotted) {
+            this.appendChild(this.$$.slotted[key]);
+          }
+        }
+        attributeChangedCallback(attr, _oldValue, newValue) {
+          this[attr] = newValue;
+        }
+        disconnectedCallback() {
+          run_all(this.$$.on_disconnect);
+        }
+        $destroy() {
+          destroy_component(this, 1);
+          this.$destroy = noop;
+        }
+        $on(type, callback) {
+          const callbacks = this.$$.callbacks[type] || (this.$$.callbacks[type] = []);
+          callbacks.push(callback);
+          return () => {
+            const index = callbacks.indexOf(callback);
+            if (index !== -1)
+              callbacks.splice(index, 1);
+          };
+        }
+        $set($$props) {
+          if (this.$$set && !is_empty($$props)) {
+            this.$$.skip_bound = true;
+            this.$$set($$props);
+            this.$$.skip_bound = false;
+          }
+        }
       };
     }
-    $set($$props) {
-      if (this.$$set && !is_empty($$props)) {
-        this.$$.skip_bound = true;
-        this.$$set($$props);
-        this.$$.skip_bound = false;
-      }
-    }
-  };
-}
+  }
+});
 
 // ../../node_modules/.pnpm/svelte@3.43.2/node_modules/svelte/store/index.mjs
-var subscriber_queue = [];
 function readable(value, start) {
   return {
     subscribe: writable(value, start).subscribe
@@ -241,9 +239,14 @@ function derived(stores, fn, initial_value) {
     };
   });
 }
-
-// src/lib/android/device-manager.ts
-import { ADB } from "appium-adb";
+var subscriber_queue;
+var init_store = __esm({
+  "../../node_modules/.pnpm/svelte@3.43.2/node_modules/svelte/store/index.mjs"() {
+    init_internal();
+    init_internal();
+    subscriber_queue = [];
+  }
+});
 
 // src/lib/map/transform.ts
 function transformMap(map, transform) {
@@ -259,6 +262,10 @@ async function transformMapAsync(map, transform) {
     return [key, await transform(value, key)];
   })));
 }
+var init_transform = __esm({
+  "src/lib/map/transform.ts"() {
+  }
+});
 
 // src/lib/android/adb-action.ts
 async function checkIfOn(adb, cmdOutput = void 0) {
@@ -327,72 +334,78 @@ async function startIntent(adb, options) {
     throw new Error(res);
   }
 }
+var init_adb_action = __esm({
+  "src/lib/android/adb-action.ts"() {
+  }
+});
 
 // src/lib/android/device-manager.ts
-var DeviceManager = class {
-  constructor() {
-    this._devices = writable(new Map());
-    this.devices.subscribe((map) => {
-      this._lastMap = map;
-    });
+import { ADB } from "appium-adb";
+var DeviceManager;
+var init_device_manager = __esm({
+  "src/lib/android/device-manager.ts"() {
+    init_store();
+    init_transform();
+    init_adb_action();
+    DeviceManager = class {
+      constructor() {
+        this._devices = writable(new Map());
+        this.devices.subscribe((map) => {
+          this._lastMap = map;
+        });
+      }
+      get devices() {
+        return this._devices;
+      }
+      async refreshDevices() {
+        const adbGlobal = await ADB.createADB({
+          allowOfflineDevices: false
+        });
+        const devices = await adbGlobal.getDevicesWithRetry();
+        const clients = await Promise.all(devices.map(async (device) => {
+          const adb = await ADB.createADB();
+          adb.setDevice(device);
+          const [model, manufacturer] = await Promise.all([adb.getModel(), adb.getManufacturer()]);
+          const adbDevice = {
+            adb,
+            model,
+            manufacturer
+          };
+          return [device.udid, adbDevice];
+        }));
+        const result = new Map(clients);
+        this._devices.set(result);
+        return result;
+      }
+      async installApkToAll(path, pkg) {
+        return transformMapAsync(this._lastMap, ({ adb }) => adb.installOrUpgrade(path, pkg, {
+          enforceCurrentBuild: true
+        }));
+      }
+      async run(serial, action) {
+        const { adb } = this._lastMap.get(serial) ?? {};
+        if (!adb)
+          return false;
+        return action(adb);
+      }
+      async checkIfOn(serial) {
+        return this.run(serial, checkIfOn);
+      }
+      async togglePower(serial) {
+        return this.run(serial, async (adb) => {
+          await adb.cycleWakeUp();
+          return true;
+        });
+      }
+      async startIntent(serial, options) {
+        return this.run(serial, async (adb) => {
+          await startIntent(adb, options);
+          return true;
+        });
+      }
+    };
   }
-  get devices() {
-    return this._devices;
-  }
-  async refreshDevices() {
-    const adbGlobal = await ADB.createADB({
-      allowOfflineDevices: false
-    });
-    const devices = await adbGlobal.getDevicesWithRetry();
-    const clients = await Promise.all(devices.map(async (device) => {
-      const adb = await ADB.createADB();
-      adb.setDevice(device);
-      const [model, manufacturer] = await Promise.all([adb.getModel(), adb.getManufacturer()]);
-      const adbDevice = {
-        adb,
-        model,
-        manufacturer
-      };
-      return [device.udid, adbDevice];
-    }));
-    const result = new Map(clients);
-    this._devices.set(result);
-    return result;
-  }
-  async installApkToAll(path, pkg) {
-    return transformMapAsync(this._lastMap, ({ adb }) => adb.installOrUpgrade(path, pkg, {
-      enforceCurrentBuild: true
-    }));
-  }
-  async run(serial, action) {
-    const { adb } = this._lastMap.get(serial) ?? {};
-    if (!adb)
-      return false;
-    return action(adb);
-  }
-  async checkIfOn(serial) {
-    return this.run(serial, checkIfOn);
-  }
-  async togglePower(serial) {
-    return this.run(serial, async (adb) => {
-      await adb.cycleWakeUp();
-      return true;
-    });
-  }
-  async startIntent(serial, options) {
-    return this.run(serial, async (adb) => {
-      await startIntent(adb, options);
-      return true;
-    });
-  }
-};
-
-// src/lib/android/github.ts
-import { Octokit } from "@octokit/core";
-import { createWriteStream, promises as fs } from "fs";
-import { tmpdir } from "os";
-import { join } from "path";
-import { promises as stream } from "stream";
+});
 
 // src/lib/memo.ts
 function memo(func) {
@@ -404,43 +417,58 @@ function memo(func) {
     return result;
   };
 }
+var init_memo = __esm({
+  "src/lib/memo.ts"() {
+  }
+});
 
 // src/lib/android/github.ts
-var buildTempDir = memo(() => fs.mkdtemp(join(tmpdir(), "apk-")));
-var GithubApi = class {
-  constructor(options) {
-    this.octokit = new Octokit(options);
+import { Octokit } from "@octokit/core";
+import { createWriteStream, promises as fs } from "fs";
+import { tmpdir } from "os";
+import { join } from "path";
+import { promises as stream } from "stream";
+var buildTempDir, GithubApi;
+var init_github = __esm({
+  "src/lib/android/github.ts"() {
+    init_memo();
+    buildTempDir = memo(() => fs.mkdtemp(join(tmpdir(), "apk-")));
+    GithubApi = class {
+      constructor(options) {
+        this.octokit = new Octokit(options);
+      }
+      fetchRelease(tag) {
+        if (tag) {
+          return this.octokit.request("GET /repos/{owner}/{repo}/releases/tags/{tag}", {
+            owner: "NotWooods",
+            repo: "cell-wall",
+            tag
+          });
+        } else {
+          return this.octokit.request("GET /repos/{owner}/{repo}/releases/latest", {
+            owner: "NotWooods",
+            repo: "cell-wall"
+          });
+        }
+      }
+      async downloadApk(tag) {
+        const tmpDirReady = buildTempDir();
+        const response = await this.fetchRelease(tag);
+        const release = response.data;
+        const asset = release.assets.find((asset2) => asset2.name.endsWith(".apk"));
+        if (asset) {
+          const res = await fetch(asset.browser_download_url);
+          const tmpDirPath = await tmpDirReady;
+          const destPath = join(tmpDirPath, asset.name);
+          await stream.pipeline(res.body, createWriteStream(destPath));
+          return destPath;
+        } else {
+          throw new Error(`Could not find APK attached to release ${release.tag_name}`);
+        }
+      }
+    };
   }
-  fetchRelease(tag) {
-    if (tag) {
-      return this.octokit.request("GET /repos/{owner}/{repo}/releases/tags/{tag}", {
-        owner: "NotWooods",
-        repo: "cell-wall",
-        tag
-      });
-    } else {
-      return this.octokit.request("GET /repos/{owner}/{repo}/releases/latest", {
-        owner: "NotWooods",
-        repo: "cell-wall"
-      });
-    }
-  }
-  async downloadApk(tag) {
-    const tmpDirReady = buildTempDir();
-    const response = await this.fetchRelease(tag);
-    const release = response.data;
-    const asset = release.assets.find((asset2) => asset2.name.endsWith(".apk"));
-    if (asset) {
-      const res = await fetch(asset.browser_download_url);
-      const tmpDirPath = await tmpDirReady;
-      const destPath = join(tmpDirPath, asset.name);
-      await stream.pipeline(res.body, createWriteStream(destPath));
-      return destPath;
-    } else {
-      throw new Error(`Could not find APK attached to release ${release.tag_name}`);
-    }
-  }
-};
+});
 
 // src/lib/android/power.ts
 function asPower(primitive) {
@@ -485,48 +513,59 @@ async function setPower(device, on) {
     return await setPowerOne(device);
   }
 }
+var init_power = __esm({
+  "src/lib/android/power.ts"() {
+    init_adb_action();
+  }
+});
 
 // src/lib/cells/manager.ts
-var CellManager = class {
-  constructor() {
-    this._info = writable(new Map());
-    this._state = writable(new Map());
-  }
-  get info() {
-    return this._info;
-  }
-  get state() {
-    return this._state;
-  }
-  async loadInfo(db) {
-    try {
-      const cells = await db.getCells();
-      this._info.update((map) => {
-        const newMap = new Map(map);
-        for (const cell of cells) {
-          newMap.set(cell.serial, cell);
+var CellManager;
+var init_manager = __esm({
+  "src/lib/cells/manager.ts"() {
+    init_store();
+    CellManager = class {
+      constructor() {
+        this._info = writable(new Map());
+        this._state = writable(new Map());
+      }
+      get info() {
+        return this._info;
+      }
+      get state() {
+        return this._state;
+      }
+      async loadInfo(db) {
+        try {
+          const cells = await db.getCells();
+          this._info.update((map) => {
+            const newMap = new Map(map);
+            for (const cell of cells) {
+              newMap.set(cell.serial, cell);
+            }
+            return newMap;
+          });
+        } catch (err) {
+          console.error("Could not load CellManager data", err);
         }
-        return newMap;
-      });
-    } catch (err) {
-      console.error("Could not load CellManager data", err);
-    }
-    return this;
+        return this;
+      }
+      async writeInfo(db) {
+        await db.insertCells(Array.from(get_store_value(this.info).values()));
+      }
+      register(serial, info) {
+        this._info.update((map) => new Map(map).set(serial, info));
+      }
+      setState(serial, state) {
+        this._state.update((map) => new Map(map).set(serial, state));
+      }
+      setStateMap(states) {
+        const entries = typeof states.entries === "function" ? states.entries() : Object.entries(states);
+        this._state.update((map) => new Map([...map, ...entries]));
+      }
+    };
   }
-  async writeInfo(db) {
-    await db.insertCells(Array.from(get_store_value(this.info).values()));
-  }
-  register(serial, info) {
-    this._info.update((map) => new Map(map).set(serial, info));
-  }
-  setState(serial, state) {
-    this._state.update((map) => new Map(map).set(serial, state));
-  }
-  setStateMap(states) {
-    const entries = typeof states.entries === "function" ? states.entries() : Object.entries(states);
-    this._state.update((map) => new Map([...map, ...entries]));
-  }
-};
+});
 
 // src/lib/cells/schema.ts
 function buildCellState(options) {
@@ -542,44 +581,40 @@ function buildCellState(options) {
     required: ["type", ...required]
   };
 }
-var cellStateBlankSchema = buildCellState({ type: "BLANK" });
-var cellStateWebSchema = buildCellState({
-  type: "WEB",
-  properties: {
-    url: { type: "string", format: "uri" }
-  },
-  required: ["url"]
-});
-var cellStateTextSchema = buildCellState({
-  type: "TEXT",
-  properties: {
-    text: { type: "string" },
-    backgroundColor: { type: "string" }
-  },
-  required: ["text"]
-});
-var cellStateImageSchema = buildCellState({
-  type: "IMAGE",
-  properties: {
-    src: { type: "string", format: "uri" },
-    scaleType: {
-      type: "string",
-      enum: ["FIT_CENTER", "FIT_XY", "CENTER_INSIDE"]
-    }
-  },
-  required: ["src"]
+var cellStateBlankSchema, cellStateWebSchema, cellStateTextSchema, cellStateImageSchema;
+var init_schema = __esm({
+  "src/lib/cells/schema.ts"() {
+    cellStateBlankSchema = buildCellState({ type: "BLANK" });
+    cellStateWebSchema = buildCellState({
+      type: "WEB",
+      properties: {
+        url: { type: "string", format: "uri" }
+      },
+      required: ["url"]
+    });
+    cellStateTextSchema = buildCellState({
+      type: "TEXT",
+      properties: {
+        text: { type: "string" },
+        backgroundColor: { type: "string" }
+      },
+      required: ["text"]
+    });
+    cellStateImageSchema = buildCellState({
+      type: "IMAGE",
+      properties: {
+        src: { type: "string", format: "uri" },
+        scaleType: {
+          type: "string",
+          enum: ["FIT_CENTER", "FIT_XY", "CENTER_INSIDE"]
+        }
+      },
+      required: ["src"]
+    });
+  }
 });
 
 // src/lib/cells/state.ts
-var CellStateType;
-(function(CellStateType2) {
-  CellStateType2["BLANK"] = "BLANK";
-  CellStateType2["CONFIGURE"] = "CONFIGURE";
-  CellStateType2["TEXT"] = "TEXT";
-  CellStateType2["IMAGE"] = "IMAGE";
-  CellStateType2["BUTTON"] = "BUTTON";
-  CellStateType2["WEB"] = "WEB";
-})(CellStateType || (CellStateType = {}));
 function blankState() {
   return { type: CellStateType.BLANK };
 }
@@ -603,17 +638,44 @@ function toUri(state, base) {
     }
   }
 }
+var CellStateType;
+var init_state = __esm({
+  "src/lib/cells/state.ts"() {
+    (function(CellStateType2) {
+      CellStateType2["BLANK"] = "BLANK";
+      CellStateType2["CONFIGURE"] = "CONFIGURE";
+      CellStateType2["TEXT"] = "TEXT";
+      CellStateType2["IMAGE"] = "IMAGE";
+      CellStateType2["BUTTON"] = "BUTTON";
+      CellStateType2["WEB"] = "WEB";
+    })(CellStateType || (CellStateType = {}));
+  }
+});
+
+// src/lib/cells/index.ts
+var init_cells = __esm({
+  "src/lib/cells/index.ts"() {
+    init_manager();
+    init_schema();
+    init_state();
+  }
+});
 
 // src/lib/env.ts
 import { config } from "dotenv";
-config();
-var VERSION = "4.0.0";
-var SERVER_ADDRESS = process.env["SERVER_ADDRESS"];
-var PACKAGE_NAME = "com.tigeroakes.cellwall.client";
-var GOOGLE_CLIENT_ID = process.env["GOOGLE_CLIENT_ID"];
-var GOOGLE_CLIENT_SECRET = process.env["GOOGLE_CLIENT_SECRET"];
-var GITHUB_TOKEN = process.env["GITHUB_TOKEN"];
-var DATABASE_FILENAME = process.env["DATABASE_FILENAME"];
+var VERSION, SERVER_ADDRESS, PACKAGE_NAME, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GITHUB_TOKEN, DATABASE_FILENAME;
+var init_env = __esm({
+  "src/lib/env.ts"() {
+    config();
+    VERSION = "4.0.0";
+    SERVER_ADDRESS = process.env["SERVER_ADDRESS"];
+    PACKAGE_NAME = "com.tigeroakes.cellwall.client";
+    GOOGLE_CLIENT_ID = process.env["GOOGLE_CLIENT_ID"];
+    GOOGLE_CLIENT_SECRET = process.env["GOOGLE_CLIENT_SECRET"];
+    GITHUB_TOKEN = process.env["GITHUB_TOKEN"];
+    DATABASE_FILENAME = process.env["DATABASE_FILENAME"];
+  }
+});
 
 // src/lib/google.ts
 import { google } from "googleapis";
@@ -635,12 +697,12 @@ async function authenticateGoogle(client, code) {
   client.setCredentials(res.tokens);
   return res.tokens;
 }
-
-// src/lib/image/split.ts
-import Jimp2 from "jimp";
+var init_google = __esm({
+  "src/lib/google.ts"() {
+  }
+});
 
 // src/lib/cells/canvas.ts
-var AXIS_TO_POS = new Map().set("width", "x").set("height", "y");
 function cellCanvas(cells) {
   const canvas = { x: Infinity, y: Infinity, width: 0, height: 0 };
   for (const info of cells) {
@@ -662,24 +724,15 @@ function shiftCell(canvas, cell) {
   copy.y = cell.y - canvas.y;
   return copy;
 }
+var AXIS_TO_POS;
+var init_canvas = __esm({
+  "src/lib/cells/canvas.ts"() {
+    AXIS_TO_POS = new Map().set("width", "x").set("height", "y");
+  }
+});
 
 // src/lib/image/manipulate.ts
 import Jimp from "jimp";
-var ALIGN_QUERY = {
-  left: Jimp.HORIZONTAL_ALIGN_LEFT,
-  right: Jimp.HORIZONTAL_ALIGN_RIGHT,
-  center: Jimp.HORIZONTAL_ALIGN_CENTER,
-  top: Jimp.VERTICAL_ALIGN_TOP,
-  bottom: Jimp.VERTICAL_ALIGN_BOTTOM,
-  middle: Jimp.VERTICAL_ALIGN_MIDDLE
-};
-var RESIZE = new Set([
-  Jimp.RESIZE_NEAREST_NEIGHBOR,
-  Jimp.RESIZE_BILINEAR,
-  Jimp.RESIZE_BICUBIC,
-  Jimp.RESIZE_HERMITE,
-  Jimp.RESIZE_BEZIER
-]);
 function has(set, item) {
   return set.has(item);
 }
@@ -709,8 +762,29 @@ function crop(image, cell) {
       resolve(value);
   }));
 }
+var ALIGN_QUERY, RESIZE;
+var init_manipulate = __esm({
+  "src/lib/image/manipulate.ts"() {
+    ALIGN_QUERY = {
+      left: Jimp.HORIZONTAL_ALIGN_LEFT,
+      right: Jimp.HORIZONTAL_ALIGN_RIGHT,
+      center: Jimp.HORIZONTAL_ALIGN_CENTER,
+      top: Jimp.VERTICAL_ALIGN_TOP,
+      bottom: Jimp.VERTICAL_ALIGN_BOTTOM,
+      middle: Jimp.VERTICAL_ALIGN_MIDDLE
+    };
+    RESIZE = new Set([
+      Jimp.RESIZE_NEAREST_NEIGHBOR,
+      Jimp.RESIZE_BILINEAR,
+      Jimp.RESIZE_BICUBIC,
+      Jimp.RESIZE_HERMITE,
+      Jimp.RESIZE_BEZIER
+    ]);
+  }
+});
 
 // src/lib/image/split.ts
+import Jimp2 from "jimp";
 async function splitImage(image, cells, options = {}) {
   const canvas = cellCanvas(cells.values());
   await resize(image, canvas, options);
@@ -723,27 +797,41 @@ async function splitImage(image, cells, options = {}) {
     };
   });
 }
+var init_split = __esm({
+  "src/lib/image/split.ts"() {
+    init_canvas();
+    init_transform();
+    init_manipulate();
+  }
+});
 
 // src/lib/image/cache.ts
-var SplitImageCache = class {
-  constructor() {
-    this.cache = new Map();
+var SplitImageCache;
+var init_cache = __esm({
+  "src/lib/image/cache.ts"() {
+    init_transform();
+    init_split();
+    SplitImageCache = class {
+      constructor() {
+        this.cache = new Map();
+      }
+      get(serial) {
+        return this.cache.get(serial);
+      }
+      clear() {
+        this.cache.clear();
+      }
+      async insert(image, rects, options) {
+        const cropped = await splitImage(image, rects, options);
+        this.clear();
+        return transformMap(cropped, ({ info, img }, serial) => {
+          this.cache.set(serial, img);
+          return info;
+        });
+      }
+    };
   }
-  get(serial) {
-    return this.cache.get(serial);
-  }
-  clear() {
-    this.cache.clear();
-  }
-  async insert(image, rects, options) {
-    const cropped = await splitImage(image, rects, options);
-    this.clear();
-    return transformMap(cropped, ({ info, img }, serial) => {
-      this.cache.set(serial, img);
-      return info;
-    });
-  }
-};
+});
 
 // src/lib/map/get.ts
 function asArray(items) {
@@ -759,6 +847,10 @@ function getAll(map, keys) {
   }
   return result;
 }
+var init_get = __esm({
+  "src/lib/map/get.ts"() {
+  }
+});
 
 // src/lib/map/subscribe.ts
 function subscribeToMapStore(store, subscription) {
@@ -768,6 +860,10 @@ function subscribeToMapStore(store, subscription) {
     oldMap = newMap;
   });
 }
+var init_subscribe = __esm({
+  "src/lib/map/subscribe.ts"() {
+  }
+});
 
 // src/lib/repository/database.ts
 import { JSONFile, Memory, Low } from "lowdb";
@@ -805,38 +901,12 @@ async function database(filename) {
     }
   };
 }
+var init_database = __esm({
+  "src/lib/repository/database.ts"() {
+  }
+});
 
 // src/lib/repository/known.ts
-var knownDevices = [
-  {
-    model: "A0001",
-    manufacturer: "OnePlus_One",
-    deviceName: "OnePlus One",
-    width: 470,
-    height: 835
-  },
-  {
-    model: "Amazon_OtterX",
-    manufacturer: "Amazon",
-    deviceName: "Amazon Kindle",
-    width: 1024,
-    height: 552
-  },
-  {
-    model: "Moto_G XT1034",
-    manufacturer: "Motorola",
-    deviceName: "Moto G XT1034",
-    width: 598,
-    height: 360
-  },
-  {
-    model: "A600",
-    manufacturer: "Polaroid",
-    deviceName: "Polaroid A600",
-    width: 470,
-    height: 835
-  }
-];
 function computeInfo(serial, model, manufacturer) {
   const known = knownDevices.find((device) => device.model === model && device.manufacturer === manufacturer);
   const autoDeviceName = model.startsWith(manufacturer) ? model : `${manufacturer} ${model}`;
@@ -854,6 +924,41 @@ function computeInfo(serial, model, manufacturer) {
     };
   }
 }
+var knownDevices;
+var init_known = __esm({
+  "src/lib/repository/known.ts"() {
+    knownDevices = [
+      {
+        model: "A0001",
+        manufacturer: "OnePlus_One",
+        deviceName: "OnePlus One",
+        width: 470,
+        height: 835
+      },
+      {
+        model: "Amazon_OtterX",
+        manufacturer: "Amazon",
+        deviceName: "Amazon Kindle",
+        width: 1024,
+        height: 552
+      },
+      {
+        model: "Moto_G XT1034",
+        manufacturer: "Motorola",
+        deviceName: "Moto G XT1034",
+        width: 598,
+        height: 360
+      },
+      {
+        model: "A600",
+        manufacturer: "Polaroid",
+        deviceName: "Polaroid A600",
+        width: 470,
+        height: 835
+      }
+    ];
+  }
+});
 
 // src/lib/repository/repository.ts
 function sendIntentOnStateChange(cellManager, deviceManager) {
@@ -989,12 +1094,46 @@ ${googleClient.authorizeUrl}
     }
   };
 }
+var init_repository = __esm({
+  "src/lib/repository/repository.ts"() {
+    init_store();
+    init_device_manager();
+    init_github();
+    init_power();
+    init_cells();
+    init_env();
+    init_google();
+    init_cache();
+    init_get();
+    init_subscribe();
+    init_memo();
+    init_database();
+    init_known();
+  }
+});
+
+// src/lib/repository/interface.ts
+var init_interface = __esm({
+  "src/lib/repository/interface.ts"() {
+  }
+});
 
 // src/lib/repository/index.ts
-var repo = repository();
+var repo;
+var init_repository2 = __esm({
+  "src/lib/repository/index.ts"() {
+    init_repository();
+    init_interface();
+    repo = repository();
+  }
+});
 
 // src/routes/api/action/image/[serial].ts
-function serial_default(fastify2) {
+var serial_exports = {};
+__export(serial_exports, {
+  default: () => serial_default
+});
+async function serial_default(fastify2) {
   fastify2.route({
     method: "GET",
     url: "/api/action/image/:serial",
@@ -1011,6 +1150,11 @@ function serial_default(fastify2) {
     }
   });
 }
+var init_serial = __esm({
+  "src/routes/api/action/image/[serial].ts"() {
+    init_repository2();
+  }
+});
 
 // src/lib/image/rect.ts
 function isNumber(number) {
@@ -1019,9 +1163,22 @@ function isNumber(number) {
 function validRect(rect = {}) {
   return isNumber(rect.x) && isNumber(rect.y) && isNumber(rect.width) && isNumber(rect.height);
 }
+var init_rect = __esm({
+  "src/lib/image/rect.ts"() {
+  }
+});
+
+// src/lib/image/index.ts
+var init_image = __esm({
+  "src/lib/image/index.ts"() {
+    init_cache();
+    init_manipulate();
+    init_rect();
+    init_split();
+  }
+});
 
 // src/parser/image.ts
-var MB = 1048576;
 async function imagePlugin(fastify2, options) {
   const jimp = await (options.jimp ?? import("jimp"));
   async function contentParser(_request, body) {
@@ -1031,8 +1188,18 @@ async function imagePlugin(fastify2, options) {
     fastify2.addContentTypeParser(mimeType, { parseAs: "buffer", bodyLimit: 5 * MB }, contentParser);
   }
 }
+var MB;
+var init_image2 = __esm({
+  "src/parser/image.ts"() {
+    MB = 1048576;
+  }
+});
 
 // src/routes/api/action/image/index.ts
+var image_exports = {};
+__export(image_exports, {
+  default: () => image_default
+});
 async function updateRemainingCells(remaining, behaviour) {
   switch (behaviour) {
     case "blank":
@@ -1045,8 +1212,8 @@ async function updateRemainingCells(remaining, behaviour) {
       break;
   }
 }
-function image_default(fastify2) {
-  fastify2.register(imagePlugin);
+async function image_default(fastify2) {
+  await fastify2.register(imagePlugin);
   fastify2.route({
     method: "POST",
     url: "/api/action/image/",
@@ -1108,9 +1275,23 @@ function image_default(fastify2) {
     }
   });
 }
+var init_image3 = __esm({
+  "src/routes/api/action/image/index.ts"() {
+    init_store();
+    init_cells();
+    init_image();
+    init_transform();
+    init_repository2();
+    init_image2();
+  }
+});
 
 // src/routes/api/action/install.ts
-function install_default(fastify2) {
+var install_exports = {};
+__export(install_exports, {
+  default: () => install_default
+});
+async function install_default(fastify2) {
   fastify2.route({
     method: "POST",
     url: "/api/action/install",
@@ -1134,9 +1315,18 @@ function install_default(fastify2) {
     }
   });
 }
+var init_install = __esm({
+  "src/routes/api/action/install.ts"() {
+    init_repository2();
+  }
+});
 
 // src/routes/api/action/refresh.ts
-function refresh_default(fastify2) {
+var refresh_exports = {};
+__export(refresh_exports, {
+  default: () => refresh_default
+});
+async function refresh_default(fastify2) {
   fastify2.route({
     method: ["GET", "POST"],
     url: "/api/action/refresh",
@@ -1154,6 +1344,11 @@ function refresh_default(fastify2) {
     }
   });
 }
+var init_refresh = __esm({
+  "src/routes/api/action/refresh.ts"() {
+    init_repository2();
+  }
+});
 
 // src/routes/api/device/power/_body.ts
 function parsePowerBody(body) {
@@ -1169,9 +1364,18 @@ function parsePowerBody(body) {
   }
   return void 0;
 }
+var init_body = __esm({
+  "src/routes/api/device/power/_body.ts"() {
+    init_power();
+  }
+});
 
 // src/routes/api/device/power/[serial].ts
-function serial_default2(fastify2) {
+var serial_exports2 = {};
+__export(serial_exports2, {
+  default: () => serial_default2
+});
+async function serial_default2(fastify2) {
   fastify2.route({
     method: "GET",
     url: "/api/device/power/:serial",
@@ -1196,9 +1400,19 @@ function serial_default2(fastify2) {
     }
   });
 }
+var init_serial2 = __esm({
+  "src/routes/api/device/power/[serial].ts"() {
+    init_repository2();
+    init_body();
+  }
+});
 
 // src/routes/api/device/power/index.ts
-function power_default(fastify2) {
+var power_exports = {};
+__export(power_exports, {
+  default: () => power_default
+});
+async function power_default(fastify2) {
   fastify2.route({
     method: "GET",
     url: "/api/device/power/",
@@ -1220,6 +1434,14 @@ function power_default(fastify2) {
     }
   });
 }
+var init_power2 = __esm({
+  "src/routes/api/device/power/index.ts"() {
+    init_store();
+    init_transform();
+    init_repository2();
+    init_body();
+  }
+});
 
 // src/routes/api/device/state/_body.ts
 function isObject(maybe) {
@@ -1234,9 +1456,18 @@ function asCellState(maybeState) {
   }
   return void 0;
 }
+var init_body2 = __esm({
+  "src/routes/api/device/state/_body.ts"() {
+    init_cells();
+  }
+});
 
 // src/routes/api/device/state/[serial].ts
-function serial_default3(fastify2) {
+var serial_exports3 = {};
+__export(serial_exports3, {
+  default: () => serial_default3
+});
+async function serial_default3(fastify2) {
   fastify2.route({
     method: "GET",
     url: "/api/device/state/:serial",
@@ -1262,9 +1493,21 @@ function serial_default3(fastify2) {
     }
   });
 }
+var init_serial3 = __esm({
+  "src/routes/api/device/state/[serial].ts"() {
+    init_store();
+    init_cells();
+    init_repository2();
+    init_body2();
+  }
+});
 
 // src/routes/api/device/state/index.ts
-function state_default(fastify2) {
+var state_exports = {};
+__export(state_exports, {
+  default: () => state_default
+});
+async function state_default(fastify2) {
   fastify2.route({
     method: "GET",
     url: "/api/device/state/",
@@ -1281,10 +1524,22 @@ function state_default(fastify2) {
     }
   });
 }
+var init_state2 = __esm({
+  "src/routes/api/device/state/index.ts"() {
+    init_store();
+    init_cells();
+    init_transform();
+    init_repository2();
+  }
+});
 
 // src/routes/api/device/state/preset.ts
+var preset_exports = {};
+__export(preset_exports, {
+  default: () => preset_default
+});
 import fetch2 from "node-fetch";
-function preset_default(fastify2) {
+async function preset_default(fastify2) {
   fastify2.route({
     method: "POST",
     url: "/api/device/preset",
@@ -1297,9 +1552,18 @@ function preset_default(fastify2) {
     }
   });
 }
+var init_preset = __esm({
+  "src/routes/api/device/state/preset.ts"() {
+    init_repository2();
+  }
+});
 
 // src/routes/api/device/[serial].ts
-function serial_default4(fastify2) {
+var serial_exports4 = {};
+__export(serial_exports4, {
+  default: () => serial_default4
+});
+async function serial_default4(fastify2) {
   fastify2.route({
     method: "GET",
     url: "/api/device/:serial",
@@ -1349,9 +1613,19 @@ function serial_default4(fastify2) {
     }
   });
 }
+var init_serial4 = __esm({
+  "src/routes/api/device/[serial].ts"() {
+    init_store();
+    init_repository2();
+  }
+});
 
 // src/routes/api/device/index.ts
-function device_default(fastify2) {
+var device_exports = {};
+__export(device_exports, {
+  default: () => device_default
+});
+async function device_default(fastify2) {
   fastify2.route({
     method: "GET",
     url: "/api/device/",
@@ -1376,10 +1650,20 @@ function device_default(fastify2) {
     }
   });
 }
+var init_device = __esm({
+  "src/routes/api/device/index.ts"() {
+    init_store();
+    init_repository2();
+  }
+});
 
 // src/routes/api/third_party/freebusy.ts
+var freebusy_exports = {};
+__export(freebusy_exports, {
+  default: () => freebusy_default
+});
 import { google as google2 } from "googleapis";
-function freebusy_default(fastify2) {
+async function freebusy_default(fastify2) {
   fastify2.route({
     method: "GET",
     url: "/api/third_party/freebusy",
@@ -1403,9 +1687,18 @@ function freebusy_default(fastify2) {
     }
   });
 }
+var init_freebusy = __esm({
+  "src/routes/api/third_party/freebusy.ts"() {
+    init_repository2();
+  }
+});
 
 // src/routes/api/cellwall-version.ts
-function cellwall_version_default(fastify2) {
+var cellwall_version_exports = {};
+__export(cellwall_version_exports, {
+  default: () => cellwall_version_default
+});
+async function cellwall_version_default(fastify2) {
   fastify2.route({
     method: "GET",
     url: "/api/cellwall-version",
@@ -1424,9 +1717,18 @@ function cellwall_version_default(fastify2) {
     }
   });
 }
+var init_cellwall_version = __esm({
+  "src/routes/api/cellwall-version.ts"() {
+    init_env();
+  }
+});
 
 // src/routes/oauth2callback.ts
-function oauth2callback_default(fastify2) {
+var oauth2callback_exports = {};
+__export(oauth2callback_exports, {
+  default: () => oauth2callback_default
+});
+async function oauth2callback_default(fastify2) {
   fastify2.route({
     method: "GET",
     url: "/oauth2callback",
@@ -1442,10 +1744,29 @@ function oauth2callback_default(fastify2) {
     }
   });
 }
+var init_oauth2callback = __esm({
+  "src/routes/oauth2callback.ts"() {
+    init_repository2();
+  }
+});
+
+// src/index.ts
+import Fastify from "fastify";
+
+// src/client.ts
+import middie from "middie";
+import { assetsMiddleware, kitMiddleware, prerenderedMiddleware } from "@cell-wall/client";
+var CLIENT_PATHS = ["/remote/*", "/page/*", "/index.html"];
+async function clientSubsystem(fastify2) {
+  await fastify2.register(middie);
+  fastify2.use(assetsMiddleware);
+  fastify2.use(CLIENT_PATHS, kitMiddleware);
+  fastify2.use(CLIENT_PATHS, prerenderedMiddleware);
+}
 
 // src/routes.ts
 async function routesSubsystem(fastify2) {
-  fastify2.register(serial_default).register(image_default).register(install_default).register(refresh_default).register(serial_default2).register(power_default).register(serial_default3).register(state_default).register(preset_default).register(serial_default4).register(device_default).register(freebusy_default).register(cellwall_version_default).register(oauth2callback_default);
+  await fastify2.register(Promise.resolve().then(() => (init_serial(), serial_exports))).register(Promise.resolve().then(() => (init_image3(), image_exports))).register(Promise.resolve().then(() => (init_install(), install_exports))).register(Promise.resolve().then(() => (init_refresh(), refresh_exports))).register(Promise.resolve().then(() => (init_serial2(), serial_exports2))).register(Promise.resolve().then(() => (init_power2(), power_exports))).register(Promise.resolve().then(() => (init_serial3(), serial_exports3))).register(Promise.resolve().then(() => (init_state2(), state_exports))).register(Promise.resolve().then(() => (init_preset(), preset_exports))).register(Promise.resolve().then(() => (init_serial4(), serial_exports4))).register(Promise.resolve().then(() => (init_device(), device_exports))).register(Promise.resolve().then(() => (init_freebusy(), freebusy_exports))).register(Promise.resolve().then(() => (init_cellwall_version(), cellwall_version_exports))).register(Promise.resolve().then(() => (init_oauth2callback(), oauth2callback_exports)));
 }
 
 // src/websocket.ts
@@ -1469,8 +1790,7 @@ async function websocketSubsystem(fastify2, options) {
 var fastify = Fastify({
   logger: true
 });
-fastify.register(routesSubsystem).register(clientSubsystem).register(websocketSubsystem);
-fastify.listen(3e3).then((address) => console.log(`Listening on ${address}`)).catch((err) => {
+fastify.register(routesSubsystem).register(clientSubsystem).register(websocketSubsystem).listen(3e3).then((address) => console.log(`Listening on ${address}`)).catch((err) => {
   console.error("error starting server", err);
   process.exit(1);
 });
