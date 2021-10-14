@@ -1180,7 +1180,7 @@ var init_image = __esm({
 
 // src/parser/image.ts
 async function imagePlugin(fastify2, options) {
-  const jimp = await (options.jimp ?? import("jimp"));
+  const jimp = await (options.jimp ?? import("jimp").then((mod) => mod.default));
   async function contentParser(_request, body) {
     return await jimp.create(body);
   }
