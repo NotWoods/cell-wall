@@ -28,7 +28,7 @@ export default async function (fastify: FastifyInstance): Promise<void> {
 		Reply: readonly string[];
 	}>({
 		method: 'POST',
-		url: '/api/device/state/:serial',
+		url: '/api/device/state/',
 		/**
 		 * Set state for multiple cells
 		 */

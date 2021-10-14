@@ -15,6 +15,10 @@ interface AdbDevice {
 export type DeviceMap = ReadonlyMap<string, AdbDevice>;
 export type DeviceCallback<T> = (adb: ADB, udid: string) => Promise<T>;
 
+function noDeviceError(err: unknown): err is Error {
+	return err instanceof Error && err.message.includes('Could not find a connected Android device');
+}
+
 export class DeviceManager {
 	private readonly _devices = writable<DeviceMap>(new Map());
 	private _lastMap!: DeviceMap;
@@ -33,7 +37,16 @@ export class DeviceManager {
 		const adbGlobal = await ADB.createADB({
 			allowOfflineDevices: false
 		});
-		const devices: Device[] = await adbGlobal.getDevicesWithRetry();
+		let devices: Device[];
+		try {
+			devices = await adbGlobal.getDevicesWithRetry();
+		} catch (err) {
+			if (noDeviceError(err)) {
+				devices = [];
+			} else {
+				throw err;
+			}
+		}
 
 		const clients = await Promise.all(
 			devices.map(async (device) => {

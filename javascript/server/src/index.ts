@@ -1,19 +1,24 @@
 import Fastify from 'fastify';
-import { clientSubsystem } from './client';
+import middie from 'middie';
+import { assetsMiddleware, kitMiddleware, prerenderedMiddleware } from '@cell-wall/client';
 import { routesSubsystem } from './routes';
 import { websocketSubsystem } from './websocket';
 
-const fastify = Fastify({
-	logger: true
-});
-
-fastify
-	.register(routesSubsystem)
-	.register(clientSubsystem)
-	.register(websocketSubsystem)
-	.listen(3000)
-	.then((address) => console.log(`Listening on ${address}`))
-	.catch((err) => {
-		console.error('error starting server', err);
-		process.exit(1);
+async function main() {
+	const fastify = Fastify({
+		logger: true
 	});
+
+	await fastify.register(middie);
+	fastify.use(assetsMiddleware);
+	await fastify.register(routesSubsystem).register(websocketSubsystem);
+	fastify.use(kitMiddleware).use(prerenderedMiddleware);
+
+	const address = await fastify.listen(3000);
+	console.log(`Listening on ${address}`);
+}
+
+main().catch((err: unknown) => {
+	console.error('error starting server', err);
+	process.exit(1);
+});
