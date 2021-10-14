@@ -1145,8 +1145,8 @@ var serial_exports = {};
 __export(serial_exports, {
   default: () => serial_default
 });
-async function serial_default(fastify2) {
-  fastify2.route({
+async function serial_default(fastify) {
+  fastify.route({
     method: "GET",
     url: "/api/action/image/:serial",
     async handler(request, reply) {
@@ -1191,13 +1191,13 @@ var init_image = __esm({
 });
 
 // src/parser/image.ts
-async function imagePlugin(fastify2, options) {
+async function imagePlugin(fastify, options) {
   const jimp = await (options.jimp ?? import("jimp").then((mod) => mod.default));
   async function contentParser(_request, body) {
     return await jimp.create(body);
   }
   for (const mimeType of Object.keys(jimp.decoders)) {
-    fastify2.addContentTypeParser(mimeType, { parseAs: "buffer", bodyLimit: 5 * MB }, contentParser);
+    fastify.addContentTypeParser(mimeType, { parseAs: "buffer", bodyLimit: 5 * MB }, contentParser);
   }
 }
 var MB;
@@ -1224,9 +1224,9 @@ async function updateRemainingCells(remaining, behaviour) {
       break;
   }
 }
-async function image_default(fastify2) {
-  await fastify2.register(imagePlugin);
-  fastify2.route({
+async function image_default(fastify) {
+  await fastify.register(imagePlugin);
+  fastify.route({
     method: "POST",
     url: "/api/action/image/",
     schema: {
@@ -1278,7 +1278,7 @@ async function image_default(fastify2) {
       reply.send(Array.from(rects.keys()));
     }
   });
-  fastify2.route({
+  fastify.route({
     method: "DELETE",
     url: "/api/action/image/",
     async handler(_request, reply) {
@@ -1303,8 +1303,8 @@ var install_exports = {};
 __export(install_exports, {
   default: () => install_default
 });
-async function install_default(fastify2) {
-  fastify2.route({
+async function install_default(fastify) {
+  fastify.route({
     method: "POST",
     url: "/api/action/install",
     schema: {
@@ -1338,8 +1338,8 @@ var refresh_exports = {};
 __export(refresh_exports, {
   default: () => refresh_default
 });
-async function refresh_default(fastify2) {
-  fastify2.route({
+async function refresh_default(fastify) {
+  fastify.route({
     method: ["GET", "POST"],
     url: "/api/action/refresh",
     schema: {
@@ -1387,8 +1387,8 @@ var serial_exports2 = {};
 __export(serial_exports2, {
   default: () => serial_default2
 });
-async function serial_default2(fastify2) {
-  fastify2.route({
+async function serial_default2(fastify) {
+  fastify.route({
     method: "GET",
     url: "/api/device/power/:serial",
     async handler(request, reply) {
@@ -1398,7 +1398,7 @@ async function serial_default2(fastify2) {
       });
     }
   });
-  fastify2.route({
+  fastify.route({
     method: "POST",
     url: "/api/device/power/:serial",
     async handler(request, reply) {
@@ -1424,15 +1424,15 @@ var power_exports = {};
 __export(power_exports, {
   default: () => power_default
 });
-async function power_default(fastify2) {
-  fastify2.route({
+async function power_default(fastify) {
+  fastify.route({
     method: "GET",
     url: "/api/device/power/",
     async handler(request, reply) {
       reply.send(Object.fromEntries(await transformMapAsync(get_store_value(repo.cellData), (_data, serial) => repo.getPower(serial))));
     }
   });
-  fastify2.route({
+  fastify.route({
     method: "POST",
     url: "/api/device/power/",
     async handler(request, reply) {
@@ -1479,8 +1479,8 @@ var serial_exports3 = {};
 __export(serial_exports3, {
   default: () => serial_default3
 });
-async function serial_default3(fastify2) {
-  fastify2.route({
+async function serial_default3(fastify) {
+  fastify.route({
     method: "GET",
     url: "/api/device/state/:serial",
     async handler(request, reply) {
@@ -1490,7 +1490,7 @@ async function serial_default3(fastify2) {
       });
     }
   });
-  fastify2.route({
+  fastify.route({
     method: "POST",
     url: "/api/device/state/:serial",
     async handler(request, reply) {
@@ -1519,15 +1519,15 @@ var state_exports = {};
 __export(state_exports, {
   default: () => state_default
 });
-async function state_default(fastify2) {
-  fastify2.route({
+async function state_default(fastify) {
+  fastify.route({
     method: "GET",
     url: "/api/device/state/",
     async handler(request, reply) {
       reply.send(Object.fromEntries(transformMap(get_store_value(repo.cellData), (data) => data.state ?? blankState())));
     }
   });
-  fastify2.route({
+  fastify.route({
     method: "POST",
     url: "/api/device/state/",
     async handler(request, reply) {
@@ -1551,8 +1551,8 @@ __export(preset_exports, {
   default: () => preset_default
 });
 import fetch2 from "node-fetch";
-async function preset_default(fastify2) {
-  fastify2.route({
+async function preset_default(fastify) {
+  fastify.route({
     method: "POST",
     url: "/api/device/preset",
     async handler(request, reply) {
@@ -1575,8 +1575,8 @@ var serial_exports4 = {};
 __export(serial_exports4, {
   default: () => serial_default4
 });
-async function serial_default4(fastify2) {
-  fastify2.route({
+async function serial_default4(fastify) {
+  fastify.route({
     method: "GET",
     url: "/api/device/:serial",
     schema: {
@@ -1598,7 +1598,7 @@ async function serial_default4(fastify2) {
       reply.send(get_store_value(repo.cellData).get(serial) ?? null);
     }
   });
-  fastify2.route({
+  fastify.route({
     method: "POST",
     url: "/api/device/:serial",
     schema: {
@@ -1637,8 +1637,8 @@ var device_exports = {};
 __export(device_exports, {
   default: () => device_default
 });
-async function device_default(fastify2) {
-  fastify2.route({
+async function device_default(fastify) {
+  fastify.route({
     method: "GET",
     url: "/api/device/",
     schema: {
@@ -1675,8 +1675,8 @@ __export(freebusy_exports, {
   default: () => freebusy_default
 });
 import { google as google2 } from "googleapis";
-async function freebusy_default(fastify2) {
-  fastify2.route({
+async function freebusy_default(fastify) {
+  fastify.route({
     method: "GET",
     url: "/api/third_party/freebusy",
     async handler(request, reply) {
@@ -1710,8 +1710,8 @@ var cellwall_version_exports = {};
 __export(cellwall_version_exports, {
   default: () => cellwall_version_default
 });
-async function cellwall_version_default(fastify2) {
-  fastify2.route({
+async function cellwall_version_default(fastify) {
+  fastify.route({
     method: "GET",
     url: "/api/cellwall-version",
     schema: {
@@ -1740,8 +1740,8 @@ var oauth2callback_exports = {};
 __export(oauth2callback_exports, {
   default: () => oauth2callback_default
 });
-async function oauth2callback_default(fastify2) {
-  fastify2.route({
+async function oauth2callback_default(fastify) {
+  fastify.route({
     method: "GET",
     url: "/oauth2callback",
     schema: {
@@ -1764,34 +1764,25 @@ var init_oauth2callback = __esm({
 
 // src/index.ts
 import Fastify from "fastify";
-
-// src/client.ts
 import middie from "middie";
 import { assetsMiddleware, kitMiddleware, prerenderedMiddleware } from "@cell-wall/client";
-var CLIENT_PATHS = ["/remote", "/page", "/index.html"];
-async function clientSubsystem(fastify2) {
-  await fastify2.register(middie);
-  fastify2.use(assetsMiddleware);
-  fastify2.use(CLIENT_PATHS, kitMiddleware);
-  fastify2.use(CLIENT_PATHS, prerenderedMiddleware);
-}
 
 // src/routes.ts
-async function routesSubsystem(fastify2) {
-  await fastify2.register(Promise.resolve().then(() => (init_serial(), serial_exports))).register(Promise.resolve().then(() => (init_image3(), image_exports))).register(Promise.resolve().then(() => (init_install(), install_exports))).register(Promise.resolve().then(() => (init_refresh(), refresh_exports))).register(Promise.resolve().then(() => (init_serial2(), serial_exports2))).register(Promise.resolve().then(() => (init_power2(), power_exports))).register(Promise.resolve().then(() => (init_serial3(), serial_exports3))).register(Promise.resolve().then(() => (init_state2(), state_exports))).register(Promise.resolve().then(() => (init_preset(), preset_exports))).register(Promise.resolve().then(() => (init_serial4(), serial_exports4))).register(Promise.resolve().then(() => (init_device(), device_exports))).register(Promise.resolve().then(() => (init_freebusy(), freebusy_exports))).register(Promise.resolve().then(() => (init_cellwall_version(), cellwall_version_exports))).register(Promise.resolve().then(() => (init_oauth2callback(), oauth2callback_exports)));
+async function routesSubsystem(fastify) {
+  await fastify.register(Promise.resolve().then(() => (init_serial(), serial_exports))).register(Promise.resolve().then(() => (init_image3(), image_exports))).register(Promise.resolve().then(() => (init_install(), install_exports))).register(Promise.resolve().then(() => (init_refresh(), refresh_exports))).register(Promise.resolve().then(() => (init_serial2(), serial_exports2))).register(Promise.resolve().then(() => (init_power2(), power_exports))).register(Promise.resolve().then(() => (init_serial3(), serial_exports3))).register(Promise.resolve().then(() => (init_state2(), state_exports))).register(Promise.resolve().then(() => (init_preset(), preset_exports))).register(Promise.resolve().then(() => (init_serial4(), serial_exports4))).register(Promise.resolve().then(() => (init_device(), device_exports))).register(Promise.resolve().then(() => (init_freebusy(), freebusy_exports))).register(Promise.resolve().then(() => (init_cellwall_version(), cellwall_version_exports))).register(Promise.resolve().then(() => (init_oauth2callback(), oauth2callback_exports)));
 }
 
 // src/websocket.ts
 import websocket from "fastify-websocket";
-async function websocketSubsystem(fastify2, options) {
+async function websocketSubsystem(fastify, options) {
   const { store } = options;
-  await fastify2.register(websocket, {
+  await fastify.register(websocket, {
     errorHandler(error, connection) {
       console.error("websocket error:", error);
       connection.destroy(error);
     }
   });
-  fastify2.get("/", { websocket: true }, ({ socket }) => {
+  fastify.get("/", { websocket: true }, ({ socket }) => {
     console.log("connection");
     const unsubscribe = store.subscribe((value) => socket.send(value));
     socket.on("close", unsubscribe);
@@ -1799,10 +1790,18 @@ async function websocketSubsystem(fastify2, options) {
 }
 
 // src/index.ts
-var fastify = Fastify({
-  logger: true
-});
-fastify.register(routesSubsystem).register(clientSubsystem).register(websocketSubsystem).listen(3e3).then((address) => console.log(`Listening on ${address}`)).catch((err) => {
+async function main() {
+  const fastify = Fastify({
+    logger: true
+  });
+  await fastify.register(middie);
+  fastify.use(assetsMiddleware);
+  await fastify.register(routesSubsystem).register(websocketSubsystem);
+  fastify.use(kitMiddleware).use(prerenderedMiddleware);
+  const address = await fastify.listen(3e3);
+  console.log(`Listening on ${address}`);
+}
+main().catch((err) => {
   console.error("error starting server", err);
   process.exit(1);
 });
