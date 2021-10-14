@@ -45,7 +45,7 @@ jobs:
           node-version: '16'
           cache: pnpm
           cache-dependency-path: pnpm-lock.yaml
-      - run: pnpm install --frozen-lockfile
+      - run: pnpm install -r
 
       # Validate the source code
       - run: pnpm run lint -r
