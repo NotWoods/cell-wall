@@ -4,7 +4,7 @@ import { transformMapAsync } from '../../../../lib/map/transform';
 import { repo } from '../../../../lib/repository';
 import { parsePowerBody } from './_body';
 
-export default function (fastify: FastifyInstance): void {
+export default async function (fastify: FastifyInstance): Promise<void> {
 	fastify.route<{
 		Reply: Record<string, boolean>;
 	}>({

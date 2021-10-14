@@ -5,7 +5,7 @@ import { blankState } from '../../../../lib/cells';
 import { repo } from '../../../../lib/repository';
 import { asCellState } from './_body';
 
-export default function (fastify: FastifyInstance): void {
+export default async function (fastify: FastifyInstance): Promise<void> {
 	fastify.route<{
 		Params: { serial: string };
 		Reply: Record<string, CellState>;

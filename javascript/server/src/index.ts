@@ -7,9 +7,10 @@ const fastify = Fastify({
 	logger: true
 });
 
-fastify.register(routesSubsystem).register(clientSubsystem).register(websocketSubsystem);
-
 fastify
+	.register(routesSubsystem)
+	.register(clientSubsystem)
+	.register(websocketSubsystem)
 	.listen(3000)
 	.then((address) => console.log(`Listening on ${address}`))
 	.catch((err) => {

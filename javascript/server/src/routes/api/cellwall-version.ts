@@ -1,7 +1,7 @@
 import type { FastifyInstance } from 'fastify';
 import { VERSION } from '../../lib/env';
 
-export default function (fastify: FastifyInstance): void {
+export default async function (fastify: FastifyInstance): Promise<void> {
 	fastify.route<{
 		Reply: { version: string };
 	}>({

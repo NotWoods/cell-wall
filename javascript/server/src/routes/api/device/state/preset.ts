@@ -3,7 +3,7 @@ import fetch from 'node-fetch';
 import type { CellState } from '../../../../lib/cells';
 import { repo } from '../../../../lib/repository';
 
-export default function (fastify: FastifyInstance): void {
+export default async function (fastify: FastifyInstance): Promise<void> {
 	fastify.route<{
 		Body: URLSearchParams | { preset: string };
 		Reply: Record<string, CellState>;

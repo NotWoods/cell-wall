@@ -1,7 +1,7 @@
 import type { FastifyInstance } from 'fastify';
 import { repo } from '../../../../lib/repository';
 
-export default function (fastify: FastifyInstance): void {
+export default async function (fastify: FastifyInstance): Promise<void> {
 	fastify.route<{
 		Params: { serial: string };
 	}>({

@@ -3,7 +3,7 @@ import type { calendar_v3 } from 'googleapis';
 import { google } from 'googleapis';
 import { repo } from '../../../lib/repository';
 
-export default function (fastify: FastifyInstance): void {
+export default async function (fastify: FastifyInstance): Promise<void> {
 	fastify.route<{
 		Reply: readonly calendar_v3.Schema$TimePeriod[] | Error;
 	}>({
