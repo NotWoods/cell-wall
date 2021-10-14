@@ -1,6 +1,9 @@
-import { isObject } from '../../../../lib/body';
 import type { CellState } from '../../../../lib/cells';
 import { CellStateType } from '../../../../lib/cells';
+
+function isObject(maybe: unknown): maybe is object {
+	return typeof maybe === 'object' && maybe !== null;
+}
 
 export function asCellState(maybeState: unknown): CellState | undefined {
 	if (isObject(maybeState)) {

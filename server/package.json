@@ -12,7 +12,7 @@
 		"preview": "node build/index.js",
 		"check": "tsc --project .",
 		"check:watch": "tsc --project . --watch",
-		"lint": "prettier --check . && eslint --ignore-path .gitignore .",
+		"lint": "prettier --check . && eslint --ignore-path .prettierignore .",
 		"format": "prettier --write .",
 		"test": "jest"
 	},

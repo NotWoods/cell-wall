@@ -4,7 +4,8 @@
 		"paths": {
 			"appium-adb": ["./types/appium-adb"],
 			"appium-adb/*": ["./types/appium-adb/*"]
-		}
+		},
+		"noEmit": true
 	},
 	"include": ["src/**/*.d.ts", "src/**/*.ts"]
 }

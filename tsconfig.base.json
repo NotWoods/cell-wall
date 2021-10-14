@@ -21,6 +21,7 @@
 		"skipLibCheck": true,
 		"forceConsistentCasingInFileNames": true,
 		"allowJs": true,
-		"checkJs": true
+		"checkJs": true,
+		"importHelpers": true
 	}
 }

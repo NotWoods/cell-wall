@@ -5,7 +5,7 @@
 			"$lib": ["./src/lib"],
 			"$lib/*": ["./src/lib/*"]
 		},
-		"types": ["@sveltejs/kit", "vite/client"]
+		"types": ["@sveltejs/kit"]
 	},
 	"include": ["src/**/*.d.ts", "src/**/*.ts", "src/**/*.svelte"]
 }
