@@ -1,0 +1,9 @@
+{
+	"extends": "../tsconfig.base.json",
+	"compilerOptions": {
+		"noEmit": true,
+		"isolatedModules": false,
+		"skipLibCheck": false
+	},
+	"include": ["./lib/**/*.d.ts", "./index.d.ts"]
+}

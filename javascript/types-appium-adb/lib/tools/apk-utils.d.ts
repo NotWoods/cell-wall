@@ -1,4 +1,4 @@
-import { ExecOptions } from '../../teen_process';
+import { ExecOptions } from 'teen_process';
 
 export const enum APP_INSTALL_STATE {
 	UNKNOWN = 'unknown',

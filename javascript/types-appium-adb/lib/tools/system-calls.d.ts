@@ -1,5 +1,5 @@
 import { SemVer } from 'semver';
-import { SubProcess, ExecOptions } from '../../teen_process';
+import { SubProcess, ExecOptions } from 'teen_process';
 
 export { DEFAULT_ADB_EXEC_TIMEOUT } from '../helpers';
 

@@ -63,10 +63,10 @@ importers:
       '@jest/globals': ^27.2.5
       '@js-temporal/polyfill': ^0.2.0
       '@octokit/core': ^3.5.1
+      '@types/appium-adb': workspace:*
       '@types/node': ^16.10.9
       '@types/semver': ^7.3.8
       '@types/teen_process': ^1.16.0
-      '@types/ws': ^8.2.0
       '@typescript-eslint/eslint-plugin': ^5.0.0
       '@typescript-eslint/parser': ^5.0.0
       appium-adb: ^8.16.2
@@ -102,10 +102,10 @@ importers:
       node-fetch: 3.0.0
     devDependencies:
       '@jest/globals': 27.2.5
+      '@types/appium-adb': link:../types-appium-adb
       '@types/node': 16.10.9
       '@types/semver': 7.3.8
       '@types/teen_process': 1.16.0
-      '@types/ws': 8.2.0
       '@typescript-eslint/eslint-plugin': 5.0.0_3b49a3094ddb22ccc5b4c2c2360792e0
       '@typescript-eslint/parser': 5.0.0_eslint@8.0.1+typescript@4.4.4
       esbuild: 0.13.6
@@ -115,6 +115,31 @@ importers:
       jest: 27.2.5
       prettier: 2.4.1
       svelte: 3.43.2
+      tslib: 2.3.1
+      typescript: 4.4.4
+
+  javascript/types-appium-adb:
+    specifiers:
+      '@types/node': ^16.10.9
+      '@types/semver': ^7.3.8
+      '@types/teen_process': ^1.16.0
+      '@typescript-eslint/eslint-plugin': ^5.0.0
+      '@typescript-eslint/parser': ^5.0.0
+      eslint: ^8.0.1
+      eslint-config-prettier: ^8.3.0
+      prettier: ~2.4.1
+      tslib: ^2.3.1
+      typescript: ^4.4.4
+    dependencies:
+      '@types/semver': 7.3.8
+      '@types/teen_process': 1.16.0
+    devDependencies:
+      '@types/node': 16.10.9
+      '@typescript-eslint/eslint-plugin': 5.0.0_3b49a3094ddb22ccc5b4c2c2360792e0
+      '@typescript-eslint/parser': 5.0.0_eslint@8.0.1+typescript@4.4.4
+      eslint: 8.0.1
+      eslint-config-prettier: 8.3.0_eslint@8.0.1
+      prettier: 2.4.1
       tslib: 2.3.1
       typescript: 4.4.4
 
@@ -1777,7 +1802,6 @@ packages:
 
   /@types/semver/7.3.8:
     resolution: {integrity: sha512-D/2EJvAlCEtYFEYmmlGwbGXuK886HzyCc3nZX/tkFTQdEU8jZDAgiv08P162yB17y4ZXZoq7yFAnW4GDBb9Now==}
-    dev: true
 
   /@types/stack-utils/2.0.1:
     resolution: {integrity: sha512-Hl219/BT5fLAaz6NDkSuhzasy49dwQS/DSdu4MdggFB8zcXv7vflBI3xp7FEmkmdDkBUI2bPUNeMttp2knYdxw==}
@@ -1787,7 +1811,6 @@ packages:
     resolution: {integrity: sha512-CAr/68ankuVnPVtc7TvDme3gK/ItIDfZqbM8anohyHUKrN5he1q7soeWS3RzbwsEfrd24XUldhrwq9sidoKKMA==}
     dependencies:
       '@types/node': 16.10.9
-    dev: true
 
   /@types/ws/8.2.0:
     resolution: {integrity: sha512-cyeefcUCgJlEk+hk2h3N+MqKKsPViQgF5boi9TTHSK+PoR9KWBb/C5ccPcDyAqgsbAYHTwulch725DV84+pSpg==}

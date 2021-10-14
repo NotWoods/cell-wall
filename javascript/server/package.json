@@ -29,10 +29,10 @@
 	},
 	"devDependencies": {
 		"@jest/globals": "^27.2.5",
+		"@types/appium-adb": "workspace:*",
 		"@types/node": "^16.10.9",
 		"@types/semver": "^7.3.8",
 		"@types/teen_process": "^1.16.0",
-		"@types/ws": "^8.2.0",
 		"@typescript-eslint/eslint-plugin": "^5.0.0",
 		"@typescript-eslint/parser": "^5.0.0",
 		"esbuild": "^0.13.6",

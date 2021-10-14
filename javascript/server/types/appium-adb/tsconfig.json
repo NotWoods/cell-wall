@@ -1,7 +1,0 @@
-{
-	"extends": "../../tsconfig.json",
-	"compilerOptions": {
-		"noEmit": true
-	},
-	"include": ["./lib/**/*.d.ts", "./index.d.ts", "./teen_process.d.ts"]
-}
