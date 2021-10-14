@@ -341,6 +341,9 @@ var init_adb_action = __esm({
 
 // src/lib/android/device-manager.ts
 import { ADB } from "appium-adb";
+function noDeviceError(err) {
+  return err instanceof Error && err.message.includes("Could not find a connected Android device");
+}
 var DeviceManager;
 var init_device_manager = __esm({
   "src/lib/android/device-manager.ts"() {
@@ -361,7 +364,16 @@ var init_device_manager = __esm({
         const adbGlobal = await ADB.createADB({
           allowOfflineDevices: false
         });
-        const devices = await adbGlobal.getDevicesWithRetry();
+        let devices;
+        try {
+          devices = await adbGlobal.getDevicesWithRetry();
+        } catch (err) {
+          if (noDeviceError(err)) {
+            devices = [];
+          } else {
+            throw err;
+          }
+        }
         const clients = await Promise.all(devices.map(async (device) => {
           const adb = await ADB.createADB();
           adb.setDevice(device);
@@ -1517,7 +1529,7 @@ async function state_default(fastify2) {
   });
   fastify2.route({
     method: "POST",
-    url: "/api/device/state/:serial",
+    url: "/api/device/state/",
     async handler(request, reply) {
       await repo.setStates(request.body);
       reply.send(Object.keys(request.body));
@@ -1756,7 +1768,7 @@ import Fastify from "fastify";
 // src/client.ts
 import middie from "middie";
 import { assetsMiddleware, kitMiddleware, prerenderedMiddleware } from "@cell-wall/client";
-var CLIENT_PATHS = ["/remote/*", "/page/*", "/index.html"];
+var CLIENT_PATHS = ["/remote", "/page", "/index.html"];
 async function clientSubsystem(fastify2) {
   await fastify2.register(middie);
   fastify2.use(assetsMiddleware);
