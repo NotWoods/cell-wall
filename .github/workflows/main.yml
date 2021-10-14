@@ -14,8 +14,8 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-java@v2
         with:
-          distribution: "temurin"
-          java-version: "11"
+          distribution: 'temurin'
+          java-version: '11'
       - run: ./gradlew lintDebug
         name: lint
         working-directory: ./android
@@ -42,18 +42,18 @@ jobs:
       # Install dependencies
       - uses: actions/setup-node@v2
         with:
-          node-version: "16"
+          node-version: '16'
           cache: pnpm
-          cache-dependency-path: server/pnpm-lock.yaml
+          cache-dependency-path: pnpm-lock.yaml
       - run: pnpm install --frozen-lockfile
 
       # Validate the source code
-      - run: pnpm run lint
-      - run: pnpm run check
-      - run: pnpm run test
+      - run: pnpm run lint -r
+      - run: pnpm run check -r
+      - run: pnpm run test -r
 
       # Build production code
-      - run: pnpm run build
+      - run: pnpm run build -r
       - run: cp ./{package.json,pnpm-lock.yaml,.gitignore} ./build
 
       # Publish the code
@@ -62,7 +62,8 @@ jobs:
         if: ${{ github.event_name == 'push' }}
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./server/build
+          publish_dir: javascript
+          exclude_assets: '**/node_modules,**/src,**/.svelte-kit,**/*.cjs,**/.prettierignore,**/svelte.config.js,**/tsconfig.json,client/static,types-appium-adb,tsconfig.base.json'
           publish_branch: pi-deploy
-          user_name: "github-actions[bot]"
-          user_email: "github-actions[bot]@users.noreply.github.com"
+          user_name: 'github-actions[bot]'
+          user_email: 'github-actions[bot]@users.noreply.github.com'
