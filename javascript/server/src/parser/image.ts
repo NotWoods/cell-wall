@@ -16,7 +16,7 @@ export async function imagePlugin(
 	fastify: FastifyInstance,
 	options: ImageParserOptions
 ): Promise<void> {
-	const jimp = await (options.jimp ?? import('jimp'));
+	const jimp: JimpInstance = await (options.jimp ?? import('jimp').then((mod) => mod.default));
 
 	async function contentParser(_request: FastifyRequest, body: Buffer) {
 		return await jimp.create(body);

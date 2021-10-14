@@ -25,7 +25,7 @@
 		"@sveltejs/adapter-node": "next",
 		"@sveltejs/kit": "next",
 		"@types/lodash.startcase": "^4.4.6",
-		"@types/node": "^16.10.9",
+		"@types/node": "^16.11.0",
 		"@types/ws": "^8.2.0",
 		"@typescript-eslint/eslint-plugin": "^5.0.0",
 		"@typescript-eslint/parser": "^5.0.0",
