@@ -1784,7 +1784,7 @@ async function websocketSubsystem(fastify, options) {
 }
 
 // src/parser/urlencoded.ts
-function urlEncodedPlugin(fastify) {
+async function urlEncodedPlugin(fastify) {
   fastify.addContentTypeParser("application/x-www-form-urlencoded", async (_request, payload) => {
     const chunks = [];
     for await (const chunk of payload) {
