@@ -3,7 +3,7 @@ import { get as getState } from 'svelte/store';
 import type { CellInfo } from '../../../lib/cells';
 import { repo } from '../../../lib/repository';
 
-export default function (fastify: FastifyInstance): void {
+export default async function (fastify: FastifyInstance): Promise<void> {
 	fastify.route<{
 		Reply: Record<string, CellInfo>;
 	}>({

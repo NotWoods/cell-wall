@@ -1,3 +1,4 @@
+pnpm run build -w
 Copy-Item -Path "javascript\client\build" -Destination "..\cell-wall@pi-deploy\javascript\client" -Recurse -Force
 Copy-Item -Path "javascript\client\package.json" -Destination "..\cell-wall@pi-deploy\javascript\client" -Force
 Copy-Item -Path "javascript\server\build" -Destination "..\cell-wall@pi-deploy\javascript\server" -Recurse -Force

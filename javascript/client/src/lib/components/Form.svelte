@@ -13,7 +13,9 @@
 		let action = form.action;
 		if (submitter && submitter.name) {
 			formData.set(submitter.name, submitter.value);
-			action = submitter.formAction ?? action;
+			if (submitter.hasAttribute('formaction')) {
+				action = submitter.formAction;
+			}
 		}
 		loading = onSubmit(formData, new URL(action));
 	}
