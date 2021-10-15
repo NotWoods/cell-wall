@@ -2,6 +2,7 @@ import type { Device, InstallOrUpgradeResult } from 'appium-adb';
 import { ADB } from 'appium-adb';
 import type { Readable } from 'svelte/store';
 import { writable } from 'svelte/store';
+import { PORT } from '../env';
 import { transformMapAsync } from '../map/transform';
 import type { StartIntentOptions } from './adb-action';
 import { checkIfOn, startIntent } from './adb-action';
@@ -103,6 +104,13 @@ export class DeviceManager {
 	async startIntent(serial: string, options: StartIntentOptions): Promise<boolean> {
 		return this.run(serial, async (adb) => {
 			await startIntent(adb, options);
+			return true;
+		});
+	}
+
+	async connectPort(serial: string, devicePort: number): Promise<boolean> {
+		return this.run(serial, async (adb) => {
+			await adb.reversePort(devicePort, PORT);
 			return true;
 		});
 	}

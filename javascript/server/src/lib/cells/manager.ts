@@ -42,6 +42,17 @@ export class CellManager {
 		this._info.update((map) => new Map(map).set(serial, info));
 	}
 
+	registerServer(serial: string, server: string): void {
+		this._info.update((map) => {
+			const info = map.get(serial);
+			if (info) {
+				return new Map(map).set(serial, { ...info, server });
+			} else {
+				return map;
+			}
+		});
+	}
+
 	setState(serial: string, state: CellState): void {
 		this._state.update((map) => new Map(map).set(serial, state));
 	}

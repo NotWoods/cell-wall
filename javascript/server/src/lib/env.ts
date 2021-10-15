@@ -2,9 +2,26 @@ import { config } from 'dotenv';
 
 config();
 
+function formatURL(address: string, port = '3000') {
+	let portN = Number(port);
+	if (Number.isNaN(portN)) {
+		portN = 3000;
+	}
+
+	let host = address.startsWith('http') ? `http://${address}` : address;
+	host += `:${port}`;
+
+	return { base: new URL(host), port: portN };
+}
+
 export const VERSION = '4.0.0';
 
-export const SERVER_ADDRESS = process.env['SERVER_ADDRESS'] as string;
+const formatted = formatURL(
+	process.env['SERVER_ADDRESS'] as string,
+	process.env['PORT'] as string | undefined
+);
+export const SERVER_ADDRESS = formatted.base;
+export const PORT = formatted.port;
 
 /**
  * Package name for the Android app

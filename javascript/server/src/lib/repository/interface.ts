@@ -22,6 +22,7 @@ export interface Repository {
 	authenticateGoogleApi(code: string): Promise<void>;
 	refreshDevices(): Promise<DeviceMap>;
 	installApk(tag?: string): Promise<Map<string, InstallOrUpgradeResult>>;
+	connectDevicePort(serial: string, port: number): Promise<boolean>;
 	getPower(serial: string): Promise<boolean>;
 	setPower(serial: string | readonly string[], on: boolean | 'toggle'): Promise<boolean>;
 	setState(serial: string, state: CellState): Promise<void>;

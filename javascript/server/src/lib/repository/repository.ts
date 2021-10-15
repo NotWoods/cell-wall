@@ -101,6 +101,20 @@ export function repository(): Repository {
 				return new Map();
 			}
 		},
+		async connectDevicePort(serial, port) {
+			const deviceManager = await deviceManagerPromise;
+			if (await deviceManager.connectPort(serial, port)) {
+				const cellManager = await cellManagerPromise;
+				cellManager.registerServer(serial, `http://localhost:${port}`);
+
+				const db = await dbPromise;
+				await cellManager.writeInfo(db);
+
+				return true;
+			} else {
+				return false;
+			}
+		},
 		googleApi,
 		async authenticateGoogleApi(code: string) {
 			const db = await dbPromise;
