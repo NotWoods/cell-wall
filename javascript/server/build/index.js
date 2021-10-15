@@ -499,7 +499,11 @@ function asPower(primitive) {
 async function setPowerOne(client, on) {
   const isOn = await checkIfOn(client);
   if (isOn !== on) {
-    await client.cycleWakeUp();
+    if (on === false) {
+      await client.keyevent(KEYCODE_POWER);
+    } else {
+      await client.cycleWakeUp();
+    }
     return !isOn;
   }
   return on;
@@ -525,9 +529,11 @@ async function setPower(device, on) {
     return await setPowerOne(device);
   }
 }
+var KEYCODE_POWER;
 var init_power = __esm({
   "src/lib/android/power.ts"() {
     init_adb_action();
+    KEYCODE_POWER = 26;
   }
 });
 
@@ -901,21 +907,21 @@ var init_known = __esm({
     knownDevices = [
       {
         model: "A0001",
-        manufacturer: "OnePlus_One",
+        manufacturer: "OnePlus",
         deviceName: "OnePlus One",
         width: 470,
         height: 835
       },
       {
-        model: "Amazon_OtterX",
-        manufacturer: "Amazon",
+        model: "Amazon OtterX",
+        manufacturer: "android",
         deviceName: "Amazon Kindle",
         width: 1024,
         height: 552
       },
       {
-        model: "Moto_G XT1034",
-        manufacturer: "Motorola",
+        model: "XT1034",
+        manufacturer: "motorola",
         deviceName: "Moto G XT1034",
         width: 598,
         height: 360
@@ -1349,22 +1355,18 @@ async function refresh_default(fastify) {
   fastify.route({
     method: ["GET", "POST"],
     url: "/api/action/refresh",
-    schema: {
-      response: {
-        200: {
-          type: "array",
-          items: { type: "string" }
-        }
-      }
-    },
     async handler(request, reply) {
       const devices = await repo.refreshDevices();
-      reply.send(Array.from(devices.keys()));
+      reply.send(Object.fromEntries(transformMap(devices, (device) => ({
+        model: device.model,
+        manufacturer: device.manufacturer
+      }))));
     }
   });
 }
 var init_refresh = __esm({
   "src/routes/api/action/refresh.ts"() {
+    init_transform();
     init_repository2();
   }
 });
@@ -1644,26 +1646,10 @@ var device_exports = {};
 __export(device_exports, {
   default: () => device_default
 });
-async function device_default(fastify) {
+function device_default(fastify) {
   fastify.route({
     method: "GET",
     url: "/api/device/",
-    schema: {
-      response: {
-        200: {
-          type: "object",
-          additionalProperties: {
-            type: "object",
-            properties: {
-              deviceName: { type: "string" },
-              width: { type: "number" },
-              height: { type: "number" },
-              server: { type: "string" }
-            }
-          }
-        }
-      }
-    },
     async handler(request, reply) {
       reply.send(Object.fromEntries(get_store_value(repo.cellData)));
     }
