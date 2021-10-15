@@ -17,7 +17,6 @@ export type CellDataMap = ReadonlyMap<string, CellData>;
 
 export interface Repository {
 	cellData: Readable<CellDataMap>;
-	cellDataJson: Readable<string>;
 	images: SplitImageCache;
 	googleApi(): Promise<GoogleClient>;
 	authenticateGoogleApi(code: string): Promise<void>;

@@ -1,5 +1,4 @@
-import type { Readable } from 'svelte/store';
-import { derived, get } from 'svelte/store';
+import { get } from 'svelte/store';
 import { DeviceManager } from '../android/device-manager';
 import { GithubApi } from '../android/github';
 import { setPower } from '../android/power';
@@ -18,9 +17,9 @@ import { SplitImageCache } from '../image/cache';
 import { asArray, getAll } from '../map/get';
 import { subscribeToMapStore } from '../map/subscribe';
 import { memo } from '../memo';
+import { deriveCellInfo } from './combine-cell';
 import { database } from './database';
-import type { CellData, CellDataMap, Repository } from './interface';
-import { computeInfo } from './known';
+import type { Repository } from './interface';
 
 function sendIntentOnStateChange(cellManager: CellManager, deviceManager: DeviceManager) {
 	subscribeToMapStore(cellManager.state, (newStates, oldStates) => {
@@ -48,47 +47,6 @@ function sendIntentOnStateChange(cellManager: CellManager, deviceManager: Device
 			})
 		);
 	});
-}
-
-function deriveCellInfo(
-	cellManager: CellManager,
-	deviceManager: DeviceManager
-): Readable<CellDataMap> {
-	return derived(
-		[cellManager.info, cellManager.state, deviceManager.devices],
-		([infoMap, states, devices]) => {
-			const cellInfoMap = new Map<string, CellData>();
-			for (const [serial, info] of infoMap) {
-				cellInfoMap.set(serial, { serial, info, connected: false });
-			}
-			for (const [serial, state] of states) {
-				const existing = cellInfoMap.get(serial);
-				if (existing) {
-					existing.state = state;
-				} else {
-					cellInfoMap.set(serial, { serial, state, connected: false });
-				}
-			}
-			for (const [serial, { model, manufacturer }] of devices) {
-				const existing = cellInfoMap.get(serial);
-				if (existing) {
-					existing.connected = true;
-					existing.info = {
-						...computeInfo(serial, model, manufacturer),
-						...existing.info
-					};
-				} else {
-					cellInfoMap.set(serial, {
-						serial,
-						connected: true,
-						info: computeInfo(serial, model, manufacturer)
-					});
-				}
-			}
-			return cellInfoMap;
-		},
-		new Map()
-	);
 }
 
 export function repository(): Repository {
@@ -129,7 +87,6 @@ export function repository(): Repository {
 
 	return {
 		cellData,
-		cellDataJson: derived(cellData, (map) => JSON.stringify(Object.fromEntries(map))),
 		images: new SplitImageCache(),
 		refreshDevices() {
 			const refreshPromise = deviceManager.refreshDevices();

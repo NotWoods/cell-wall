@@ -7,7 +7,7 @@ export interface Props {
 
 export function createLoadWithDevices(): Load {
 	return async ({ fetch }) => {
-		const res = await fetch(`/api/device`);
+		const res = await fetch(`/api/device/`);
 		if (res.ok) {
 			return {
 				props: {

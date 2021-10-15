@@ -43,7 +43,10 @@ export function computeInfo(serial: string, model: string, manufacturer: string)
 	const known = knownDevices.find(
 		(device) => device.model === model && device.manufacturer === manufacturer
 	);
-	const autoDeviceName = model.startsWith(manufacturer) ? model : `${manufacturer} ${model}`;
+	const autoDeviceName =
+		model.startsWith(manufacturer) || manufacturer.toLowerCase() === 'android'
+			? model
+			: `${manufacturer} ${model}`;
 	if (known) {
 		return {
 			serial,
