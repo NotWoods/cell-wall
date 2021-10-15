@@ -1793,17 +1793,19 @@ async function websocketSubsystem(fastify, options) {
 // src/index.ts
 async function main(options) {
   const fastify = Fastify({
-    logger: true
+    logger: true,
+    trustProxy: true
   });
   await fastify.register(middie);
   fastify.use(assetsMiddleware);
   await fastify.register(routesSubsystem).register(websocketSubsystem);
   fastify.use(kitMiddleware).use(prerenderedMiddleware);
-  const address = await fastify.listen(options.port ?? 3e3);
+  const address = await fastify.listen(options.port ?? 3e3, options.address ?? "0.0.0.0");
   console.log(`Listening on ${address}`);
 }
 var argv = mimimist(process.argv.slice(2), {
   alias: {
+    a: "address",
     p: "port"
   }
 });
