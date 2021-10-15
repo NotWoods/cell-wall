@@ -1783,13 +1783,25 @@ async function websocketSubsystem(fastify, options) {
   });
 }
 
+// src/parser/urlencoded.ts
+function urlEncodedPlugin(fastify) {
+  fastify.addContentTypeParser("application/x-www-form-urlencoded", async (_request, payload) => {
+    const chunks = [];
+    for await (const chunk of payload) {
+      chunks.push(chunk);
+    }
+    const body = new URLSearchParams(chunks.join(""));
+    return body;
+  });
+}
+
 // src/index.ts
 async function main(options) {
   const fastify = Fastify({
     logger: true,
     trustProxy: true
   });
-  await fastify.register(middie);
+  await fastify.register(urlEncodedPlugin).register(middie);
   fastify.use(assetsMiddleware);
   await fastify.register(routesSubsystem).register(websocketSubsystem);
   fastify.use(kitMiddleware).use(prerenderedMiddleware);
