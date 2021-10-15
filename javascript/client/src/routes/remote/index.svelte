@@ -21,7 +21,7 @@
 	}
 </script>
 
-<Form action="/api/device/state/preset" onSubmit={submit} let:loading>
+<Form action="/api/device/preset" onSubmit={submit} let:loading>
 	{#await loading}
 		<progress class="progress is-small is-primary" max="100">Loading</progress>
 	{:then res}

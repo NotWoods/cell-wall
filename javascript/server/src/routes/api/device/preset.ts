@@ -1,7 +1,7 @@
 import type { FastifyInstance } from 'fastify';
 import fetch from 'node-fetch';
-import type { CellState } from '../../../../lib/cells';
-import { repo } from '../../../../lib/repository';
+import type { CellState } from '../../../lib/cells';
+import { repo } from '../../../lib/repository';
 
 export default async function (fastify: FastifyInstance): Promise<void> {
 	fastify.route<{
