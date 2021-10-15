@@ -1,0 +1,8 @@
+name: cell-wall
+private: true
+version: 4.0.0
+scripts:
+  build: >-
+    pnpm run build --filter @cell-wall/client && pnpm run build --filter @cell-wall/server
+  lint: prettier --check .prettierrc *.yaml *.md
+  format: prettier --write .prettierrc *.yaml *.md
