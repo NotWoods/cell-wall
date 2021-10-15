@@ -33,25 +33,3 @@ export type CellState = CellStateBlank | CellStateText | CellStateImage | CellSt
 export function blankState(): CellStateBlank {
 	return { type: CellStateType.BLANK };
 }
-
-export function toUri(state: CellState, base?: string | URL): URL {
-	const { type, ...props } = state;
-	switch (type.toUpperCase()) {
-		case CellStateType.WEB: {
-			const web = props as CellStateWeb;
-			return new URL(web.url, base);
-		}
-		case CellStateType.IMAGE: {
-			const imgProps = props as CellStateImage;
-			imgProps.src = new URL(imgProps.src, base).toString();
-			// fall through
-		}
-		default: {
-			const url = new URL(`cellwall://${type}`);
-			for (const [key, value] of Object.entries(props)) {
-				url.searchParams.append(key, value);
-			}
-			return url;
-		}
-	}
-}

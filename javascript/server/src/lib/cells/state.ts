@@ -1,3 +1,5 @@
+import { SERVER_ADDRESS } from '../env';
+
 export enum CellStateType {
 	BLANK = 'BLANK',
 	CONFIGURE = 'CONFIGURE',
@@ -17,6 +19,10 @@ export interface CellStateText {
 	backgroundColor?: string;
 }
 
+export function textState(text: string, backgroundColor?: string): CellStateText {
+	return { type: CellStateType.TEXT, text, backgroundColor };
+}
+
 export interface CellStateImage {
 	type: CellStateType.IMAGE;
 	src: string;
@@ -34,7 +40,7 @@ export function blankState(): CellStateBlank {
 	return { type: CellStateType.BLANK };
 }
 
-export function toUri(state: CellState, base?: string | URL): URL {
+export function toUri(state: CellState, base: string | URL = SERVER_ADDRESS): URL {
 	const { type, ...props } = state;
 	switch (type.toUpperCase()) {
 		case CellStateType.WEB: {
