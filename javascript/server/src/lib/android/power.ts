@@ -4,6 +4,8 @@ import type { DeviceMap } from './device-manager';
 
 export type Power = boolean | 'toggle';
 
+const KEYCODE_POWER = 26;
+
 export function asPower(primitive: unknown): Power | undefined {
 	switch (primitive) {
 		case 'toggle':
@@ -21,7 +23,11 @@ export function asPower(primitive: unknown): Power | undefined {
 async function setPowerOne(client: ADB, on?: boolean) {
 	const isOn = await checkIfOn(client);
 	if (isOn !== on) {
-		await client.cycleWakeUp();
+		if (on === false) {
+			await client.keyevent(KEYCODE_POWER);
+		} else {
+			await client.cycleWakeUp();
+		}
 		return !isOn;
 	}
 	return on;

@@ -37,10 +37,11 @@ describe('deriveCellInfo', () => {
 				.set('DEVICEA', mockDevice('ModelA', 'ManufacturerA'))
 				.set('DEVICEB', mockDevice('ManuB ModelB', 'ManuB'))
 				.set('DEVICEC', mockDevice('ManuC ModelC', 'Android'))
+				.set('DEVICED', mockDevice('A0001', 'OnePlus'))
 		);
 
 		const derived = get(derivedStore);
-		expect(derived.size).toBe(3);
+		expect(derived.size).toBe(4);
 		expect(derived.get('DEVICEA')).toEqual({
 			serial: 'DEVICEA',
 			connected: true,
@@ -63,6 +64,16 @@ describe('deriveCellInfo', () => {
 			info: {
 				serial: 'DEVICEC',
 				deviceName: 'ManuC ModelC'
+			}
+		});
+		expect(derived.get('DEVICED')).toEqual({
+			serial: 'DEVICED',
+			connected: true,
+			info: {
+				serial: 'DEVICED',
+				deviceName: 'OnePlus One',
+				width: 470,
+				height: 835
 			}
 		});
 	});

@@ -53,7 +53,7 @@ jobs:
       - run: pnpm run test -r
 
       # Build production code
-      - run: pnpm run build -r
+      - run: pnpm run build -w
 
       # Publish the code
       - name: deploy to branch

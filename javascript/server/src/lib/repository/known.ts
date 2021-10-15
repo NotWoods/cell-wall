@@ -11,21 +11,21 @@ interface KnownDevice {
 const knownDevices: readonly KnownDevice[] = [
 	{
 		model: 'A0001',
-		manufacturer: 'OnePlus_One',
+		manufacturer: 'OnePlus',
 		deviceName: 'OnePlus One',
 		width: 470,
 		height: 835
 	},
 	{
-		model: 'Amazon_OtterX',
-		manufacturer: 'Amazon',
+		model: 'Amazon OtterX',
+		manufacturer: 'android',
 		deviceName: 'Amazon Kindle',
 		width: 1024,
 		height: 552
 	},
 	{
-		model: 'Moto_G XT1034',
-		manufacturer: 'Motorola',
+		model: 'XT1034',
+		manufacturer: 'motorola',
 		deviceName: 'Moto G XT1034',
 		width: 598,
 		height: 360

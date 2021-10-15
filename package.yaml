@@ -4,5 +4,6 @@ version: 4.0.0
 scripts:
   build: >-
     pnpm run build --filter @cell-wall/client && pnpm run build --filter @cell-wall/server
+  start: node javascript/server/build/index.js
   lint: prettier --check .prettierrc *.yaml *.md
   format: prettier --write .prettierrc *.yaml *.md
