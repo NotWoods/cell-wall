@@ -877,51 +877,10 @@ var init_subscribe = __esm({
   }
 });
 
-// src/lib/repository/database.ts
-import { JSONFile, Memory, Low } from "lowdb";
-async function database(filename) {
-  const adapter = filename ? new JSONFile(filename) : new Memory();
-  const db = new Low(adapter);
-  await db.read();
-  function initData() {
-    return db.data ||= { cells: {} };
-  }
-  return {
-    async getGoogleCredentials() {
-      return db.data?.googleCredentials;
-    },
-    async setGoogleCredentials(credentials) {
-      initData().googleCredentials = credentials;
-      await db.write();
-    },
-    async getCell(name) {
-      return db.data?.cells?.[name];
-    },
-    async getCells() {
-      return Object.values(initData().cells);
-    },
-    async insertCell(cell) {
-      initData().cells[cell.serial] = cell;
-      await db.write();
-    },
-    async insertCells(cells) {
-      const data = initData();
-      for (const cell of cells) {
-        data.cells[cell.serial] = cell;
-      }
-      await db.write();
-    }
-  };
-}
-var init_database = __esm({
-  "src/lib/repository/database.ts"() {
-  }
-});
-
 // src/lib/repository/known.ts
 function computeInfo(serial, model, manufacturer) {
   const known = knownDevices.find((device) => device.model === model && device.manufacturer === manufacturer);
-  const autoDeviceName = model.startsWith(manufacturer) ? model : `${manufacturer} ${model}`;
+  const autoDeviceName = model.startsWith(manufacturer) || manufacturer.toLowerCase() === "android" ? model : `${manufacturer} ${model}`;
   if (known) {
     return {
       serial,
@@ -972,29 +931,7 @@ var init_known = __esm({
   }
 });
 
-// src/lib/repository/repository.ts
-function sendIntentOnStateChange(cellManager, deviceManager) {
-  subscribeToMapStore(cellManager.state, (newStates, oldStates) => {
-    const changes = new Map(newStates);
-    if (oldStates) {
-      for (const [serial, state] of oldStates) {
-        if (changes.get(serial) === state) {
-          changes.delete(serial);
-        }
-      }
-    }
-    const info = get_store_value(cellManager.info);
-    Promise.all(Array.from(changes).map(([serial, state]) => {
-      console.log(serial, state);
-      const base = info.get(serial)?.server || SERVER_ADDRESS;
-      return deviceManager.startIntent(serial, {
-        action: `${PACKAGE_NAME}.DISPLAY`,
-        dataUri: toUri(state, base),
-        waitForLaunch: true
-      });
-    }));
-  });
-}
+// src/lib/repository/combine-cell.ts
 function deriveCellInfo(cellManager, deviceManager) {
   return derived([cellManager.info, cellManager.state, deviceManager.devices], ([infoMap, states, devices]) => {
     const cellInfoMap = new Map();
@@ -1024,6 +961,77 @@ function deriveCellInfo(cellManager, deviceManager) {
     }
     return cellInfoMap;
   }, new Map());
+}
+var init_combine_cell = __esm({
+  "src/lib/repository/combine-cell.ts"() {
+    init_store();
+    init_known();
+  }
+});
+
+// src/lib/repository/database.ts
+import { JSONFile, Memory, Low } from "lowdb";
+async function database(filename) {
+  const adapter = filename ? new JSONFile(filename) : new Memory();
+  const db = new Low(adapter);
+  await db.read();
+  function initData() {
+    return db.data ||= { cells: {} };
+  }
+  return {
+    async getGoogleCredentials() {
+      return db.data?.googleCredentials;
+    },
+    async setGoogleCredentials(credentials) {
+      initData().googleCredentials = credentials;
+      await db.write();
+    },
+    async getCell(name) {
+      return db.data?.cells?.[name];
+    },
+    async getCells() {
+      return Object.values(initData().cells);
+    },
+    async insertCell(cell) {
+      initData().cells[cell.serial] = cell;
+      await db.write();
+    },
+    async insertCells(cells) {
+      const data = initData();
+      for (const cell of cells) {
+        data.cells[cell.serial] = cell;
+      }
+      await db.write();
+    }
+  };
+}
+var init_database = __esm({
+  "src/lib/repository/database.ts"() {
+  }
+});
+
+// src/lib/repository/repository.ts
+function sendIntentOnStateChange(cellManager, deviceManager) {
+  subscribeToMapStore(cellManager.state, (newStates, oldStates) => {
+    const changes = new Map(newStates);
+    if (oldStates) {
+      for (const [serial, state] of oldStates) {
+        if (changes.get(serial) === state) {
+          changes.delete(serial);
+        }
+      }
+    }
+    const info = get_store_value(cellManager.info);
+    Promise.all(Array.from(changes).map(([serial, state]) => {
+      console.log(serial, state);
+      const base = info.get(serial)?.server || SERVER_ADDRESS;
+      return deviceManager.startIntent(serial, {
+        action: `${PACKAGE_NAME}.DISPLAY`,
+        dataUri: toUri(state, base),
+        waitForLaunch: true
+      });
+    }));
+  });
 }
 function repository() {
   const dbPromise = database(DATABASE_FILENAME);
@@ -1058,7 +1066,6 @@ ${googleClient.authorizeUrl}
   });
   return {
     cellData,
-    cellDataJson: derived(cellData, (map) => JSON.stringify(Object.fromEntries(map))),
     images: new SplitImageCache(),
     refreshDevices() {
       const refreshPromise = deviceManager.refreshDevices();
@@ -1119,8 +1126,8 @@ var init_repository = __esm({
     init_get();
     init_subscribe();
     init_memo();
+    init_combine_cell();
     init_database();
-    init_known();
   }
 });
 

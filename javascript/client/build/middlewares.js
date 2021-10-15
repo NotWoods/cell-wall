@@ -6635,9 +6635,9 @@ function init(settings = default_settings) {
     amp: false,
     dev: false,
     entry: {
-      file: assets + "/_app/start-45327811.js",
+      file: assets + "/_app/start-21e8f758.js",
       css: [assets + "/_app/assets/start-61d1577b.css"],
-      js: [assets + "/_app/start-45327811.js", assets + "/_app/chunks/vendor-958806bc.js"]
+      js: [assets + "/_app/start-21e8f758.js", assets + "/_app/chunks/vendor-958806bc.js"]
     },
     fetched: void 0,
     floc: false,
@@ -6770,7 +6770,7 @@ var module_lookup = {
     return text;
   })
 };
-var metadata_lookup = { ".svelte-kit/build/components/layout.svelte": { "entry": "layout.svelte-9b6af9fd.js", "css": [], "js": ["layout.svelte-9b6af9fd.js", "chunks/vendor-958806bc.js"], "styles": [] }, ".svelte-kit/build/components/error.svelte": { "entry": "error.svelte-b9f3adab.js", "css": [], "js": ["error.svelte-b9f3adab.js", "chunks/vendor-958806bc.js"], "styles": [] }, "src/routes/index.svelte": { "entry": "pages/index.svelte-0eb06f72.js", "css": [], "js": ["pages/index.svelte-0eb06f72.js", "chunks/vendor-958806bc.js"], "styles": [] }, "src/routes/remote/__layout.svelte": { "entry": "pages/remote/__layout.svelte-7dbcc6ee.js", "css": [], "js": ["pages/remote/__layout.svelte-7dbcc6ee.js", "chunks/vendor-958806bc.js"], "styles": [] }, "src/routes/remote/index.svelte": { "entry": "pages/remote/index.svelte-3ea617a7.js", "css": ["assets/pages/remote/index.svelte-15ea8fff.css"], "js": ["pages/remote/index.svelte-3ea617a7.js", "chunks/vendor-958806bc.js", "chunks/_Field-5805c0d2.js", "chunks/_form-52443b97.js"], "styles": [] }, "src/routes/remote/custom.svelte": { "entry": "pages/remote/custom.svelte-dfbcd097.js", "css": [], "js": ["pages/remote/custom.svelte-dfbcd097.js", "chunks/vendor-958806bc.js", "chunks/_DeviceOption-093970a2.js", "chunks/state-33679332.js", "chunks/_Field-5805c0d2.js", "chunks/_PowerButton-9aac9067.js", "chunks/_form-52443b97.js"], "styles": [] }, "src/routes/remote/image.svelte": { "entry": "pages/remote/image.svelte-daea7e4a.js", "css": [], "js": ["pages/remote/image.svelte-daea7e4a.js", "chunks/vendor-958806bc.js", "chunks/_DeviceOption-093970a2.js", "chunks/_Field-5805c0d2.js"], "styles": [] }, "src/routes/remote/edit.svelte": { "entry": "pages/remote/edit.svelte-e3ba53b8.js", "css": [], "js": ["pages/remote/edit.svelte-e3ba53b8.js", "chunks/vendor-958806bc.js", "chunks/_DeviceOption-093970a2.js", "chunks/_Field-5805c0d2.js", "chunks/_PowerButton-9aac9067.js", "chunks/_form-52443b97.js"], "styles": [] }, "src/routes/page/index.svelte": { "entry": "pages/page/index.svelte-7434c427.js", "css": [], "js": ["pages/page/index.svelte-7434c427.js", "chunks/vendor-958806bc.js", "chunks/state-33679332.js"], "styles": [] }, "src/routes/page/busy/[person].svelte": { "entry": "pages/page/busy/[person].svelte-cc7bd33a.js", "css": ["assets/pages/page/busy/[person].svelte-eab96ff7.css"], "js": ["pages/page/busy/[person].svelte-cc7bd33a.js", "chunks/vendor-958806bc.js"], "styles": [] }, "src/routes/page/text.svelte": { "entry": "pages/page/text.svelte-43d0e17a.js", "css": ["assets/pages/page/text.svelte-690dba16.css"], "js": ["pages/page/text.svelte-43d0e17a.js", "chunks/vendor-958806bc.js"], "styles": [] } };
+var metadata_lookup = { ".svelte-kit/build/components/layout.svelte": { "entry": "layout.svelte-9b6af9fd.js", "css": [], "js": ["layout.svelte-9b6af9fd.js", "chunks/vendor-958806bc.js"], "styles": [] }, ".svelte-kit/build/components/error.svelte": { "entry": "error.svelte-b9f3adab.js", "css": [], "js": ["error.svelte-b9f3adab.js", "chunks/vendor-958806bc.js"], "styles": [] }, "src/routes/index.svelte": { "entry": "pages/index.svelte-0eb06f72.js", "css": [], "js": ["pages/index.svelte-0eb06f72.js", "chunks/vendor-958806bc.js"], "styles": [] }, "src/routes/remote/__layout.svelte": { "entry": "pages/remote/__layout.svelte-7dbcc6ee.js", "css": [], "js": ["pages/remote/__layout.svelte-7dbcc6ee.js", "chunks/vendor-958806bc.js"], "styles": [] }, "src/routes/remote/index.svelte": { "entry": "pages/remote/index.svelte-3ea617a7.js", "css": ["assets/pages/remote/index.svelte-15ea8fff.css"], "js": ["pages/remote/index.svelte-3ea617a7.js", "chunks/vendor-958806bc.js", "chunks/_Field-5805c0d2.js", "chunks/_form-52443b97.js"], "styles": [] }, "src/routes/remote/custom.svelte": { "entry": "pages/remote/custom.svelte-198b4239.js", "css": [], "js": ["pages/remote/custom.svelte-198b4239.js", "chunks/vendor-958806bc.js", "chunks/_DeviceOption-bea1ae98.js", "chunks/state-33679332.js", "chunks/_Field-5805c0d2.js", "chunks/_PowerButton-9aac9067.js", "chunks/_form-52443b97.js"], "styles": [] }, "src/routes/remote/image.svelte": { "entry": "pages/remote/image.svelte-e5d645bd.js", "css": [], "js": ["pages/remote/image.svelte-e5d645bd.js", "chunks/vendor-958806bc.js", "chunks/_DeviceOption-bea1ae98.js", "chunks/_Field-5805c0d2.js"], "styles": [] }, "src/routes/remote/edit.svelte": { "entry": "pages/remote/edit.svelte-1e4b64f8.js", "css": [], "js": ["pages/remote/edit.svelte-1e4b64f8.js", "chunks/vendor-958806bc.js", "chunks/_DeviceOption-bea1ae98.js", "chunks/_Field-5805c0d2.js", "chunks/_PowerButton-9aac9067.js", "chunks/_form-52443b97.js"], "styles": [] }, "src/routes/page/index.svelte": { "entry": "pages/page/index.svelte-7434c427.js", "css": [], "js": ["pages/page/index.svelte-7434c427.js", "chunks/vendor-958806bc.js", "chunks/state-33679332.js"], "styles": [] }, "src/routes/page/busy/[person].svelte": { "entry": "pages/page/busy/[person].svelte-cc7bd33a.js", "css": ["assets/pages/page/busy/[person].svelte-eab96ff7.css"], "js": ["pages/page/busy/[person].svelte-cc7bd33a.js", "chunks/vendor-958806bc.js"], "styles": [] }, "src/routes/page/text.svelte": { "entry": "pages/page/text.svelte-43d0e17a.js", "css": ["assets/pages/page/text.svelte-690dba16.css"], "js": ["pages/page/text.svelte-43d0e17a.js", "chunks/vendor-958806bc.js"], "styles": [] } };
 async function load_component(file) {
   const { entry, css: css2, js, styles } = metadata_lookup[file];
   return {
@@ -7004,7 +7004,7 @@ var index$1 = /* @__PURE__ */ Object.freeze({
 });
 function createLoadWithDevices() {
   return async ({ fetch: fetch2 }) => {
-    const res = await fetch2(`/api/device`);
+    const res = await fetch2(`/api/device/`);
     if (res.ok) {
       return {
         props: {
@@ -7273,7 +7273,7 @@ var Image = create_ssr_component(($$result, $$props, $$bindings, slots) => {
   if ($$props.devices === void 0 && $$bindings.devices && devices !== void 0)
     $$bindings.devices(devices);
   return `${validate_component(Form, "Form").$$render($$result, {
-    action: "/api/action/image",
+    action: "/api/action/image/",
     onSubmit: submit
   }, {}, {
     default: ({ loading }) => `${validate_component(Field, "Field").$$render($$result, { htmlFor: "control-image", label: "Image" }, {}, {
