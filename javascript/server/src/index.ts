@@ -4,6 +4,7 @@ import mimimist from 'minimist';
 import { assetsMiddleware, kitMiddleware, prerenderedMiddleware } from '@cell-wall/client';
 import { routesSubsystem } from './routes';
 import { websocketSubsystem } from './websocket';
+import { urlEncodedPlugin } from './parser/urlencoded';
 
 interface Options {
 	address?: string;
@@ -16,7 +17,7 @@ async function main(options: Options) {
 		trustProxy: true
 	});
 
-	await fastify.register(middie);
+	await fastify.register(urlEncodedPlugin).register(middie);
 	fastify.use(assetsMiddleware);
 	await fastify.register(routesSubsystem).register(websocketSubsystem);
 	fastify.use(kitMiddleware).use(prerenderedMiddleware);

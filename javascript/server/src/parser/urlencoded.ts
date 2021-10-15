@@ -5,7 +5,7 @@ export type ReadonlyURLSearchParams = Omit<URLSearchParams, 'append' | 'delete' 
 /**
  * Parse application/x-www-form-urlencoded bodies into URLSearchParams
  */
-export function urlEncodedPlugin(fastify: FastifyInstance): void {
+export async function urlEncodedPlugin(fastify: FastifyInstance): Promise<void> {
 	fastify.addContentTypeParser(
 		'application/x-www-form-urlencoded',
 		async (_request: FastifyRequest, payload: RawRequestDefaultExpression) => {
