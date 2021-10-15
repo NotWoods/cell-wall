@@ -17,6 +17,7 @@
 		"@cell-wall/client": "workspace:*",
 		"@js-temporal/polyfill": "^0.2.0",
 		"@octokit/core": "^3.5.1",
+		"@types/minimist": "^1.2.2",
 		"appium-adb": "^8.16.2",
 		"dotenv": "^10.0.0",
 		"fastify": "^3.22.0",
@@ -25,6 +26,7 @@
 		"jimp": "^0.16.1",
 		"lowdb": "^3.0.0",
 		"middie": "^5.3.0",
+		"minimist": "^1.2.5",
 		"node-fetch": "^3.0.0"
 	},
 	"devDependencies": {

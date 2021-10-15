@@ -1765,6 +1765,7 @@ var init_oauth2callback = __esm({
 // src/index.ts
 import Fastify from "fastify";
 import middie from "middie";
+import mimimist from "minimist";
 import { assetsMiddleware, kitMiddleware, prerenderedMiddleware } from "@cell-wall/client";
 
 // src/routes.ts
@@ -1790,7 +1791,7 @@ async function websocketSubsystem(fastify, options) {
 }
 
 // src/index.ts
-async function main() {
+async function main(options) {
   const fastify = Fastify({
     logger: true
   });
@@ -1798,10 +1799,15 @@ async function main() {
   fastify.use(assetsMiddleware);
   await fastify.register(routesSubsystem).register(websocketSubsystem);
   fastify.use(kitMiddleware).use(prerenderedMiddleware);
-  const address = await fastify.listen(3e3);
+  const address = await fastify.listen(options.port ?? 3e3);
   console.log(`Listening on ${address}`);
 }
-main().catch((err) => {
+var argv = mimimist(process.argv.slice(2), {
+  alias: {
+    p: "port"
+  }
+});
+main(argv).catch((err) => {
   console.error("error starting server", err);
   process.exit(1);
 });
