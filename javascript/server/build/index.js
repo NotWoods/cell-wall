@@ -1646,7 +1646,7 @@ var device_exports = {};
 __export(device_exports, {
   default: () => device_default
 });
-function device_default(fastify) {
+async function device_default(fastify) {
   fastify.route({
     method: "GET",
     url: "/api/device/",
