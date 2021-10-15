@@ -1554,7 +1554,7 @@ var init_state2 = __esm({
   }
 });
 
-// src/routes/api/device/state/preset.ts
+// src/routes/api/device/preset.ts
 var preset_exports = {};
 __export(preset_exports, {
   default: () => preset_default
@@ -1574,7 +1574,7 @@ async function preset_default(fastify) {
   });
 }
 var init_preset = __esm({
-  "src/routes/api/device/state/preset.ts"() {
+  "src/routes/api/device/preset.ts"() {
     init_repository2();
   }
 });
@@ -1761,8 +1761,21 @@ import middie from "middie";
 import mimimist from "minimist";
 import { assetsMiddleware, kitMiddleware, prerenderedMiddleware } from "@cell-wall/client";
 
+// src/parser/urlencoded.ts
+async function urlEncodedPlugin(fastify) {
+  fastify.addContentTypeParser("application/x-www-form-urlencoded", async (_request, payload) => {
+    const chunks = [];
+    for await (const chunk of payload) {
+      chunks.push(chunk);
+    }
+    const body = new URLSearchParams(chunks.join(""));
+    return body;
+  });
+}
+
 // src/routes.ts
 async function routesSubsystem(fastify) {
+  await urlEncodedPlugin(fastify);
   await fastify.register(Promise.resolve().then(() => (init_serial(), serial_exports))).register(Promise.resolve().then(() => (init_image3(), image_exports))).register(Promise.resolve().then(() => (init_install(), install_exports))).register(Promise.resolve().then(() => (init_refresh(), refresh_exports))).register(Promise.resolve().then(() => (init_serial2(), serial_exports2))).register(Promise.resolve().then(() => (init_power2(), power_exports))).register(Promise.resolve().then(() => (init_serial3(), serial_exports3))).register(Promise.resolve().then(() => (init_state2(), state_exports))).register(Promise.resolve().then(() => (init_preset(), preset_exports))).register(Promise.resolve().then(() => (init_serial4(), serial_exports4))).register(Promise.resolve().then(() => (init_device(), device_exports))).register(Promise.resolve().then(() => (init_freebusy(), freebusy_exports))).register(Promise.resolve().then(() => (init_cellwall_version(), cellwall_version_exports))).register(Promise.resolve().then(() => (init_oauth2callback(), oauth2callback_exports)));
 }
 
@@ -1783,25 +1796,13 @@ async function websocketSubsystem(fastify, options) {
   });
 }
 
-// src/parser/urlencoded.ts
-async function urlEncodedPlugin(fastify) {
-  fastify.addContentTypeParser("application/x-www-form-urlencoded", async (_request, payload) => {
-    const chunks = [];
-    for await (const chunk of payload) {
-      chunks.push(chunk);
-    }
-    const body = new URLSearchParams(chunks.join(""));
-    return body;
-  });
-}
-
 // src/index.ts
 async function main(options) {
   const fastify = Fastify({
     logger: true,
     trustProxy: true
   });
-  await fastify.register(urlEncodedPlugin).register(middie);
+  await fastify.register(middie);
   fastify.use(assetsMiddleware);
   await fastify.register(routesSubsystem).register(websocketSubsystem);
   fastify.use(kitMiddleware).use(prerenderedMiddleware);
