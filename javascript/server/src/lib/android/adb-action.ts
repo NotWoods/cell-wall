@@ -1,4 +1,5 @@
 import type { ADB } from 'appium-adb';
+import { escapeShellArg } from 'appium-adb/lib/helpers';
 
 /**
  * Checks if an Android device is on.
@@ -36,7 +37,7 @@ export async function startIntent(adb: ADB, options: StartIntentOptions): Promis
 		args.push('-a', options.action);
 	}
 	if (options.dataUri) {
-		args.push('-d', options.dataUri.toString());
+		args.push('-d', escapeShellArg(options.dataUri.toString()));
 	}
 	if (options.mimeType) {
 		args.push('-t', options.mimeType);
