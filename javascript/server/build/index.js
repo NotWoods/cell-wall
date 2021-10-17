@@ -1,4 +1,6 @@
 var __defProp = Object.defineProperty;
+var __defProps = Object.defineProperties;
+var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
 var __getOwnPropSymbols = Object.getOwnPropertySymbols;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
 var __propIsEnum = Object.prototype.propertyIsEnumerable;
@@ -14,6 +16,7 @@ var __spreadValues = (a, b) => {
     }
   return a;
 };
+var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
 var __markAsModule = (target) => __defProp(target, "__esModule", { value: true });
 var __objRest = (source, exclude) => {
   var target = {};
@@ -36,7 +39,34 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
-// ../../node_modules/.pnpm/svelte@3.43.2/node_modules/svelte/internal/index.mjs
+// src/lib/env.ts
+import { config } from "dotenv";
+function formatURL(address, port = "3000") {
+  let portN = Number(port);
+  if (Number.isNaN(portN)) {
+    portN = 3e3;
+  }
+  let host = address.startsWith("http") ? `http://${address}` : address;
+  host += `:${port}`;
+  return { base: new URL(host), port: portN };
+}
+var VERSION, formatted, SERVER_ADDRESS, PORT, PACKAGE_NAME, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GITHUB_TOKEN, DATABASE_FILENAME;
+var init_env = __esm({
+  "src/lib/env.ts"() {
+    config();
+    VERSION = "4.0.0";
+    formatted = formatURL(process.env["SERVER_ADDRESS"], process.env["PORT"]);
+    SERVER_ADDRESS = formatted.base;
+    PORT = formatted.port;
+    PACKAGE_NAME = "com.tigeroakes.cellwall.client";
+    GOOGLE_CLIENT_ID = process.env["GOOGLE_CLIENT_ID"];
+    GOOGLE_CLIENT_SECRET = process.env["GOOGLE_CLIENT_SECRET"];
+    GITHUB_TOKEN = process.env["GITHUB_TOKEN"];
+    DATABASE_FILENAME = process.env["DATABASE_FILENAME"];
+  }
+});
+
+// ../../node_modules/.pnpm/svelte@3.44.0/node_modules/svelte/internal/index.mjs
 function noop() {
 }
 function run(fn) {
@@ -77,7 +107,7 @@ function destroy_component(component, detaching) {
 }
 var tasks, active_docs, resolved_promise, seen_callbacks, outroing, globals, boolean_attributes, SvelteElement;
 var init_internal = __esm({
-  "../../node_modules/.pnpm/svelte@3.43.2/node_modules/svelte/internal/index.mjs"() {
+  "../../node_modules/.pnpm/svelte@3.44.0/node_modules/svelte/internal/index.mjs"() {
     tasks = new Set();
     active_docs = new Set();
     resolved_promise = Promise.resolve();
@@ -154,7 +184,7 @@ var init_internal = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/svelte@3.43.2/node_modules/svelte/store/index.mjs
+// ../../node_modules/.pnpm/svelte@3.44.0/node_modules/svelte/store/index.mjs
 function readable(value, start) {
   return {
     subscribe: writable(value, start).subscribe
@@ -241,7 +271,7 @@ function derived(stores, fn, initial_value) {
 }
 var subscriber_queue;
 var init_store = __esm({
-  "../../node_modules/.pnpm/svelte@3.43.2/node_modules/svelte/store/index.mjs"() {
+  "../../node_modules/.pnpm/svelte@3.44.0/node_modules/svelte/store/index.mjs"() {
     init_internal();
     init_internal();
     subscriber_queue = [];
@@ -268,6 +298,7 @@ var init_transform = __esm({
 });
 
 // src/lib/android/adb-action.ts
+import { escapeShellArg } from "appium-adb/lib/helpers";
 async function checkIfOn(adb, cmdOutput = void 0) {
   const stdout = cmdOutput || await adb.shell(["dumpsys", "power"]);
   const wakefulness = /mWakefulness=(\w+)/.exec(stdout)?.[1];
@@ -283,7 +314,7 @@ async function startIntent(adb, options) {
     args.push("-a", options.action);
   }
   if (options.dataUri) {
-    args.push("-d", options.dataUri.toString());
+    args.push("-d", escapeShellArg(options.dataUri.toString()));
   }
   if (options.mimeType) {
     args.push("-t", options.mimeType);
@@ -348,6 +379,7 @@ var DeviceManager;
 var init_device_manager = __esm({
   "src/lib/android/device-manager.ts"() {
     init_store();
+    init_env();
     init_transform();
     init_adb_action();
     DeviceManager = class {
@@ -412,6 +444,12 @@ var init_device_manager = __esm({
       async startIntent(serial, options) {
         return this.run(serial, async (adb) => {
           await startIntent(adb, options);
+          return true;
+        });
+      }
+      async connectPort(serial, devicePort) {
+        return this.run(serial, async (adb) => {
+          await adb.reversePort(devicePort, PORT);
           return true;
         });
       }
@@ -574,6 +612,16 @@ var init_manager = __esm({
       register(serial, info) {
         this._info.update((map) => new Map(map).set(serial, info));
       }
+      registerServer(serial, server) {
+        this._info.update((map) => {
+          const info = map.get(serial);
+          if (info) {
+            return new Map(map).set(serial, __spreadProps(__spreadValues({}, info), { server }));
+          } else {
+            return map;
+          }
+        });
+      }
       setState(serial, state) {
         this._state.update((map) => new Map(map).set(serial, state));
       }
@@ -636,7 +684,7 @@ var init_schema = __esm({
 function blankState() {
   return { type: CellStateType.BLANK };
 }
-function toUri(state, base) {
+function toUri(state, base = SERVER_ADDRESS) {
   const _a = state, { type } = _a, props = __objRest(_a, ["type"]);
   switch (type.toUpperCase()) {
     case CellStateType.WEB: {
@@ -659,6 +707,7 @@ function toUri(state, base) {
 var CellStateType;
 var init_state = __esm({
   "src/lib/cells/state.ts"() {
+    init_env();
     (function(CellStateType2) {
       CellStateType2["BLANK"] = "BLANK";
       CellStateType2["CONFIGURE"] = "CONFIGURE";
@@ -676,22 +725,6 @@ var init_cells = __esm({
     init_manager();
     init_schema();
     init_state();
-  }
-});
-
-// src/lib/env.ts
-import { config } from "dotenv";
-var VERSION, SERVER_ADDRESS, PACKAGE_NAME, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GITHUB_TOKEN, DATABASE_FILENAME;
-var init_env = __esm({
-  "src/lib/env.ts"() {
-    config();
-    VERSION = "4.0.0";
-    SERVER_ADDRESS = process.env["SERVER_ADDRESS"];
-    PACKAGE_NAME = "com.tigeroakes.cellwall.client";
-    GOOGLE_CLIENT_ID = process.env["GOOGLE_CLIENT_ID"];
-    GOOGLE_CLIENT_SECRET = process.env["GOOGLE_CLIENT_SECRET"];
-    GITHUB_TOKEN = process.env["GITHUB_TOKEN"];
-    DATABASE_FILENAME = process.env["DATABASE_FILENAME"];
   }
 });
 
@@ -1084,6 +1117,18 @@ ${googleClient.authorizeUrl}
         return await deviceManager.installApkToAll(apkPath, PACKAGE_NAME);
       } else {
         return new Map();
+      }
+    },
+    async connectDevicePort(serial, port) {
+      const deviceManager2 = await deviceManagerPromise;
+      if (await deviceManager2.connectPort(serial, port)) {
+        const cellManager2 = await cellManagerPromise;
+        cellManager2.registerServer(serial, `http://localhost:${port}`);
+        const db = await dbPromise;
+        await cellManager2.writeInfo(db);
+        return true;
+      } else {
+        return false;
       }
     },
     googleApi,
@@ -1756,9 +1801,9 @@ var init_oauth2callback = __esm({
 });
 
 // src/index.ts
+init_env();
 import Fastify from "fastify";
 import middie from "middie";
-import mimimist from "minimist";
 import { assetsMiddleware, kitMiddleware, prerenderedMiddleware } from "@cell-wall/client";
 
 // src/parser/urlencoded.ts
@@ -1797,25 +1842,21 @@ async function websocketSubsystem(fastify, options) {
 }
 
 // src/index.ts
-async function main(options) {
+async function main() {
   const fastify = Fastify({
-    logger: true,
+    logger: {
+      prettyPrint: true
+    },
     trustProxy: true
   });
   await fastify.register(middie);
   fastify.use(assetsMiddleware);
   await fastify.register(routesSubsystem).register(websocketSubsystem);
   fastify.use(kitMiddleware).use(prerenderedMiddleware);
-  const address = await fastify.listen(options.port ?? 3e3, options.address ?? "0.0.0.0");
+  const address = await fastify.listen(PORT, "0.0.0.0");
   console.log(`Listening on ${address}`);
 }
-var argv = mimimist(process.argv.slice(2), {
-  alias: {
-    a: "address",
-    p: "port"
-  }
-});
-main(argv).catch((err) => {
+main().catch((err) => {
   console.error("error starting server", err);
   process.exit(1);
 });
