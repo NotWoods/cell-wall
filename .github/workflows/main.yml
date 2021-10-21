@@ -27,11 +27,8 @@ jobs:
       # - run: ./gradlew testDebugUnitTest
       #   working-directory: ./android
 
-  server:
+  javscript:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./server
 
     steps:
       - uses: actions/checkout@v2
