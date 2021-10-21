@@ -7,3 +7,12 @@ scripts:
   start: node javascript/server/build/index.js
   lint: prettier --check .prettierrc *.yaml *.md
   format: prettier --write .prettierrc *.yaml *.md
+devDependencies:
+  prettier: '~2.4.1'
+engines:
+  node: '>=16.10.0'
+  pnpm: '>=6.16.0'
+pnpm:
+  overrides:
+    prettier: '~2.4.1'
+    typescript: '^4.4.4'
