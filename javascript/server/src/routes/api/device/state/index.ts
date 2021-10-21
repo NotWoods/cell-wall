@@ -4,6 +4,7 @@ import type { CellState } from '../../../../lib/cells';
 import { blankState } from '../../../../lib/cells';
 import { transformMap } from '../../../../lib/map/transform';
 import { repo } from '../../../../lib/repository';
+import { asCellState } from './_body';
 
 export default async function (fastify: FastifyInstance): Promise<void> {
 	fastify.route<{
@@ -24,7 +25,7 @@ export default async function (fastify: FastifyInstance): Promise<void> {
 	});
 
 	fastify.route<{
-		Body: Record<string, CellState>;
+		Body: CellState | Record<string, CellState>;
 		Reply: readonly string[];
 	}>({
 		method: 'POST',
@@ -33,7 +34,15 @@ export default async function (fastify: FastifyInstance): Promise<void> {
 		 * Set state for multiple cells
 		 */
 		async handler(request, reply) {
-			await repo.setStates(request.body);
+			const singleState = asCellState(request.body);
+			let states: Record<string, CellState> | Map<string, CellState>;
+			if (singleState) {
+				states = transformMap(getState(repo.cellData), () => singleState);
+			} else {
+				states = request.body as Record<string, CellState>;
+			}
+
+			await repo.setStates(states);
 
 			reply.send(Object.keys(request.body));
 		}
