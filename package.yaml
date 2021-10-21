@@ -5,8 +5,8 @@ scripts:
   build: >-
     pnpm run build --filter @cell-wall/client && pnpm run build --filter @cell-wall/server
   start: node javascript/server/build/index.js
-  lint: prettier --check .prettierrc *.yaml *.md
-  format: prettier --write .prettierrc *.yaml *.md
+  lint: prettier --check .prettierrc {package,pnpm-workspace}.yaml *.md .github/**/*.yml
+  format: prettier --write .prettierrc {package,pnpm-workspace}.yaml *.md .github/**/*.yml
 devDependencies:
   prettier: '~2.4.1'
 engines:
