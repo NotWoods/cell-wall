@@ -1,5 +1,5 @@
 import type { ADB } from 'appium-adb';
-import { escapeShellArg } from 'appium-adb/lib/helpers';
+import { escapeShellArg } from 'appium-adb/build/lib/helpers.js';
 
 /**
  * Checks if an Android device is on.

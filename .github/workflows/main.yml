@@ -51,15 +51,3 @@ jobs:
 
       # Build production code
       - run: pnpm run build -w
-
-      # Publish the code
-      - name: deploy to branch
-        uses: peaceiris/actions-gh-pages@v3
-        if: ${{ github.event_name == 'push' }}
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: .
-          exclude_assets: 'android,.github,.vscode,images,scripts,javascript/client/static,javascript/types-appium-adb,**/node_modules,**/src,**/.svelte-kit,**/*.cjs,**/.prettierignore,**/svelte.config.js,**/jest.config.cjs'
-          publish_branch: pi-deploy
-          user_name: 'github-actions[bot]'
-          user_email: 'github-actions[bot]@users.noreply.github.com'
