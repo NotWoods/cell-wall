@@ -2,13 +2,13 @@ import { config } from 'dotenv';
 
 config();
 
-function formatURL(address: string, port = '3000') {
+function formatURL(address = '0.0.0.0', port = '3000') {
 	let portN = Number(port);
 	if (Number.isNaN(portN)) {
 		portN = 3000;
 	}
 
-	let host = address.startsWith('http') ? `http://${address}` : address;
+	let host = address.startsWith('http') ? address : `http://${address}`;
 	host += `:${port}`;
 
 	return { base: new URL(host), port: portN };
