@@ -1,0 +1,50 @@
+{
+	"name": "@cell-wall/server",
+	"version": "4.0.0",
+	"type": "module",
+	"exports": "./build/index.js",
+	"module": "./build/index.js",
+	"scripts": {
+		"build": "node esbuild.config.js",
+		"preview": "node build/index.js",
+		"check": "tsc --project .",
+		"check:watch": "tsc --project . --watch",
+		"lint": "prettier --check . && eslint --ignore-path .prettierignore .",
+		"format": "prettier --write .",
+		"test": "jest"
+	},
+	"dependencies": {
+		"@cell-wall/client": "workspace:*",
+		"@js-temporal/polyfill": "^0.2.0",
+		"@octokit/core": "^3.5.1",
+		"@types/minimist": "^1.2.2",
+		"appium-adb": "^8.16.2",
+		"dotenv": "^10.0.0",
+		"fastify": "^3.22.1",
+		"fastify-websocket": "^4.0.0",
+		"googleapis": "^89.0.0",
+		"jimp": "^0.16.1",
+		"lowdb": "^3.0.0",
+		"middie": "^5.3.0",
+		"node-fetch": "^3.0.0",
+		"pino-pretty": "^7.1.0"
+	},
+	"devDependencies": {
+		"@jest/globals": "^27.3.1",
+		"@types/appium-adb": "workspace:*",
+		"@types/node": "^16.11.2",
+		"@types/semver": "^7.3.9",
+		"@types/teen_process": "^1.16.0",
+		"@typescript-eslint/eslint-plugin": "^5.1.0",
+		"@typescript-eslint/parser": "^5.1.0",
+		"esbuild": "^0.13.8",
+		"esbuild-jest": "^0.5.0",
+		"eslint": "^8.0.1",
+		"eslint-config-prettier": "^8.3.0",
+		"jest": "^27.3.1",
+		"prettier": "~2.4.1",
+		"svelte": "^3.44.0",
+		"tslib": "^2.3.1",
+		"typescript": "^4.4.4"
+	}
+}
