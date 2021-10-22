@@ -12,7 +12,8 @@
 		"check": "svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-check --tsconfig ./tsconfig.json --watch",
 		"lint": "prettier --check --plugin-search-dir=. . && eslint --ignore-path .prettierignore .",
-		"format": "prettier --write --plugin-search-dir=. ."
+		"format": "prettier --write --plugin-search-dir=. .",
+		"test": "jest"
 	},
 	"dependencies": {
 		"@js-temporal/polyfill": "^0.2.0",
@@ -23,8 +24,11 @@
 		"@jest/globals": "^27.3.1",
 		"@sveltejs/adapter-node": "next",
 		"@sveltejs/kit": "next",
+		"@testing-library/jest-dom": "^5.14.1",
+		"@testing-library/svelte": "^3.0.3",
 		"@types/lodash.startcase": "^4.4.6",
 		"@types/node": "^16.11.2",
+		"@types/testing-library__jest-dom": "^5.14.1",
 		"@types/ws": "^8.2.0",
 		"@typescript-eslint/eslint-plugin": "^5.1.0",
 		"@typescript-eslint/parser": "^5.1.0",
@@ -39,6 +43,7 @@
 		"prettier-plugin-svelte": "^2.4.0",
 		"svelte": "^3.44.0",
 		"svelte-check": "^2.2.7",
+		"svelte-jester": "^2.1.5",
 		"svelte-preprocess": "^4.9.8",
 		"tslib": "^2.3.1",
 		"typescript": "^4.4.4"
