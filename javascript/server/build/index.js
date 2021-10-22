@@ -298,7 +298,7 @@ var init_transform = __esm({
 });
 
 // src/lib/android/adb-action.ts
-import { escapeShellArg } from "appium-adb/lib/helpers.js";
+import { escapeShellArg } from "appium-adb/build/lib/helpers.js";
 async function checkIfOn(adb, cmdOutput = void 0) {
   const stdout = cmdOutput || await adb.shell(["dumpsys", "power"]);
   const wakefulness = /mWakefulness=(\w+)/.exec(stdout)?.[1];
