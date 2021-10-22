@@ -1,0 +1,46 @@
+{
+	"name": "@cell-wall/client",
+	"version": "4.0.0",
+	"type": "module",
+	"types": "index.d.ts",
+	"exports": "./build/middlewares.js",
+	"module": "./build/middlewares.js",
+	"scripts": {
+		"dev": "svelte-kit dev --port 3001",
+		"build": "svelte-kit build",
+		"preview": "svelte-kit preview",
+		"check": "svelte-check --tsconfig ./tsconfig.json",
+		"check:watch": "svelte-check --tsconfig ./tsconfig.json --watch",
+		"lint": "prettier --check --plugin-search-dir=. . && eslint --ignore-path .prettierignore .",
+		"format": "prettier --write --plugin-search-dir=. ."
+	},
+	"dependencies": {
+		"@js-temporal/polyfill": "^0.2.0",
+		"@types/connect": "^3.4.35",
+		"dotenv": "^10.0.0"
+	},
+	"devDependencies": {
+		"@jest/globals": "^27.3.1",
+		"@sveltejs/adapter-node": "next",
+		"@sveltejs/kit": "next",
+		"@types/lodash.startcase": "^4.4.6",
+		"@types/node": "^16.11.2",
+		"@types/ws": "^8.2.0",
+		"@typescript-eslint/eslint-plugin": "^5.1.0",
+		"@typescript-eslint/parser": "^5.1.0",
+		"esbuild-jest": "^0.5.0",
+		"eslint": "^8.0.1",
+		"eslint-config-prettier": "^8.3.0",
+		"eslint-plugin-svelte3": "^3.2.1",
+		"googleapis": "^89.0.0",
+		"jest": "^27.3.1",
+		"lodash.startcase": "^4.4.0",
+		"prettier": "~2.4.1",
+		"prettier-plugin-svelte": "^2.4.0",
+		"svelte": "^3.44.0",
+		"svelte-check": "^2.2.7",
+		"svelte-preprocess": "^4.9.8",
+		"tslib": "^2.3.1",
+		"typescript": "^4.4.4"
+	}
+}
