@@ -359,14 +359,27 @@ async function startIntent(adb, options) {
   try {
     res = await adb.shell(args);
   } catch (err) {
-    throw new Error(`Error attempting to start intent. Original error: ${err}`);
+    throw new StartIntentError(`Error attempting to start intent. Original error: ${err}`);
   }
   if (res.toLowerCase().includes("unable to resolve intent")) {
-    throw new Error(res);
+    throw new UnresolvedIntentError(res);
   }
 }
+var StartIntentError, UnresolvedIntentError;
 var init_adb_action = __esm({
   "src/lib/android/adb-action.ts"() {
+    StartIntentError = class extends Error {
+      constructor() {
+        super(...arguments);
+        this.name = "StartIntentError";
+      }
+    };
+    UnresolvedIntentError = class extends Error {
+      constructor() {
+        super(...arguments);
+        this.name = "UnresolvedIntentError";
+      }
+    };
   }
 });
 
@@ -443,8 +456,13 @@ var init_device_manager = __esm({
       }
       async startIntent(serial, options) {
         return this.run(serial, async (adb) => {
-          await startIntent(adb, options);
-          return true;
+          try {
+            await startIntent(adb, options);
+            return true;
+          } catch (err) {
+            console.warn(err);
+            return false;
+          }
         });
       }
       async connectPort(serial, devicePort) {
@@ -1249,8 +1267,12 @@ var init_image = __esm({
 });
 
 // src/parser/image.ts
-async function imagePlugin(fastify, options) {
-  const jimp = await (options.jimp ?? import("jimp").then((mod) => mod.default));
+async function defaultJimp() {
+  const module = await import("jimp");
+  return module.default;
+}
+async function imagePlugin(fastify, options = {}) {
+  const jimp = await (options.jimp ?? defaultJimp());
   async function contentParser(_request, body) {
     return await jimp.create(body);
   }
@@ -1283,7 +1305,7 @@ async function updateRemainingCells(remaining, behaviour) {
   }
 }
 async function image_default(fastify) {
-  await fastify.register(imagePlugin);
+  await imagePlugin(fastify);
   fastify.route({
     method: "POST",
     url: "/api/action/image/",
