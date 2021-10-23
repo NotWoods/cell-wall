@@ -5,7 +5,7 @@
 <script lang="ts">
 	import Form from '$lib/components/Form.svelte';
 	import { formDataAsSearchParams } from './_form';
-	import Field from './_Field.svelte';
+	import Field from '../../lib/components/_Field.svelte/Field.svelte';
 	import PresetCard from './_PresetCard.svelte';
 
 	async function submit(data: FormData, action: URL) {
