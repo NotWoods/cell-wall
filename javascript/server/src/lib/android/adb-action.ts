@@ -13,6 +13,14 @@ export async function checkIfOn(
 	return wakefulness === 'Awake';
 }
 
+export class StartIntentError extends Error {
+	name = 'StartIntentError';
+}
+
+export class UnresolvedIntentError extends Error {
+	name = 'UnresolvedIntentError';
+}
+
 export interface StartIntentOptions {
 	action?: string | undefined;
 	dataUri?: string | URL | undefined;
@@ -83,9 +91,9 @@ export async function startIntent(adb: ADB, options: StartIntentOptions): Promis
 	try {
 		res = await adb.shell(args);
 	} catch (err) {
-		throw new Error(`Error attempting to start intent. Original error: ${err}`);
+		throw new StartIntentError(`Error attempting to start intent. Original error: ${err}`);
 	}
 	if (res.toLowerCase().includes('unable to resolve intent')) {
-		throw new Error(res);
+		throw new UnresolvedIntentError(res);
 	}
 }

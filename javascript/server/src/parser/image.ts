@@ -9,14 +9,19 @@ export interface ImageParserOptions {
 
 const MB = 1048576;
 
+async function defaultJimp() {
+	const module = await import('jimp');
+	return module.default;
+}
+
 /**
  * Parse image bodies into Jimp images
  */
 export async function imagePlugin(
 	fastify: FastifyInstance,
-	options: ImageParserOptions
+	options: ImageParserOptions = {}
 ): Promise<void> {
-	const jimp: JimpInstance = await (options.jimp ?? import('jimp').then((mod) => mod.default));
+	const jimp: JimpInstance = await (options.jimp ?? defaultJimp());
 
 	async function contentParser(_request: FastifyRequest, body: Buffer) {
 		return await jimp.create(body);

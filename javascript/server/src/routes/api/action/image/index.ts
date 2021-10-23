@@ -33,7 +33,7 @@ interface ImageQuerystring extends ResizeOptions {
 }
 
 export default async function (fastify: FastifyInstance): Promise<void> {
-	await fastify.register(imagePlugin);
+	await imagePlugin(fastify);
 
 	fastify.route<{
 		Body: Jimp;

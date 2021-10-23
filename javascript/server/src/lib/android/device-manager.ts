@@ -103,8 +103,13 @@ export class DeviceManager {
 
 	async startIntent(serial: string, options: StartIntentOptions): Promise<boolean> {
 		return this.run(serial, async (adb) => {
-			await startIntent(adb, options);
-			return true;
+			try {
+				await startIntent(adb, options);
+				return true;
+			} catch (err) {
+				console.warn(err);
+				return false;
+			}
 		});
 	}
 
