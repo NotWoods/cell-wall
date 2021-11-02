@@ -12,7 +12,7 @@
 	import PowerButton from './custom/_PowerButton.svelte';
 	import TypeTab from './custom/_TypeTab.svelte';
 	import DeviceOption from './_DeviceOption.svelte';
-	import Field from '../../lib/components/_Field.svelte/Field.svelte';
+	import Field from '../../lib/components/Field.svelte';
 	import { post } from './_form';
 
 	export let devices: Props['devices'];

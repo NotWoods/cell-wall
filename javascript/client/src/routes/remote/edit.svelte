@@ -8,7 +8,7 @@
 	import Form from '$lib/components/Form.svelte';
 	import SubmitButton from '$lib/components/SubmitButton.svelte';
 	import PowerButton from './custom/_PowerButton.svelte';
-	import Field from '../../lib/components/_Field.svelte/Field.svelte';
+	import Field from '../../lib/components/Field.svelte';
 	import DeviceOption from './_DeviceOption.svelte';
 	import { formDataAsSearchParams } from './_form';
 
