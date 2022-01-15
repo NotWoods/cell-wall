@@ -3,10 +3,12 @@
 </script>
 
 <script lang="ts">
+	import Card from '$lib/components/Card.svelte';
 	import Form from '$lib/components/Form.svelte';
 	import { formDataAsSearchParams } from './_form';
 	import Field from '../../lib/components/Field.svelte';
 	import PresetCard from './_PresetCard.svelte';
+	import VerticalField from '$lib/components/Field/VerticalField.svelte';
 
 	async function submit(data: FormData, action: URL) {
 		const res = await fetch(action.toString(), {
@@ -21,50 +23,40 @@
 	}
 </script>
 
-<Form action="/api/device/preset" onSubmit={submit} let:loading>
-	{#await loading}
-		<progress class="progress is-small is-primary" max="100">Loading</progress>
-	{:then res}
-		<progress class="progress is-small is-primary" value={res != undefined ? '100' : '0'} max="100"
-			>Done</progress
-		>
-	{:catch _}
-		<progress class="progress is-small is-danger" value="100" max="100">Error</progress>
-	{/await}
+<Form
+	class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"
+	action="/api/device/preset"
+	onSubmit={submit}
+	let:status
+>
+	<Card class="row-span-2">
+		<h2 class="text-3xl mb-4">Presets</h2>
+		<VerticalField label="Remaining cells" for="control-rest" let:inputClassName>
+			<select id="control-rest" name="rest" class={inputClassName}>
+				<option value="ignore">Ignore</option>
+				<option value="blank">Blank</option>
+				<option value="off">Off</option>
+			</select>
+		</VerticalField>
+		<img
+			class="block mt-4 shadow-inner rounded"
+			alt=""
+			src="https://raw.githubusercontent.com/NotWoods/cell-wall/main/images/finished.jpg"
+		/>
+	</Card>
 
-	<div class="tile is-ancestor">
-		<div class="tile is-parent is-vertical">
-			<PresetCard title="Info" preset="info" large>
-				Calendar indicators and the week's weather.
-			</PresetCard>
-			<PresetCard title="Tea list" preset="tea" large>What's avaliable to drink?</PresetCard>
-			<PresetCard title="Install Android update" button="Install" formAction="/api/action/install">
-				<Field label="Tag" htmlFor="control-tag" narrow>
-					<input id="control-tag" class="input" name="tag" type="text" placeholder="Latest" />
-				</Field>
-			</PresetCard>
-		</div>
-		<div class="tile is-parent">
-			<article class="tile is-child notification">
-				<figure class="image">
-					<img
-						alt=""
-						src="https://raw.githubusercontent.com/NotWoods/cell-wall/main/images/finished.jpg"
-					/>
-				</figure>
-				<div class="field">
-					<label class="label" for="control-rest">Remaining cells</label>
-					<div class="control">
-						<div class="select">
-							<select id="control-rest" name="rest">
-								<option value="ignore">Ignore</option>
-								<option value="blank">Blank</option>
-								<option value="off">Off</option>
-							</select>
-						</div>
-					</div>
-				</div>
-			</article>
-		</div>
-	</div>
+	<PresetCard title="Info" preset="info" large {status}>
+		Calendar indicators and the week's weather.
+	</PresetCard>
+	<PresetCard title="Tea list" preset="tea" large {status}>What's avaliable to drink?</PresetCard>
+	<PresetCard
+		title="Install Android update"
+		button="Install"
+		formAction="/api/action/install"
+		{status}
+	>
+		<VerticalField label="Tag" for="control-tag" let:inputClassName>
+			<input class={inputClassName} id="control-tag" name="tag" type="text" placeholder="Latest" />
+		</VerticalField>
+	</PresetCard>
 </Form>

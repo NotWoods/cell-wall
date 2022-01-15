@@ -1,9 +1,24 @@
+<script lang="ts" context="module">
+	export interface FormSubmitStatus {
+		loading: Promise<void>;
+		submitterName: string;
+		submitterValue: string;
+	}
+</script>
+
 <script lang="ts">
+	let className = '';
+	export { className as class };
+
 	export let action: string;
 	export let onSubmit: (formData: FormData, action: URL) => Promise<void>;
 
 	let form: HTMLFormElement;
-	let loading: Promise<void> = Promise.resolve();
+	let status: FormSubmitStatus = {
+		loading: Promise.resolve(),
+		submitterName: '',
+		submitterValue: ''
+	};
 
 	function handleSubmit(evt: Event) {
 		const event = evt as SubmitEvent;
@@ -17,10 +32,20 @@
 				action = submitter.formAction;
 			}
 		}
-		loading = onSubmit(formData, new URL(action));
+		status = {
+			loading: onSubmit(formData, new URL(action)),
+			submitterName: submitter?.name ?? '',
+			submitterValue: submitter?.value ?? ''
+		};
 	}
 </script>
 
-<form method="post" {action} on:submit|preventDefault={handleSubmit} bind:this={form}>
-	<slot {loading} />
+<form
+	class={className}
+	method="post"
+	{action}
+	on:submit|preventDefault={handleSubmit}
+	bind:this={form}
+>
+	<slot {status} />
 </form>

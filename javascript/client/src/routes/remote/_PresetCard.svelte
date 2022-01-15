@@ -1,37 +1,33 @@
 <script lang="ts">
+	import Card from '$lib/components/Card.svelte';
+	import type { FormSubmitStatus } from '$lib/components/Form.svelte';
+	import SubmitButton from '$lib/components/SubmitButton.svelte';
+
 	export let title: string;
-	export let large = false;
 	export let preset: string | undefined = undefined;
 	export let formAction: string | undefined = undefined;
+	export let large = false;
 	export let button = 'Activate';
+
+	export let status: FormSubmitStatus;
+	$: selfStatus =
+		status.submitterName === 'preset' && status.submitterValue === preset
+			? status.loading
+			: Promise.resolve();
 </script>
 
-<article class="tile card is-child">
-	<header class="card-header">
-		<h3 class="card-header-title" class:title={large}>{title}</h3>
-	</header>
-	<div class="card-content">
+<Card class="flex flex-col gap-y-4">
+	<h3 class:text-2xl={large} class:text-xl={!large}>{title}</h3>
+	<div class="">
 		<slot />
 	</div>
-	<footer class="card-footer">
-		<button
-			type="submit"
-			name="preset"
-			value={preset}
-			formaction={formAction}
-			class="card-footer-item"
-		>
-			{button}
-		</button>
-	</footer>
-</article>
-
-<style>
-	button.card-footer-item {
-		background: none;
-		border: 0;
-		font: inherit;
-		color: inherit;
-		cursor: pointer;
-	}
-</style>
+	<SubmitButton
+		class="mt-auto self-end"
+		loading={selfStatus}
+		name="preset"
+		value={preset}
+		formaction={formAction}
+	>
+		{button}
+	</SubmitButton>
+</Card>
