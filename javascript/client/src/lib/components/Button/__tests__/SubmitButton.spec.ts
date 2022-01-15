@@ -2,8 +2,7 @@ import '@testing-library/jest-dom';
 import { describe, it } from '@jest/globals';
 import { render, act } from '@testing-library/svelte';
 
-import SubmitButton from '../Button/SubmitButton.svelte';
-
+import SubmitButton from '../SubmitButton.svelte';
 class Deferred<T> implements PromiseLike<T> {
 	private promise: Promise<T>;
 	resolve!: (value: T | PromiseLike<T>) => void;
@@ -30,7 +29,7 @@ describe('SubmitButton', () => {
 		const { getByRole } = render(SubmitButton, { loading });
 		await act();
 
-		expect(getByRole('button')).toHaveClass('is-primary');
+		expect(getByRole('button')).toHaveClass('hover:bg-green-600');
 		expect(getByRole('button')).toHaveTextContent('Submit');
 	});
 
@@ -39,12 +38,12 @@ describe('SubmitButton', () => {
 		const { getByRole } = render(SubmitButton, { loading });
 		await act();
 
-		expect(getByRole('button')).toHaveClass('is-loading');
+		expect(getByRole('button')).toHaveClass('bg-green-500');
 		expect(getByRole('button')).toHaveTextContent('Loading');
 
 		await act(() => loading.resolve());
 
-		expect(getByRole('button')).not.toHaveClass('is-loading');
+		expect(getByRole('button')).not.toHaveTextContent('Loading');
 	});
 
 	it('shows danger status when promise is rejected', async () => {
@@ -52,7 +51,7 @@ describe('SubmitButton', () => {
 		const { getByRole } = render(SubmitButton, { loading });
 		await act();
 
-		expect(getByRole('button')).toHaveClass('is-danger');
+		expect(getByRole('button')).toHaveClass('bg-red-500');
 		expect(getByRole('button')).toHaveTextContent('Submit');
 
 		// await so we don't have an unhandled rejection
