@@ -51,7 +51,7 @@
 		</select>
 	</HorizontalField>
 
-	<HorizontalField for="control-connected" label="Connected" let:inputClassName>
+	<HorizontalField for="control-connected" label="Connected">
 		<input
 			type="checkbox"
 			id="control-connected"

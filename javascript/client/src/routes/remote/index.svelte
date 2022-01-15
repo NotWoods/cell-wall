@@ -6,7 +6,6 @@
 	import Card from '$lib/components/Card.svelte';
 	import Form from '$lib/components/Form.svelte';
 	import { formDataAsSearchParams } from './_form';
-	import Field from '../../lib/components/Field.svelte';
 	import PresetCard from './_PresetCard.svelte';
 	import VerticalField from '$lib/components/Field/VerticalField.svelte';
 

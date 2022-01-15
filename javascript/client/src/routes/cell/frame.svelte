@@ -10,8 +10,8 @@
 		(json) => JSON.parse(json) as Record<string, CellData>
 	);
 
-	export const load: Load = async ({ page }) => {
-		const id = page.query.get('id');
+	export const load: Load = async ({ url }) => {
+		const id = url.searchParams.get('id');
 		if (!id) {
 			return {
 				status: 400,

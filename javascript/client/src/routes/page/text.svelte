@@ -6,8 +6,8 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 
-	$: text = $page.query.get('text') || 'CellWall';
-	$: backgroundColor = $page.query.get('backgroundColor') || '#429A46';
+	$: text = $page.url.searchParams.get('text') || 'CellWall';
+	$: backgroundColor = $page.url.searchParams.get('backgroundColor') || '#429A46';
 </script>
 
 <main style="background: {backgroundColor};">

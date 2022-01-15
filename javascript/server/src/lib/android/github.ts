@@ -3,8 +3,14 @@ import type { OctokitOptions } from '@octokit/core/dist-types/types';
 import { createWriteStream, promises as fs } from 'fs';
 import { tmpdir } from 'os';
 import { join } from 'path';
-import { promises as stream } from 'stream';
+import { pipeline } from 'stream/promises';
 import { memo } from '../memo';
+
+declare global {
+	interface ReadableStream<R> {
+		[Symbol.asyncIterator](): AsyncIterator<R>;
+	}
+}
 
 const buildTempDir = memo(() => fs.mkdtemp(join(tmpdir(), 'apk-')));
 
@@ -47,7 +53,7 @@ export class GithubApi {
 			const tmpDirPath = await tmpDirReady;
 			const destPath = join(tmpDirPath, asset.name);
 
-			await stream.pipeline(res.body!, createWriteStream(destPath));
+			await pipeline(res.body!, createWriteStream(destPath));
 			return destPath;
 		} else {
 			throw new Error(`Could not find APK attached to release ${release.tag_name}`);

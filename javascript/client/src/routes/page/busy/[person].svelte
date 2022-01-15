@@ -34,8 +34,8 @@
 		return person in people;
 	}
 
-	export const load: Load = async ({ page }) => {
-		const { person } = page.params;
+	export const load: Load = async ({ params }) => {
+		const { person } = params;
 
 		if (!isPerson(person)) {
 			return {

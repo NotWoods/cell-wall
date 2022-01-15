@@ -1,4 +1,5 @@
 <script lang="ts">
+	import NavigationProgress from '$lib/components/NavigationProgress.svelte';
 	import TopBar from '$lib/components/TopBar/TopBar.svelte';
 </script>
 
@@ -7,6 +8,7 @@
 	<link rel="manifest" href="/manifest.webmanifest" />
 </svelte:head>
 
+<NavigationProgress />
 <TopBar />
 
 <div
