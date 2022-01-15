@@ -78,7 +78,7 @@ class WebViewModel(application: Application): AndroidViewModel(application), Gec
     callback: GeckoSession.PermissionDelegate.MediaCallback
   ) {
     // Reject permission if Android permission has been previously denied.
-    if (audio != null && checkSelfPermission(Manifest.permission.RECORD_AUDIO)) {
+    if (audio != null && !permissionGranted(Manifest.permission.RECORD_AUDIO)) {
       callback.reject()
     } else {
       // Auto grant first microphone
@@ -86,7 +86,7 @@ class WebViewModel(application: Application): AndroidViewModel(application), Gec
     }
   }
 
-  private fun checkSelfPermission(permission: String): Boolean {
-    return ContextCompat.checkSelfPermission(getApplication<Application>(), permission) != PERMISSION_GRANTED
+  private fun permissionGranted(permission: String): Boolean {
+    return ContextCompat.checkSelfPermission(getApplication<Application>(), permission) == PERMISSION_GRANTED
   }
 }

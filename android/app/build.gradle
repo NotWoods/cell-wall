@@ -7,11 +7,11 @@ plugins {
 }
 
 android {
-  compileSdkVersion 30
+  compileSdkVersion 31
   defaultConfig {
     applicationId "com.tigeroakes.cellwall.client"
     minSdkVersion 19
-    targetSdkVersion 30
+    targetSdkVersion 31
     versionCode 5
     versionName "4.0.0"
     testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -41,6 +41,7 @@ android {
   lintOptions {
     checkDependencies true
   }
+  namespace 'com.tigeroakes.cellwall.client'
 }
 
 protobuf {
@@ -88,6 +89,7 @@ dependencies {
   testImplementation "androidx.test:runner:$runner_version"
   testImplementation "androidx.test.ext:junit-ktx:$junit_ktx_version"
 
+  androidTestImplementation "androidx.core:core-ktx:$core_version"
   androidTestImplementation "androidx.test:core-ktx:$core_test_version"
   androidTestImplementation "androidx.test:runner:$runner_version"
   androidTestImplementation "androidx.test:rules:1.4.0"
