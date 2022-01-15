@@ -6,11 +6,10 @@
 
 <script lang="ts">
 	import Form from '$lib/components/Form.svelte';
-	import SubmitButton from '$lib/components/Button/SubmitButton.svelte';
 	import DeviceOption from './_DeviceOption.svelte';
 	import HorizontalField from '$lib/components/Field/HorizontalField.svelte';
 	import FileInput from '$lib/components/Field/FileInput.svelte';
-	import Button from '$lib/components/Button/Button.svelte';
+	import ResetSubmit from './_ResetSubmit.svelte';
 
 	export let devices: Props['devices'];
 
@@ -97,8 +96,5 @@
 		</select>
 	</HorizontalField>
 
-	<div class="mt-6 ml-auto">
-		<Button type="reset">Reset</Button>
-		<SubmitButton {loading} />
-	</div>
+	<ResetSubmit {loading} />
 </Form>

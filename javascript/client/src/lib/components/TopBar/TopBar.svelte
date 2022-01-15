@@ -13,6 +13,7 @@
 		</a>
 
 		<TopBarItem href="/remote/">Presets</TopBarItem>
+		<TopBarItem href="/remote/text">Text</TopBarItem>
 		<TopBarItem href="/remote/image">Image</TopBarItem>
 		<TopBarItem href="/remote/custom">Custom</TopBarItem>
 		<TopBarItem href="/remote/edit" class="ml-auto">Edit</TopBarItem>

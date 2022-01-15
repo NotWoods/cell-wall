@@ -6,11 +6,11 @@
 
 <script lang="ts">
 	import Form from '$lib/components/Form.svelte';
-	import SubmitButton from '$lib/components/Button/SubmitButton.svelte';
 	import PowerButtons from './custom/_PowerButtons.svelte';
 	import DeviceOption from './_DeviceOption.svelte';
 	import { formDataAsSearchParams } from './_form';
 	import HorizontalField from '$lib/components/Field/HorizontalField.svelte';
+	import ResetSubmit from './_ResetSubmit.svelte';
 
 	export let devices: Props['devices'];
 
@@ -131,7 +131,5 @@
 		/>
 	</HorizontalField>
 
-	<div class="field is-grouped is-grouped-right" style="margin-top: 3rem">
-		<SubmitButton {loading} />
-	</div>
+	<ResetSubmit {loading} />
 </Form>

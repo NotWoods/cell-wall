@@ -7,7 +7,6 @@
 
 <script lang="ts">
 	import Form from '$lib/components/Form.svelte';
-	import SubmitButton from '$lib/components/Button/SubmitButton.svelte';
 	import ControllerFields from './custom/_ControllerFields.svelte';
 	import PowerButtons from './custom/_PowerButtons.svelte';
 	import TypeTab from './custom/_TypeTab.svelte';
@@ -15,7 +14,7 @@
 	import { post } from './_form';
 	import Tabs from '$lib/components/Tabs/Tabs.svelte';
 	import HorizontalField from '$lib/components/Field/HorizontalField.svelte';
-	import Button from '$lib/components/Button/Button.svelte';
+	import ResetSubmit from './_ResetSubmit.svelte';
 
 	export let devices: Props['devices'];
 
@@ -69,8 +68,5 @@
 
 	<ControllerFields schema={activeSchema} />
 
-	<div class="mt-6 ml-auto">
-		<Button type="reset">Reset</Button>
-		<SubmitButton {loading} />
-	</div>
+	<ResetSubmit {loading} />
 </Form>
