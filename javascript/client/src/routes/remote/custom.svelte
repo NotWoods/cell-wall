@@ -26,10 +26,6 @@
 		(schema) => getTypeFromSchema(schema) === selectedType
 	);
 
-	function handleSelect(event: CustomEvent<string>) {
-		selectedType = event.detail;
-	}
-
 	async function submit(formData: FormData, action: URL) {
 		const data = Object.fromEntries(formData);
 
@@ -43,7 +39,7 @@
 <nav class="tabs is-centered">
 	<ul>
 		{#each allCellStateSchemas as schema (getTypeFromSchema(schema))}
-			<TypeTab selected={selectedType} {schema} on:click={handleSelect} />
+			<TypeTab bind:selectedType={selectedType} {schema} />
 		{/each}
 	</ul>
 </nav>

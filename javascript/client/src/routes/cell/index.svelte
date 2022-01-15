@@ -4,7 +4,7 @@
 	import SubmitButton from '$lib/components/SubmitButton.svelte';
 	import { post } from '../remote/_form';
 
-	let id: string = '';
+	let id = '';
 
 	async function submit(formData: FormData, action: URL) {
 		const data = Object.fromEntries(formData);
