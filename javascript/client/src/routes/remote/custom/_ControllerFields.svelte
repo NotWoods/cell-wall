@@ -2,6 +2,7 @@
 	import startCase from 'lodash.startcase';
 	import type { CellStateJsonSchema } from '$lib/cells/schema';
 	import Field from '../../../lib/components/Field.svelte';
+	import HorizontalField from '$lib/components/Field/HorizontalField.svelte';
 
 	function getInputType(
 		name: string,
@@ -41,17 +42,21 @@
 </script>
 
 {#each properties as { name, type, property } (name)}
-	<Field htmlFor="control-{name}" label={getInputName(name)} narrow={type === 'color'}>
+	<HorizontalField for="control-{name}" label={getInputName(name)} let:inputClassName>
 		{#if Array.isArray(property.enum)}
-			<div class="select">
-				<select id="control-{name}" {name}>
-					{#each property.enum as option}
-						<option value={option}>{option}</option>
-					{/each}
-				</select>
-			</div>
+			<select id="control-{name}" {name} class={inputClassName}>
+				{#each property.enum as option}
+					<option value={option}>{option}</option>
+				{/each}
+			</select>
 		{:else}
-			<input id="control-{name}" class="input" {name} {type} required={required.has(name)} />
+			<input
+				id="control-{name}"
+				class={type === 'color' ? '' : inputClassName}
+				{name}
+				{type}
+				required={required.has(name)}
+			/>
 		{/if}
-	</Field>
+	</HorizontalField>
 {/each}

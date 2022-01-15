@@ -14,7 +14,7 @@ export function createLoadWithDevices(): Load {
 					devices: Object.values(await res.json())
 				}
 			};
-		} else if (res.status === 404) {
+		} else if (res.status === 404 || res.status === 301) {
 			return {
 				props: {
 					devices: []

@@ -7,9 +7,6 @@
 </script>
 
 <script lang="ts">
-	let className = '';
-	export { className as class };
-
 	export let action: string;
 	export let onSubmit: (formData: FormData, action: URL) => Promise<void>;
 
@@ -41,11 +38,11 @@
 </script>
 
 <form
-	class={className}
+	{...$$restProps}
 	method="post"
 	{action}
 	on:submit|preventDefault={handleSubmit}
 	bind:this={form}
 >
-	<slot {status} />
+	<slot {status} loading={status.loading} />
 </form>

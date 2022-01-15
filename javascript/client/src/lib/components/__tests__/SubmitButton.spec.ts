@@ -2,7 +2,7 @@ import '@testing-library/jest-dom';
 import { describe, it } from '@jest/globals';
 import { render, act } from '@testing-library/svelte';
 
-import SubmitButton from '../SubmitButton.svelte';
+import SubmitButton from '../Button/SubmitButton.svelte';
 
 class Deferred<T> implements PromiseLike<T> {
 	private promise: Promise<T>;

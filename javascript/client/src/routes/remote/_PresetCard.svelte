@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Card from '$lib/components/Card.svelte';
 	import type { FormSubmitStatus } from '$lib/components/Form.svelte';
-	import SubmitButton from '$lib/components/SubmitButton.svelte';
+	import SubmitButton from '$lib/components/Button/SubmitButton.svelte';
 
 	export let title: string;
 	export let preset: string | undefined = undefined;

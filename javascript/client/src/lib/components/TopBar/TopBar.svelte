@@ -9,7 +9,7 @@
 		<!-- Logo -->
 		<a class="flex items-center" href="https://github.com/NotWoods/cell-wall">
 			<img class="block" src="/logo.png" alt="" width="28" height="28" />
-			<h1 class="hidden lg:block ml-2 text-xl">CellWall Remote</h1>
+			<h1 class="sr-only lg:not-sr-only ml-2 text-xl">CellWall Remote</h1>
 		</a>
 
 		<TopBarItem href="/remote/">Presets</TopBarItem>

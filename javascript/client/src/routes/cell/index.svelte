@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Form from '$lib/components/Form.svelte';
 	import Field from '$lib/components/Field.svelte';
-	import SubmitButton from '$lib/components/SubmitButton.svelte';
+	import SubmitButton from '$lib/components/Button/SubmitButton.svelte';
 	import { post } from '../remote/_form';
 
 	let id = '';

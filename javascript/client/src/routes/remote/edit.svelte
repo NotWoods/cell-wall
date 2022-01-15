@@ -6,11 +6,11 @@
 
 <script lang="ts">
 	import Form from '$lib/components/Form.svelte';
-	import SubmitButton from '$lib/components/SubmitButton.svelte';
-	import PowerButton from './custom/_PowerButton.svelte';
-	import Field from '../../lib/components/Field.svelte';
+	import SubmitButton from '$lib/components/Button/SubmitButton.svelte';
+	import PowerButtons from './custom/_PowerButtons.svelte';
 	import DeviceOption from './_DeviceOption.svelte';
 	import { formDataAsSearchParams } from './_form';
+	import HorizontalField from '$lib/components/Field/HorizontalField.svelte';
 
 	export let devices: Props['devices'];
 
@@ -32,18 +32,26 @@
 	}
 </script>
 
-<Form action="/api/device/{selectedDeviceSerial}" onSubmit={submit} let:loading>
-	<Field htmlFor="control-serial" label="Device">
-		<div class="select">
-			<select name="serial" bind:value={selectedDeviceSerial} id="control-serial">
-				{#each devices as device (device.serial)}
-					<DeviceOption {device} />
-				{/each}
-			</select>
-		</div>
-	</Field>
+<Form
+	class="flex flex-col gap-y-4"
+	action="/api/device/{selectedDeviceSerial}"
+	onSubmit={submit}
+	let:loading
+>
+	<HorizontalField for="control-serial" label="Device" let:inputClassName>
+		<select
+			class={inputClassName}
+			name="serial"
+			bind:value={selectedDeviceSerial}
+			id="control-serial"
+		>
+			{#each devices as device (device.serial)}
+				<DeviceOption {device} />
+			{/each}
+		</select>
+	</HorizontalField>
 
-	<Field htmlFor="control-connected" label="Connected">
+	<HorizontalField for="control-connected" label="Connected" let:inputClassName>
 		<input
 			type="checkbox"
 			id="control-connected"
@@ -51,77 +59,77 @@
 			disabled
 			checked={selectedCell?.connected ?? false}
 		/>
-	</Field>
+	</HorizontalField>
 
-	<div class="field is-horizontal">
-		<div class="field-label is-normal"><span class="label">Power</span></div>
-		<div class="field-body">
-			<div class="buttons has-addons">
-				<PowerButton serial={selectedDeviceSerial} value={false}>Off</PowerButton>
-				<PowerButton serial={selectedDeviceSerial} value={true}>On</PowerButton>
-			</div>
-		</div>
-	</div>
+	<HorizontalField label="Power">
+		<PowerButtons serial={selectedDeviceSerial} />
+	</HorizontalField>
 
-	<Field htmlFor="control-deviceName" label="Device Name">
+	<HorizontalField for="control-deviceName" label="Device Name" let:inputClassName>
 		<input
 			id="control-deviceName"
-			class="input"
+			class={inputClassName}
 			name="deviceName"
 			type="text"
 			value={selectedCell?.info?.deviceName ?? ''}
+			placeholder="Pixel 10"
 		/>
-	</Field>
+	</HorizontalField>
 
-	<Field htmlFor="control-width" label="Width">
+	<HorizontalField for="control-width" label="Width" let:inputClassName>
 		<input
 			id="control-width"
-			class="input"
+			class={inputClassName}
 			name="width"
 			type="number"
 			min={0}
 			value={selectedCell?.info?.width ?? ''}
+			placeholder="900"
 		/>
-	</Field>
-	<Field htmlFor="control-height" label="Height">
+	</HorizontalField>
+	<HorizontalField for="control-height" label="Height" let:inputClassName>
 		<input
 			id="control-height"
-			class="input"
+			class={inputClassName}
 			name="height"
 			type="number"
 			min={0}
 			value={selectedCell?.info?.height ?? ''}
+			placeholder="2100"
 		/>
-	</Field>
+	</HorizontalField>
 
-	<Field htmlFor="control-x" label="X Position">
+	<HorizontalField for="control-x" label="X Position" let:inputClassName>
 		<input
 			id="control-x"
-			class="input"
+			class={inputClassName}
 			name="x"
 			type="number"
 			value={selectedCell?.info?.x ?? ''}
+			placeholder="10"
 		/>
-	</Field>
-	<Field htmlFor="control-y" label="Y Position">
+	</HorizontalField>
+	<HorizontalField for="control-y" label="Y Position" let:inputClassName>
 		<input
 			id="control-y"
-			class="input"
+			class={inputClassName}
 			name="y"
 			type="number"
 			value={selectedCell?.info?.y ?? ''}
+			placeholder="0"
 		/>
-	</Field>
+	</HorizontalField>
 
-	<Field htmlFor="control-server" label="Asset Server">
+	<HorizontalField for="control-server" label="Asset Server" let:inputClassName>
 		<input
 			id="control-server"
-			class="input"
+			class={inputClassName}
 			name="server"
 			type="url"
 			value={selectedCell?.info?.server ?? ''}
+			placeholder="http://192.168.0.1"
 		/>
-	</Field>
+	</HorizontalField>
 
 	<div class="field is-grouped is-grouped-right" style="margin-top: 3rem">
 		<SubmitButton {loading} />

@@ -32,7 +32,7 @@
 	<Card class="row-span-2">
 		<h2 class="text-3xl mb-4">Presets</h2>
 		<VerticalField label="Remaining cells" for="control-rest" let:inputClassName>
-			<select id="control-rest" name="rest" class={inputClassName}>
+			<select id="control-rest" name="rest" class="{inputClassName} cursor-pointer">
 				<option value="ignore">Ignore</option>
 				<option value="blank">Blank</option>
 				<option value="off">Off</option>

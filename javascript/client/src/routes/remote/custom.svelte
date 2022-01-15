@@ -7,13 +7,15 @@
 
 <script lang="ts">
 	import Form from '$lib/components/Form.svelte';
-	import SubmitButton from '$lib/components/SubmitButton.svelte';
+	import SubmitButton from '$lib/components/Button/SubmitButton.svelte';
 	import ControllerFields from './custom/_ControllerFields.svelte';
-	import PowerButton from './custom/_PowerButton.svelte';
+	import PowerButtons from './custom/_PowerButtons.svelte';
 	import TypeTab from './custom/_TypeTab.svelte';
 	import DeviceOption from './_DeviceOption.svelte';
-	import Field from '../../lib/components/Field.svelte';
 	import { post } from './_form';
+	import Tabs from '$lib/components/Tabs/Tabs.svelte';
+	import HorizontalField from '$lib/components/Field/HorizontalField.svelte';
+	import Button from '$lib/components/Button/Button.svelte';
 
 	export let devices: Props['devices'];
 
@@ -36,42 +38,39 @@
 	}
 </script>
 
-<nav class="tabs is-centered">
-	<ul>
+<nav class="mb-6">
+	<Tabs>
 		{#each allCellStateSchemas as schema (getTypeFromSchema(schema))}
-			<TypeTab bind:selectedType={selectedType} {schema} />
+			<TypeTab bind:selectedType {schema} />
 		{/each}
-	</ul>
+	</Tabs>
 </nav>
 
-<Form action="/api/device/state/{selectedDevice}" onSubmit={submit} let:loading>
-	<Field htmlFor="control-serial" label="Device">
-		<div class="select">
-			<select bind:value={selectedDevice} id="control-serial">
-				<option value="">All devices</option>
-				{#each devices as device (device.serial)}
-					<DeviceOption {device} />
-				{/each}
-			</select>
-		</div>
-	</Field>
+<Form
+	id="custom-form"
+	class="flex flex-col gap-y-4 px-2"
+	role="tabpanel"
+	action="/api/device/state/{selectedDevice}"
+	onSubmit={submit}
+	let:loading
+>
+	<HorizontalField for="control-serial" label="Device" let:inputClassName>
+		<select class="{inputClassName} cursor-pointer" bind:value={selectedDevice} id="control-serial">
+			<option value="">All devices</option>
+			{#each devices as device (device.serial)}
+				<DeviceOption {device} />
+			{/each}
+		</select>
+	</HorizontalField>
 
-	<div class="field is-horizontal">
-		<div class="field-label is-normal"><span class="label">Power</span></div>
-		<div class="field-body">
-			<div class="buttons has-addons">
-				<PowerButton serial={selectedDevice} value={false}>Off</PowerButton>
-				<PowerButton serial={selectedDevice} value={true}>On</PowerButton>
-			</div>
-		</div>
-	</div>
+	<HorizontalField label="Power">
+		<PowerButtons serial={selectedDevice} />
+	</HorizontalField>
 
 	<ControllerFields schema={activeSchema} />
 
-	<div class="field is-grouped is-grouped-right" style="margin-top: 3rem">
-		<p class="control">
-			<button type="reset" class="button is-light">Reset</button>
-		</p>
+	<div class="mt-6 ml-auto">
+		<Button type="reset">Reset</Button>
 		<SubmitButton {loading} />
 	</div>
 </Form>

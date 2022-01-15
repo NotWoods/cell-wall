@@ -6,13 +6,15 @@
 
 <script lang="ts">
 	import Form from '$lib/components/Form.svelte';
-	import SubmitButton from '$lib/components/SubmitButton.svelte';
-	import Field from '../../lib/components/Field.svelte';
+	import SubmitButton from '$lib/components/Button/SubmitButton.svelte';
 	import DeviceOption from './_DeviceOption.svelte';
+	import HorizontalField from '$lib/components/Field/HorizontalField.svelte';
+	import FileInput from '$lib/components/Field/FileInput.svelte';
+	import Button from '$lib/components/Button/Button.svelte';
 
 	export let devices: Props['devices'];
 
-	let fileName = '';
+	let fileName = 'No file selected.';
 
 	async function submit(data: FormData, action: URL) {
 		const image = data.get('image') as File;
@@ -39,91 +41,64 @@
 			throw err;
 		}
 	}
+
+	function handleChange(event: Event) {
+		const input = event.currentTarget as HTMLInputElement;
+		fileName = input.files?.[0]?.name || 'New image';
+	}
 </script>
 
-<Form action="/api/action/image/" onSubmit={submit} let:loading>
-	<Field htmlFor="control-image" label="Image">
-		<div class="file has-name">
-			<label class="file-label">
-				<input
-					class="file-input"
-					type="file"
-					required
-					accept="image/*"
-					name="image"
-					on:change={(evt) => {
-						fileName = evt.currentTarget.files?.[0]?.name || '';
-					}}
-				/>
-				<span class="file-cta">
-					<span class="file-icon">
-						<svg width="24" height="24" viewBox="4 3 18 17" style="fill: currentColor">
-							<path d="M9,16V10H5L12,3L19,10H15V16H9M5,20V18H19V20H5Z" />
-						</svg>
-					</span>
-					<span class="file-label"> Choose a file… </span>
-				</span>
-				<span class="file-name"> {fileName} </span>
-			</label>
-		</div>
-	</Field>
+<Form class="flex flex-col gap-y-4" action="/api/action/image/" onSubmit={submit} let:loading>
+	<HorizontalField for="control-image" label="Image">
+		<FileInput required accept="image/*" name="image" id="control-image" on:change={handleChange}>
+			{fileName}
+		</FileInput>
+	</HorizontalField>
 
-	<Field htmlFor="control-serial" label="Devices">
-		<div class="select is-multiple">
-			<select multiple name="device" id="control-serial">
-				{#each devices as device (device.serial)}
-					<DeviceOption {device} />
-				{/each}
-			</select>
-		</div>
-	</Field>
+	<HorizontalField for="control-serial" label="Devices" let:inputClassName>
+		<select multiple name="device" id="control-serial" class={inputClassName}>
+			{#each devices as device (device.serial)}
+				<DeviceOption {device} />
+			{/each}
+		</select>
+	</HorizontalField>
 
-	<Field htmlFor="control-hozalign" label="Horizontal Alignment">
-		<div class="select">
-			<select id="control-hozalign" name="horizontalAlign">
-				<option value="center">Center</option>
-				<option value="left">Left</option>
-				<option value="right">Right</option>
-			</select>
-		</div>
-	</Field>
+	<HorizontalField for="control-hozalign" label="Horizontal Alignment" let:inputClassName>
+		<select id="control-hozalign" name="horizontalAlign" class={inputClassName}>
+			<option value="center">Center</option>
+			<option value="left">Left</option>
+			<option value="right">Right</option>
+		</select>
+	</HorizontalField>
 
-	<Field htmlFor="control-veralign" label="Vertical Alignment">
-		<div class="select">
-			<select id="control-veralign" name="verticalAlign">
-				<option value="middle">Middle</option>
-				<option value="top">Top</option>
-				<option value="bottom">Bottom</option>
-			</select>
-		</div>
-	</Field>
+	<HorizontalField for="control-veralign" label="Vertical Alignment" let:inputClassName>
+		<select id="control-veralign" name="verticalAlign" class={inputClassName}>
+			<option value="middle">Middle</option>
+			<option value="top">Top</option>
+			<option value="bottom">Bottom</option>
+		</select>
+	</HorizontalField>
 
-	<Field htmlFor="control-resize" label="Resize Mode">
-		<div class="select">
-			<select id="control-resize" name="resize">
-				<option value="bilinearInterpolation">Bilinear</option>
-				<option value="bicubicInterpolation">Bicubic</option>
-				<option value="hermiteInterpolation">Hermite</option>
-				<option value="bezierInterpolation">Bezier</option>
-				<option value="nearestNeighbor">Nearest Neighbor</option>
-			</select>
-		</div>
-	</Field>
+	<HorizontalField for="control-resize" label="Resize Mode" let:inputClassName>
+		<select id="control-resize" name="resize" class={inputClassName}>
+			<option value="bilinearInterpolation">Bilinear</option>
+			<option value="bicubicInterpolation">Bicubic</option>
+			<option value="hermiteInterpolation">Hermite</option>
+			<option value="bezierInterpolation">Bezier</option>
+			<option value="nearestNeighbor">Nearest Neighbor</option>
+		</select>
+	</HorizontalField>
 
-	<Field htmlFor="control-rest" label="Remaining Cells">
-		<div class="select">
-			<select id="control-rest" name="rest">
-				<option value="ignore">Ignore</option>
-				<option value="blank">Blank</option>
-				<option value="off">Off</option>
-			</select>
-		</div>
-	</Field>
+	<HorizontalField for="control-rest" label="Remaining Cells" let:inputClassName>
+		<select id="control-rest" name="rest" class={inputClassName}>
+			<option value="ignore">Ignore</option>
+			<option value="blank">Blank</option>
+			<option value="off">Off</option>
+		</select>
+	</HorizontalField>
 
-	<div class="field is-grouped is-grouped-right" style="margin-top: 3rem">
-		<p class="control">
-			<button type="reset" class="button is-light">Reset</button>
-		</p>
+	<div class="mt-6 ml-auto">
+		<Button type="reset">Reset</Button>
 		<SubmitButton {loading} />
 	</div>
 </Form>
