@@ -11,7 +11,7 @@ javascript/*/src/**/*.js
 javascript/*/test/**/*.js
 javascript/*/src/**/*.d.ts
 javascript/*/test/**/*.d.ts
-!javascript/types-appium-adb/src/**/*.d.ts
+!appium.d.ts
 dist
 .svelte-kit
 
