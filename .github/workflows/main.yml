@@ -50,7 +50,7 @@ jobs:
       - run: pnpm run test -r
 
       # Build production code
-      - run: pnpm run build -w
+      - run: pnpm run build -r
 
       - uses: actions/upload-artifact@v2
         with:
@@ -62,7 +62,6 @@ jobs:
             javascript/server/build/
             javascript/server/.gitignore
             javascript/server/package.json
-            javascript/types-appium-adb/package.json
             deploy.gitignore
             pnpm-lock.yaml
             pnpm-workspace.yaml

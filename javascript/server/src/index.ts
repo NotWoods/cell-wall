@@ -1,6 +1,6 @@
 import Fastify from 'fastify';
 import middie from 'middie';
-import { assetsMiddleware, kitMiddleware, prerenderedMiddleware } from '@cell-wall/client';
+import { handler } from '@cell-wall/client';
 import { PORT } from './lib/env';
 import { routesSubsystem } from './routes';
 import { websocketSubsystem } from './websocket';
@@ -14,9 +14,8 @@ async function main() {
 	});
 
 	await fastify.register(middie);
-	fastify.use(assetsMiddleware);
 	await fastify.register(routesSubsystem).register(websocketSubsystem);
-	fastify.use(kitMiddleware).use(prerenderedMiddleware);
+	fastify.use(handler);
 
 	const address = await fastify.listen(PORT, '0.0.0.0');
 	console.log(`Listening on ${address}`);

@@ -2,8 +2,6 @@ name: cell-wall
 private: true
 version: 4.0.0
 scripts:
-  build: >-
-    pnpm run build --filter @cell-wall/client && pnpm run build --filter @cell-wall/server
   start: node javascript/server/build/index.js
   lint: prettier --check .prettierrc {package,pnpm-workspace}.yaml *.md .github/**/*.yml
   format: prettier --write .prettierrc {package,pnpm-workspace}.yaml *.md .github/**/*.yml

@@ -1,5 +1,3 @@
-import { NextHandleFunction, SimpleHandleFunction } from 'connect';
+import { NextHandleFunction } from 'connect';
 
-export const assetsMiddleware: NextHandleFunction;
-export const kitMiddleware: SimpleHandleFunction;
-export const prerenderedMiddleware: NextHandleFunction;
+export const handler: NextHandleFunction;

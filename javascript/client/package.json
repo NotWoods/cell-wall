@@ -3,8 +3,8 @@
 	"version": "4.0.0",
 	"type": "module",
 	"types": "index.d.ts",
-	"exports": "./build/middlewares.js",
-	"module": "./build/middlewares.js",
+	"exports": "./build/handler.js",
+	"module": "./build/handler.js",
 	"scripts": {
 		"dev": "svelte-kit dev --port 3001",
 		"build": "svelte-kit build",
