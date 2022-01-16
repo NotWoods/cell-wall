@@ -700,6 +700,9 @@ var init_schema = __esm({
 });
 
 // src/lib/cells/state.ts
+function textState(text, backgroundColor) {
+  return { type: CellStateType.TEXT, text, backgroundColor };
+}
 function blankState() {
   return { type: CellStateType.BLANK };
 }
@@ -1442,6 +1445,39 @@ var init_refresh = __esm({
   }
 });
 
+// src/routes/api/action/text.ts
+var text_exports = {};
+__export(text_exports, {
+  default: () => text_default
+});
+async function text_default(fastify) {
+  fastify.route({
+    method: "POST",
+    url: "/api/action/text",
+    async handler(request, reply) {
+      const lines = typeof request.body === "string" ? request.body.split(/\s*\n\s*/g) : request.body;
+      const devices = Array.from(get_store_value(repo.cellData).keys());
+      const deviceToText = new Map(devices.map((device) => [device, []]));
+      for (const [i, line] of lines.entries()) {
+        const index = i % devices.length;
+        const device = devices[index];
+        deviceToText.get(device).push(line);
+      }
+      const states = transformMap(deviceToText, (lines2) => textState(lines2.join(), request.query.backgroundColor));
+      await repo.setStates(states);
+      reply.send(Object.fromEntries(states));
+    }
+  });
+}
+var init_text = __esm({
+  "src/routes/api/action/text.ts"() {
+    init_store();
+    init_cells();
+    init_transform();
+    init_repository2();
+  }
+});
+
 // src/routes/api/device/power/_body.ts
 function parsePowerBody(body) {
   if (typeof body === "boolean" || typeof body === "string") {
@@ -1856,7 +1892,7 @@ async function urlEncodedPlugin(fastify) {
 // src/routes.ts
 async function routesSubsystem(fastify) {
   await urlEncodedPlugin(fastify);
-  await fastify.register(Promise.resolve().then(() => (init_serial(), serial_exports))).register(Promise.resolve().then(() => (init_image3(), image_exports))).register(Promise.resolve().then(() => (init_install(), install_exports))).register(Promise.resolve().then(() => (init_refresh(), refresh_exports))).register(Promise.resolve().then(() => (init_serial2(), serial_exports2))).register(Promise.resolve().then(() => (init_power2(), power_exports))).register(Promise.resolve().then(() => (init_serial3(), serial_exports3))).register(Promise.resolve().then(() => (init_state2(), state_exports))).register(Promise.resolve().then(() => (init_preset(), preset_exports))).register(Promise.resolve().then(() => (init_serial4(), serial_exports4))).register(Promise.resolve().then(() => (init_device(), device_exports))).register(Promise.resolve().then(() => (init_freebusy(), freebusy_exports))).register(Promise.resolve().then(() => (init_cellwall_version(), cellwall_version_exports))).register(Promise.resolve().then(() => (init_oauth2callback(), oauth2callback_exports)));
+  await fastify.register(Promise.resolve().then(() => (init_serial(), serial_exports))).register(Promise.resolve().then(() => (init_image3(), image_exports))).register(Promise.resolve().then(() => (init_install(), install_exports))).register(Promise.resolve().then(() => (init_refresh(), refresh_exports))).register(Promise.resolve().then(() => (init_text(), text_exports))).register(Promise.resolve().then(() => (init_serial2(), serial_exports2))).register(Promise.resolve().then(() => (init_power2(), power_exports))).register(Promise.resolve().then(() => (init_serial3(), serial_exports3))).register(Promise.resolve().then(() => (init_state2(), state_exports))).register(Promise.resolve().then(() => (init_preset(), preset_exports))).register(Promise.resolve().then(() => (init_serial4(), serial_exports4))).register(Promise.resolve().then(() => (init_device(), device_exports))).register(Promise.resolve().then(() => (init_freebusy(), freebusy_exports))).register(Promise.resolve().then(() => (init_cellwall_version(), cellwall_version_exports))).register(Promise.resolve().then(() => (init_oauth2callback(), oauth2callback_exports)));
 }
 
 // src/websocket.ts
