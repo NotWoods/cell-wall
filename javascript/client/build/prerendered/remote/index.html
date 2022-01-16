@@ -5,92 +5,89 @@
 		<link rel="icon" type="image/png" href="/logo.png" sizes="192x192" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<link rel="stylesheet" href="/css/base.css" />
-		<title>CellWall Remote</title><link rel="stylesheet" href="https://jenil.github.io/bulmaswatch/darkly/bulmaswatch.min.css" data-svelte="svelte-1nhegv1"><link rel="manifest" href="/manifest.webmanifest" data-svelte="svelte-1nhegv1">
-
-		
-
-		<link rel="modulepreload" href="/_app/start-0281442f.js">
-		<link rel="modulepreload" href="/_app/chunks/vendor-de96a8f6.js">
-		<link rel="modulepreload" href="/_app/layout.svelte-4ba8c454.js">
-		<link rel="modulepreload" href="/_app/pages/remote/__layout.svelte-438121ee.js">
-		<link rel="modulepreload" href="/_app/pages/remote/index.svelte-ec4ac4dc.js">
-		<link rel="modulepreload" href="/_app/chunks/_Field-0fd39c15.js">
-		<link rel="modulepreload" href="/_app/chunks/_form-52443b97.js">
-		<link rel="stylesheet" href="/_app/assets/start-61d1577b.css">
-		<link rel="stylesheet" href="/_app/assets/pages/remote/index.svelte-15ea8fff.css">
-
-		<script type="module">
-			import { start } from "/_app/start-0281442f.js";
-			start({
-				target: document.querySelector("#svelte"),
-				paths: {"base":"","assets":""},
-				session: {},
-				host: location.host,
-				route: true,
-				spa: false,
-				trailing_slash: "never",
-				hydrate: {
-					status: 200,
-					error: null,
-					nodes: [
-						import("/_app/layout.svelte-4ba8c454.js"),
-						import("/_app/pages/remote/__layout.svelte-438121ee.js"),
-						import("/_app/pages/remote/index.svelte-ec4ac4dc.js")
-					],
-					page: {
-						host: location.host, // TODO this is redundant
-						path: "\u002Fremote",
-						query: new URLSearchParams(""),
+		<title>CellWall Remote</title><link rel="manifest" href="/manifest.webmanifest" data-svelte="svelte-1tkg7m6">
+	<link rel="stylesheet" href="/_app/assets/pages/remote/__layout.svelte-47648f97.css">
+	<link rel="modulepreload" href="/_app/start-16ef0ce2.js">
+	<link rel="modulepreload" href="/_app/chunks/vendor-972526c7.js">
+	<link rel="modulepreload" href="/_app/layout.svelte-04def0b2.js">
+	<link rel="modulepreload" href="/_app/pages/remote/__layout.svelte-9ee384c3.js">
+	<link rel="modulepreload" href="/_app/chunks/stores-dca95cb0.js">
+	<link rel="modulepreload" href="/_app/chunks/snackbar-host-fd27c917.js">
+	<link rel="modulepreload" href="/_app/pages/remote/index.svelte-1b28a256.js">
+	<link rel="modulepreload" href="/_app/chunks/SubmitButton-1680a1c0.js">
+	<link rel="modulepreload" href="/_app/chunks/VerticalField-66ad6ebe.js">
+	<link rel="modulepreload" href="/_app/chunks/_form-52443b97.js">
+			<script type="module">
+				import { start } from "/_app/start-16ef0ce2.js";
+				start({
+					target: document.querySelector("#svelte"),
+					paths: {"base":"","assets":""},
+					session: {},
+					route: true,
+					spa: false,
+					trailing_slash: "never",
+					hydrate: {
+						status: 200,
+						error: null,
+						nodes: [
+							import("/_app/layout.svelte-04def0b2.js"),
+						import("/_app/pages/remote/__layout.svelte-9ee384c3.js"),
+						import("/_app/pages/remote/index.svelte-1b28a256.js")
+						],
+						url: new URL("http://prerender/remote"),
 						params: {}
 					}
-				}
-			});
-		</script>
+				});
+			</script>
 	</head>
-	<body>
-		<div id="svelte">
+	<body class="bg-slate-900">
+		<div id="svelte" class="min-h-full">
 
 
 
 
-<nav class="navbar" role="navigation" aria-label="main navigation"><div class="navbar-brand"><a class="navbar-item" href="https://github.com/NotWoods/cell-wall"><img src="/logo.png" alt="" width="28" height="28">
-			<span style="margin-left: 0.5rem">CellWall Remote</span></a>
 
-		
-		<a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navMenu"><span aria-hidden="true"></span>
-			<span aria-hidden="true"></span>
-			<span aria-hidden="true"></span></a></div>
+<nav class="bg-green-800"><div class="top-bar flex flex-wrap gap-x-4 items-center max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 py-2">
+		<a class="flex items-center" href="https://github.com/NotWoods/cell-wall"><img class="block mr-2" src="/logo.png" alt="" width="28" height="28">
+			<h1 class="sr-only md:not-sr-only text-xl">CellWall Remote</h1></a>
 
-	<div id="navMenu" class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/remote/">Preset </a>
-			<a class="navbar-item" href="/remote/image">Image </a>
-			<a class="navbar-item" href="/remote/custom">Custom </a></div>
-		<div class="navbar-end"><a class="navbar-item" href="/remote/edit">Edit </a></div></div></nav>
+		<a class="text-gray-300 hover:bg-green-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium" href="/remote/">Presets</a>
+		<a class="text-gray-300 hover:bg-green-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium" href="/remote/text">Text</a>
+		<a class="text-gray-300 hover:bg-green-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium" href="/remote/image">Image</a>
+		<a class="text-gray-300 hover:bg-green-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium" href="/remote/custom">Custom</a>
+		<a class="text-gray-300 hover:bg-green-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium ml-auto" href="/remote/edit">Edit</a></div></nav>
 
-<main class="section"><div class="container"><form method="post" action="/api/device/preset">
-		<progress class="progress is-small is-primary" max="100">Loading</progress>
+<div class="bg-slate-900 bg-gradient-to-r" style="--tw-gradient-stops: hsl(222deg 47% 11%) 0%, hsl(222deg 45% 12%) 11%, hsl(221deg 43% 13%) 22%, hsl(221deg 41% 13%) 33%, hsl(220deg 39% 14%) 44%, hsl(219deg 38% 15%) 56%, hsl(219deg 36% 15%) 67%, hsl(218deg 35% 16%) 78%, hsl(218deg 34% 17%) 89%, hsl(217deg 33% 17%) 100%; min-height: calc(100vh - 3.25rem);"><main class="max-w-7xl mx-auto p-2 py-4 sm:p-6 lg:p-8"><form class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6" method="post" action="/api/device/preset"><article class="bg-slate-800 p-4 border rounded border-slate-700 row-span-2"><h2 class="text-3xl mb-4">Presets</h2>
+		<div class="text-black "><label for="control-rest" class="block text-sm font-medium text-gray-100 mb-1">Remaining cells</label>
+	<select id="control-rest" name="rest" class="block w-full shadow-sm sm:text-sm border-gray-300 rounded-md cursor-pointer"><option value="ignore">Ignore</option><option value="blank">Blank</option><option value="off">Off</option></select></div>
+		<img class="block mt-4 shadow-inner rounded" alt="" src="https://raw.githubusercontent.com/NotWoods/cell-wall/main/images/finished.jpg"></article>
+
+	<article class="bg-slate-800 p-4 border rounded border-slate-700 flex flex-col gap-y-4"><h3 class="text-2xl">Info</h3>
+	<div class="">Calendar indicators and the week&#39;s weather.
+	</div>
 	
-
-	<div class="tile is-ancestor"><div class="tile is-parent is-vertical"><article class="tile card is-child"><header class="card-header"><h3 class="card-header-title title">Info</h3></header>
-	<div class="card-content">Calendar indicators and the week&#39;s weather.
-			</div>
-	<footer class="card-footer"><button type="submit" name="preset" value="info" class="card-footer-item svelte-cdkl4v">Activate</button></footer>
+	<button type="submit" name="preset" value="info" class="px-4 py-2 rounded-md shadow-sm text-sm font-medium text-white transition-colors mt-auto self-end relative bg-green-500"><div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"><span class="sr-only">Loading</span>
+<span class="h-4 w-4 block border-2 rounded-full border-r-transparent border-t-transparent animate-spin"></span></div>
+		<span class="text-transparent" aria-hidden="true">Activate</span></button>
 </article>
-			<article class="tile card is-child"><header class="card-header"><h3 class="card-header-title title">Tea list</h3></header>
-	<div class="card-content">What&#39;s avaliable to drink?</div>
-	<footer class="card-footer"><button type="submit" name="preset" value="tea" class="card-footer-item svelte-cdkl4v">Activate</button></footer>
+	<article class="bg-slate-800 p-4 border rounded border-slate-700 flex flex-col gap-y-4"><h3 class="text-2xl">Tea list</h3>
+	<div class="">What&#39;s avaliable to drink?</div>
+	
+	<button type="submit" name="preset" value="tea" class="px-4 py-2 rounded-md shadow-sm text-sm font-medium text-white transition-colors mt-auto self-end relative bg-green-500"><div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"><span class="sr-only">Loading</span>
+<span class="h-4 w-4 block border-2 rounded-full border-r-transparent border-t-transparent animate-spin"></span></div>
+		<span class="text-transparent" aria-hidden="true">Activate</span></button>
 </article>
-			<article class="tile card is-child"><header class="card-header"><h3 class="card-header-title">Install Android update</h3></header>
-	<div class="card-content"><div class="field is-horizontal"><div class="field-label is-normal"><label class="label" for="control-tag">Tag</label></div>
-	<div class="field-body"><div class="field is-narrow"><div class="control"><input id="control-tag" class="input" name="tag" type="text" placeholder="Latest"></div></div></div></div></div>
-	<footer class="card-footer"><button type="submit" name="preset" formaction="/api/action/install" class="card-footer-item svelte-cdkl4v">Install</button></footer>
-</article></div>
-		<div class="tile is-parent"><article class="tile is-child notification"><figure class="image"><img alt="" src="https://raw.githubusercontent.com/NotWoods/cell-wall/main/images/finished.jpg"></figure>
-				<div class="field"><label class="label" for="control-rest">Remaining cells</label>
-					<div class="control"><div class="select"><select id="control-rest" name="rest"><option value="ignore">Ignore</option><option value="blank">Blank</option><option value="off">Off</option></select></div></div></div></article></div></div></form></div></main>
+	<article class="bg-slate-800 p-4 border rounded border-slate-700 flex flex-col gap-y-4"><h3 class="text-xl">Install Android update</h3>
+	<div class=""><div class="text-black "><label for="control-tag" class="block text-sm font-medium text-gray-100 mb-1">Tag</label>
+	<input class="block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" id="control-tag" name="tag" type="text" placeholder="Latest"></div></div>
+	
+	<button type="submit" name="preset" formaction="/api/action/install" class="px-4 py-2 rounded-md shadow-sm text-sm font-medium text-white transition-colors mt-auto self-end relative bg-green-500"><div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"><span class="sr-only">Loading</span>
+<span class="h-4 w-4 block border-2 rounded-full border-r-transparent border-t-transparent animate-spin"></span></div>
+		<span class="text-transparent" aria-hidden="true">Install</span></button>
+</article></form></main></div>
 
 
 
-			
-		</div>
+</div>
 	</body>
 </html>

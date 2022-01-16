@@ -66,7 +66,7 @@ var init_env = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/svelte@3.44.0/node_modules/svelte/internal/index.mjs
+// ../../node_modules/.pnpm/svelte@3.46.2/node_modules/svelte/internal/index.mjs
 function noop() {
 }
 function run(fn) {
@@ -105,11 +105,11 @@ function destroy_component(component, detaching) {
     $$.ctx = [];
   }
 }
-var tasks, active_docs, resolved_promise, seen_callbacks, outroing, globals, boolean_attributes, SvelteElement;
+var tasks, managed_styles, resolved_promise, seen_callbacks, outroing, globals, boolean_attributes, SvelteElement;
 var init_internal = __esm({
-  "../../node_modules/.pnpm/svelte@3.44.0/node_modules/svelte/internal/index.mjs"() {
+  "../../node_modules/.pnpm/svelte@3.46.2/node_modules/svelte/internal/index.mjs"() {
     tasks = new Set();
-    active_docs = new Set();
+    managed_styles = new Map();
     resolved_promise = Promise.resolve();
     seen_callbacks = new Set();
     outroing = new Set();
@@ -184,7 +184,7 @@ var init_internal = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/svelte@3.44.0/node_modules/svelte/store/index.mjs
+// ../../node_modules/.pnpm/svelte@3.46.2/node_modules/svelte/store/index.mjs
 function readable(value, start) {
   return {
     subscribe: writable(value, start).subscribe
@@ -271,7 +271,7 @@ function derived(stores, fn, initial_value) {
 }
 var subscriber_queue;
 var init_store = __esm({
-  "../../node_modules/.pnpm/svelte@3.44.0/node_modules/svelte/store/index.mjs"() {
+  "../../node_modules/.pnpm/svelte@3.46.2/node_modules/svelte/store/index.mjs"() {
     init_internal();
     init_internal();
     subscriber_queue = [];
@@ -300,8 +300,9 @@ var init_transform = __esm({
 // src/lib/android/adb-action.ts
 import { escapeShellArg } from "appium-adb/build/lib/helpers.js";
 async function checkIfOn(adb, cmdOutput = void 0) {
+  var _a;
   const stdout = cmdOutput || await adb.shell(["dumpsys", "power"]);
-  const wakefulness = /mWakefulness=(\w+)/.exec(stdout)?.[1];
+  const wakefulness = (_a = /mWakefulness=(\w+)/.exec(stdout)) == null ? void 0 : _a[1];
   return wakefulness === "Awake";
 }
 async function startIntent(adb, options) {
@@ -495,7 +496,7 @@ import { Octokit } from "@octokit/core";
 import { createWriteStream, promises as fs } from "fs";
 import { tmpdir } from "os";
 import { join } from "path";
-import { promises as stream } from "stream";
+import { pipeline } from "stream/promises";
 var buildTempDir, GithubApi;
 var init_github = __esm({
   "src/lib/android/github.ts"() {
@@ -528,7 +529,7 @@ var init_github = __esm({
           const res = await fetch(asset.browser_download_url);
           const tmpDirPath = await tmpDirReady;
           const destPath = join(tmpDirPath, asset.name);
-          await stream.pipeline(res.body, createWriteStream(destPath));
+          await pipeline(res.body, createWriteStream(destPath));
           return destPath;
         } else {
           throw new Error(`Could not find APK attached to release ${release.tag_name}`);
@@ -1037,14 +1038,16 @@ async function database(filename) {
   }
   return {
     async getGoogleCredentials() {
-      return db.data?.googleCredentials;
+      var _a;
+      return (_a = db.data) == null ? void 0 : _a.googleCredentials;
     },
     async setGoogleCredentials(credentials) {
       initData().googleCredentials = credentials;
       await db.write();
     },
     async getCell(name) {
-      return db.data?.cells?.[name];
+      var _a, _b;
+      return (_b = (_a = db.data) == null ? void 0 : _a.cells) == null ? void 0 : _b[name];
     },
     async getCells() {
       return Object.values(initData().cells);
@@ -1080,8 +1083,9 @@ function sendIntentOnStateChange(cellManager, deviceManager) {
     }
     const info = get_store_value(cellManager.info);
     Promise.all(Array.from(changes).map(([serial, state]) => {
+      var _a;
       console.log(serial, state);
-      const base = info.get(serial)?.server || SERVER_ADDRESS;
+      const base = ((_a = info.get(serial)) == null ? void 0 : _a.server) || SERVER_ADDRESS;
       return deviceManager.startIntent(serial, {
         action: `${PACKAGE_NAME}.DISPLAY`,
         dataUri: toUri(state, base),
@@ -1560,9 +1564,10 @@ async function serial_default3(fastify) {
     method: "GET",
     url: "/api/device/state/:serial",
     async handler(request, reply) {
+      var _a;
       const { serial } = request.params;
       reply.send({
-        [serial]: get_store_value(repo.cellData).get(serial)?.state ?? blankState()
+        [serial]: ((_a = get_store_value(repo.cellData).get(serial)) == null ? void 0 : _a.state) ?? blankState()
       });
     }
   });

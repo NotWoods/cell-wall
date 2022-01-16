@@ -1,0 +1,229 @@
+{
+  ".svelte-kit/build/app.js": {
+    "file": "app.js",
+    "src": ".svelte-kit/build/app.js",
+    "isEntry": true,
+    "imports": [
+      "_index-50854321.js"
+    ]
+  },
+  ".svelte-kit/runtime/components/layout.svelte": {
+    "file": "entries/pages/layout.svelte.js",
+    "src": ".svelte-kit/runtime/components/layout.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index-50854321.js"
+    ]
+  },
+  ".svelte-kit/runtime/components/error.svelte": {
+    "file": "entries/pages/error.svelte.js",
+    "src": ".svelte-kit/runtime/components/error.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index-50854321.js"
+    ]
+  },
+  "src/routes/index.svelte": {
+    "file": "entries/pages/index.svelte.js",
+    "src": "src/routes/index.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index-50854321.js"
+    ]
+  },
+  "src/routes/remote/__layout.svelte": {
+    "file": "entries/pages/remote/__layout.svelte.js",
+    "src": "src/routes/remote/__layout.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index-50854321.js",
+      "_stores-530216e4.js",
+      "_snackbar-host-0b24a4c8.js",
+      "_index-06c8ab10.js"
+    ],
+    "css": [
+      "assets/entries/pages/remote/__layout.svelte-998dd632.css"
+    ]
+  },
+  "src/routes/remote/index.svelte": {
+    "file": "entries/pages/remote/index.svelte.js",
+    "src": "src/routes/remote/index.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index-50854321.js",
+      "_SubmitButton-185fe575.js",
+      "_VerticalField-e6294eb2.js",
+      "__form-52443b97.js",
+      "_snackbar-host-0b24a4c8.js",
+      "_index-06c8ab10.js"
+    ]
+  },
+  "src/routes/remote/custom.svelte": {
+    "file": "entries/pages/remote/custom.svelte.js",
+    "src": "src/routes/remote/custom.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index-50854321.js",
+      "__DeviceOption-8c4da22d.js",
+      "_state-832ea5b1.js",
+      "_SubmitButton-185fe575.js",
+      "__PowerButtons-34decfe4.js",
+      "__form-52443b97.js",
+      "__ResetSubmit-902f2b92.js",
+      "_snackbar-host-0b24a4c8.js",
+      "_index-06c8ab10.js"
+    ]
+  },
+  "src/routes/remote/image.svelte": {
+    "file": "entries/pages/remote/image.svelte.js",
+    "src": "src/routes/remote/image.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index-50854321.js",
+      "__DeviceOption-8c4da22d.js",
+      "_SubmitButton-185fe575.js",
+      "__ResetSubmit-902f2b92.js",
+      "_snackbar-host-0b24a4c8.js",
+      "_index-06c8ab10.js"
+    ]
+  },
+  "src/routes/remote/edit.svelte": {
+    "file": "entries/pages/remote/edit.svelte.js",
+    "src": "src/routes/remote/edit.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index-50854321.js",
+      "__DeviceOption-8c4da22d.js",
+      "_SubmitButton-185fe575.js",
+      "__PowerButtons-34decfe4.js",
+      "__form-52443b97.js",
+      "__ResetSubmit-902f2b92.js",
+      "_snackbar-host-0b24a4c8.js",
+      "_index-06c8ab10.js"
+    ]
+  },
+  "src/routes/remote/text.svelte": {
+    "file": "entries/pages/remote/text.svelte.js",
+    "src": "src/routes/remote/text.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index-50854321.js",
+      "_SubmitButton-185fe575.js",
+      "_VerticalField-e6294eb2.js",
+      "__ResetSubmit-902f2b92.js",
+      "_snackbar-host-0b24a4c8.js",
+      "_index-06c8ab10.js"
+    ]
+  },
+  "src/routes/cell/index.svelte": {
+    "file": "entries/pages/cell/index.svelte.js",
+    "src": "src/routes/cell/index.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index-50854321.js",
+      "_SubmitButton-185fe575.js",
+      "_VerticalField-e6294eb2.js",
+      "__form-52443b97.js",
+      "_snackbar-host-0b24a4c8.js",
+      "_index-06c8ab10.js"
+    ]
+  },
+  "src/routes/cell/frame.svelte": {
+    "file": "entries/pages/cell/frame.svelte.js",
+    "src": "src/routes/cell/frame.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index-50854321.js",
+      "_index-06c8ab10.js",
+      "_state-832ea5b1.js"
+    ],
+    "css": [
+      "assets/entries/pages/cell/frame.svelte-61bbcfc0.css"
+    ]
+  },
+  "src/routes/page/busy/[person].svelte": {
+    "file": "entries/pages/page/busy/_person_.svelte.js",
+    "src": "src/routes/page/busy/[person].svelte",
+    "isEntry": true,
+    "imports": [
+      "_index-50854321.js"
+    ],
+    "css": [
+      "assets/entries/pages/page/busy/_person_.svelte-a586d479.css"
+    ]
+  },
+  "src/routes/page/text.svelte": {
+    "file": "entries/pages/page/text.svelte.js",
+    "src": "src/routes/page/text.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index-50854321.js",
+      "_stores-530216e4.js"
+    ],
+    "css": [
+      "assets/entries/pages/page/text.svelte-6c91248b.css"
+    ]
+  },
+  "_index-50854321.js": {
+    "file": "chunks/index-50854321.js"
+  },
+  "_snackbar-host-0b24a4c8.js": {
+    "file": "chunks/snackbar-host-0b24a4c8.js",
+    "imports": [
+      "_index-06c8ab10.js"
+    ]
+  },
+  "_stores-530216e4.js": {
+    "file": "chunks/stores-530216e4.js",
+    "imports": [
+      "_index-50854321.js"
+    ]
+  },
+  "_index-06c8ab10.js": {
+    "file": "chunks/index-06c8ab10.js",
+    "imports": [
+      "_index-50854321.js"
+    ]
+  },
+  "_SubmitButton-185fe575.js": {
+    "file": "chunks/SubmitButton-185fe575.js",
+    "imports": [
+      "_index-50854321.js",
+      "_snackbar-host-0b24a4c8.js"
+    ]
+  },
+  "_VerticalField-e6294eb2.js": {
+    "file": "chunks/VerticalField-e6294eb2.js",
+    "imports": [
+      "_index-50854321.js",
+      "_SubmitButton-185fe575.js"
+    ]
+  },
+  "__form-52443b97.js": {
+    "file": "chunks/_form-52443b97.js"
+  },
+  "__DeviceOption-8c4da22d.js": {
+    "file": "chunks/_DeviceOption-8c4da22d.js",
+    "imports": [
+      "_index-50854321.js",
+      "_SubmitButton-185fe575.js"
+    ]
+  },
+  "_state-832ea5b1.js": {
+    "file": "chunks/state-832ea5b1.js"
+  },
+  "__PowerButtons-34decfe4.js": {
+    "file": "chunks/_PowerButtons-34decfe4.js",
+    "imports": [
+      "_index-50854321.js",
+      "_SubmitButton-185fe575.js"
+    ]
+  },
+  "__ResetSubmit-902f2b92.js": {
+    "file": "chunks/_ResetSubmit-902f2b92.js",
+    "imports": [
+      "_index-50854321.js",
+      "_SubmitButton-185fe575.js"
+    ]
+  }
+}
