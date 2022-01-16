@@ -1,7 +1,3 @@
-<script lang="ts" context="module">
-	export * from '../snackbar-host';
-</script>
-
 <script lang="ts">
 	import { fly } from 'svelte/transition';
 	import type { SnackbarData } from '../snackbar-host';

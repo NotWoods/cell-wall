@@ -1,3 +1,7 @@
+<script context="module">
+	export const prerender = true;
+</script>
+
 <script lang="ts">
 	import Form from '$lib/components/Form.svelte';
 	import VerticalField from '$lib/components/Field/VerticalField.svelte';

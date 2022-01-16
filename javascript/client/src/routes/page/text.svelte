@@ -1,6 +1,5 @@
 <script lang="ts" context="module">
 	export const router = false;
-	export const prerender = true;
 </script>
 
 <script lang="ts">

@@ -1,8 +1,10 @@
 <script lang="ts">
 	import NavigationProgress from '$lib/components/NavigationProgress.svelte';
-	import Snackbar, { SnackbarHostState } from '$lib/components/Snackbar.svelte';
+	import { SnackbarHostState } from '$lib/snackbar-host';
+	import Snackbar from '$lib/components/Snackbar.svelte';
 	import TopBar from '$lib/components/TopBar/TopBar.svelte';
 	import { setContext } from 'svelte';
+	import 'tailwindcss/tailwind.css';
 
 	const snackbarHostState = new SnackbarHostState();
 	const { currentSnackbarData } = snackbarHostState;
@@ -30,9 +32,3 @@
 </div>
 
 <Snackbar data={$currentSnackbarData} />
-
-<style lang="postcss">
-	@tailwind base;
-	@tailwind components;
-	@tailwind utilities;
-</style>
