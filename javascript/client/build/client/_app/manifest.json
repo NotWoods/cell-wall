@@ -1,6 +1,6 @@
 {
   ".svelte-kit/runtime/client/start.js": {
-    "file": "start-16ef0ce2.js",
+    "file": "start-7825cfc5.js",
     "src": ".svelte-kit/runtime/client/start.js",
     "isEntry": true,
     "imports": [
@@ -50,7 +50,7 @@
     ]
   },
   "src/routes/remote/__layout.svelte": {
-    "file": "pages/remote/__layout.svelte-9ee384c3.js",
+    "file": "pages/remote/__layout.svelte-22f18fd7.js",
     "src": "src/routes/remote/__layout.svelte",
     "isEntry": true,
     "isDynamicEntry": true,
@@ -60,7 +60,7 @@
       "_snackbar-host-fd27c917.js"
     ],
     "css": [
-      "assets/pages/remote/__layout.svelte-47648f97.css"
+      "assets/pages/remote/__layout.svelte-cbcdc1a7.css"
     ]
   },
   "src/routes/remote/index.svelte": {
