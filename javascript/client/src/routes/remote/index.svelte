@@ -5,9 +5,9 @@
 <script lang="ts">
 	import Card from '$lib/components/Card.svelte';
 	import Form from '$lib/components/Form.svelte';
+	import VerticalField from '$lib/components/Field/VerticalField.svelte';
 	import { formDataAsSearchParams } from './_form';
 	import PresetCard from './_PresetCard.svelte';
-	import VerticalField from '$lib/components/Field/VerticalField.svelte';
 
 	async function submit(data: FormData, action: URL) {
 		const res = await fetch(action.toString(), {
@@ -18,7 +18,8 @@
 			body: formDataAsSearchParams(data)
 		});
 
-		console.log(await res.json());
+		const result = await res.json();
+		console.log(result);
 	}
 </script>
 

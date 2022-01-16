@@ -1,6 +1,12 @@
 <script lang="ts">
 	import NavigationProgress from '$lib/components/NavigationProgress.svelte';
+	import Snackbar, { SnackbarHostState } from '$lib/components/Snackbar.svelte';
 	import TopBar from '$lib/components/TopBar/TopBar.svelte';
+	import { setContext } from 'svelte';
+
+	const snackbarHostState = new SnackbarHostState();
+	const { currentSnackbarData } = snackbarHostState;
+	setContext(SnackbarHostState, snackbarHostState);
 </script>
 
 <svelte:head>
@@ -22,6 +28,8 @@
 		<slot />
 	</main>
 </div>
+
+<Snackbar data={$currentSnackbarData} />
 
 <style lang="postcss">
 	@tailwind base;

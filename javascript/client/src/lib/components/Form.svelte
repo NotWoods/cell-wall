@@ -7,6 +7,11 @@
 </script>
 
 <script lang="ts">
+	import { getContext } from 'svelte';
+	import { SnackbarDuration, SnackbarHostState } from './Snackbar.svelte';
+
+	const snackbarHostState = getContext(SnackbarHostState) as SnackbarHostState;
+
 	export let action: string;
 	export let onSubmit: (formData: FormData, action: URL) => Promise<void>;
 
@@ -29,11 +34,16 @@
 				action = submitter.formAction;
 			}
 		}
+
 		status = {
 			loading: onSubmit(formData, new URL(action)),
 			submitterName: submitter?.name ?? '',
 			submitterValue: submitter?.value ?? ''
 		};
+		status.loading.catch((err: unknown) => {
+			const message = err instanceof Error ? err.message : err;
+			snackbarHostState.showSnackbar(`Error submitting form: ${message}`, SnackbarDuration.LONG);
+		});
 	}
 </script>
 
