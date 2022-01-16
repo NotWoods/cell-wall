@@ -8,6 +8,7 @@
 	import ResetSubmit from './_ResetSubmit.svelte';
 
 	async function submit(data: FormData, action: URL) {
+		action.searchParams.set('backgroundColor', data.get('backgroundColor') as string);
 		try {
 			const res = await fetch(action.toString(), {
 				method: 'post',
@@ -37,6 +38,9 @@
 			rows="10"
 			placeholder=" Apple &#13;&#10;Banana &#13;&#10;Carrot"
 		/>
+	</VerticalField>
+	<VerticalField for="control-color" label="Background Color">
+		<input id="control-color" name="backgroundColor" type="color" />
 	</VerticalField>
 
 	<ResetSubmit {loading} />
