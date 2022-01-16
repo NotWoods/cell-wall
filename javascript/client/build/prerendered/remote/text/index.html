@@ -7,18 +7,18 @@
 		<link rel="stylesheet" href="/css/base.css" />
 		<title>CellWall Remote</title><link rel="manifest" href="/manifest.webmanifest" data-svelte="svelte-1tkg7m6">
 	<link rel="stylesheet" href="/_app/assets/pages/remote/__layout.svelte-cbcdc1a7.css">
-	<link rel="modulepreload" href="/_app/start-7825cfc5.js">
+	<link rel="modulepreload" href="/_app/start-86a6a364.js">
 	<link rel="modulepreload" href="/_app/chunks/vendor-972526c7.js">
 	<link rel="modulepreload" href="/_app/layout.svelte-04def0b2.js">
 	<link rel="modulepreload" href="/_app/pages/remote/__layout.svelte-22f18fd7.js">
 	<link rel="modulepreload" href="/_app/chunks/stores-dca95cb0.js">
 	<link rel="modulepreload" href="/_app/chunks/snackbar-host-fd27c917.js">
-	<link rel="modulepreload" href="/_app/pages/remote/text.svelte-964d90e3.js">
+	<link rel="modulepreload" href="/_app/pages/remote/text.svelte-41bc2699.js">
 	<link rel="modulepreload" href="/_app/chunks/SubmitButton-1680a1c0.js">
 	<link rel="modulepreload" href="/_app/chunks/VerticalField-66ad6ebe.js">
 	<link rel="modulepreload" href="/_app/chunks/_ResetSubmit-e5269f42.js">
 			<script type="module">
-				import { start } from "/_app/start-7825cfc5.js";
+				import { start } from "/_app/start-86a6a364.js";
 				start({
 					target: document.querySelector("#svelte"),
 					paths: {"base":"","assets":""},
@@ -32,7 +32,7 @@
 						nodes: [
 							import("/_app/layout.svelte-04def0b2.js"),
 						import("/_app/pages/remote/__layout.svelte-22f18fd7.js"),
-						import("/_app/pages/remote/text.svelte-964d90e3.js")
+						import("/_app/pages/remote/text.svelte-41bc2699.js")
 						],
 						url: new URL("http://prerender/remote/text"),
 						params: {}
@@ -60,6 +60,8 @@
 
 <div class="bg-slate-900 bg-gradient-to-r" style="--tw-gradient-stops: hsl(222deg 47% 11%) 0%, hsl(222deg 45% 12%) 11%, hsl(221deg 43% 13%) 22%, hsl(221deg 41% 13%) 33%, hsl(220deg 39% 14%) 44%, hsl(219deg 38% 15%) 56%, hsl(219deg 36% 15%) 67%, hsl(218deg 35% 16%) 78%, hsl(218deg 34% 17%) 89%, hsl(217deg 33% 17%) 100%; min-height: calc(100vh - 3.25rem);"><main class="max-w-7xl mx-auto p-2 py-4 sm:p-6 lg:p-8"><form class="flex flex-col gap-y-4" method="post" action="/api/action/text"><div class="text-black "><label for="control-text" class="block text-sm font-medium text-gray-100 mb-1">Text</label>
 	<textarea class="block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" required id="control-text" name="text" rows="10" placeholder=" Apple  Banana  Carrot"></textarea></div>
+	<div class="text-black "><label for="control-color" class="block text-sm font-medium text-gray-100 mb-1">Background Color</label>
+	<input id="control-color" name="backgroundColor" type="color"></div>
 
 	<div class="mt-6 ml-auto"><button type="reset" class="px-4 py-2 rounded-md shadow-sm text-sm font-medium text-white transition-colors bg-slate-700 hover:bg-slate-800">Reset</button>
 	

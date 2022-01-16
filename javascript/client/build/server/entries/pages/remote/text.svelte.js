@@ -6,6 +6,7 @@ import "../../../chunks/snackbar-host-0b24a4c8.js";
 import "../../../chunks/index-06c8ab10.js";
 const prerender = true;
 async function submit(data, action) {
+  action.searchParams.set("backgroundColor", data.get("backgroundColor"));
   try {
     const res = await fetch(action.toString(), {
       method: "post",
@@ -30,6 +31,14 @@ const Text = create_ssr_component(($$result, $$props, $$bindings, slots) => {
       return `${validate_component(VerticalField, "VerticalField").$$render($$result, { for: "control-text", label: "Text" }, {}, {
         default: ({ inputClassName }) => {
           return `<textarea${add_attribute("class", inputClassName, 0)} required id="${"control-text"}" name="${"text"}" rows="${"10"}" placeholder="${" Apple \r Banana \r Carrot"}"></textarea>`;
+        }
+      })}
+	${validate_component(VerticalField, "VerticalField").$$render($$result, {
+        for: "control-color",
+        label: "Background Color"
+      }, {}, {
+        default: () => {
+          return `<input id="${"control-color"}" name="${"backgroundColor"}" type="${"color"}">`;
         }
       })}
 

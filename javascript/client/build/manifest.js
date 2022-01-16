@@ -3,7 +3,7 @@ export const manifest = {
 	assets: new Set(["css/base.css","img/daphne.jpg","img/tiger.jpg","logo.png","manifest.webmanifest","preset/info.json","preset/tea.json"]),
 	_: {
 		mime: {".css":"text/css",".jpg":"image/jpeg",".png":"image/png",".webmanifest":"application/manifest+json",".json":"application/json"},
-		entry: {"file":"start-7825cfc5.js","js":["start-7825cfc5.js","chunks/vendor-972526c7.js"],"css":[]},
+		entry: {"file":"start-86a6a364.js","js":["start-86a6a364.js","chunks/vendor-972526c7.js"],"css":[]},
 		nodes: [
 			() => import('./server/nodes/0.js'),
 			() => import('./server/nodes/1.js'),
