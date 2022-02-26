@@ -1,6 +1,6 @@
 import type { FastifyInstance } from 'fastify';
 import fetch from 'node-fetch';
-import type { CellState } from '../../../lib/cells';
+import type { CellState } from '@cell-wall/cell-state';
 import { repo } from '../../../lib/repository';
 
 export default async function (fastify: FastifyInstance): Promise<void> {

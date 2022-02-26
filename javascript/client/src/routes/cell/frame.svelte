@@ -1,6 +1,5 @@
 <script context="module" lang="ts">
 	import type { Load } from '@sveltejs/kit';
-	import { CellStateType } from '$lib/cells';
 	import { socketStore } from '$lib/socket';
 	import type { CellData } from '$lib/cells/data';
 	import { derived } from 'svelte/store';
@@ -34,7 +33,7 @@
 
 	function stateToUrl({ state, info }: Partial<CellData> = {}) {
 		switch (state?.type) {
-			case CellStateType.WEB:
+			case 'WEB':
 				return new URL(state.url, info?.server);
 			default:
 				return undefined;

@@ -1,7 +1,6 @@
+import { blankState, type CellState } from '@cell-wall/cell-state';
 import type { FastifyInstance } from 'fastify';
 import { get as getState } from 'svelte/store';
-import type { CellState } from '../../../../lib/cells';
-import { blankState } from '../../../../lib/cells';
 import { transformMap } from '../../../../lib/map/transform';
 import { repo } from '../../../../lib/repository';
 import { asCellState } from './_body';
@@ -18,7 +17,7 @@ export default async function (fastify: FastifyInstance): Promise<void> {
 		async handler(request, reply) {
 			reply.send(
 				Object.fromEntries(
-					transformMap(getState(repo.cellData), (data) => data.state ?? blankState())
+					transformMap(getState(repo.cellData), (data) => data.state ?? blankState)
 				)
 			);
 		}

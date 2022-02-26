@@ -1,7 +1,6 @@
+import { blankState, type CellState } from '@cell-wall/cell-state';
 import type { FastifyInstance } from 'fastify';
 import { get as getState } from 'svelte/store';
-import type { CellState } from '../../../../lib/cells';
-import { blankState } from '../../../../lib/cells';
 import { repo } from '../../../../lib/repository';
 import { asCellState } from './_body';
 
@@ -19,7 +18,7 @@ export default async function (fastify: FastifyInstance): Promise<void> {
 			const { serial } = request.params;
 
 			reply.send({
-				[serial]: getState(repo.cellData).get(serial)?.state ?? blankState()
+				[serial]: getState(repo.cellData).get(serial)?.state ?? blankState
 			});
 		}
 	});

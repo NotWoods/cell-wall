@@ -1,7 +1,7 @@
-import { get, writable } from 'svelte/store';
+import type { CellState } from '@cell-wall/cell-state';
 import type { Readable } from 'svelte/store';
+import { get, writable } from 'svelte/store';
 import type { Cell, Database } from '../repository/database';
-import type { CellState } from './state';
 
 export type CellInfo = Cell;
 

@@ -1,4 +1,4 @@
-import type { CellState } from './state';
+import type { CellState } from '@cell-wall/cell-state';
 
 /**
  * Cell info includes the user-friendly name of a device,

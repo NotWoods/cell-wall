@@ -1,6 +1,6 @@
+import { textState, type CellState } from '@cell-wall/cell-state';
 import type { FastifyInstance } from 'fastify';
 import { get as getState } from 'svelte/store';
-import { CellState, textState } from '../../../lib/cells';
 import { transformMap } from '../../../lib/map/transform';
 import { repo } from '../../../lib/repository';
 

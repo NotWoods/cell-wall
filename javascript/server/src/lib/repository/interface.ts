@@ -1,7 +1,8 @@
+import type { CellState } from '@cell-wall/cell-state';
 import type { InstallOrUpgradeResult } from 'appium-adb';
 import type { Readable } from 'svelte/store';
 import type { DeviceMap } from '../android/device-manager';
-import type { CellInfo, CellState } from '../cells';
+import type { CellInfo } from '../cells';
 import type { GoogleClient } from '../google';
 import type { SplitImageCache } from '../image/cache';
 import type { Cell } from './database';

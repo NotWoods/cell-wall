@@ -1,6 +1,6 @@
 <script lang="ts">
 	import startCase from 'lodash.startcase';
-	import { CellStateJsonSchema, getTypeFromSchema } from '$lib/cells/schema';
+	import { type CellStateJsonSchema, getTypeFromSchema } from '@cell-wall/cell-state';
 	import Tab from '$lib/components/Tabs/Tab.svelte';
 
 	export let selectedType: string;

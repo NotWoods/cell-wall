@@ -8,8 +8,29 @@ importers:
     devDependencies:
       prettier: 2.5.1
 
+  javascript/cell-state:
+    specifiers:
+      '@typescript-eslint/eslint-plugin': ^5.12.1
+      '@typescript-eslint/parser': ^5.12.1
+      eslint: ^8.10.0
+      eslint-config-prettier: ^8.4.0
+      jest: ^27.5.1
+      prettier: ~2.5.1
+      tslib: ^2.3.1
+      typescript: ^4.5.5
+    devDependencies:
+      '@typescript-eslint/eslint-plugin': 5.12.1_27a0c788acac7d65514027b167e3b3f6
+      '@typescript-eslint/parser': 5.12.1_eslint@8.10.0+typescript@4.5.5
+      eslint: 8.10.0
+      eslint-config-prettier: 8.4.0_eslint@8.10.0
+      jest: 27.5.1
+      prettier: 2.5.1
+      tslib: 2.3.1
+      typescript: 4.5.5
+
   javascript/client:
     specifiers:
+      '@cell-wall/cell-state': workspace:*
       '@jest/globals': ^27.5.1
       '@js-temporal/polyfill': ^0.3.0
       '@sveltejs/adapter-node': next
@@ -44,6 +65,7 @@ importers:
       tslib: ^2.3.1
       typescript: ^4.5.5
     dependencies:
+      '@cell-wall/cell-state': link:../cell-state
       '@js-temporal/polyfill': 0.3.0
       '@types/connect': 3.4.35
       dotenv: 16.0.0
@@ -81,6 +103,7 @@ importers:
 
   javascript/server:
     specifiers:
+      '@cell-wall/cell-state': workspace:*
       '@cell-wall/client': workspace:*
       '@jest/globals': ^27.5.1
       '@js-temporal/polyfill': ^0.3.0
@@ -112,6 +135,7 @@ importers:
       tslib: ^2.3.1
       typescript: ^4.5.5
     dependencies:
+      '@cell-wall/cell-state': link:../cell-state
       '@cell-wall/client': link:../client
       '@js-temporal/polyfill': 0.3.0
       '@octokit/core': 3.5.1

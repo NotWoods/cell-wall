@@ -1,5 +1,5 @@
 <script lang="ts" context="module">
-	import { allCellStateSchemas, getTypeFromSchema } from '$lib/cells';
+	import { allCellStateSchemas, getTypeFromSchema } from '@cell-wall/cell-state';
 	import { createLoadWithDevices, Props } from './_load';
 
 	export const load = createLoadWithDevices();

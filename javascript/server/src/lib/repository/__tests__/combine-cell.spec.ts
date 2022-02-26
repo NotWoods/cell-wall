@@ -1,8 +1,8 @@
-import { describe, it, expect, jest } from '@jest/globals';
+import type { CellState } from '@cell-wall/cell-state';
+import { describe, expect, it, jest } from '@jest/globals';
 import type ADB from 'appium-adb';
 import { get, writable } from 'svelte/store';
 import type { DeviceMap } from '../../android/device-manager';
-import type { CellState } from '../../cells';
 import { deriveCellInfo } from '../combine-cell';
 import type { Cell } from '../database';
 

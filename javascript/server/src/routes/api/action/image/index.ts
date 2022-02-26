@@ -1,7 +1,7 @@
+import { blankState } from '@cell-wall/cell-state';
 import type { FastifyInstance } from 'fastify';
 import type Jimp from 'jimp';
 import { get as getState } from 'svelte/store';
-import { CellStateType } from '../../../../lib/cells';
 import { RectangleWithPosition, RESIZE, ResizeOptions, validRect } from '../../../../lib/image';
 import { filterMap, transformMap } from '../../../../lib/map/transform';
 import { repo } from '../../../../lib/repository';
@@ -15,9 +15,7 @@ async function updateRemainingCells(
 ): Promise<void> {
 	switch (behaviour) {
 		case 'blank':
-			await repo.setStates(
-				new Map(remaining.map((serial) => [serial, { type: CellStateType.BLANK }]))
-			);
+			await repo.setStates(new Map(remaining.map((serial) => [serial, blankState])));
 			break;
 		case 'off':
 			await repo.setPower(remaining, false);
@@ -86,7 +84,7 @@ export default async function (fastify: FastifyInstance): Promise<void> {
 
 			repo.setStates(
 				transformMap(rects, (_, serial) => ({
-					type: CellStateType.IMAGE,
+					type: 'IMAGE',
 					src: `/api/action/image/${serial}`
 				}))
 			);
