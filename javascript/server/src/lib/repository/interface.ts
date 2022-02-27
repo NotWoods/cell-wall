@@ -1,23 +1,13 @@
-import type { CellState } from '@cell-wall/cell-state';
+import type { CellData, CellState } from '@cell-wall/cell-state';
 import type { InstallOrUpgradeResult } from 'appium-adb';
 import type { Readable } from 'svelte/store';
 import type { DeviceMap } from '../android/device-manager';
 import type { CellInfo } from '../cells';
 import type { GoogleClient } from '../google';
 import type { SplitImageCache } from '../image/cache';
-import type { Cell } from './database';
-
-export interface CellData {
-	serial: string;
-	info?: Cell;
-	state?: CellState;
-	connected: boolean;
-}
-
-export type CellDataMap = ReadonlyMap<string, CellData>;
 
 export interface Repository {
-	cellData: Readable<CellDataMap>;
+	cellData: Readable<ReadonlyMap<string, CellData>>;
 	images: SplitImageCache;
 	googleApi(): Promise<GoogleClient>;
 	authenticateGoogleApi(code: string): Promise<void>;

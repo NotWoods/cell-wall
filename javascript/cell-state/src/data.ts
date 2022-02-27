@@ -1,4 +1,4 @@
-import type { CellState } from '@cell-wall/cell-state';
+import type { CellState } from './interface';
 
 /**
  * Cell info includes the user-friendly name of a device,
@@ -21,5 +21,3 @@ export interface CellData {
 	state?: CellState;
 	connected: boolean;
 }
-
-export type CellDataMap = ReadonlyMap<string, CellData>;

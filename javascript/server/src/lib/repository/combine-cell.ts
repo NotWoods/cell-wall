@@ -1,14 +1,14 @@
+import type { CellData } from '@cell-wall/cell-state';
 import type { Readable } from 'svelte/store';
 import { derived } from 'svelte/store';
 import type { DeviceManager } from '../android/device-manager';
 import type { CellManager } from '../cells';
-import type { CellData, CellDataMap } from './interface';
 import { computeInfo } from './known';
 
 export function deriveCellInfo(
 	cellManager: Pick<CellManager, 'info' | 'state'>,
 	deviceManager: Pick<DeviceManager, 'devices'>
-): Readable<CellDataMap> {
+): Readable<ReadonlyMap<string, CellData>> {
 	return derived(
 		[cellManager.info, cellManager.state, deviceManager.devices],
 		([infoMap, states, devices]) => {
