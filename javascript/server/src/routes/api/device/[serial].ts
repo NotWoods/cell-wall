@@ -1,6 +1,6 @@
+import type { CellInfo } from '@cell-wall/cell-state';
 import type { FastifyInstance } from 'fastify';
 import { get as getState } from 'svelte/store';
-import type { CellInfo } from '../../../lib/cells';
 import { repo } from '../../../lib/repository';
 
 export default async function (fastify: FastifyInstance): Promise<void> {
