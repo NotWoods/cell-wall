@@ -28,7 +28,7 @@ export default async function (fastify: FastifyInstance): Promise<void> {
 				textState(lines.join(), request.query.backgroundColor)
 			);
 
-			await repo.setStates(states);
+			repo.cellState.setStates(states);
 
 			reply.send(Object.fromEntries(states));
 		}

@@ -1,5 +1,23 @@
 import type { CellState, CellStateImage, CellStateWeb } from '@cell-wall/cell-state';
+import { writable, type Writable } from 'svelte/store';
 import { SERVER_ADDRESS } from '../env';
+
+export interface CellStateStore extends Writable<ReadonlyMap<string, CellState>> {
+	setStates(states: Readonly<Record<string, CellState>> | ReadonlyMap<string, CellState>): void;
+}
+
+export function cellStateStore(): CellStateStore {
+	const store = writable<ReadonlyMap<string, CellState>>(new Map());
+	return {
+		...store,
+		setStates(states) {
+			const entries: Iterable<[string, CellState]> =
+				typeof states.entries === 'function' ? states.entries() : Object.entries(states);
+
+			store.update((map) => new Map([...map, ...entries]));
+		}
+	};
+}
 
 export function toUri(state: CellState, base: string | URL = SERVER_ADDRESS): URL {
 	const { type, ...props } = state;

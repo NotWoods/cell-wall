@@ -44,7 +44,7 @@ export default async function (fastify: FastifyInstance): Promise<void> {
 				return;
 			}
 
-			await repo.setState(serial, state);
+			repo.cellState.setStates(new Map().set(serial, state));
 
 			reply.send([serial]);
 		}

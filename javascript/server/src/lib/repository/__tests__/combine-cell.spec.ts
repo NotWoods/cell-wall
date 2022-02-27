@@ -1,13 +1,12 @@
-import type { CellState } from '@cell-wall/cell-state';
+import type { CellInfo, CellState } from '@cell-wall/cell-state';
 import { describe, expect, it, jest } from '@jest/globals';
 import type ADB from 'appium-adb';
 import { get, writable } from 'svelte/store';
 import type { DeviceMap } from '../../android/device-manager';
 import { deriveCellInfo } from '../combine-cell';
-import type { Cell } from '../database';
 
 function createStores() {
-	const info = writable(new Map<string, Cell>());
+	const info = writable(new Map<string, CellInfo>());
 	const state = writable(new Map<string, CellState>());
 	const devices = writable<DeviceMap>(new Map());
 	return { info, state, devices };
@@ -24,13 +23,13 @@ function mockDevice(model: string, manufacturer: string) {
 describe('deriveCellInfo', () => {
 	it('works with blank data', async () => {
 		const stores = createStores();
-		const derived = get(deriveCellInfo(stores, stores));
+		const derived = get(deriveCellInfo(stores));
 		expect(derived.size).toBe(0);
 	});
 
 	it('initializes from device map', async () => {
 		const stores = createStores();
-		const derivedStore = deriveCellInfo(stores, stores);
+		const derivedStore = deriveCellInfo(stores);
 
 		stores.devices.set(
 			new Map()

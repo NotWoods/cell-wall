@@ -41,7 +41,7 @@ export default async function (fastify: FastifyInstance): Promise<void> {
 				states = request.body as Record<string, CellState>;
 			}
 
-			await repo.setStates(states);
+			repo.cellState.setStates(states);
 
 			reply.send(Object.keys(request.body));
 		}

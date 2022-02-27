@@ -15,7 +15,7 @@ async function updateRemainingCells(
 ): Promise<void> {
 	switch (behaviour) {
 		case 'blank':
-			await repo.setStates(new Map(remaining.map((serial) => [serial, blankState])));
+			repo.cellState.setStates(new Map(remaining.map((serial) => [serial, blankState])));
 			break;
 		case 'off':
 			await repo.setPower(remaining, false);
@@ -82,7 +82,7 @@ export default async function (fastify: FastifyInstance): Promise<void> {
 			repo.images.clear();
 			await repo.images.insert(image, rects, options);
 
-			repo.setStates(
+			repo.cellState.setStates(
 				transformMap(rects, (_, serial) => ({
 					type: 'IMAGE',
 					src: `/api/action/image/${serial}`

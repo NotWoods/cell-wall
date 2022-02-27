@@ -1,20 +1,20 @@
-import type { CellState } from '@cell-wall/cell-state';
-import type { Readable } from 'svelte/store';
+import type { CellInfo } from '@cell-wall/cell-state';
+import type { Readable, Subscriber, Unsubscriber } from 'svelte/store';
 import { get, writable } from 'svelte/store';
-import type { Cell, Database } from '../repository/database';
+import type { Database } from '../repository/database';
 
-export type CellInfo = Cell;
+export class CellManager implements Readable<ReadonlyMap<string, CellInfo>> {
+	private readonly _info = writable<ReadonlyMap<string, CellInfo>>(new Map());
 
-export class CellManager {
-	private readonly _info = writable<ReadonlyMap<string, Cell>>(new Map());
-	private readonly _state = writable<ReadonlyMap<string, CellState>>(new Map());
-
-	get info(): Readable<ReadonlyMap<string, Cell>> {
+	get info(): Readable<ReadonlyMap<string, CellInfo>> {
 		return this._info;
 	}
 
-	get state(): Readable<ReadonlyMap<string, CellState>> {
-		return this._state;
+	subscribe(
+		run: Subscriber<ReadonlyMap<string, CellInfo>>,
+		invalidate?: (value?: ReadonlyMap<string, CellInfo>) => void
+	): Unsubscriber {
+		return this._info.subscribe(run, invalidate);
 	}
 
 	async loadInfo(db: Database): Promise<CellManager> {
@@ -35,10 +35,10 @@ export class CellManager {
 	}
 
 	async writeInfo(db: Database): Promise<void> {
-		await db.insertCells(Array.from(get(this.info).values()));
+		await db.insertCells(Array.from(get(this._info).values()));
 	}
 
-	register(serial: string, info: Cell): void {
+	register(serial: string, info: CellInfo): void {
 		this._info.update((map) => new Map(map).set(serial, info));
 	}
 
@@ -51,16 +51,5 @@ export class CellManager {
 				return map;
 			}
 		});
-	}
-
-	setState(serial: string, state: CellState): void {
-		this._state.update((map) => new Map(map).set(serial, state));
-	}
-
-	setStateMap(states: Readonly<Record<string, CellState>> | ReadonlyMap<string, CellState>): void {
-		const entries: Iterable<[string, CellState]> =
-			typeof states.entries === 'function' ? states.entries() : Object.entries(states);
-
-		this._state.update((map) => new Map([...map, ...entries]));
 	}
 }

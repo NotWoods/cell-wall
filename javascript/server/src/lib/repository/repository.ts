@@ -1,8 +1,9 @@
-import { get } from 'svelte/store';
+import type { CellInfo, CellState } from '@cell-wall/cell-state';
+import { get, Readable } from 'svelte/store';
 import { DeviceManager } from '../android/device-manager';
 import { GithubApi } from '../android/github';
 import { setPower } from '../android/power';
-import { CellManager, toUri } from '../cells';
+import { CellManager, cellStateStore, toUri } from '../cells';
 import {
 	DATABASE_FILENAME,
 	GITHUB_TOKEN,
@@ -21,8 +22,14 @@ import { deriveCellInfo } from './combine-cell';
 import { database } from './database';
 import type { Repository } from './interface';
 
-function sendIntentOnStateChange(cellManager: CellManager, deviceManager: DeviceManager) {
-	subscribeToMapStore(cellManager.state, (newStates, oldStates) => {
+function sendIntentOnStateChange(
+	stores: {
+		info: Readable<ReadonlyMap<string, CellInfo>>;
+		state: Readable<ReadonlyMap<string, CellState>>;
+	},
+	deviceManager: DeviceManager
+) {
+	subscribeToMapStore(stores.state, (newStates, oldStates) => {
 		const changes = new Map(newStates);
 		if (oldStates) {
 			// Delete state if it was already present
@@ -33,7 +40,7 @@ function sendIntentOnStateChange(cellManager: CellManager, deviceManager: Device
 			}
 		}
 
-		const info = get(cellManager.info);
+		const info = get(stores.info);
 		Promise.all(
 			Array.from(changes).map(([serial, state]) => {
 				console.log(serial, state);
@@ -51,6 +58,7 @@ function sendIntentOnStateChange(cellManager: CellManager, deviceManager: Device
 
 export function repository(): Repository {
 	const dbPromise = database(DATABASE_FILENAME);
+	const cellState = cellStateStore();
 
 	const deviceManager = new DeviceManager();
 	let deviceManagerPromise = deviceManager.refreshDevices().then(() => deviceManager);
@@ -58,8 +66,12 @@ export function repository(): Repository {
 	const cellManagerPromise = dbPromise.then((db) => cellManager.loadInfo(db));
 
 	// Send intents whenever cell state changes
-	sendIntentOnStateChange(cellManager, deviceManager);
-	const cellData = deriveCellInfo(cellManager, deviceManager);
+	sendIntentOnStateChange({ info: cellManager, state: cellState }, deviceManager);
+	const cellData = deriveCellInfo({
+		info: cellManager,
+		state: cellState,
+		devices: deviceManager
+	});
 
 	const googleApi = memo(async function googleApi(): Promise<GoogleClient> {
 		if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET) {
@@ -87,6 +99,7 @@ export function repository(): Repository {
 
 	return {
 		cellData,
+		cellState,
 		images: new SplitImageCache(),
 		refreshDevices() {
 			const refreshPromise = deviceManager.refreshDevices();
@@ -128,17 +141,9 @@ export function repository(): Repository {
 		},
 		async setPower(serial, on) {
 			const deviceManager = await deviceManagerPromise;
-			const devices = get(deviceManager.devices);
+			const devices = get(deviceManager);
 			const serialList = asArray(serial);
 			return setPower(getAll(devices, serialList), on);
-		},
-		async setState(serial, state) {
-			const cellManager = await cellManagerPromise;
-			cellManager.setState(serial, state);
-		},
-		async setStates(states) {
-			const cellManager = await cellManagerPromise;
-			cellManager.setStateMap(states);
 		},
 		async registerCell(info) {
 			const cellManager = await cellManagerPromise;

@@ -5,7 +5,7 @@ import type { CellState } from './interface';
  * the width and height of the display in density independent pixels,
  * and the x/y location relative to other phones.
  */
-export interface Cell {
+export interface CellInfo {
 	serial: string;
 	deviceName?: string;
 	width?: number;
@@ -15,9 +15,11 @@ export interface Cell {
 	server?: string;
 }
 
+export type Cell = CellInfo;
+
 export interface CellData {
 	serial: string;
-	info?: Cell;
+	info?: CellInfo;
 	state?: CellState;
 	connected: boolean;
 }

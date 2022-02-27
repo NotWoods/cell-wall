@@ -1,6 +1,6 @@
 import type { Device, InstallOrUpgradeResult } from 'appium-adb';
 import { ADB } from 'appium-adb';
-import type { Readable } from 'svelte/store';
+import type { Readable, Subscriber, Unsubscriber } from 'svelte/store';
 import { writable } from 'svelte/store';
 import { PORT } from '../env';
 import { transformMapAsync } from '../map/transform';
@@ -20,18 +20,18 @@ function noDeviceError(err: unknown): err is Error {
 	return err instanceof Error && err.message.includes('Could not find a connected Android device');
 }
 
-export class DeviceManager {
+export class DeviceManager implements Readable<DeviceMap> {
 	private readonly _devices = writable<DeviceMap>(new Map());
 	private _lastMap!: DeviceMap;
 
 	constructor() {
-		this.devices.subscribe((map) => {
+		this._devices.subscribe((map) => {
 			this._lastMap = map;
 		});
 	}
 
-	get devices(): Readable<DeviceMap> {
-		return this._devices;
+	subscribe(run: Subscriber<DeviceMap>, invalidate?: (value?: DeviceMap) => void): Unsubscriber {
+		return this._devices.subscribe(run, invalidate);
 	}
 
 	async refreshDevices(): Promise<DeviceMap> {

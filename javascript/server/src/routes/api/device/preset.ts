@@ -1,6 +1,6 @@
+import type { CellState } from '@cell-wall/cell-state';
 import type { FastifyInstance } from 'fastify';
 import fetch from 'node-fetch';
-import type { CellState } from '@cell-wall/cell-state';
 import { repo } from '../../../lib/repository';
 
 export default async function (fastify: FastifyInstance): Promise<void> {
@@ -19,7 +19,7 @@ export default async function (fastify: FastifyInstance): Promise<void> {
 			);
 			const presetStates = (await presetResponse.json()) as Record<string, CellState>;
 
-			await repo.setStates(presetStates);
+			repo.cellState.setStates(presetStates);
 
 			reply.send(presetStates);
 		}

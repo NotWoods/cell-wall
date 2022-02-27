@@ -1,34 +1,20 @@
+import type { CellInfo } from '@cell-wall/cell-state';
 import type { Auth } from 'googleapis';
 import type { Adapter } from 'lowdb';
 import { JSONFile, Memory, Low } from 'lowdb';
 
 interface LowData {
 	googleCredentials?: Auth.Credentials | undefined;
-	cells: Record<string, Cell>;
-}
-
-/**
- * Cell info includes the user-friendly name of a device,
- * the width and height of the display in density independent pixels,
- * and the x/y location relative to other phones.
- */
-export interface Cell {
-	serial: string;
-	deviceName?: string;
-	width?: number;
-	height?: number;
-	x?: number;
-	y?: number;
-	server?: string;
+	cells: Record<string, CellInfo>;
 }
 
 export interface Database {
 	getGoogleCredentials(): Promise<Auth.Credentials | undefined>;
 	setGoogleCredentials(credentials: Auth.Credentials): Promise<void>;
-	getCell(serial: string): Promise<Cell | undefined>;
-	getCells(): Promise<Cell[]>;
-	insertCell(cell: Cell): Promise<void>;
-	insertCells(cell: readonly Cell[]): Promise<void>;
+	getCell(serial: string): Promise<CellInfo | undefined>;
+	getCells(): Promise<CellInfo[]>;
+	insertCell(cell: CellInfo): Promise<void>;
+	insertCells(cell: readonly CellInfo[]): Promise<void>;
 }
 
 export async function database(filename?: string | undefined): Promise<Database> {
