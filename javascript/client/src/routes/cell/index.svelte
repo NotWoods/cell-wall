@@ -1,7 +1,8 @@
 <script lang="ts">
-	import Form from '$lib/components/Form.svelte';
-	import VerticalField from '$lib/components/Field/VerticalField.svelte';
+	import { goto } from '$app/navigation';
 	import SubmitButton from '$lib/components/Button/SubmitButton.svelte';
+	import VerticalField from '$lib/components/Field/VerticalField.svelte';
+	import Form from '$lib/components/Form.svelte';
 	import { post } from '../remote/_form';
 
 	let id = '';
@@ -10,8 +11,7 @@
 		const data = Object.fromEntries(formData);
 
 		await post(action.toString(), data);
-
-		window.location.pathname = `/cell/frame?id=${id}`;
+		goto(`/cell/frame?id=${id}`);
 	}
 </script>
 
