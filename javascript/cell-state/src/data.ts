@@ -21,5 +21,5 @@ export interface CellData {
 	serial: string;
 	info?: CellInfo;
 	state?: CellState;
-	connected: boolean;
+	connection?: 'web' | 'android' | undefined;
 }

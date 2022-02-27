@@ -1,9 +1,11 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import SubmitButton from '$lib/components/Button/SubmitButton.svelte';
 	import VerticalField from '$lib/components/Field/VerticalField.svelte';
 	import Form from '$lib/components/Form.svelte';
+	import TopBar from '$lib/components/TopBar/TopBar.svelte';
+	import 'tailwindcss/tailwind.css';
 	import { post } from '../remote/_form';
+	import ResetSubmit from './_ResetSubmit.svelte';
 
 	let id = '';
 
@@ -11,27 +13,25 @@
 		const data = Object.fromEntries(formData);
 
 		await post(action.toString(), data);
-		goto(`/cell/frame?id=${id}`);
+		await goto(`/cell/frame?id=${id}`);
 	}
 </script>
 
 <svelte:head>
 	<title>New Cell | CellWall</title>
-	<link rel="stylesheet" href="https://jenil.github.io/bulmaswatch/darkly/bulmaswatch.min.css" />
 </svelte:head>
 
-<nav class="navbar">
-	<div class="navbar-brand">
-		<a class="navbar-item" href="https://github.com/NotWoods/cell-wall">
-			<img src="/logo.png" alt="" width="28" height="28" />
-			<span style="margin-left: 0.5rem">CellWall</span>
-		</a>
-	</div>
-</nav>
+<TopBar />
 
-<main class="section">
-	<div class="container">
-		<Form action="/api/device/{id}" onSubmit={submit} let:loading>
+<div
+	class="bg-slate-900 bg-gradient-to-r"
+	style="--tw-gradient-stops: hsl(222deg 47% 11%) 0%, hsl(222deg 45% 12%) 11%, hsl(221deg 43% 13%) 22%,
+    hsl(221deg 41% 13%) 33%, hsl(220deg 39% 14%) 44%, hsl(219deg 38% 15%) 56%,
+    hsl(219deg 36% 15%) 67%, hsl(218deg 35% 16%) 78%, hsl(218deg 34% 17%) 89%,
+    hsl(217deg 33% 17%) 100%; min-height: calc(100vh - 3.25rem);"
+>
+	<main class="max-w-7xl mx-auto p-2 py-4 sm:p-6 lg:p-8">
+		<Form class="flex flex-col gap-y-4" action="/api/device/{id}" onSubmit={submit} let:loading>
 			<VerticalField for="control-id" label="ID" let:inputClassName>
 				<input
 					id="control-id"
@@ -43,15 +43,10 @@
 				/>
 			</VerticalField>
 			<VerticalField for="control-name" label="Name" let:inputClassName>
-				<input id="control-name" class={inputClassName} name="name" type="text" required />
+				<input id="control-name" class={inputClassName} name="deviceName" type="text" required />
 			</VerticalField>
 
-			<div class="field is-grouped is-grouped-right" style="margin-top: 3rem">
-				<p class="control">
-					<button type="reset" class="button is-light">Reset</button>
-				</p>
-				<SubmitButton {loading} />
-			</div>
+			<ResetSubmit {loading} />
 		</Form>
-	</div>
-</main>
+	</main>
+</div>

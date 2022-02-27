@@ -1,3 +1,3 @@
-export * from './data';
-export * from './interface';
-export * from './schema';
+export * from './data.js';
+export * from './interface/index.js';
+export * from './schema.js';

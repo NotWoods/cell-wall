@@ -1,6 +1,6 @@
-export function createBlobUrlFactory(): (blob: Blob | string) => string {
+export function createBlobUrlFactory(): (blob: ArrayBuffer | Blob | string) => string {
 	let lastUrl = '';
-	return function createBlobUrl(blob: Blob | string) {
+	return function createBlobUrl(blob: ArrayBuffer | Blob | string) {
 		if (lastUrl.startsWith('blob:')) {
 			URL.revokeObjectURL(lastUrl);
 		}
@@ -8,6 +8,9 @@ export function createBlobUrlFactory(): (blob: Blob | string) => string {
 		if (typeof blob === 'string') {
 			lastUrl = blob;
 		} else {
+			if (!(blob instanceof Blob)) {
+				blob = new Blob([blob]);
+			}
 			lastUrl = URL.createObjectURL(blob);
 		}
 		return lastUrl;

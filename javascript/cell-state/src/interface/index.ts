@@ -1,7 +1,7 @@
-import type { CellStateBlank } from './blank';
-import type { CellStateImage } from './image';
-import type { CellStateText } from './text';
-import type { CellStateWeb } from './web';
+import type { CellStateBlank } from './blank.js';
+import type { CellStateImage } from './image.js';
+import type { CellStateText } from './text.js';
+import type { CellStateWeb } from './web.js';
 
 export type CellState = CellStateBlank | CellStateText | CellStateImage | CellStateWeb;
 
@@ -12,10 +12,10 @@ export const cellStateTypes: ReadonlySet<CellState['type']> = new Set([
 	'WEB'
 ]);
 
-export * from './blank';
-export * from './image';
-export * from './text';
-export * from './web';
+export * from './blank.js';
+export * from './image.js';
+export * from './text.js';
+export * from './web.js';
 
 export function filterState(
 	type: CellStateText['type'],

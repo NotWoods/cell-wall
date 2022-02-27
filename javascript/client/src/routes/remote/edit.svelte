@@ -51,14 +51,18 @@
 		</select>
 	</HorizontalField>
 
-	<HorizontalField for="control-connected" label="Connected">
-		<input
-			type="checkbox"
-			id="control-connected"
-			name="connected"
+	<HorizontalField for="control-connection" label="Connection" let:inputClassName>
+		<select
+			name="connection"
+			id="control-connection"
+			value={selectedCell?.connection ?? 'none'}
 			disabled
-			checked={selectedCell?.connected ?? false}
-		/>
+			class={inputClassName}
+		>
+			<option value="none" />
+			<option value="web">Web</option>
+			<option value="android">Android</option>
+		</select>
 	</HorizontalField>
 
 	<HorizontalField label="Power">

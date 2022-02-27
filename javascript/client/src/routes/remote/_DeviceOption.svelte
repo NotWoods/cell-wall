@@ -4,6 +4,6 @@
 	export let device: CellData;
 </script>
 
-<option value={device.serial} disabled={!device.connected}>
-	{device.info?.deviceName || device.serial}
+<option value={device.serial}>
+	{device.info?.deviceName || device.serial} ({device.connection ?? 'disconnected'})
 </option>

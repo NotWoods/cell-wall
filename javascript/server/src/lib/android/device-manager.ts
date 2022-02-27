@@ -36,7 +36,7 @@ export class DeviceManager implements Readable<DeviceMap> {
 
 	async refreshDevices(): Promise<DeviceMap> {
 		const adbGlobal = await ADB.createADB({
-			allowOfflineDevices: false
+			allowOfflineDevices: process.env['NODE_ENV'] !== 'production'
 		});
 		let devices: Device[];
 		try {

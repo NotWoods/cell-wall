@@ -3,7 +3,7 @@ import type { FastifyInstance } from 'fastify';
 import type Jimp from 'jimp';
 import { get as getState } from 'svelte/store';
 import { RectangleWithPosition, RESIZE, ResizeOptions, validRect } from '../../../../lib/image';
-import { filterMap, transformMap } from '../../../../lib/map/transform';
+import { filterMap, transformMap, transformMapAsync } from '../../../../lib/map/transform';
 import { repo } from '../../../../lib/repository';
 import { imagePlugin } from '../../../../parser/image';
 
@@ -83,10 +83,18 @@ export default async function (fastify: FastifyInstance): Promise<void> {
 			await repo.images.insert(image, rects, options);
 
 			repo.cellState.setStates(
-				transformMap(rects, (_, serial) => ({
-					type: 'IMAGE',
-					src: `/api/action/image/${serial}`
-				}))
+				await transformMapAsync(rects, async (_, serial) => {
+					const buffer = await repo.images.get(serial)!.getBufferAsync(image.getMIME());
+					const arrayBuffer = buffer.buffer.slice(
+						buffer.byteOffset,
+						buffer.byteOffset + buffer.byteLength
+					);
+
+					return {
+						type: 'IMAGE',
+						payload: arrayBuffer
+					};
+				})
 			);
 
 			if (request.query.rest) {
