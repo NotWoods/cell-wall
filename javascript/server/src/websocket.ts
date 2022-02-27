@@ -1,32 +1,61 @@
+import { blankState, CellState } from '@cell-wall/cell-state';
 import type { FastifyInstance } from 'fastify';
-import websocket from 'fastify-websocket';
-import type { Readable } from 'svelte/store';
+import type { IncomingMessage } from 'http';
+import { WebSocket, WebSocketServer } from 'ws';
+import { cellStateFor } from './lib/cells';
+import { repo } from './lib/repository';
 
-interface WebsocketSubsystemOptions {
-	store: Readable<unknown>;
+const CELL_SERIAL = /^\/cells\/(\w+)\/?$/;
+const blankBuffer = new ArrayBuffer(0);
+
+function handleCellConnection(ws: WebSocket, request: IncomingMessage) {
+	const { pathname } = new URL(request.url!, `http://${request.headers.host}`);
+	const [, serial] = pathname.match(CELL_SERIAL)!;
+
+	let lastState: CellState = blankState;
+	const unsubscribe = cellStateFor(repo.cellState, serial).subscribe((state) => {
+		if (!state) return;
+
+		if (state.type === lastState.type) {
+			const { payload = blankBuffer } = state as CellState & { payload?: unknown };
+			ws.send(payload);
+		}
+
+		ws.send(JSON.stringify(state));
+		ws.send(blankBuffer);
+		lastState = state;
+	});
+
+	ws.on('close', unsubscribe);
 }
 
-/**
- * Broadcast a svelte store state to all WebSockets connected to a given server.
- */
-export async function websocketSubsystem(
-	fastify: FastifyInstance,
-	options: WebsocketSubsystemOptions
-): Promise<void> {
-	const { store } = options;
-	await fastify.register(websocket, {
-		errorHandler(error, connection) {
-			console.error('websocket error:', error);
-			connection.destroy(error);
+export async function websocketSubsystem(fastify: FastifyInstance): Promise<void> {
+	const remoteServer = new WebSocketServer({ noServer: true });
+	const cellServer = new WebSocketServer({ noServer: true });
+
+	fastify.server.on('upgrade', (request, socket, head) => {
+		const { pathname } = new URL(request.url!, `http://${request.headers.host}`);
+		if (pathname === '/remote') {
+			remoteServer.handleUpgrade(request, socket, head, (ws) => {
+				remoteServer.emit('connection', ws, request);
+			});
+		} else if (CELL_SERIAL.test(pathname)) {
+			cellServer.handleUpgrade(request, socket, head, (ws) => {
+				cellServer.emit('connection', ws, request);
+			});
+		} else {
+			socket.destroy();
 		}
 	});
 
-	fastify.get('/', { websocket: true }, ({ socket }) => {
-		console.log('connection');
+	remoteServer.on('connection', function handleRemoteConnection(ws) {
+		const unsubscribe = repo.cellData.subscribe((data) => {
+			const dataObject = JSON.stringify(Object.fromEntries(data));
+			ws.send(dataObject);
+		});
 
-		// Send live updates to clients
-		const unsubscribe = store.subscribe((value) => socket.send(value));
-
-		socket.on('close', unsubscribe);
+		ws.on('close', unsubscribe);
 	});
+
+	cellServer.on('connection', handleCellConnection);
 }

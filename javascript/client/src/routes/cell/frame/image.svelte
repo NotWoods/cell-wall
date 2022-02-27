@@ -1,7 +1,9 @@
 <script lang="ts">
-	import { CellStateImage, filterState } from '@cell-wall/cell-state';
+	import { createBlobUrlFactory } from '$lib/blob';
+	import { type CellStateImage, filterState } from '@cell-wall/cell-state';
 	import { getFrameContext } from './__layout.svelte';
 
+	const createBlobUrl = createBlobUrlFactory();
 	function objectFit(fit: CellStateImage['scaleType']) {
 		switch (fit) {
 			case 'FIT_CENTER':
@@ -17,7 +19,7 @@
 	const { state } = getFrameContext();
 	$: imageState = filterState('IMAGE', $state);
 
-	$: src = imageState?.src;
+	$: src = imageState ? createBlobUrl(imageState.payload) : undefined;
 	$: fit = objectFit(imageState?.scaleType);
 </script>
 

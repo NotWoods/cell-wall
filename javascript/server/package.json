@@ -28,7 +28,8 @@
 		"lowdb": "^3.0.0",
 		"middie": "^5.4.0",
 		"node-fetch": "^3.2.0",
-		"pino-pretty": "^7.5.1"
+		"pino-pretty": "^7.5.1",
+		"ws": "^8.5.0"
 	},
 	"devDependencies": {
 		"@jest/globals": "^27.5.1",
