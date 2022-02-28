@@ -8,7 +8,7 @@
 
 	$: webState = filterState('WEB', $state);
 
-	$: url = webState?.url || 'about:blank';
+	$: url = webState?.payload || 'about:blank';
 	$: {
 		if (frame) {
 			frame.src = url;
@@ -16,7 +16,7 @@
 	}
 </script>
 
-<iframe title="Cell content" bind:this={frame} />
+<iframe src={url} title="Cell content" bind:this={frame} />
 
 <style>
 	iframe {

@@ -75,6 +75,7 @@ export function repository(): Repository {
 		devices: deviceManager,
 		webSockets
 	});
+	cellData.subscribe((state) => console.info('CellData', state));
 
 	const googleApi = memo(async function googleApi(): Promise<GoogleClient> {
 		if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET) {

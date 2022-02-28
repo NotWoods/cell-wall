@@ -12,7 +12,7 @@
 	const name = 'on';
 	const notLoading: Promise<void> = Promise.resolve();
 
-	export let serial: string;
+	export let serial: string | undefined;
 
 	let loading: Promise<void> = Promise.resolve();
 	let submitter = '';
@@ -34,6 +34,7 @@
 		{colors}
 		{name}
 		value="false"
+		disabled={serial === undefined}
 		class="rounded-r-none border-r border-slate-500"
 		formaction={formAction}
 		on:click={handlePowerClick}
@@ -46,6 +47,7 @@
 		{colors}
 		{name}
 		value="true"
+		disabled={serial === undefined}
 		class="rounded-l-none"
 		formaction={formAction}
 		on:click={handlePowerClick}

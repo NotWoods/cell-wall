@@ -16,7 +16,8 @@
 		<TopBarItem href="/remote/text">Text</TopBarItem>
 		<TopBarItem href="/remote/image">Image</TopBarItem>
 		<TopBarItem href="/remote/custom">Custom</TopBarItem>
-		<TopBarItem href="/remote/edit" class="ml-auto">Edit</TopBarItem>
+		<TopBarItem href="/cell" class="ml-auto">Cell</TopBarItem>
+		<TopBarItem href="/remote/edit">Edit</TopBarItem>
 		<TopBarItem href="https://github.com/NotWoods/cell-wall">
 			<svg
 				class=""

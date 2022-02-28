@@ -6,7 +6,6 @@
 	"module": "./src/index.js",
 	"types": "./src/index.d.ts",
 	"scripts": {
-		"build": "tsc --project .",
 		"check": "tsc --project .",
 		"check:watch": "tsc --project . --watch",
 		"lint": "prettier --check . && eslint --ignore-path .prettierignore .",

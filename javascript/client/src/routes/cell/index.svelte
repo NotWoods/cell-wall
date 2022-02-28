@@ -19,7 +19,7 @@
 		};
 
 		await post(action.toString(), data);
-		await goto(`/cell/frame?id=${id}`);
+		await goto(`/cell/frame/blank?id=${id}`, { replaceState: false });
 	}
 </script>
 

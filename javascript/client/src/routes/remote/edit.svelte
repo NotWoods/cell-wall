@@ -12,9 +12,13 @@
 	const devices = storeValues(remoteState);
 
 	// serial from selected device
-	let selectedDeviceSerial = $devices[0]?.serial;
+	let selectedDeviceSerial: string | undefined;
 
-	$: selectedCell = $remoteState.get(selectedDeviceSerial);
+	$: firstDevice = $devices[0]?.serial;
+	$: selectedCell = $remoteState.get(selectedDeviceSerial ?? firstDevice);
+	$: {
+		console.log('selected', selectedCell);
+	}
 
 	async function submit(formData: FormData, action: URL) {
 		const res = await fetch(action.toString(), {

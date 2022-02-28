@@ -1,6 +1,5 @@
 <main style="background: #429A46;">
-	<img src="/logo.png" alt="" width="28" height="28" />
-	<h1 class="headline-1">CellWall</h1>
+	<img src="/logo.png" alt="" width="192" height="192" />
 </main>
 
 <style>
@@ -8,8 +7,6 @@
 		display: flex;
 		height: 100vh;
 		align-items: center;
-	}
-	h1 {
-		margin: 8px;
+		justify-content: center;
 	}
 </style>

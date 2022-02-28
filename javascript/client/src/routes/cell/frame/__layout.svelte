@@ -42,10 +42,15 @@
 
 	$: url = `/cell/frame/${$state.type.toLowerCase()}`;
 	$: {
-		goto(`${url}?serial=${serial}`);
+		console.log('CellState', $state);
+	}
+	$: {
+		goto(`${url}?id=${serial}`, { replaceState: true });
 	}
 </script>
 
 <svelte:head>
-	<title>CellWall</title>
+	<title>Cell</title>
 </svelte:head>
+
+<slot />

@@ -10,6 +10,15 @@ export function connect(serial: string): WebSocket | undefined {
 	}
 }
 
+function emptyData(data: ArrayBuffer | Blob) {
+	if (data instanceof ArrayBuffer) {
+		return data.byteLength === 0;
+	} else if (data instanceof Blob) {
+		return data.size === 0;
+	}
+	return false;
+}
+
 /**
  * Listen to socket events from the server containing the current cell state.
  *
@@ -33,7 +42,9 @@ export function cellState(socket: WebSocket | undefined): Readable<CellState> {
 				// else fall through
 			}
 
-			receivedState.payload = data;
+			if (!emptyData(data)) {
+				receivedState.payload = data;
+			}
 			set(receivedState as CellState);
 		}
 

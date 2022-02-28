@@ -23,28 +23,28 @@ export const cellStateBlankSchema = buildCellState({ type: 'BLANK' });
 export const cellStateWebSchema = buildCellState({
 	type: 'WEB',
 	properties: {
-		url: { type: 'string', format: 'uri' }
+		payload: { type: 'string', format: 'uri' }
 	},
-	required: ['url']
+	required: ['payload']
 });
 export const cellStateTextSchema = buildCellState({
 	type: 'TEXT',
 	properties: {
-		text: { type: 'string' },
+		payload: { type: 'string' },
 		backgroundColor: { type: 'string' }
 	},
-	required: ['text']
+	required: ['payload']
 });
 export const cellStateImageSchema = buildCellState({
 	type: 'IMAGE',
 	properties: {
-		src: { type: 'string', format: 'uri' },
+		payload: { type: 'string', format: 'uri' },
 		scaleType: {
 			type: 'string',
 			enum: ['FIT_CENTER', 'FIT_XY', 'CENTER_INSIDE']
 		}
 	},
-	required: ['src']
+	required: ['payload']
 });
 export const cellStateSchema = {
 	type: 'object',

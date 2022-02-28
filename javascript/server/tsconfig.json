@@ -3,5 +3,6 @@
 	"compilerOptions": {
 		"noEmit": true
 	},
+	"references": [{ "path": "../cell-state" }],
 	"include": ["src/**/*.d.ts", "src/**/*.ts"]
 }
