@@ -3,9 +3,9 @@
 </script>
 
 <script lang="ts">
-	import Form from '$lib/components/Form.svelte';
+	import ResetSubmit from '$lib/components/Button/ResetSubmit.svelte';
 	import VerticalField from '$lib/components/Field/VerticalField.svelte';
-	import ResetSubmit from './_ResetSubmit.svelte';
+	import Form from '$lib/components/Form.svelte';
 
 	async function submit(data: FormData, action: URL) {
 		action.searchParams.set('backgroundColor', data.get('backgroundColor') as string);

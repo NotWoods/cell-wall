@@ -20,7 +20,7 @@ function handleCellConnection(ws: WebSocket, request: IncomingMessage) {
 		if (!state) return;
 
 		if (state.type === lastState.type) {
-			const { payload = blankBuffer } = state as CellState & { payload?: unknown };
+			const { payload = blankBuffer } = state as CellState;
 			ws.send(payload);
 		}
 
@@ -38,6 +38,15 @@ function handleCellConnection(ws: WebSocket, request: IncomingMessage) {
 		unsubscribe();
 		repo.webSockets.delete(serial);
 	});
+}
+
+function handleRemoteConnection(ws: WebSocket) {
+	const unsubscribe = repo.cellData.subscribe((data) => {
+		const dataObject = JSON.stringify(Object.fromEntries(data));
+		ws.send(dataObject);
+	});
+
+	ws.on('close', unsubscribe);
 }
 
 export async function websocketSubsystem(fastify: FastifyInstance): Promise<void> {
@@ -59,14 +68,6 @@ export async function websocketSubsystem(fastify: FastifyInstance): Promise<void
 		}
 	});
 
-	remoteServer.on('connection', function handleRemoteConnection(ws) {
-		const unsubscribe = repo.cellData.subscribe((data) => {
-			const dataObject = JSON.stringify(Object.fromEntries(data));
-			ws.send(dataObject);
-		});
-
-		ws.on('close', unsubscribe);
-	});
-
+	remoteServer.on('connection', handleRemoteConnection);
 	cellServer.on('connection', handleCellConnection);
 }

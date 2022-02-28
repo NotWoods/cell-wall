@@ -1,12 +1,12 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import ResetSubmit from '$lib/components/Button/ResetSubmit.svelte';
 	import VerticalField from '$lib/components/Field/VerticalField.svelte';
 	import Form from '$lib/components/Form.svelte';
 	import TopBar from '$lib/components/TopBar/TopBar.svelte';
 	import type { CellInfo } from '@cell-wall/cell-state';
 	import 'tailwindcss/tailwind.css';
 	import { post } from '../remote/_form';
-	import ResetSubmit from './_ResetSubmit.svelte';
 
 	let id = '';
 

@@ -36,9 +36,9 @@
 
 	setContext('frame', { socket, state });
 
-	socket.addEventListener('error', (event) => console.error('Socket error', event));
-	socket.addEventListener('open', (event) => console.info('Socket open', event));
-	socket.addEventListener('close', (event) => console.info('Socket close', event));
+	socket?.addEventListener('error', (event) => console.error('Socket error', event));
+	socket?.addEventListener('open', (event) => console.info('Socket open', event));
+	socket?.addEventListener('close', (event) => console.info('Socket close', event));
 
 	$: url = `/cell/frame/${$state.type.toLowerCase()}`;
 	$: {

@@ -1,17 +1,14 @@
-<script lang="ts" context="module">
-	import { createLoadWithDevices, Props } from './_load';
-
-	export const load = createLoadWithDevices();
-</script>
-
 <script lang="ts">
-	import Form from '$lib/components/Form.svelte';
-	import DeviceOption from './_DeviceOption.svelte';
-	import HorizontalField from '$lib/components/Field/HorizontalField.svelte';
+	import ResetSubmit from '$lib/components/Button/ResetSubmit.svelte';
 	import FileInput from '$lib/components/Field/FileInput.svelte';
-	import ResetSubmit from './_ResetSubmit.svelte';
+	import HorizontalField from '$lib/components/Field/HorizontalField.svelte';
+	import Form from '$lib/components/Form.svelte';
+	import { storeValues } from '$lib/connection/remote-socket';
+	import DeviceOption from './_DeviceOption.svelte';
+	import { getRemoteContext } from './__layout.svelte';
 
-	export let devices: Props['devices'];
+	const { state: remoteState } = getRemoteContext();
+	const devices = storeValues(remoteState);
 
 	let fileName = 'No file selected.';
 
@@ -56,7 +53,7 @@
 
 	<HorizontalField for="control-serial" label="Devices" let:inputClassName>
 		<select multiple name="device" id="control-serial" class={inputClassName}>
-			{#each devices as device (device.serial)}
+			{#each $devices as device (device.serial)}
 				<DeviceOption {device} />
 			{/each}
 		</select>

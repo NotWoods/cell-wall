@@ -1,22 +1,19 @@
-<script lang="ts" context="module">
-	import { allCellStateSchemas, getTypeFromSchema } from '@cell-wall/cell-state';
-	import { createLoadWithDevices, Props } from './_load';
-
-	export const load = createLoadWithDevices();
-</script>
-
 <script lang="ts">
+	import ResetSubmit from '$lib/components/Button/ResetSubmit.svelte';
+	import HorizontalField from '$lib/components/Field/HorizontalField.svelte';
 	import Form from '$lib/components/Form.svelte';
+	import Tabs from '$lib/components/Tabs/Tabs.svelte';
+	import { storeValues } from '$lib/connection/remote-socket';
+	import { allCellStateSchemas, getTypeFromSchema } from '@cell-wall/cell-state';
 	import ControllerFields from './custom/_ControllerFields.svelte';
 	import PowerButtons from './custom/_PowerButtons.svelte';
 	import TypeTab from './custom/_TypeTab.svelte';
 	import DeviceOption from './_DeviceOption.svelte';
 	import { post } from './_form';
-	import Tabs from '$lib/components/Tabs/Tabs.svelte';
-	import HorizontalField from '$lib/components/Field/HorizontalField.svelte';
-	import ResetSubmit from './_ResetSubmit.svelte';
+	import { getRemoteContext } from './__layout.svelte';
 
-	export let devices: Props['devices'];
+	const { state: remoteState } = getRemoteContext();
+	const devices = storeValues(remoteState);
 
 	// Selected schema type
 	let selectedType = 'BLANK';
@@ -56,7 +53,7 @@
 	<HorizontalField for="control-serial" label="Device" let:inputClassName>
 		<select class="{inputClassName} cursor-pointer" bind:value={selectedDevice} id="control-serial">
 			<option value="">All devices</option>
-			{#each devices as device (device.serial)}
+			{#each $devices as device (device.serial)}
 				<DeviceOption {device} />
 			{/each}
 		</select>

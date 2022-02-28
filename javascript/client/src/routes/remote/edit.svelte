@@ -1,23 +1,20 @@
-<script lang="ts" context="module">
-	import { createLoadWithDevices, Props } from './_load';
-
-	export const load = createLoadWithDevices();
-</script>
-
 <script lang="ts">
+	import ResetSubmit from '$lib/components/Button/ResetSubmit.svelte';
+	import HorizontalField from '$lib/components/Field/HorizontalField.svelte';
 	import Form from '$lib/components/Form.svelte';
+	import { storeValues } from '$lib/connection/remote-socket';
 	import PowerButtons from './custom/_PowerButtons.svelte';
 	import DeviceOption from './_DeviceOption.svelte';
 	import { formDataAsSearchParams } from './_form';
-	import HorizontalField from '$lib/components/Field/HorizontalField.svelte';
-	import ResetSubmit from './_ResetSubmit.svelte';
+	import { getRemoteContext } from './__layout.svelte';
 
-	export let devices: Props['devices'];
+	const { state: remoteState } = getRemoteContext();
+	const devices = storeValues(remoteState);
 
 	// serial from selected device
-	let selectedDeviceSerial = devices[0]?.serial;
+	let selectedDeviceSerial = $devices[0]?.serial;
 
-	$: selectedCell = devices.find((cell) => cell.serial === selectedDeviceSerial);
+	$: selectedCell = $remoteState.get(selectedDeviceSerial);
 
 	async function submit(formData: FormData, action: URL) {
 		const res = await fetch(action.toString(), {
@@ -45,7 +42,7 @@
 			bind:value={selectedDeviceSerial}
 			id="control-serial"
 		>
-			{#each devices as device (device.serial)}
+			{#each $devices as device (device.serial)}
 				<DeviceOption {device} />
 			{/each}
 		</select>

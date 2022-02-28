@@ -1,11 +1,14 @@
+import { browser } from '$app/env';
 import { blankState, CellState } from '@cell-wall/cell-state';
 import { Readable, readable } from 'svelte/store';
 
-export function connect(serial: string): WebSocket {
-	return new WebSocket(`ws://${window.location.host}/cells/${serial}`);
+export function connect(serial: string): WebSocket | undefined {
+	if (browser) {
+		return new WebSocket(`ws://${window.location.host}/cells/${serial}`);
+	} else {
+		return undefined;
+	}
 }
-
-type PartialCellState = Omit<CellState, 'payload'> & { payload?: unknown };
 
 /**
  * Listen to socket events from the server containing the current cell state.
@@ -14,8 +17,8 @@ type PartialCellState = Omit<CellState, 'payload'> & { payload?: unknown };
  * This pair is converted into a CellState object.
  * Binary data can be sent multiple times, and updates the last sent state type.
  */
-export function cellState(socket: WebSocket): Readable<CellState> {
-	let receivedState: PartialCellState = blankState;
+export function cellState(socket: WebSocket | undefined): Readable<CellState> {
+	let receivedState: CellState = blankState;
 	return readable<CellState>(blankState, (set) => {
 		const controller = new AbortController();
 
@@ -24,7 +27,7 @@ export function cellState(socket: WebSocket): Readable<CellState> {
 			if (typeof data === 'string') {
 				const maybeJson: unknown = JSON.parse(data);
 				if (maybeJson && typeof maybeJson === 'object' && 'type' in maybeJson) {
-					receivedState = maybeJson as PartialCellState;
+					receivedState = maybeJson as CellState;
 					return;
 				}
 				// else fall through
@@ -34,7 +37,7 @@ export function cellState(socket: WebSocket): Readable<CellState> {
 			set(receivedState as CellState);
 		}
 
-		socket.addEventListener('message', handleMessage, controller);
+		socket?.addEventListener('message', handleMessage, controller);
 		return () => controller.abort();
 	});
 }
