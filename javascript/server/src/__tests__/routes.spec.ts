@@ -2,7 +2,7 @@ import { describe, expect, it } from '@jest/globals';
 import { readdir, readFile, stat } from 'fs/promises';
 import { parse, posix, relative, resolve, win32 } from 'path';
 
-const DYNAMIC_IMPORT = /import\('([-.\w\[\]\/]+)'\)/g;
+const DYNAMIC_IMPORT = /import\('([-.\w[\]/]+)'\)/g;
 const srcFolder = resolve(__dirname, '../');
 
 async function getFiles(dir: string): Promise<string[]> {

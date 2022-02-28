@@ -4,7 +4,7 @@
 	import { getContext, setContext } from 'svelte';
 	import type { Readable } from 'svelte/store';
 
-	export function getFrameContext() {
+	export function getFrameContext(): { socket: WebSocket; state: Readable<CellState> } {
 		return getContext('frame') as { socket: WebSocket; state: Readable<CellState> };
 	}
 
