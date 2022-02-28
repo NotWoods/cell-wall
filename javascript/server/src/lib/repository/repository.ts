@@ -21,6 +21,7 @@ import { memo } from '../memo';
 import { deriveCellInfo } from './combine-cell';
 import { database } from './database';
 import type { Repository } from './interface';
+import { webSocketStore } from './socket-store';
 
 function sendIntentOnStateChange(
 	stores: {
@@ -59,6 +60,7 @@ function sendIntentOnStateChange(
 export function repository(): Repository {
 	const dbPromise = database(DATABASE_FILENAME);
 	const cellState = cellStateStore();
+	const webSockets = webSocketStore();
 
 	const deviceManager = new DeviceManager();
 	let deviceManagerPromise = deviceManager.refreshDevices().then(() => deviceManager);
@@ -70,7 +72,8 @@ export function repository(): Repository {
 	const cellData = deriveCellInfo({
 		info: cellManager,
 		state: cellState,
-		devices: deviceManager
+		devices: deviceManager,
+		webSockets
 	});
 
 	const googleApi = memo(async function googleApi(): Promise<GoogleClient> {
@@ -101,6 +104,7 @@ export function repository(): Repository {
 		cellData,
 		cellState,
 		images: new SplitImageCache(),
+		webSockets,
 		refreshDevices() {
 			const refreshPromise = deviceManager.refreshDevices();
 			deviceManagerPromise = refreshPromise.then(() => deviceManager);

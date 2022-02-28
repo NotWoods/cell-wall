@@ -1,45 +1,47 @@
-import type { CellInfo, CellData, CellState } from '@cell-wall/cell-state';
+import type { CellData, CellInfo, CellState } from '@cell-wall/cell-state';
 import type { Readable } from 'svelte/store';
 import { derived } from 'svelte/store';
 import type { DeviceMap } from '../android/device-manager';
 import { computeInfo } from './known';
+import type { WebSocketInfo } from './socket-store';
 
 export function deriveCellInfo(stores: {
 	info: Readable<ReadonlyMap<string, CellInfo>>;
 	state: Readable<ReadonlyMap<string, CellState>>;
 	devices: Readable<DeviceMap>;
+	webSockets: Readable<ReadonlyMap<string, WebSocketInfo>>;
 }): Readable<ReadonlyMap<string, CellData>> {
 	return derived(
-		[stores.info, stores.state, stores.devices],
-		([infoMap, states, devices]) => {
+		[stores.info, stores.state, stores.devices, stores.webSockets],
+		([infoMap, states, devices, webSockets]) => {
 			const cellInfoMap = new Map<string, CellData>();
-			for (const [serial, info] of infoMap) {
-				cellInfoMap.set(serial, { serial, info });
-			}
-			for (const [serial, state] of states) {
-				const existing = cellInfoMap.get(serial);
-				if (existing) {
-					existing.state = state;
-				} else {
-					cellInfoMap.set(serial, { serial, state });
+
+			function setFrom<T>(
+				otherMap: ReadonlyMap<string, T>,
+				merge: (otherData: T, existingData: Partial<CellData>, serial: string) => Partial<CellData>
+			) {
+				for (const [serial, otherData] of otherMap) {
+					const existing = cellInfoMap.get(serial);
+					const newData = merge(otherData, existing ?? {}, serial) as CellData;
+					newData.serial ||= serial;
+					cellInfoMap.set(serial, newData);
 				}
 			}
-			for (const [serial, { model, manufacturer }] of devices) {
-				const existing = cellInfoMap.get(serial);
-				if (existing) {
-					existing.connection = 'android';
-					existing.info = {
-						...computeInfo(serial, model, manufacturer),
-						...existing.info
-					};
-				} else {
-					cellInfoMap.set(serial, {
-						serial,
-						connection: 'android',
-						info: computeInfo(serial, model, manufacturer)
-					});
-				}
-			}
+
+			setFrom(infoMap, (info) => ({ info }));
+
+			setFrom(states, (state) => ({ state }));
+
+			setFrom(webSockets, (connection, { info: existingInfo = {} }, serial) => ({
+				connection: 'web',
+				info: { serial, ...connection, ...existingInfo }
+			}));
+
+			setFrom(devices, ({ model, manufacturer }, { info: existingInfo = {} }, serial) => ({
+				connection: 'android',
+				info: { ...computeInfo(serial, model, manufacturer), ...existingInfo }
+			}));
+
 			return cellInfoMap;
 		},
 		new Map()

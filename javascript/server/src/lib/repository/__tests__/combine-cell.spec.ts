@@ -4,12 +4,14 @@ import type ADB from 'appium-adb';
 import { get, writable } from 'svelte/store';
 import type { DeviceMap } from '../../android/device-manager';
 import { deriveCellInfo } from '../combine-cell';
+import type { WebSocketInfo } from '../socket-store';
 
 function createStores() {
 	const info = writable(new Map<string, CellInfo>());
 	const state = writable(new Map<string, CellState>());
 	const devices = writable<DeviceMap>(new Map());
-	return { info, state, devices };
+	const webSockets = writable(new Map<string, WebSocketInfo>());
+	return { info, state, devices, webSockets };
 }
 
 function mockDevice(model: string, manufacturer: string) {
@@ -43,7 +45,7 @@ describe('deriveCellInfo', () => {
 		expect(derived.size).toBe(4);
 		expect(derived.get('DEVICEA')).toEqual({
 			serial: 'DEVICEA',
-			connected: true,
+			connection: 'android',
 			info: {
 				serial: 'DEVICEA',
 				deviceName: 'ManufacturerA ModelA'
@@ -51,7 +53,7 @@ describe('deriveCellInfo', () => {
 		});
 		expect(derived.get('DEVICEB')).toEqual({
 			serial: 'DEVICEB',
-			connected: true,
+			connection: 'android',
 			info: {
 				serial: 'DEVICEB',
 				deviceName: 'ManuB ModelB'
@@ -59,7 +61,7 @@ describe('deriveCellInfo', () => {
 		});
 		expect(derived.get('DEVICEC')).toEqual({
 			serial: 'DEVICEC',
-			connected: true,
+			connection: 'android',
 			info: {
 				serial: 'DEVICEC',
 				deviceName: 'ManuC ModelC'
@@ -67,7 +69,7 @@ describe('deriveCellInfo', () => {
 		});
 		expect(derived.get('DEVICED')).toEqual({
 			serial: 'DEVICED',
-			connected: true,
+			connection: 'android',
 			info: {
 				serial: 'DEVICED',
 				deviceName: 'OnePlus One',

@@ -10,8 +10,7 @@
 		"check": "tsc --project .",
 		"check:watch": "tsc --project . --watch",
 		"lint": "prettier --check . && eslint --ignore-path .prettierignore .",
-		"format": "prettier --write .",
-		"test": "jest"
+		"format": "prettier --write ."
 	},
 	"dependencies": {},
 	"devDependencies": {

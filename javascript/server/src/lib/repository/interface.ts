@@ -5,11 +5,13 @@ import type { DeviceMap } from '../android/device-manager';
 import type { CellStateStore } from '../cells';
 import type { GoogleClient } from '../google';
 import type { SplitImageCache } from '../image/cache';
+import type { WebSocketStore } from './socket-store';
 
 export interface Repository {
 	cellData: Readable<ReadonlyMap<string, CellData>>;
 	cellState: CellStateStore;
 	images: SplitImageCache;
+	webSockets: WebSocketStore;
 	googleApi(): Promise<GoogleClient>;
 	authenticateGoogleApi(code: string): Promise<void>;
 	refreshDevices(): Promise<DeviceMap>;

@@ -4,6 +4,7 @@ import type { IncomingMessage } from 'http';
 import { WebSocket, WebSocketServer } from 'ws';
 import { cellStateFor } from './lib/cells';
 import { repo } from './lib/repository';
+import type { WebSocketInfo } from './lib/repository/socket-store';
 
 const CELL_SERIAL = /^\/cells\/(\w+)\/?$/;
 const blankBuffer = new ArrayBuffer(0);
@@ -11,6 +12,8 @@ const blankBuffer = new ArrayBuffer(0);
 function handleCellConnection(ws: WebSocket, request: IncomingMessage) {
 	const { pathname } = new URL(request.url!, `http://${request.headers.host}`);
 	const [, serial] = pathname.match(CELL_SERIAL)!;
+
+	repo.webSockets.add(serial, {});
 
 	let lastState: CellState = blankState;
 	const unsubscribe = cellStateFor(repo.cellState, serial).subscribe((state) => {
@@ -26,7 +29,15 @@ function handleCellConnection(ws: WebSocket, request: IncomingMessage) {
 		lastState = state;
 	});
 
-	ws.on('close', unsubscribe);
+	ws.on('message', (data) => {
+		const info = JSON.parse(data.toString()) as WebSocketInfo;
+		repo.webSockets.add(serial, info);
+	});
+
+	ws.on('close', () => {
+		unsubscribe();
+		repo.webSockets.delete(serial);
+	});
 }
 
 export async function websocketSubsystem(fastify: FastifyInstance): Promise<void> {

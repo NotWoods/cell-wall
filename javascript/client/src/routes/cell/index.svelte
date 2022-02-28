@@ -3,6 +3,7 @@
 	import VerticalField from '$lib/components/Field/VerticalField.svelte';
 	import Form from '$lib/components/Form.svelte';
 	import TopBar from '$lib/components/TopBar/TopBar.svelte';
+	import type { CellInfo } from '@cell-wall/cell-state';
 	import 'tailwindcss/tailwind.css';
 	import { post } from '../remote/_form';
 	import ResetSubmit from './_ResetSubmit.svelte';
@@ -10,7 +11,12 @@
 	let id = '';
 
 	async function submit(formData: FormData, action: URL) {
-		const data = Object.fromEntries(formData);
+		const data: CellInfo = {
+			serial: formData.get('id') as string,
+			deviceName: formData.get('deviceName') as string,
+			width: window.innerWidth,
+			height: window.innerHeight
+		};
 
 		await post(action.toString(), data);
 		await goto(`/cell/frame?id=${id}`);
