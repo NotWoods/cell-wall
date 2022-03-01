@@ -22,8 +22,7 @@
 		submitterValue: ''
 	};
 
-	function handleSubmit(evt: Event) {
-		const event = evt as SubmitEvent;
+	function handleSubmit(event: SubmitEvent) {
 		const formData = new FormData(form);
 
 		const submitter = event.submitter as HTMLButtonElement | HTMLInputElement | null;

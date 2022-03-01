@@ -107,10 +107,11 @@ importers:
       jest: ^27.5.1
       jimp: ^0.16.1
       lowdb: ^3.0.0
-      middie: ^5.4.0
+      middie: ^6.0.0
       node-fetch: ^3.2.0
       pino-pretty: ^7.5.1
       svelte: ^3.46.4
+      ts-extras: ^0.10.0
       tslib: ^2.3.1
       typescript: ^4.5.5
       ws: ^8.5.0
@@ -125,9 +126,10 @@ importers:
       googleapis: 95.0.0
       jimp: 0.16.1
       lowdb: 3.0.0
-      middie: 5.4.0
+      middie: 6.0.0
       node-fetch: 3.2.0
       pino-pretty: 7.5.1
+      ts-extras: 0.10.0
       ws: 8.5.0
     devDependencies:
       '@jest/globals': 27.5.1
@@ -5219,8 +5221,8 @@ packages:
       picomatch: 2.3.1
     dev: true
 
-  /middie/5.4.0:
-    resolution: {integrity: sha512-L508bk0XEoZdoR//a4mIunV/YIcoK0uer5sNQEKMeBrEKdBpH7JyhFp2kReWrNa9J6AWazUL9UxZyzlV+tku0g==}
+  /middie/6.0.0:
+    resolution: {integrity: sha512-Z1DnAjhtr7xQmOdjUUtGVP4NLaR5422AwhIT6TvzLu2jP8cWK6Mik92Py/xyuyBeM0P+d+Zhuaw0Q6WKTH9Kjw==}
     engines: {node: '>=10.0.0'}
     dependencies:
       fastify-plugin: 3.0.0
@@ -6815,6 +6817,13 @@ packages:
       utf8-byte-length: 1.0.4
     dev: false
 
+  /ts-extras/0.10.0:
+    resolution: {integrity: sha512-WAJCUn1BfqDwVKp1oRcXC2yXpFdvt2iVxWmP9zUkF96vMS97RIZHKd47iDPQfB3VlhZcEz/39xZg0UtvplX0iA==}
+    engines: {node: '>=12.20'}
+    dependencies:
+      type-fest: 2.12.0
+    dev: false
+
   /tslib/1.14.1:
     resolution: {integrity: sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==}
     dev: true
@@ -6869,6 +6878,11 @@ packages:
     resolution: {integrity: sha512-t0rzBq87m3fVcduHDUFhKmyyX+9eo6WQjZvf51Ea/M0Q7+T374Jp1aUiyUl0GKxp8M/OETVHSDvmkyPgvX+X2w==}
     engines: {node: '>=10'}
     dev: true
+
+  /type-fest/2.12.0:
+    resolution: {integrity: sha512-Qe5GRT+n/4GoqCNGGVp5Snapg1Omq3V7irBJB3EaKsp7HWDo5Gv2d/67gfNyV+d5EXD+x/RF5l1h4yJ7qNkcGA==}
+    engines: {node: '>=12.20'}
+    dev: false
 
   /typedarray-to-buffer/3.1.5:
     resolution: {integrity: sha512-zdu8XMNEDepKKR+XYOXAVPtWui0ly0NtohUscw+UmaHiAWT8hrV1rr//H6V+0DvJ3OQ19S979M0laLfX8rm82Q==}

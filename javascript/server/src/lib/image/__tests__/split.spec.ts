@@ -44,7 +44,7 @@ const cellInfo = {
 
 describe('splitImage', () => {
 	it.skip('all', async () => {
-		const map = new Map(Object.entries(cellInfo)) as Map<string, RectangleWithPosition>;
+		const map = new Map<string, RectangleWithPosition>(Object.entries(cellInfo));
 
 		const image = await Jimp.create('../images/finished.jpg');
 		const splits = await splitImage(image, map);

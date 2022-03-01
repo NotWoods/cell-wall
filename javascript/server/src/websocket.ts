@@ -20,7 +20,7 @@ function handleCellConnection(ws: WebSocket, request: IncomingMessage) {
 		if (!state) return;
 
 		if (state.type === lastState.type) {
-			const { payload = blankBuffer } = state as CellState;
+			const { payload = blankBuffer } = state;
 			ws.send(payload);
 		}
 

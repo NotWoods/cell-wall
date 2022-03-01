@@ -1,4 +1,5 @@
 import Jimp from 'jimp';
+import { setHas } from 'ts-extras';
 import type { Rectangle, RectangleWithPosition } from './rect';
 
 export interface ResizeOptions {
@@ -26,17 +27,13 @@ export const RESIZE = new Set([
 
 type Item<T> = T extends ReadonlySet<infer I> ? I : never;
 
-function has<T>(set: ReadonlySet<T>, item: unknown): item is Item<T> {
-	return set.has(item as any);
-}
-
 export function parseResizeOptions(query: ResizeOptions = {}): {
 	alignBits: number;
 	resizeMode: Item<typeof RESIZE> | undefined;
 } {
 	const horizontalFlag = ALIGN_QUERY[query.horizontalAlign!] || 0;
 	const verticalFlag = ALIGN_QUERY[query.verticalAlign!] || 0;
-	const resize = has(RESIZE, query.resize) ? query.resize : undefined;
+	const resize = setHas(RESIZE, query.resize) ? query.resize : undefined;
 
 	return {
 		alignBits: horizontalFlag | verticalFlag,
