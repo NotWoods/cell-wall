@@ -18,12 +18,19 @@ export function deriveCellInfo(stores: {
 
 			function setFrom<T>(
 				otherMap: ReadonlyMap<string, T>,
-				merge: (otherData: T, existingData: Partial<CellData>, serial: string) => Partial<CellData>
+				getCellData: (
+					otherData: T,
+					existingData: Partial<CellData>,
+					serial: string
+				) => Partial<CellData>
 			) {
 				for (const [serial, otherData] of otherMap) {
-					const existing = cellInfoMap.get(serial);
-					const newData = merge(otherData, existing ?? {}, serial) as CellData;
-					newData.serial ||= serial;
+					const existing = cellInfoMap.get(serial) ?? {};
+					const newData: CellData = {
+						serial,
+						...existing,
+						...getCellData(otherData, existing, serial)
+					};
 					cellInfoMap.set(serial, newData);
 				}
 			}
@@ -43,7 +50,6 @@ export function deriveCellInfo(stores: {
 			}));
 
 			return cellInfoMap;
-		},
-		new Map()
+		}
 	);
 }
