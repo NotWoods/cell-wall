@@ -3,13 +3,14 @@ import { build } from 'esbuild';
 import { readFileSync } from 'fs';
 
 const pkg = JSON.parse(readFileSync('package.json', 'utf8'));
+const devMode = process.argv[2] === 'dev';
 
 build({
-	entryPoints: ['src/index.ts'],
+	entryPoints: [devMode ? 'src/dev.ts' : 'src/index.ts'],
 	bundle: true,
 	outdir: 'build',
 	platform: 'node',
 	target: 'node16',
 	format: 'esm',
-	external: Object.keys(pkg.dependencies)
+	external: [...Object.keys(pkg.dependencies), 'fastify-reply-from']
 }).catch(() => process.exit(1));

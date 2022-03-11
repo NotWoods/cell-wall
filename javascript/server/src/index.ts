@@ -1,20 +1,11 @@
-import Fastify from 'fastify';
-import middie from 'middie';
 import { handler } from '@cell-wall/client';
 import { PORT } from './lib/env';
-import { routesSubsystem } from './routes';
-import { websocketSubsystem } from './websocket';
+import { createServer } from './server';
 
 async function main() {
-	const fastify = Fastify({
-		logger: {
-			prettyPrint: true
-		},
-		trustProxy: true
-	});
+	const fastify = await createServer();
 
-	await fastify.register(middie);
-	await fastify.register(routesSubsystem).register(websocketSubsystem);
+	// use built client code
 	fastify.use(handler);
 
 	const address = await fastify.listen(PORT, '0.0.0.0');

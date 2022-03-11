@@ -5,6 +5,7 @@
 	"exports": "./build/index.js",
 	"module": "./build/index.js",
 	"scripts": {
+		"dev": "node esbuild.config.js --dev && node build/index.js",
 		"build": "node esbuild.config.js",
 		"preview": "node build/index.js",
 		"check": "tsc --project .",
@@ -38,6 +39,8 @@
 		"@types/ws": "^8.5.2",
 		"esbuild": "^0.14.25",
 		"esbuild-jest": "^0.5.0",
+		"fastify-http-proxy": "^6.2.2",
+		"fastify-reply-from": "^6.5.0",
 		"jest": "^27.5.1",
 		"svelte": "^3.46.4",
 		"tslib": "^2.3.1",
