@@ -28,7 +28,7 @@
 <style>
 	img {
 		display: block;
-		height: 100vh;
-		width: 100vh;
+		height: 100%;
+		width: 100%;
 	}
 </style>

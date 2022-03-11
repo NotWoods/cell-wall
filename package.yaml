@@ -10,11 +10,9 @@ scripts:
     prettier --write .prettierrc {package,pnpm-workspace}.yaml *.md
     .github/**/*.yml
 devDependencies:
-  '@typescript-eslint/eslint-plugin': ^5.12.1
-  '@typescript-eslint/parser': ^5.12.1
+  '@typescript-eslint/eslint-plugin': ^5.14.0
+  '@typescript-eslint/parser': ^5.14.0
   eslint: ^8.10.0
-  eslint-config-prettier: ^8.4.0
+  eslint-config-prettier: ^8.5.0
   prettier: ~2.5.1
-engines:
-  node: '>=16.10.0'
-  pnpm: '>=6.16.0'
+engines: {node: '>=16.10.0', pnpm: '>=6.16.0'}

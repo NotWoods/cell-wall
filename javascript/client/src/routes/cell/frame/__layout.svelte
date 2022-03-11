@@ -28,6 +28,7 @@
 <script lang="ts">
 	import { cellState, connect } from '$lib/connection/state-socket';
 	import { goto } from '$app/navigation';
+	import PageTransition from './_PageTransition.svelte';
 
 	export let serial: string;
 
@@ -53,4 +54,6 @@
 	<title>Cell</title>
 </svelte:head>
 
-<slot />
+<PageTransition {url}>
+	<slot />
+</PageTransition>

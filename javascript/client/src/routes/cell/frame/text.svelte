@@ -16,7 +16,7 @@
 <style>
 	main {
 		display: flex;
-		height: 100vh;
+		height: 100%;
 		align-items: center;
 	}
 	h1 {
