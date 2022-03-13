@@ -28,6 +28,10 @@ export async function imagePlugin(
 	}
 
 	for (const mimeType of Object.keys(jimp.decoders)) {
-		fastify.addContentTypeParser(mimeType, { parseAs: 'buffer', bodyLimit: 5 * MB }, contentParser);
+		fastify.addContentTypeParser(
+			mimeType,
+			{ parseAs: 'buffer', bodyLimit: 10 * MB },
+			contentParser
+		);
 	}
 }

@@ -58,16 +58,19 @@ export function sendResizeEvents(
 	options?: { signal?: AbortSignal }
 ) {
 	if (socket) {
-		document.addEventListener(
-			'resize',
-			() => {
-				const data: Pick<CellInfo, 'width' | 'height'> = {
-					width: window.innerWidth,
-					height: window.innerHeight
-				};
-				socket.send(JSON.stringify(data));
-			},
-			options
-		);
+		// eslint-disable-next-line no-inner-declarations
+		const handleResize = () => {
+			const data: Pick<CellInfo, 'width' | 'height'> = {
+				width: window.innerWidth,
+				height: window.innerHeight
+			};
+			socket.send(JSON.stringify(data));
+		};
+
+		document.addEventListener('resize', handleResize, options);
+		handleResize();
+		socket.addEventListener('close', () => {
+			document.removeEventListener('resize', handleResize);
+		});
 	}
 }

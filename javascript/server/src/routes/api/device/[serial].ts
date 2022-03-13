@@ -1,4 +1,4 @@
-import type { CellInfo } from '@cell-wall/cell-state';
+import { CellInfo, cellInfoSchema } from '@cell-wall/cell-state';
 import type { FastifyInstance, FastifyRequest } from 'fastify';
 import { get as getState } from 'svelte/store';
 import { repo } from '../../../lib/repository';
@@ -59,14 +59,8 @@ export default async function (fastify: FastifyInstance): Promise<void> {
 		schema: {
 			response: {
 				200: {
-					type: 'object',
-					nullable: true,
-					properties: {
-						deviceName: { type: 'string' },
-						width: { type: 'number' },
-						height: { type: 'number' },
-						server: { type: 'string' }
-					}
+					...cellInfoSchema,
+					nullable: true
 				}
 			}
 		},
@@ -74,12 +68,20 @@ export default async function (fastify: FastifyInstance): Promise<void> {
 		 * Register a new cell
 		 */
 		async handler(request, reply) {
-			const { serial } = request.params;
-			const info = request.body;
+			const {
+				body,
+				params: { serial }
+			} = request;
 
-			info.serial = serial;
-			info.server ||= `${request.protocol}://${request.hostname}`;
-			await repo.registerCell(info as CellInfo);
+			await repo.registerCell({
+				serial: body.serial || serial,
+				server: body.server || `${request.protocol}://${request.hostname}`,
+				deviceName: body.deviceName,
+				width: body.width,
+				height: body.height,
+				x: body.x,
+				y: body.y
+			});
 
 			const accepts = parseAccept(request.headers);
 			const acceptsHtml = accepts.find((accept) => accept.type === 'text/html');
