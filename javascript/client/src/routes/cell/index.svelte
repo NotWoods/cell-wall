@@ -4,7 +4,9 @@
 	export const load: Load = async ({ url }) => {
 		return {
 			props: {
-				id: url.searchParams.get('id') || ''
+				id: url.searchParams.get('id') || '',
+				deviceName: url.searchParams.get('name') || '',
+				autoJoin: url.searchParams.has('autojoin')
 			}
 		};
 	};
@@ -21,6 +23,8 @@
 	import { post } from '../remote/_form';
 
 	export let id = '';
+	export let deviceName = '';
+	export let autoJoin = false;
 
 	async function submit(formData: FormData, action: URL) {
 		const data: CellInfo = {
@@ -36,8 +40,15 @@
 			console.error('Could not request fullscreen', error);
 		}
 		requestWakeLock();
+
 		await post(action.toString(), data);
 		await goto(`/cell/frame/blank?id=${id}`, { replaceState: false });
+	}
+
+	$: {
+		if (autoJoin) {
+			document.querySelector('form')?.requestSubmit();
+		}
 	}
 </script>
 
@@ -58,7 +69,14 @@
 			/>
 		</VerticalField>
 		<VerticalField for="control-name" label="Name" let:inputClassName>
-			<input id="control-name" class={inputClassName} name="deviceName" type="text" required />
+			<input
+				id="control-name"
+				class={inputClassName}
+				name="deviceName"
+				type="text"
+				required
+				bind:value={deviceName}
+			/>
 		</VerticalField>
 
 		<ResetSubmit {loading} />
