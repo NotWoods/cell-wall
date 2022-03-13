@@ -14,8 +14,9 @@
 	import { goto } from '$app/navigation';
 	import ResetSubmit from '$lib/components/Button/ResetSubmit.svelte';
 	import VerticalField from '$lib/components/Field/VerticalField.svelte';
-	import WithTopBar from '$lib/components/WithTopBar.svelte';
 	import Form from '$lib/components/Form.svelte';
+	import WithTopBar from '$lib/components/WithTopBar.svelte';
+	import { requestWakeLock } from '$lib/wakelock';
 	import type { CellInfo } from '@cell-wall/cell-state';
 	import { post } from '../remote/_form';
 
@@ -29,6 +30,12 @@
 			height: window.innerHeight
 		};
 
+		try {
+			document.documentElement.requestFullscreen();
+		} catch (error) {
+			console.error('Could not request fullscreen', error);
+		}
+		requestWakeLock();
 		await post(action.toString(), data);
 		await goto(`/cell/frame/blank?id=${id}`, { replaceState: false });
 	}
