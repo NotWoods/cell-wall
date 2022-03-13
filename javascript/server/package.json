@@ -5,7 +5,7 @@
 	"exports": "./build/index.js",
 	"module": "./build/index.js",
 	"scripts": {
-		"dev": "node esbuild.config.js --dev && node build/index.js",
+		"dev": "node esbuild.config.js --dev && node build/dev.js",
 		"build": "node esbuild.config.js",
 		"preview": "node build/index.js",
 		"check": "tsc --project .",

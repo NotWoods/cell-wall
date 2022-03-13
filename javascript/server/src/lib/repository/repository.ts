@@ -18,7 +18,7 @@ import { SplitImageCache } from '../image/cache';
 import { asArray, getAll } from '../map/get';
 import { subscribeToMapStore } from '../map/subscribe';
 import { memo } from '../memo';
-import { deriveCellInfo } from './combine-cell';
+import { deriveCellData } from './combine-cell';
 import { database } from './database';
 import type { Repository } from './interface';
 import { webSocketStore } from './socket-store';
@@ -69,7 +69,7 @@ export function repository(): Repository {
 
 	// Send intents whenever cell state changes
 	sendIntentOnStateChange({ info: cellManager, state: cellState }, deviceManager);
-	const cellData = deriveCellInfo({
+	const cellData = deriveCellData({
 		info: cellManager,
 		state: cellState,
 		devices: deviceManager,

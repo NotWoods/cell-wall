@@ -1,6 +1,6 @@
 import { browser } from '$app/env';
-import { blankState, CellState } from '@cell-wall/cell-state';
-import { Readable, readable } from 'svelte/store';
+import { blankState, type CellInfo, type CellState } from '@cell-wall/cell-state';
+import { readable, type Readable } from 'svelte/store';
 
 export function connect(serial: string): WebSocket | undefined {
 	if (browser) {
@@ -51,4 +51,23 @@ export function cellState(socket: WebSocket | undefined): Readable<CellState> {
 		socket?.addEventListener('message', handleMessage, controller);
 		return () => controller.abort();
 	});
+}
+
+export function sendResizeEvents(
+	socket: WebSocket | undefined,
+	options?: { signal?: AbortSignal }
+) {
+	if (socket) {
+		document.addEventListener(
+			'resize',
+			() => {
+				const data: Pick<CellInfo, 'width' | 'height'> = {
+					width: window.innerWidth,
+					height: window.innerHeight
+				};
+				socket.send(JSON.stringify(data));
+			},
+			options
+		);
+	}
 }

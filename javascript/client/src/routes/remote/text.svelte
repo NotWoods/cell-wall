@@ -8,7 +8,11 @@
 	import Form from '$lib/components/Form.svelte';
 
 	async function submit(data: FormData, action: URL) {
-		action.searchParams.set('backgroundColor', data.get('backgroundColor') as string);
+		const backgroundColor = data.get('backgroundColor') as string;
+		if (backgroundColor !== '#ffffff') {
+			action.searchParams.set('backgroundColor', backgroundColor);
+		}
+
 		try {
 			const res = await fetch(action.toString(), {
 				method: 'post',
@@ -40,7 +44,7 @@
 		/>
 	</VerticalField>
 	<VerticalField for="control-color" label="Background Color">
-		<input id="control-color" name="backgroundColor" type="color" />
+		<input id="control-color" name="backgroundColor" type="color" value="#ffffff" />
 	</VerticalField>
 
 	<ResetSubmit {loading} />

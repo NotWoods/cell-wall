@@ -26,14 +26,16 @@
 </script>
 
 <script lang="ts">
-	import { cellState, connect } from '$lib/connection/state-socket';
+	import { browser } from '$app/env';
 	import { goto } from '$app/navigation';
+	import { cellState, connect, sendResizeEvents } from '$lib/connection/state-socket';
 	import PageTransition from './_PageTransition.svelte';
 
 	export let serial: string;
 
 	const socket = connect(serial);
 	const state = cellState(socket);
+	sendResizeEvents(socket);
 
 	setContext('frame', { socket, state });
 
@@ -46,7 +48,9 @@
 		console.log('CellState', $state);
 	}
 	$: {
-		goto(`${url}?id=${serial}`, { replaceState: true });
+		if (browser) {
+			goto(`${url}?id=${serial}`, { replaceState: true });
+		}
 	}
 </script>
 

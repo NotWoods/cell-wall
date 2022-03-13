@@ -1,6 +1,8 @@
 <script lang="ts">
 	import TopBar from '$lib/components/TopBar/TopBar.svelte';
 	import 'tailwindcss/tailwind.css';
+
+	export let fullWidth = false;
 </script>
 
 <TopBar />
@@ -12,7 +14,7 @@
     hsl(219deg 36% 15%) 67%, hsl(218deg 35% 16%) 78%, hsl(218deg 34% 17%) 89%,
     hsl(217deg 33% 17%) 100%; min-height: calc(100vh - 3.25rem);"
 >
-	<main class="max-w-7xl mx-auto p-2 py-4 sm:p-6 lg:p-8">
+	<main class="mx-auto p-2 py-4 sm:p-6 lg:p-8" class:max-w-7xl={!fullWidth}>
 		<slot />
 	</main>
 </div>

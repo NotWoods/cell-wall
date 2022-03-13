@@ -39,7 +39,7 @@ const knownDevices: readonly KnownDevice[] = [
 	}
 ];
 
-export function computeInfo(serial: string, model: string, manufacturer: string): CellInfo {
+export function computeInfo(model: string, manufacturer: string): Omit<CellInfo, 'serial'> {
 	const known = knownDevices.find(
 		(device) => device.model === model && device.manufacturer === manufacturer
 	);
@@ -49,14 +49,12 @@ export function computeInfo(serial: string, model: string, manufacturer: string)
 			: `${manufacturer} ${model}`;
 	if (known) {
 		return {
-			serial,
 			deviceName: known.deviceName || autoDeviceName,
 			width: known.width,
 			height: known.height
 		};
 	} else {
 		return {
-			serial,
 			deviceName: autoDeviceName
 		};
 	}

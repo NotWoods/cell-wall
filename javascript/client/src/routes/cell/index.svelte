@@ -13,6 +13,7 @@
 </script>
 
 <script lang="ts">
+	import { browser } from '$app/env';
 	import { goto } from '$app/navigation';
 	import ResetSubmit from '$lib/components/Button/ResetSubmit.svelte';
 	import VerticalField from '$lib/components/Field/VerticalField.svelte';
@@ -46,8 +47,8 @@
 	}
 
 	$: {
-		if (autoJoin) {
-			document.querySelector('form')?.requestSubmit();
+		if (autoJoin && browser) {
+			document.querySelector<HTMLButtonElement>('button[type="submit"]')?.click();
 		}
 	}
 </script>
