@@ -10,8 +10,8 @@
 		"preview": "node build/index.js",
 		"check": "tsc --project .",
 		"check:watch": "tsc --project . --watch",
-		"lint": "prettier --check . && eslint --ignore-path .prettierignore .",
-		"format": "prettier --write .",
+		"lint": "prettier --check . --ignore-path ../.prettierignore && eslint --ignore-path ../.prettierignore .",
+		"format": "prettier --write . --ignore-path ../.prettierignore",
 		"test": "jest"
 	},
 	"dependencies": {

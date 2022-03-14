@@ -15,4 +15,4 @@ devDependencies:
   eslint: ^8.10.0
   eslint-config-prettier: ^8.5.0
   prettier: ~2.5.1
-engines: {node: '>=16.10.0', pnpm: '>=6.16.0'}
+engines: { node: '>=16.10.0', pnpm: '>=6.16.0' }
