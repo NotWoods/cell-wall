@@ -4,8 +4,15 @@
 
 <script lang="ts">
 	import ResetSubmit from '$lib/components/Button/ResetSubmit.svelte';
+	import DeviceOption from '$lib/components/Field/DeviceOption.svelte';
+	import HorizontalField from '$lib/components/Field/HorizontalField.svelte';
 	import VerticalField from '$lib/components/Field/VerticalField.svelte';
 	import Form from '$lib/components/Form.svelte';
+	import { storeValues } from '$lib/connection/remote-socket';
+	import { getRemoteContext } from './__layout.svelte';
+
+	const { state: remoteState } = getRemoteContext();
+	const devices = storeValues(remoteState);
 
 	async function submit(data: FormData, action: URL) {
 		const backgroundColor = data.get('backgroundColor') as string;
@@ -43,9 +50,24 @@
 			placeholder=" Apple &#13;&#10;Banana &#13;&#10;Carrot"
 		/>
 	</VerticalField>
-	<VerticalField for="control-color" label="Background Color">
+
+	<HorizontalField for="control-color" label="Background Color">
 		<input id="control-color" name="backgroundColor" type="color" value="#ffffff" />
-	</VerticalField>
+	</HorizontalField>
+
+	<HorizontalField for="control-serial" label="Devices" let:inputClassName>
+		<select
+			multiple
+			name="device"
+			id="control-serial"
+			class={inputClassName}
+			value={$devices.map((device) => device.serial)}
+		>
+			{#each $devices as device (device.serial)}
+				<DeviceOption {device} />
+			{/each}
+		</select>
+	</HorizontalField>
 
 	<ResetSubmit {loading} />
 </Form>

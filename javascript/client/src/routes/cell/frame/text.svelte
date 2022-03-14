@@ -18,6 +18,8 @@
 		display: flex;
 		height: 100%;
 		align-items: center;
+		justify-content: center;
+		text-align: center;
 	}
 	h1 {
 		margin: 8px;

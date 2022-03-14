@@ -1,14 +1,17 @@
 <script lang="ts">
+	import { page } from '$app/stores';
+
 	export let href: string;
-	export let active = false;
+	$: active = $page.url.pathname === href;
 
 	let className = '';
 	export { className as class };
 </script>
 
 <a
-	class="text-gray-300 hover:bg-green-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium {className}"
+	class="hover:bg-green-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium {className}"
+	class:text-gray-300={!active}
+	class:text-gray-100={active}
 	class:bg-green-700={active}
-	class:text-white={active}
 	{href}><slot /></a
 >

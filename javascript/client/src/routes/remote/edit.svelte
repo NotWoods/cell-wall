@@ -1,11 +1,11 @@
 <script lang="ts">
 	import ResetSubmit from '$lib/components/Button/ResetSubmit.svelte';
+	import DeviceOption from '$lib/components/Field/DeviceOption.svelte';
 	import HorizontalField from '$lib/components/Field/HorizontalField.svelte';
 	import Form from '$lib/components/Form.svelte';
 	import { storeValues } from '$lib/connection/remote-socket';
 	import type { CellInfo } from '@cell-wall/cell-state';
 	import PowerButtons from './custom/_PowerButtons.svelte';
-	import DeviceOption from './_DeviceOption.svelte';
 	import { post } from './_form';
 	import { getRemoteContext } from './__layout.svelte';
 

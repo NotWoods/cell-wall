@@ -15,7 +15,7 @@
 			<h1 class="sr-only md:not-sr-only text-xl">CellWall Remote</h1>
 		</a>
 
-		<TopBarItem href="/remote/">Presets</TopBarItem>
+		<TopBarItem href="/remote">Presets</TopBarItem>
 		<TopBarItem href="/remote/text">Text</TopBarItem>
 		<TopBarItem href="/remote/image">Image</TopBarItem>
 		<TopBarItem href="/remote/custom">Custom</TopBarItem>
