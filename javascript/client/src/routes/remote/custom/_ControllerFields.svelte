@@ -1,6 +1,6 @@
 <script lang="ts">
 	import startCase from 'lodash.startcase';
-	import type { CellStateJsonSchema } from '@cell-wall/cell-state';
+	import type { CellState, CellStateJsonSchema } from '@cell-wall/cell-state';
 	import HorizontalField from '$lib/components/Field/HorizontalField.svelte';
 
 	function getInputType(
@@ -19,6 +19,8 @@
 	}
 
 	export let schema: CellStateJsonSchema | undefined;
+	export let state: CellState | undefined = undefined;
+
 	$: getInputName = (name: string) => {
 		if (name === 'payload') {
 			const type = schema?.properties?.type?.enum?.[0];
@@ -40,7 +42,7 @@
 	$: properties = Object.entries(schema?.properties || {})
 		.filter(([name]) => name !== 'type')
 		.map(([name, property]) => ({
-			name,
+			name: name as keyof CellState,
 			property,
 			type: getInputType(name, property)
 		}));
@@ -61,6 +63,7 @@
 				{name}
 				{type}
 				required={required.has(name)}
+				value={state?.[name] ?? ''}
 			/>
 		{/if}
 	</HorizontalField>

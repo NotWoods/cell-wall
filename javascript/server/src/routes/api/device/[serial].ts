@@ -73,6 +73,7 @@ export default async function (fastify: FastifyInstance): Promise<void> {
 				params: { serial }
 			} = request;
 
+			console.log(body);
 			await repo.registerCell({
 				serial: body.serial || serial,
 				server: body.server || `${request.protocol}://${request.hostname}`,

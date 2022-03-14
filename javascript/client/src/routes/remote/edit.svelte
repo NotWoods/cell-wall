@@ -3,9 +3,10 @@
 	import HorizontalField from '$lib/components/Field/HorizontalField.svelte';
 	import Form from '$lib/components/Form.svelte';
 	import { storeValues } from '$lib/connection/remote-socket';
+	import type { CellInfo } from '@cell-wall/cell-state';
 	import PowerButtons from './custom/_PowerButtons.svelte';
 	import DeviceOption from './_DeviceOption.svelte';
-	import { formDataAsSearchParams } from './_form';
+	import { post } from './_form';
 	import { getRemoteContext } from './__layout.svelte';
 
 	const { state: remoteState } = getRemoteContext();
@@ -16,20 +17,27 @@
 
 	$: firstDevice = $devices[0]?.serial;
 	$: selectedCell = $remoteState.get(selectedDeviceSerial ?? firstDevice);
-	$: {
-		console.log('selected', selectedCell);
-	}
 
 	async function submit(formData: FormData, action: URL) {
-		const res = await fetch(action.toString(), {
-			method: 'post',
-			headers: {
-				'Content-Type': 'application/x-www-form-urlencoded'
-			},
-			body: formDataAsSearchParams(formData)
-		});
+		function getNumber(key: string) {
+			const value = formData.get(key);
+			if (typeof value === 'string') {
+				return Number(value);
+			}
+			return undefined;
+		}
 
-		console.log(await res.json());
+		const data: CellInfo = {
+			serial: formData.get('serial') as string,
+			deviceName: formData.get('deviceName') as string,
+			width: getNumber('width'),
+			height: getNumber('height'),
+			x: getNumber('x'),
+			y: getNumber('y'),
+			server: formData.get('server') as string
+		};
+
+		await post(action.toString(), data);
 	}
 </script>
 
@@ -66,9 +74,11 @@
 		</select>
 	</HorizontalField>
 
-	<HorizontalField label="Power">
-		<PowerButtons serial={selectedDeviceSerial} />
-	</HorizontalField>
+	{#if selectedCell?.connection === 'android'}
+		<HorizontalField label="Power">
+			<PowerButtons serial={selectedDeviceSerial} />
+		</HorizontalField>
+	{/if}
 
 	<HorizontalField for="control-deviceName" label="Device Name" let:inputClassName>
 		<input

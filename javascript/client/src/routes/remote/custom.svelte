@@ -18,8 +18,9 @@
 	// Selected schema type
 	let selectedType = 'BLANK';
 	// serial from selected device
-	let selectedDevice = '';
+	let selectedDeviceSerial = '';
 
+	$: selectedDevice = $remoteState.get(selectedDeviceSerial);
 	$: activeSchema = allCellStateSchemas.find(
 		(schema) => getTypeFromSchema(schema) === selectedType
 	);
@@ -46,12 +47,16 @@
 	id="custom-form"
 	class="flex flex-col gap-y-4 px-2"
 	role="tabpanel"
-	action="/api/device/state/{selectedDevice}"
+	action="/api/device/state/{selectedDeviceSerial}"
 	onSubmit={submit}
 	let:loading
 >
 	<HorizontalField for="control-serial" label="Device" let:inputClassName>
-		<select class="{inputClassName} cursor-pointer" bind:value={selectedDevice} id="control-serial">
+		<select
+			class="{inputClassName} cursor-pointer"
+			bind:value={selectedDeviceSerial}
+			id="control-serial"
+		>
 			<option value="">All devices</option>
 			{#each $devices as device (device.serial)}
 				<DeviceOption {device} />
@@ -59,11 +64,15 @@
 		</select>
 	</HorizontalField>
 
-	<HorizontalField label="Power">
-		<PowerButtons serial={selectedDevice} />
-	</HorizontalField>
+	{#if selectedDevice?.connection === 'android'}
+		<HorizontalField label="Power">
+			<PowerButtons serial={selectedDeviceSerial} />
+		</HorizontalField>
+	{/if}
 
-	<ControllerFields schema={activeSchema} />
+	{#key selectedType}
+		<ControllerFields schema={activeSchema} state={selectedDevice?.state} />
+	{/key}
 
 	<ResetSubmit {loading} />
 </Form>
