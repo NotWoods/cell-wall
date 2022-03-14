@@ -16,11 +16,12 @@
 
 <script lang="ts">
 	import NavigationProgress from '$lib/components/NavigationProgress.svelte';
-	import { SnackbarHostState } from '$lib/snackbar-host';
+	import RemoteFrame from '$lib/components/RemoteFrame.svelte';
 	import Snackbar from '$lib/components/Snackbar.svelte';
-	import WithTopBar from '$lib/components/WithTopBar.svelte';
-	import { setContext } from 'svelte';
+	import TopBar from '$lib/components/TopBar/TopBar.svelte';
 	import { connectRemote, remoteState } from '$lib/connection/remote-socket';
+	import { SnackbarHostState } from '$lib/snackbar-host';
+	import { setContext } from 'svelte';
 
 	const socket = connectRemote();
 	const state = remoteState(socket);
@@ -42,8 +43,9 @@
 </svelte:head>
 
 <NavigationProgress />
-<WithTopBar>
+<TopBar />
+<RemoteFrame>
 	<slot />
-</WithTopBar>
+</RemoteFrame>
 
 <Snackbar data={$currentSnackbarData} />

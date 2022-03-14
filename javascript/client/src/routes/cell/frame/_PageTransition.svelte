@@ -2,12 +2,12 @@
 	import { slide } from 'svelte/transition';
 	import { quintOut } from 'svelte/easing';
 
-	export let url = '';
+	export let key = '';
 
 	const pageTransitionDuration = 300;
 </script>
 
-{#key url}
+{#key key}
 	<div
 		class="layout"
 		in:slide={{ duration: pageTransitionDuration, easing: quintOut }}

@@ -58,6 +58,6 @@
 	<title>Cell</title>
 </svelte:head>
 
-<PageTransition {url}>
+<PageTransition key={url}>
 	<slot />
 </PageTransition>

@@ -31,11 +31,13 @@ export function toUri(state: CellState, base: string | URL = SERVER_ADDRESS): UR
 	switch (type.toUpperCase()) {
 		case 'WEB': {
 			const web = props as CellStateWeb;
-			return new URL(web.url, base);
+			return new URL(web.payload, base);
 		}
 		case 'IMAGE': {
 			const imgProps = props as CellStateImage;
-			imgProps.src = new URL(imgProps.src, base).toString();
+			if (typeof imgProps.payload === 'string') {
+				imgProps.payload = new URL(imgProps.payload, base).toString();
+			}
 			// fall through
 		}
 		default: {

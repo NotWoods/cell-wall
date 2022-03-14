@@ -18,18 +18,24 @@
 		}
 	}
 
-	function getInputName(name: string) {
-		switch (name) {
-			case 'url':
-				return 'URL';
-			case 'src':
-				return 'Source';
-			default:
-				return startCase(name);
-		}
-	}
-
 	export let schema: CellStateJsonSchema | undefined;
+	$: getInputName = (name: string) => {
+		if (name === 'payload') {
+			const type = schema?.properties?.type?.enum?.[0];
+			switch (type) {
+				case 'WEB':
+					return 'URL';
+				case 'IMAGE':
+					return 'Source';
+				case 'TEXT':
+					return 'Text';
+				default:
+					return startCase(name);
+			}
+		}
+		return startCase(name);
+	};
+
 	$: required = new Set<string>(schema?.required || []);
 	$: properties = Object.entries(schema?.properties || {})
 		.filter(([name]) => name !== 'type')

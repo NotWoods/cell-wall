@@ -3,7 +3,7 @@ import { describe, expect, it, jest } from '@jest/globals';
 import type ADB from 'appium-adb';
 import { get, writable } from 'svelte/store';
 import type { DeviceMap } from '../../android/device-manager';
-import { deriveCellInfo } from '../combine-cell';
+import { deriveCellData } from '../combine-cell';
 import type { WebSocketInfo } from '../socket-store';
 
 function createStores() {
@@ -22,16 +22,16 @@ function mockDevice(model: string, manufacturer: string) {
 	};
 }
 
-describe('deriveCellInfo', () => {
+describe('deriveCellData', () => {
 	it('works with blank data', async () => {
 		const stores = createStores();
-		const derived = get(deriveCellInfo(stores));
+		const derived = get(deriveCellData(stores));
 		expect(derived.size).toBe(0);
 	});
 
 	it('initializes from device map', async () => {
 		const stores = createStores();
-		const derivedStore = deriveCellInfo(stores);
+		const derivedStore = deriveCellData(stores);
 
 		stores.devices.set(
 			new Map()

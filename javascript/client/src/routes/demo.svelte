@@ -1,5 +1,6 @@
 <script lang="ts">
-	import WithTopBar from '$lib/components/WithTopBar.svelte';
+	import RemoteFrame from '$lib/components/RemoteFrame.svelte';
+	import TopBar from '$lib/components/TopBar/TopBar.svelte';
 
 	interface DemoEntry {
 		id: string;
@@ -18,7 +19,8 @@
 	<title>CellWall Demo</title>
 </svelte:head>
 
-<WithTopBar fullWidth>
+<TopBar />
+<RemoteFrame fullWidth>
 	<div class="demo-wall mx-auto">
 		{#each demoEntries as { id, name } (id)}
 			<iframe
@@ -29,7 +31,7 @@
 			/>
 		{/each}
 	</div>
-</WithTopBar>
+</RemoteFrame>
 
 <style>
 	.demo-wall {

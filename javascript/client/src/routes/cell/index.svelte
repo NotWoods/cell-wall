@@ -18,7 +18,8 @@
 	import ResetSubmit from '$lib/components/Button/ResetSubmit.svelte';
 	import VerticalField from '$lib/components/Field/VerticalField.svelte';
 	import Form from '$lib/components/Form.svelte';
-	import WithTopBar from '$lib/components/WithTopBar.svelte';
+	import RemoteFrame from '$lib/components/RemoteFrame.svelte';
+	import TopBar from '$lib/components/TopBar/TopBar.svelte';
 	import { requestWakeLock } from '$lib/wakelock';
 	import type { CellInfo } from '@cell-wall/cell-state';
 	import { post } from '../remote/_form';
@@ -57,7 +58,10 @@
 	<title>New Cell | CellWall</title>
 </svelte:head>
 
-<WithTopBar>
+{#if !autoJoin}
+	<TopBar />
+{/if}
+<RemoteFrame>
 	<Form class="flex flex-col gap-y-4" action="/api/device/{id}" onSubmit={submit} let:loading>
 		<VerticalField for="control-id" label="ID" let:inputClassName>
 			<input
@@ -82,4 +86,4 @@
 
 		<ResetSubmit {loading} />
 	</Form>
-</WithTopBar>
+</RemoteFrame>

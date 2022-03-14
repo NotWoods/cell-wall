@@ -1,3 +1,5 @@
+import type { CellState } from './interface';
+
 type Keys<T> = keyof T extends never ? string : keyof T;
 
 function buildCellState<Type extends string, Props>(options: {
@@ -60,7 +62,7 @@ export interface CellStateJsonSchema {
 	properties: {
 		type: {
 			type: 'string';
-			enum: readonly [string];
+			enum: readonly [CellState['type']];
 		};
 		[prop: string]: {
 			type: string;
