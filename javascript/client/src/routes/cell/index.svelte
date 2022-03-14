@@ -20,9 +20,12 @@
 	import Form from '$lib/components/Form.svelte';
 	import RemoteFrame from '$lib/components/RemoteFrame.svelte';
 	import TopBar from '$lib/components/TopBar/TopBar.svelte';
-	import { requestWakeLock } from '$lib/wakelock';
+	import { requestFullScreen, requestWakeLock } from '$lib/wakelock';
 	import type { CellInfo } from '@cell-wall/cell-state';
 	import { post } from '../remote/_form';
+	import { windowSizeStore } from '$lib/connection/window-size';
+
+	const windowSize = windowSizeStore();
 
 	export let id = '';
 	export let deviceName = '';
@@ -32,15 +35,12 @@
 		const data: CellInfo = {
 			serial: formData.get('id') as string,
 			deviceName: formData.get('deviceName') as string,
-			width: window.innerWidth,
-			height: window.innerHeight
+			width: $windowSize?.innerWidth,
+			height: $windowSize?.innerHeight
 		};
+		console.log('submitting', data);
 
-		try {
-			document.documentElement.requestFullscreen();
-		} catch (error) {
-			console.error('Could not request fullscreen', error);
-		}
+		requestFullScreen();
 		requestWakeLock();
 
 		await post(action.toString(), data);
@@ -49,7 +49,8 @@
 
 	$: {
 		if (autoJoin && browser) {
-			document.querySelector<HTMLButtonElement>('button[type="submit"]')?.click();
+			const form = document.querySelector('form')!;
+			submit(new FormData(form), new URL(form.action));
 		}
 	}
 </script>
@@ -83,6 +84,8 @@
 				bind:value={deviceName}
 			/>
 		</VerticalField>
+		<input type="hidden" name="width" value={$windowSize?.innerWidth} />
+		<input type="hidden" name="height" value={$windowSize?.innerHeight} />
 
 		<ResetSubmit {loading} />
 	</Form>

@@ -1,4 +1,4 @@
-import { Readable, writable } from 'svelte/store';
+import { type Readable, writable, derived } from 'svelte/store';
 
 declare global {
 	type WakeLockType = 'screen';
@@ -31,34 +31,89 @@ declare global {
 	}
 }
 
+interface Lock {
+	active: Readable<boolean>;
+	error: Readable<Error | undefined>;
+	release: () => Promise<void>;
+}
+
+function lockState() {
+	const state = writable<{ active: boolean; error?: Error }>({
+		active: false
+	});
+
+	return {
+		state,
+		active: derived(state, ($state) => $state.active),
+		error: derived(state, ($state) => $state.error)
+	};
+}
+
+export function requestFullScreen(): Lock {
+	const controller = new AbortController();
+	const { state, ...stores } = lockState();
+
+	async function enterFullScreen() {
+		try {
+			await document.documentElement.requestFullscreen().then(
+				() => state.set({ active: true }),
+				(error) => state.set({ active: false, error })
+			);
+			state.set({ active: true });
+		} catch (error) {
+			if (error instanceof Error) {
+				state.set({ active: false, error });
+			} else {
+				throw error;
+			}
+		}
+	}
+
+	enterFullScreen();
+
+	document.addEventListener(
+		'fullscreenchange',
+		() => {
+			state.set({ active: Boolean(document.fullscreenElement) });
+		},
+		controller
+	);
+
+	return {
+		...stores,
+		async release() {
+			controller.abort();
+			await document.exitFullscreen();
+		}
+	};
+}
+
 /**
  * Request a wake lock and keep it active until it's released.
  * Returns undefined if wake lock is not supported.
  */
-export function requestWakeLock():
-	| { active: Readable<boolean>; release: () => Promise<void> }
-	| undefined {
+export function requestWakeLock(): Lock | undefined {
 	/* eslint-disable no-inner-declarations */
 	if ('wakeLock' in navigator) {
 		const controller = new AbortController();
 		let wakeLock: WakeLockSentinel | undefined;
-		const active = writable(false);
+		const { state, ...stores } = lockState();
 
 		async function requestNewLock() {
 			try {
 				wakeLock = await navigator.wakeLock.request('screen');
-				active.set(true);
+				state.set({ active: true });
 
 				wakeLock.addEventListener(
 					'release',
 					() => {
-						active.set(false);
+						state.set({ active: false });
 					},
 					controller
 				);
 			} catch (error) {
 				if (error instanceof DOMException) {
-					console.error(`${error.name}, ${error.message}`);
+					state.set({ active: false, error });
 				} else {
 					throw error;
 				}
@@ -77,7 +132,7 @@ export function requestWakeLock():
 		document.addEventListener('fullscreenchange', handleVisiblityChange, controller);
 
 		return {
-			active,
+			...stores,
 			async release() {
 				controller.abort();
 				await wakeLock?.release();
