@@ -64,11 +64,11 @@ export function sendResizeEvents(
 				width: window.innerWidth,
 				height: window.innerHeight
 			};
+			console.log(socket.readyState, 'socket ready state');
 			socket.send(JSON.stringify(data));
 		};
 
 		document.addEventListener('resize', handleResize, options);
-		handleResize();
 		socket.addEventListener('close', () => {
 			document.removeEventListener('resize', handleResize);
 		});
