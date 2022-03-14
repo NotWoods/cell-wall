@@ -1,8 +1,11 @@
 <script lang="ts">
 	import TopBarItem from './TopBarItem.svelte';
+
+	let className = 'bg-green-800';
+	export { className as class };
 </script>
 
-<nav class="bg-green-800">
+<nav class={className}>
 	<div
 		class="top-bar flex flex-wrap gap-2 items-center max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 py-2"
 	>
