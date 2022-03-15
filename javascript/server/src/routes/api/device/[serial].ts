@@ -29,14 +29,8 @@ export default async function (fastify: FastifyInstance): Promise<void> {
 		schema: {
 			response: {
 				200: {
-					type: 'object',
-					nullable: true,
-					properties: {
-						deviceName: { type: 'string' },
-						width: { type: 'number' },
-						height: { type: 'number' },
-						server: { type: 'string' }
-					}
+					...cellInfoSchema,
+					nullable: true
 				}
 			}
 		},
@@ -56,14 +50,6 @@ export default async function (fastify: FastifyInstance): Promise<void> {
 	}>({
 		method: 'POST',
 		url: '/api/device/:serial',
-		schema: {
-			response: {
-				200: {
-					...cellInfoSchema,
-					nullable: true
-				}
-			}
-		},
 		/**
 		 * Register a new cell
 		 */

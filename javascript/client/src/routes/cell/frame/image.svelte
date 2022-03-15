@@ -23,12 +23,4 @@
 	$: fit = objectFit(imageState?.scaleType);
 </script>
 
-<img {src} alt="" style={`object-fit: ${fit}`} />
-
-<style>
-	img {
-		display: block;
-		height: 100%;
-		width: 100%;
-	}
-</style>
+<img class="fill" {src} alt="" style={`object-fit: ${fit}`} />
