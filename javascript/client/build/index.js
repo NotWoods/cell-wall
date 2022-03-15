@@ -1,4 +1,4 @@
-import { p as parse$4, h as handler } from './handler-65c2a55d.js';
+import { p as parse$4, h as handler } from './handler-a8995a71.js';
 import path$1 from 'path';
 import require$$0$1 from 'buffer';
 import require$$0$2 from 'tty';
@@ -7,15 +7,17 @@ import fs__default from 'fs';
 import require$$4 from 'net';
 import require$$7 from 'zlib';
 import http from 'http';
-import 'querystring';
-import 'url';
+import './shims-eb608bdd.js';
 import 'node:http';
 import 'node:https';
 import 'node:zlib';
 import 'node:stream';
 import 'node:util';
 import 'node:url';
-import './server/app.js';
+import 'querystring';
+import 'url';
+import 'stream';
+import './server/index.js';
 import './manifest.js';
 
 var compression$2 = {exports: {}};

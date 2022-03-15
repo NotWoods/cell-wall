@@ -1,29 +1,46 @@
-import { c as create_ssr_component, v as validate_component, b as add_attribute, p as each } from "../../../chunks/index-50854321.js";
-import { c as createLoadWithDevices, H as HorizontalField, D as DeviceOption } from "../../../chunks/_DeviceOption-8c4da22d.js";
-import { F as Form } from "../../../chunks/SubmitButton-185fe575.js";
-import { P as PowerButtons } from "../../../chunks/_PowerButtons-34decfe4.js";
-import { f as formDataAsSearchParams } from "../../../chunks/_form-52443b97.js";
-import { R as ResetSubmit } from "../../../chunks/_ResetSubmit-902f2b92.js";
-import "../../../chunks/snackbar-host-0b24a4c8.js";
-import "../../../chunks/index-06c8ab10.js";
-const load = createLoadWithDevices();
+import { c as create_ssr_component, a as subscribe, v as validate_component, b as add_attribute, p as each } from "../../../chunks/index-4d214b4e.js";
+import { R as ResetSubmit } from "../../../chunks/ResetSubmit-c389bea7.js";
+import { H as HorizontalField, D as DeviceOption } from "../../../chunks/HorizontalField-ca2aa46e.js";
+import { F as Form } from "../../../chunks/SubmitButton-5db79bf7.js";
+import { g as getRemoteContext, s as storeValues } from "../../../chunks/__layout-905ad6c6.js";
+import { P as PowerButtons } from "../../../chunks/_PowerButtons-ce1efc0a.js";
+import { p as post } from "../../../chunks/_form-52443b97.js";
+import "../../../chunks/snackbar-host-f2ed4131.js";
+import "../../../chunks/index-23b4b723.js";
+import "../../../chunks/TopBar-fb618005.js";
 const Edit = create_ssr_component(($$result, $$props, $$bindings, slots) => {
+  let firstDevice;
   let selectedCell;
-  let { devices } = $$props;
-  let selectedDeviceSerial = devices[0]?.serial;
+  let $remoteState, $$unsubscribe_remoteState;
+  let $devices, $$unsubscribe_devices;
+  const { state: remoteState } = getRemoteContext();
+  $$unsubscribe_remoteState = subscribe(remoteState, (value) => $remoteState = value);
+  const devices = storeValues(remoteState);
+  $$unsubscribe_devices = subscribe(devices, (value) => $devices = value);
+  let selectedDeviceSerial;
   async function submit(formData, action) {
-    const res = await fetch(action.toString(), {
-      method: "post",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded"
-      },
-      body: formDataAsSearchParams(formData)
-    });
-    console.log(await res.json());
+    function getNumber(key) {
+      const value = formData.get(key);
+      if (typeof value === "string") {
+        return Number(value);
+      }
+      return void 0;
+    }
+    const data = {
+      serial: formData.get("serial"),
+      deviceName: formData.get("deviceName"),
+      width: getNumber("width"),
+      height: getNumber("height"),
+      x: getNumber("x"),
+      y: getNumber("y"),
+      server: formData.get("server")
+    };
+    await post(action.toString(), data);
   }
-  if ($$props.devices === void 0 && $$bindings.devices && devices !== void 0)
-    $$bindings.devices(devices);
-  selectedCell = devices.find((cell) => cell.serial === selectedDeviceSerial);
+  firstDevice = $devices[0]?.serial;
+  selectedCell = $remoteState.get(firstDevice);
+  $$unsubscribe_remoteState();
+  $$unsubscribe_devices();
   return `${validate_component(Form, "Form").$$render($$result, {
     class: "flex flex-col gap-y-4",
     action: "/api/device/" + selectedDeviceSerial,
@@ -32,26 +49,26 @@ const Edit = create_ssr_component(($$result, $$props, $$bindings, slots) => {
     default: ({ loading }) => {
       return `${validate_component(HorizontalField, "HorizontalField").$$render($$result, { for: "control-serial", label: "Device" }, {}, {
         default: ({ inputClassName }) => {
-          return `<select${add_attribute("class", inputClassName, 0)} name="${"serial"}" id="${"control-serial"}">${each(devices, (device) => {
+          return `<select${add_attribute("class", inputClassName, 0)} name="${"serial"}" id="${"control-serial"}">${each($devices, (device) => {
             return `${validate_component(DeviceOption, "DeviceOption").$$render($$result, { device }, {}, {})}`;
           })}</select>`;
         }
       })}
 
 	${validate_component(HorizontalField, "HorizontalField").$$render($$result, {
-        for: "control-connected",
-        label: "Connected"
+        for: "control-connection",
+        label: "Connection"
       }, {}, {
-        default: () => {
-          return `<input type="${"checkbox"}" id="${"control-connected"}" name="${"connected"}" disabled ${selectedCell?.connected ?? false ? "checked" : ""}>`;
+        default: ({ inputClassName }) => {
+          return `<select name="${"connection"}" id="${"control-connection"}"${add_attribute("value", selectedCell?.connection ?? "none", 0)} disabled${add_attribute("class", inputClassName, 0)}><option value="${"none"}"></option><option value="${"web"}">Web</option><option value="${"android"}">Android</option></select>`;
         }
       })}
 
-	${validate_component(HorizontalField, "HorizontalField").$$render($$result, { label: "Power" }, {}, {
+	${selectedCell?.connection === "android" ? `${validate_component(HorizontalField, "HorizontalField").$$render($$result, { label: "Power" }, {}, {
         default: () => {
           return `${validate_component(PowerButtons, "PowerButtons").$$render($$result, { serial: selectedDeviceSerial }, {}, {})}`;
         }
-      })}
+      })}` : ``}
 
 	${validate_component(HorizontalField, "HorizontalField").$$render($$result, {
         for: "control-deviceName",
@@ -97,4 +114,4 @@ const Edit = create_ssr_component(($$result, $$props, $$bindings, slots) => {
     }
   })}`;
 });
-export { Edit as default, load };
+export { Edit as default };

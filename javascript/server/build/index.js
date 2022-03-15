@@ -1,6 +1,8 @@
 var __defProp = Object.defineProperty;
 var __defProps = Object.defineProperties;
+var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
+var __getOwnPropNames = Object.getOwnPropertyNames;
 var __getOwnPropSymbols = Object.getOwnPropertySymbols;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
 var __propIsEnum = Object.prototype.propertyIsEnumerable;
@@ -17,7 +19,6 @@ var __spreadValues = (a, b) => {
   return a;
 };
 var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
-var __markAsModule = (target) => __defProp(target, "__esModule", { value: true });
 var __objRest = (source, exclude) => {
   var target = {};
   for (var prop in source)
@@ -31,42 +32,41 @@ var __objRest = (source, exclude) => {
   return target;
 };
 var __esm = (fn, res) => function __init() {
-  return fn && (res = (0, fn[Object.keys(fn)[0]])(fn = 0)), res;
+  return fn && (res = (0, fn[__getOwnPropNames(fn)[0]])(fn = 0)), res;
 };
 var __export = (target, all) => {
-  __markAsModule(target);
   for (var name in all)
     __defProp(target, name, { get: all[name], enumerable: true });
 };
-
-// src/lib/env.ts
-import { config } from "dotenv";
-function formatURL(address = "0.0.0.0", port = "3000") {
-  let portN = Number(port);
-  if (Number.isNaN(portN)) {
-    portN = 3e3;
+var __reExport = (target, module, copyDefault, desc) => {
+  if (module && typeof module === "object" || typeof module === "function") {
+    for (let key of __getOwnPropNames(module))
+      if (!__hasOwnProp.call(target, key) && (copyDefault || key !== "default"))
+        __defProp(target, key, { get: () => module[key], enumerable: !(desc = __getOwnPropDesc(module, key)) || desc.enumerable });
   }
-  let host = address.startsWith("http") ? address : `http://${address}`;
-  host += `:${port}`;
-  return { base: new URL(host), port: portN };
-}
-var VERSION, formatted, SERVER_ADDRESS, PORT, PACKAGE_NAME, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GITHUB_TOKEN, DATABASE_FILENAME;
-var init_env = __esm({
-  "src/lib/env.ts"() {
-    config();
-    VERSION = "4.0.0";
-    formatted = formatURL(process.env["SERVER_ADDRESS"], process.env["PORT"]);
-    SERVER_ADDRESS = formatted.base;
-    PORT = formatted.port;
-    PACKAGE_NAME = "com.tigeroakes.cellwall.client";
-    GOOGLE_CLIENT_ID = process.env["GOOGLE_CLIENT_ID"];
-    GOOGLE_CLIENT_SECRET = process.env["GOOGLE_CLIENT_SECRET"];
-    GITHUB_TOKEN = process.env["GITHUB_TOKEN"];
-    DATABASE_FILENAME = process.env["DATABASE_FILENAME"];
+  return target;
+};
+
+// <define:process.env>
+var NODE_ENV, define_process_env_default;
+var init_define_process_env = __esm({
+  "<define:process.env>"() {
+    NODE_ENV = "production";
+    define_process_env_default = { NODE_ENV };
   }
 });
 
-// ../../node_modules/.pnpm/svelte@3.46.2/node_modules/svelte/internal/index.mjs
+// src/lib/env.ts
+var env_exports = {};
+import * as env_star from "@cell-wall/env";
+var init_env = __esm({
+  "src/lib/env.ts"() {
+    init_define_process_env();
+    __reExport(env_exports, env_star);
+  }
+});
+
+// ../../node_modules/.pnpm/svelte@3.46.4/node_modules/svelte/internal/index.mjs
 function noop() {
 }
 function run(fn) {
@@ -105,41 +105,12 @@ function destroy_component(component, detaching) {
     $$.ctx = [];
   }
 }
-var tasks, managed_styles, resolved_promise, seen_callbacks, outroing, globals, boolean_attributes, SvelteElement;
+var resolved_promise, globals, SvelteElement;
 var init_internal = __esm({
-  "../../node_modules/.pnpm/svelte@3.46.2/node_modules/svelte/internal/index.mjs"() {
-    tasks = new Set();
-    managed_styles = new Map();
+  "../../node_modules/.pnpm/svelte@3.46.4/node_modules/svelte/internal/index.mjs"() {
+    init_define_process_env();
     resolved_promise = Promise.resolve();
-    seen_callbacks = new Set();
-    outroing = new Set();
     globals = typeof window !== "undefined" ? window : typeof globalThis !== "undefined" ? globalThis : global;
-    boolean_attributes = new Set([
-      "allowfullscreen",
-      "allowpaymentrequest",
-      "async",
-      "autofocus",
-      "autoplay",
-      "checked",
-      "controls",
-      "default",
-      "defer",
-      "disabled",
-      "formnovalidate",
-      "hidden",
-      "ismap",
-      "loop",
-      "multiple",
-      "muted",
-      "nomodule",
-      "novalidate",
-      "open",
-      "playsinline",
-      "readonly",
-      "required",
-      "reversed",
-      "selected"
-    ]);
     if (typeof HTMLElement === "function") {
       SvelteElement = class extends HTMLElement {
         constructor() {
@@ -184,7 +155,7 @@ var init_internal = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/svelte@3.46.2/node_modules/svelte/store/index.mjs
+// ../../node_modules/.pnpm/svelte@3.46.4/node_modules/svelte/store/index.mjs
 function readable(value, start) {
   return {
     subscribe: writable(value, start).subscribe
@@ -192,7 +163,7 @@ function readable(value, start) {
 }
 function writable(value, start = noop) {
   let stop;
-  const subscribers = new Set();
+  const subscribers = /* @__PURE__ */ new Set();
   function set(new_value) {
     if (safe_not_equal(value, new_value)) {
       value = new_value;
@@ -271,7 +242,8 @@ function derived(stores, fn, initial_value) {
 }
 var subscriber_queue;
 var init_store = __esm({
-  "../../node_modules/.pnpm/svelte@3.46.2/node_modules/svelte/store/index.mjs"() {
+  "../../node_modules/.pnpm/svelte@3.46.4/node_modules/svelte/store/index.mjs"() {
+    init_define_process_env();
     init_internal();
     init_internal();
     subscriber_queue = [];
@@ -294,6 +266,7 @@ async function transformMapAsync(map, transform) {
 }
 var init_transform = __esm({
   "src/lib/map/transform.ts"() {
+    init_define_process_env();
   }
 });
 
@@ -369,6 +342,7 @@ async function startIntent(adb, options) {
 var StartIntentError, UnresolvedIntentError;
 var init_adb_action = __esm({
   "src/lib/android/adb-action.ts"() {
+    init_define_process_env();
     StartIntentError = class extends Error {
       constructor() {
         super(...arguments);
@@ -392,23 +366,24 @@ function noDeviceError(err) {
 var DeviceManager;
 var init_device_manager = __esm({
   "src/lib/android/device-manager.ts"() {
+    init_define_process_env();
     init_store();
     init_env();
     init_transform();
     init_adb_action();
     DeviceManager = class {
       constructor() {
-        this._devices = writable(new Map());
-        this.devices.subscribe((map) => {
+        this._devices = writable(/* @__PURE__ */ new Map());
+        this._devices.subscribe((map) => {
           this._lastMap = map;
         });
       }
-      get devices() {
-        return this._devices;
+      subscribe(run2, invalidate) {
+        return this._devices.subscribe(run2, invalidate);
       }
       async refreshDevices() {
         const adbGlobal = await ADB.createADB({
-          allowOfflineDevices: false
+          allowOfflineDevices: define_process_env_default["NODE_ENV"] !== "production"
         });
         let devices;
         try {
@@ -468,7 +443,7 @@ var init_device_manager = __esm({
       }
       async connectPort(serial, devicePort) {
         return this.run(serial, async (adb) => {
-          await adb.reversePort(devicePort, PORT);
+          await adb.reversePort(devicePort, env_exports.PORT);
           return true;
         });
       }
@@ -488,6 +463,7 @@ function memo(func) {
 }
 var init_memo = __esm({
   "src/lib/memo.ts"() {
+    init_define_process_env();
   }
 });
 
@@ -500,6 +476,7 @@ import { pipeline } from "stream/promises";
 var buildTempDir, GithubApi;
 var init_github = __esm({
   "src/lib/android/github.ts"() {
+    init_define_process_env();
     init_memo();
     buildTempDir = memo(() => fs.mkdtemp(join(tmpdir(), "apk-")));
     GithubApi = class {
@@ -589,6 +566,7 @@ async function setPower(device, on) {
 var KEYCODE_POWER;
 var init_power = __esm({
   "src/lib/android/power.ts"() {
+    init_define_process_env();
     init_adb_action();
     KEYCODE_POWER = 26;
   }
@@ -598,17 +576,17 @@ var init_power = __esm({
 var CellManager;
 var init_manager = __esm({
   "src/lib/cells/manager.ts"() {
+    init_define_process_env();
     init_store();
     CellManager = class {
       constructor() {
-        this._info = writable(new Map());
-        this._state = writable(new Map());
+        this._info = writable(/* @__PURE__ */ new Map());
       }
       get info() {
         return this._info;
       }
-      get state() {
-        return this._state;
+      subscribe(run2, invalidate) {
+        return this._info.subscribe(run2, invalidate);
       }
       async loadInfo(db) {
         try {
@@ -626,7 +604,7 @@ var init_manager = __esm({
         return this;
       }
       async writeInfo(db) {
-        await db.insertCells(Array.from(get_store_value(this.info).values()));
+        await db.insertCells(Array.from(get_store_value(this._info).values()));
       }
       register(serial, info) {
         this._info.update((map) => new Map(map).set(serial, info));
@@ -641,81 +619,35 @@ var init_manager = __esm({
           }
         });
       }
-      setState(serial, state) {
-        this._state.update((map) => new Map(map).set(serial, state));
-      }
-      setStateMap(states) {
-        const entries = typeof states.entries === "function" ? states.entries() : Object.entries(states);
-        this._state.update((map) => new Map([...map, ...entries]));
-      }
     };
   }
 });
 
-// src/lib/cells/schema.ts
-function buildCellState(options) {
-  const { type, properties = {}, required = [] } = options;
-  return {
-    type: "object",
-    properties: __spreadValues({
-      type: {
-        type: "string",
-        enum: [type]
-      }
-    }, properties),
-    required: ["type", ...required]
-  };
-}
-var cellStateBlankSchema, cellStateWebSchema, cellStateTextSchema, cellStateImageSchema;
-var init_schema = __esm({
-  "src/lib/cells/schema.ts"() {
-    cellStateBlankSchema = buildCellState({ type: "BLANK" });
-    cellStateWebSchema = buildCellState({
-      type: "WEB",
-      properties: {
-        url: { type: "string", format: "uri" }
-      },
-      required: ["url"]
-    });
-    cellStateTextSchema = buildCellState({
-      type: "TEXT",
-      properties: {
-        text: { type: "string" },
-        backgroundColor: { type: "string" }
-      },
-      required: ["text"]
-    });
-    cellStateImageSchema = buildCellState({
-      type: "IMAGE",
-      properties: {
-        src: { type: "string", format: "uri" },
-        scaleType: {
-          type: "string",
-          enum: ["FIT_CENTER", "FIT_XY", "CENTER_INSIDE"]
-        }
-      },
-      required: ["src"]
-    });
-  }
-});
-
 // src/lib/cells/state.ts
-function textState(text, backgroundColor) {
-  return { type: CellStateType.TEXT, text, backgroundColor };
+function cellStateStore() {
+  const store = writable(/* @__PURE__ */ new Map());
+  return __spreadProps(__spreadValues({}, store), {
+    setStates(states) {
+      const entries = typeof states.entries === "function" ? states.entries() : Object.entries(states);
+      store.update((map) => new Map([...map, ...entries]));
+    }
+  });
 }
-function blankState() {
-  return { type: CellStateType.BLANK };
+function cellStateFor(store, serial) {
+  return derived(store, (map) => map.get(serial));
 }
-function toUri(state, base = SERVER_ADDRESS) {
+function toUri(state, base = env_exports.SERVER_ADDRESS) {
   const _a = state, { type } = _a, props = __objRest(_a, ["type"]);
   switch (type.toUpperCase()) {
-    case CellStateType.WEB: {
+    case "WEB": {
       const web = props;
-      return new URL(web.url, base);
+      return new URL(web.payload, base);
     }
-    case CellStateType.IMAGE: {
+    case "IMAGE": {
       const imgProps = props;
-      imgProps.src = new URL(imgProps.src, base).toString();
+      if (typeof imgProps.payload === "string") {
+        imgProps.payload = new URL(imgProps.payload, base).toString();
+      }
     }
     default: {
       const url = new URL(`cellwall://${type}`);
@@ -726,26 +658,19 @@ function toUri(state, base = SERVER_ADDRESS) {
     }
   }
 }
-var CellStateType;
 var init_state = __esm({
   "src/lib/cells/state.ts"() {
+    init_define_process_env();
+    init_store();
     init_env();
-    (function(CellStateType2) {
-      CellStateType2["BLANK"] = "BLANK";
-      CellStateType2["CONFIGURE"] = "CONFIGURE";
-      CellStateType2["TEXT"] = "TEXT";
-      CellStateType2["IMAGE"] = "IMAGE";
-      CellStateType2["BUTTON"] = "BUTTON";
-      CellStateType2["WEB"] = "WEB";
-    })(CellStateType || (CellStateType = {}));
   }
 });
 
 // src/lib/cells/index.ts
 var init_cells = __esm({
   "src/lib/cells/index.ts"() {
+    init_define_process_env();
     init_manager();
-    init_schema();
     init_state();
   }
 });
@@ -772,6 +697,7 @@ async function authenticateGoogle(client, code) {
 }
 var init_google = __esm({
   "src/lib/google.ts"() {
+    init_define_process_env();
   }
 });
 
@@ -800,19 +726,18 @@ function shiftCell(canvas, cell) {
 var AXIS_TO_POS;
 var init_canvas = __esm({
   "src/lib/cells/canvas.ts"() {
-    AXIS_TO_POS = new Map().set("width", "x").set("height", "y");
+    init_define_process_env();
+    AXIS_TO_POS = (/* @__PURE__ */ new Map()).set("width", "x").set("height", "y");
   }
 });
 
 // src/lib/image/manipulate.ts
 import Jimp from "jimp";
-function has(set, item) {
-  return set.has(item);
-}
+import { setHas } from "ts-extras";
 function parseResizeOptions(query = {}) {
   const horizontalFlag = ALIGN_QUERY[query.horizontalAlign] || 0;
   const verticalFlag = ALIGN_QUERY[query.verticalAlign] || 0;
-  const resize2 = has(RESIZE, query.resize) ? query.resize : void 0;
+  const resize2 = setHas(RESIZE, query.resize) ? query.resize : void 0;
   return {
     alignBits: horizontalFlag | verticalFlag,
     resizeMode: resize2
@@ -838,6 +763,7 @@ function crop(image, cell) {
 var ALIGN_QUERY, RESIZE;
 var init_manipulate = __esm({
   "src/lib/image/manipulate.ts"() {
+    init_define_process_env();
     ALIGN_QUERY = {
       left: Jimp.HORIZONTAL_ALIGN_LEFT,
       right: Jimp.HORIZONTAL_ALIGN_RIGHT,
@@ -846,7 +772,7 @@ var init_manipulate = __esm({
       bottom: Jimp.VERTICAL_ALIGN_BOTTOM,
       middle: Jimp.VERTICAL_ALIGN_MIDDLE
     };
-    RESIZE = new Set([
+    RESIZE = /* @__PURE__ */ new Set([
       Jimp.RESIZE_NEAREST_NEIGHBOR,
       Jimp.RESIZE_BILINEAR,
       Jimp.RESIZE_BICUBIC,
@@ -872,6 +798,7 @@ async function splitImage(image, cells, options = {}) {
 }
 var init_split = __esm({
   "src/lib/image/split.ts"() {
+    init_define_process_env();
     init_canvas();
     init_transform();
     init_manipulate();
@@ -882,11 +809,12 @@ var init_split = __esm({
 var SplitImageCache;
 var init_cache = __esm({
   "src/lib/image/cache.ts"() {
+    init_define_process_env();
     init_transform();
     init_split();
     SplitImageCache = class {
       constructor() {
-        this.cache = new Map();
+        this.cache = /* @__PURE__ */ new Map();
       }
       get(serial) {
         return this.cache.get(serial);
@@ -911,7 +839,7 @@ function asArray(items) {
   return Array.isArray(items) ? items : [items];
 }
 function getAll(map, keys) {
-  const result = new Map();
+  const result = /* @__PURE__ */ new Map();
   for (const key of keys) {
     const value = map.get(key);
     if (value !== void 0) {
@@ -922,6 +850,7 @@ function getAll(map, keys) {
 }
 var init_get = __esm({
   "src/lib/map/get.ts"() {
+    init_define_process_env();
   }
 });
 
@@ -935,23 +864,22 @@ function subscribeToMapStore(store, subscription) {
 }
 var init_subscribe = __esm({
   "src/lib/map/subscribe.ts"() {
+    init_define_process_env();
   }
 });
 
 // src/lib/repository/known.ts
-function computeInfo(serial, model, manufacturer) {
+function computeInfo(model, manufacturer) {
   const known = knownDevices.find((device) => device.model === model && device.manufacturer === manufacturer);
   const autoDeviceName = model.startsWith(manufacturer) || manufacturer.toLowerCase() === "android" ? model : `${manufacturer} ${model}`;
   if (known) {
     return {
-      serial,
       deviceName: known.deviceName || autoDeviceName,
       width: known.width,
       height: known.height
     };
   } else {
     return {
-      serial,
       deviceName: autoDeviceName
     };
   }
@@ -959,6 +887,7 @@ function computeInfo(serial, model, manufacturer) {
 var knownDevices;
 var init_known = __esm({
   "src/lib/repository/known.ts"() {
+    init_define_process_env();
     knownDevices = [
       {
         model: "A0001",
@@ -993,38 +922,75 @@ var init_known = __esm({
 });
 
 // src/lib/repository/combine-cell.ts
-function deriveCellInfo(cellManager, deviceManager) {
-  return derived([cellManager.info, cellManager.state, deviceManager.devices], ([infoMap, states, devices]) => {
-    const cellInfoMap = new Map();
-    for (const [serial, info] of infoMap) {
-      cellInfoMap.set(serial, { serial, info, connected: false });
-    }
-    for (const [serial, state] of states) {
-      const existing = cellInfoMap.get(serial);
-      if (existing) {
-        existing.state = state;
-      } else {
-        cellInfoMap.set(serial, { serial, state, connected: false });
+function deriveCellInfo(stores) {
+  let lastResult = /* @__PURE__ */ new Map();
+  return derived([stores.info, stores.devices, stores.webSockets], ([infoMap, devices, webSockets]) => {
+    const cellInfoMap = /* @__PURE__ */ new Map();
+    function mergeFrom(otherMap, getCellInfo) {
+      for (const [serial, otherData] of otherMap) {
+        const existing = cellInfoMap.get(serial) ?? {};
+        const newData = __spreadValues(__spreadValues({
+          serial
+        }, existing), getCellInfo(otherData));
+        cellInfoMap.set(serial, newData);
       }
     }
-    for (const [serial, { model, manufacturer }] of devices) {
-      const existing = cellInfoMap.get(serial);
-      if (existing) {
-        existing.connected = true;
-        existing.info = __spreadValues(__spreadValues({}, computeInfo(serial, model, manufacturer)), existing.info);
-      } else {
-        cellInfoMap.set(serial, {
-          serial,
-          connected: true,
-          info: computeInfo(serial, model, manufacturer)
-        });
+    mergeFrom(infoMap, (info) => info);
+    mergeFrom(webSockets, (socketInfo) => ({
+      width: socketInfo.width,
+      height: socketInfo.height
+    }));
+    mergeFrom(devices, ({ model, manufacturer }) => computeInfo(model, manufacturer));
+    for (const [serial, newInfo] of cellInfoMap) {
+      const lastInfo = lastResult.get(serial);
+      if (lastInfo && lastInfo.deviceName === newInfo.deviceName && lastInfo.width === newInfo.width && lastInfo.height === newInfo.height && lastInfo.x === newInfo.x && lastInfo.y === newInfo.y && lastInfo.server === newInfo.server) {
+        cellInfoMap.set(serial, lastInfo);
       }
     }
-    return cellInfoMap;
-  }, new Map());
+    lastResult = cellInfoMap;
+    return lastResult;
+  });
+}
+function deriveConnection(stores) {
+  return derived([stores.devices, stores.webSockets], ([devices, webSockets]) => {
+    const connections = /* @__PURE__ */ new Map();
+    for (const id of webSockets.keys()) {
+      connections.set(id, "web");
+    }
+    for (const serial of devices.keys()) {
+      connections.set(serial, "android");
+    }
+    return connections;
+  });
+}
+function deriveCellData(stores) {
+  const cellInfo = deriveCellInfo(stores);
+  const connections = deriveConnection(stores);
+  let lastResult = /* @__PURE__ */ new Map();
+  return derived([stores.state, cellInfo, connections], ([stateMap, infoMap, connectionMap]) => {
+    const keys = /* @__PURE__ */ new Set([...stateMap.keys(), ...infoMap.keys(), ...connectionMap.keys()]);
+    const result = /* @__PURE__ */ new Map();
+    for (const serial of keys) {
+      const oldData = lastResult.get(serial);
+      const newData = {
+        serial,
+        info: infoMap.get(serial),
+        state: stateMap.get(serial),
+        connection: connectionMap.get(serial)
+      };
+      if (oldData && newData.info === oldData.info && newData.state === oldData.state && newData.connection === oldData.connection) {
+        result.set(serial, oldData);
+      } else {
+        result.set(serial, newData);
+      }
+    }
+    lastResult = result;
+    return lastResult;
+  });
 }
 var init_combine_cell = __esm({
   "src/lib/repository/combine-cell.ts"() {
+    init_define_process_env();
     init_store();
     init_known();
   }
@@ -1070,12 +1036,36 @@ async function database(filename) {
 }
 var init_database = __esm({
   "src/lib/repository/database.ts"() {
+    init_define_process_env();
+  }
+});
+
+// src/lib/repository/socket-store.ts
+function webSocketStore() {
+  const store = writable(/* @__PURE__ */ new Map());
+  return __spreadProps(__spreadValues({}, store), {
+    add(serial, socket) {
+      store.update((map) => new Map(map).set(serial, socket));
+    },
+    delete(serial) {
+      store.update((map) => {
+        const copy = new Map(map);
+        copy.delete(serial);
+        return copy;
+      });
+    }
+  });
+}
+var init_socket_store = __esm({
+  "src/lib/repository/socket-store.ts"() {
+    init_define_process_env();
+    init_store();
   }
 });
 
 // src/lib/repository/repository.ts
-function sendIntentOnStateChange(cellManager, deviceManager) {
-  subscribeToMapStore(cellManager.state, (newStates, oldStates) => {
+function sendIntentOnStateChange(stores, deviceManager) {
+  subscribeToMapStore(stores.state, (newStates, oldStates) => {
     const changes = new Map(newStates);
     if (oldStates) {
       for (const [serial, state] of oldStates) {
@@ -1084,13 +1074,13 @@ function sendIntentOnStateChange(cellManager, deviceManager) {
         }
       }
     }
-    const info = get_store_value(cellManager.info);
+    const info = get_store_value(stores.info);
     Promise.all(Array.from(changes).map(([serial, state]) => {
       var _a;
       console.log(serial, state);
-      const base = ((_a = info.get(serial)) == null ? void 0 : _a.server) || SERVER_ADDRESS;
+      const base = ((_a = info.get(serial)) == null ? void 0 : _a.server) || env_exports.SERVER_ADDRESS;
       return deviceManager.startIntent(serial, {
-        action: `${PACKAGE_NAME}.DISPLAY`,
+        action: `${env_exports.PACKAGE_NAME}.DISPLAY`,
         dataUri: toUri(state, base),
         waitForLaunch: true
       });
@@ -1098,20 +1088,28 @@ function sendIntentOnStateChange(cellManager, deviceManager) {
   });
 }
 function repository() {
-  const dbPromise = database(DATABASE_FILENAME);
+  const dbPromise = database(env_exports.DATABASE_FILENAME);
+  const cellState = cellStateStore();
+  const webSockets = webSocketStore();
   const deviceManager = new DeviceManager();
   let deviceManagerPromise = deviceManager.refreshDevices().then(() => deviceManager);
   const cellManager = new CellManager();
   const cellManagerPromise = dbPromise.then((db) => cellManager.loadInfo(db));
-  sendIntentOnStateChange(cellManager, deviceManager);
-  const cellData = deriveCellInfo(cellManager, deviceManager);
+  sendIntentOnStateChange({ info: cellManager, state: cellState }, deviceManager);
+  const cellData = deriveCellData({
+    info: cellManager,
+    state: cellState,
+    devices: deviceManager,
+    webSockets
+  });
+  cellData.subscribe((state) => console.info("CellData", state));
   const googleApi = memo(async function googleApi2() {
-    if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET) {
+    if (!env_exports.GOOGLE_CLIENT_ID || !env_exports.GOOGLE_CLIENT_SECRET) {
       throw new Error(`Missing Google API keys`);
     }
     const db = await dbPromise;
     const credentials = await db.getGoogleCredentials();
-    const googleClient = initializeGoogle(credentials, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET);
+    const googleClient = initializeGoogle(credentials, env_exports.GOOGLE_CLIENT_ID, env_exports.GOOGLE_CLIENT_SECRET);
     if (googleClient.authorizeUrl) {
       console.log(`
 ---
@@ -1123,14 +1121,16 @@ ${googleClient.authorizeUrl}
     return googleClient;
   });
   const github = memo(() => {
-    if (!GITHUB_TOKEN) {
+    if (!env_exports.GITHUB_TOKEN) {
       throw new Error(`Missing GitHub API keys`);
     }
-    return new GithubApi({ auth: GITHUB_TOKEN });
+    return new GithubApi({ auth: env_exports.GITHUB_TOKEN });
   });
   return {
     cellData,
+    cellState,
     images: new SplitImageCache(),
+    webSockets,
     refreshDevices() {
       const refreshPromise = deviceManager.refreshDevices();
       deviceManagerPromise = refreshPromise.then(() => deviceManager);
@@ -1139,9 +1139,9 @@ ${googleClient.authorizeUrl}
     async installApk(tag) {
       const apkPath = await github().downloadApk(tag);
       if (apkPath) {
-        return await deviceManager.installApkToAll(apkPath, PACKAGE_NAME);
+        return await deviceManager.installApkToAll(apkPath, env_exports.PACKAGE_NAME);
       } else {
-        return new Map();
+        return /* @__PURE__ */ new Map();
       }
     },
     async connectDevicePort(serial, port) {
@@ -1169,17 +1169,9 @@ ${googleClient.authorizeUrl}
     },
     async setPower(serial, on) {
       const deviceManager2 = await deviceManagerPromise;
-      const devices = get_store_value(deviceManager2.devices);
+      const devices = get_store_value(deviceManager2);
       const serialList = asArray(serial);
       return setPower(getAll(devices, serialList), on);
-    },
-    async setState(serial, state) {
-      const cellManager2 = await cellManagerPromise;
-      cellManager2.setState(serial, state);
-    },
-    async setStates(states) {
-      const cellManager2 = await cellManagerPromise;
-      cellManager2.setStateMap(states);
     },
     async registerCell(info) {
       const cellManager2 = await cellManagerPromise;
@@ -1191,6 +1183,7 @@ ${googleClient.authorizeUrl}
 }
 var init_repository = __esm({
   "src/lib/repository/repository.ts"() {
+    init_define_process_env();
     init_store();
     init_device_manager();
     init_github();
@@ -1204,12 +1197,14 @@ var init_repository = __esm({
     init_memo();
     init_combine_cell();
     init_database();
+    init_socket_store();
   }
 });
 
 // src/lib/repository/interface.ts
 var init_interface = __esm({
   "src/lib/repository/interface.ts"() {
+    init_define_process_env();
   }
 });
 
@@ -1217,6 +1212,7 @@ var init_interface = __esm({
 var repo;
 var init_repository2 = __esm({
   "src/lib/repository/index.ts"() {
+    init_define_process_env();
     init_repository();
     init_interface();
     repo = repository();
@@ -1247,6 +1243,7 @@ async function serial_default(fastify) {
 }
 var init_serial = __esm({
   "src/routes/api/action/image/[serial].ts"() {
+    init_define_process_env();
     init_repository2();
   }
 });
@@ -1260,12 +1257,14 @@ function validRect(rect = {}) {
 }
 var init_rect = __esm({
   "src/lib/image/rect.ts"() {
+    init_define_process_env();
   }
 });
 
 // src/lib/image/index.ts
 var init_image = __esm({
   "src/lib/image/index.ts"() {
+    init_define_process_env();
     init_cache();
     init_manipulate();
     init_rect();
@@ -1284,12 +1283,13 @@ async function imagePlugin(fastify, options = {}) {
     return await jimp.create(body);
   }
   for (const mimeType of Object.keys(jimp.decoders)) {
-    fastify.addContentTypeParser(mimeType, { parseAs: "buffer", bodyLimit: 5 * MB }, contentParser);
+    fastify.addContentTypeParser(mimeType, { parseAs: "buffer", bodyLimit: 10 * MB }, contentParser);
   }
 }
 var MB;
 var init_image2 = __esm({
   "src/parser/image.ts"() {
+    init_define_process_env();
     MB = 1048576;
   }
 });
@@ -1299,10 +1299,11 @@ var image_exports = {};
 __export(image_exports, {
   default: () => image_default
 });
+import { blankState } from "@cell-wall/cell-state";
 async function updateRemainingCells(remaining, behaviour) {
   switch (behaviour) {
     case "blank":
-      await repo.setStates(new Map(remaining.map((serial) => [serial, { type: CellStateType.BLANK }])));
+      repo.cellState.setStates(new Map(remaining.map((serial) => [serial, blankState])));
       break;
     case "off":
       await repo.setPower(remaining, false);
@@ -1345,7 +1346,15 @@ async function image_default(fastify) {
       const includes = devices.size > 0 ? devices.has.bind(devices) : () => true;
       const cellData = get_store_value(repo.cellData);
       const cells = filterMap(cellData, (cell) => validRect(cell.info) && includes(cell.serial));
-      const rects = transformMap(cells, (cell) => cell.info);
+      const rects = transformMap(cells, (cell) => {
+        var _a, _b, _c, _d;
+        return {
+          width: ((_a = cell.info) == null ? void 0 : _a.width) ?? 1,
+          height: ((_b = cell.info) == null ? void 0 : _b.height) ?? 1,
+          x: ((_c = cell.info) == null ? void 0 : _c.x) ?? 0,
+          y: ((_d = cell.info) == null ? void 0 : _d.y) ?? 0
+        };
+      });
       const options = {
         horizontalAlign: request.query.horizontalAlign,
         verticalAlign: request.query.verticalAlign,
@@ -1353,10 +1362,14 @@ async function image_default(fastify) {
       };
       repo.images.clear();
       await repo.images.insert(image, rects, options);
-      repo.setStates(transformMap(rects, (_, serial) => ({
-        type: CellStateType.IMAGE,
-        src: `/api/action/image/${serial}`
-      })));
+      repo.cellState.setStates(await transformMapAsync(rects, async (_, serial) => {
+        const buffer = await repo.images.get(serial).getBufferAsync(image.getMIME());
+        const arrayBuffer = buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength);
+        return {
+          type: "IMAGE",
+          payload: arrayBuffer
+        };
+      }));
       if (request.query.rest) {
         const remaining = Array.from(cellData.keys()).filter((serial) => !rects.has(serial));
         const rest = request.query.rest;
@@ -1376,8 +1389,8 @@ async function image_default(fastify) {
 }
 var init_image3 = __esm({
   "src/routes/api/action/image/index.ts"() {
+    init_define_process_env();
     init_store();
-    init_cells();
     init_image();
     init_transform();
     init_repository2();
@@ -1416,6 +1429,7 @@ async function install_default(fastify) {
 }
 var init_install = __esm({
   "src/routes/api/action/install.ts"() {
+    init_define_process_env();
     init_repository2();
   }
 });
@@ -1440,8 +1454,58 @@ async function refresh_default(fastify) {
 }
 var init_refresh = __esm({
   "src/routes/api/action/refresh.ts"() {
+    init_define_process_env();
     init_transform();
     init_repository2();
+  }
+});
+
+// src/lib/color.ts
+var RAINBOW_COLORS, RandomColor;
+var init_color = __esm({
+  "src/lib/color.ts"() {
+    init_define_process_env();
+    RAINBOW_COLORS = [
+      "#0F172A",
+      "#7F1D1D",
+      "#7C2D12",
+      "#78350F",
+      "#713F12",
+      "#365314",
+      "#14532D",
+      "#064E3B",
+      "#134E4A",
+      "#164E63",
+      "#0C4A6E",
+      "#1E3A8A",
+      "#312E81",
+      "#4C1D95",
+      "#581C87",
+      "#701A75",
+      "#831843",
+      "#881337"
+    ];
+    RandomColor = class {
+      constructor(colors = RAINBOW_COLORS) {
+        this.colors = colors;
+        if (colors.length === 0) {
+          throw new TypeError("No colors provided");
+        }
+        this.reset();
+      }
+      reset() {
+        this.unusedColors = this.colors.slice();
+      }
+      next() {
+        const randomIndex = Math.floor(Math.random() * this.unusedColors.length);
+        const color = this.unusedColors[randomIndex];
+        this.unusedColors.splice(randomIndex, 1);
+        if (this.unusedColors.length === 0) {
+          this.reset();
+        }
+        return color;
+      }
+    };
   }
 });
 
@@ -1450,29 +1514,35 @@ var text_exports = {};
 __export(text_exports, {
   default: () => text_default
 });
+import { textState } from "@cell-wall/cell-state";
 async function text_default(fastify) {
   fastify.route({
     method: "POST",
     url: "/api/action/text",
     async handler(request, reply) {
       const lines = typeof request.body === "string" ? request.body.split(/\s*\n\s*/g) : request.body;
-      const devices = Array.from(get_store_value(repo.cellData).keys());
-      const deviceToText = new Map(devices.map((device) => [device, []]));
+      const devices = Array.from(get_store_value(repo.cellData).values()).sort((a, b) => {
+        var _a, _b;
+        return (((_a = b.info) == null ? void 0 : _a.width) ?? 0) - (((_b = a.info) == null ? void 0 : _b.width) ?? 0);
+      });
+      const deviceToText = new Map(devices.map((device) => [device.serial, []]));
       for (const [i, line] of lines.entries()) {
         const index = i % devices.length;
         const device = devices[index];
-        deviceToText.get(device).push(line);
+        deviceToText.get(device.serial).push(line);
       }
-      const states = transformMap(deviceToText, (lines2) => textState(lines2.join(), request.query.backgroundColor));
-      await repo.setStates(states);
+      const colors = new RandomColor();
+      const states = transformMap(deviceToText, (lines2) => textState(lines2.join(", "), request.query.backgroundColor ?? colors.next()));
+      repo.cellState.setStates(states);
       reply.send(Object.fromEntries(states));
     }
   });
 }
 var init_text = __esm({
   "src/routes/api/action/text.ts"() {
+    init_define_process_env();
     init_store();
-    init_cells();
+    init_color();
     init_transform();
     init_repository2();
   }
@@ -1494,6 +1564,7 @@ function parsePowerBody(body) {
 }
 var init_body = __esm({
   "src/routes/api/device/power/_body.ts"() {
+    init_define_process_env();
     init_power();
   }
 });
@@ -1530,6 +1601,7 @@ async function serial_default2(fastify) {
 }
 var init_serial2 = __esm({
   "src/routes/api/device/power/[serial].ts"() {
+    init_define_process_env();
     init_repository2();
     init_body();
   }
@@ -1564,6 +1636,7 @@ async function power_default(fastify) {
 }
 var init_power2 = __esm({
   "src/routes/api/device/power/index.ts"() {
+    init_define_process_env();
     init_store();
     init_transform();
     init_repository2();
@@ -1572,13 +1645,15 @@ var init_power2 = __esm({
 });
 
 // src/routes/api/device/state/_body.ts
+import { cellStateTypes } from "@cell-wall/cell-state";
+import { setHas as setHas2 } from "ts-extras";
 function isObject(maybe) {
   return typeof maybe === "object" && maybe !== null;
 }
 function asCellState(maybeState) {
   if (isObject(maybeState)) {
     const state = maybeState;
-    if (state.type in CellStateType) {
+    if (setHas2(cellStateTypes, state.type)) {
       return state;
     }
   }
@@ -1586,7 +1661,7 @@ function asCellState(maybeState) {
 }
 var init_body2 = __esm({
   "src/routes/api/device/state/_body.ts"() {
-    init_cells();
+    init_define_process_env();
   }
 });
 
@@ -1595,6 +1670,7 @@ var serial_exports3 = {};
 __export(serial_exports3, {
   default: () => serial_default3
 });
+import { blankState as blankState2 } from "@cell-wall/cell-state";
 async function serial_default3(fastify) {
   fastify.route({
     method: "GET",
@@ -1603,7 +1679,7 @@ async function serial_default3(fastify) {
       var _a;
       const { serial } = request.params;
       reply.send({
-        [serial]: ((_a = get_store_value(repo.cellData).get(serial)) == null ? void 0 : _a.state) ?? blankState()
+        [serial]: ((_a = get_store_value(repo.cellData).get(serial)) == null ? void 0 : _a.state) ?? blankState2
       });
     }
   });
@@ -1617,15 +1693,15 @@ async function serial_default3(fastify) {
         reply.status(400).send(new Error(`Invalid body ${request.body}`));
         return;
       }
-      await repo.setState(serial, state);
+      repo.cellState.setStates((/* @__PURE__ */ new Map()).set(serial, state));
       reply.send([serial]);
     }
   });
 }
 var init_serial3 = __esm({
   "src/routes/api/device/state/[serial].ts"() {
+    init_define_process_env();
     init_store();
-    init_cells();
     init_repository2();
     init_body2();
   }
@@ -1636,12 +1712,13 @@ var state_exports = {};
 __export(state_exports, {
   default: () => state_default
 });
+import { blankState as blankState3 } from "@cell-wall/cell-state";
 async function state_default(fastify) {
   fastify.route({
     method: "GET",
     url: "/api/device/state/",
     async handler(request, reply) {
-      reply.send(Object.fromEntries(transformMap(get_store_value(repo.cellData), (data) => data.state ?? blankState())));
+      reply.send(Object.fromEntries(transformMap(get_store_value(repo.cellData), (data) => data.state ?? blankState3)));
     }
   });
   fastify.route({
@@ -1655,15 +1732,15 @@ async function state_default(fastify) {
       } else {
         states = request.body;
       }
-      await repo.setStates(states);
+      repo.cellState.setStates(states);
       reply.send(Object.keys(request.body));
     }
   });
 }
 var init_state2 = __esm({
   "src/routes/api/device/state/index.ts"() {
+    init_define_process_env();
     init_store();
-    init_cells();
     init_transform();
     init_repository2();
     init_body2();
@@ -1684,13 +1761,14 @@ async function preset_default(fastify) {
       const preset = request.body instanceof URLSearchParams ? request.body.get("preset") : request.body.preset;
       const presetResponse = await fetch2(`${request.protocol}://${request.hostname}/preset/${preset}.json`);
       const presetStates = await presetResponse.json();
-      await repo.setStates(presetStates);
+      repo.cellState.setStates(presetStates);
       reply.send(presetStates);
     }
   });
 }
 var init_preset = __esm({
   "src/routes/api/device/preset.ts"() {
+    init_define_process_env();
     init_repository2();
   }
 });
@@ -1700,22 +1778,29 @@ var serial_exports4 = {};
 __export(serial_exports4, {
   default: () => serial_default4
 });
+import { cellInfoSchema } from "@cell-wall/cell-state";
+function parseAccept(headers) {
+  var _a;
+  const acceptValues = ((_a = headers["accept"]) == null ? void 0 : _a.split(",")) ?? [];
+  return acceptValues.map((value) => {
+    const [type, weight] = value.split(";");
+    if (weight == null ? void 0 : weight.startsWith("q=")) {
+      const q = parseFloat(weight.substring(2));
+      return { type, q };
+    } else {
+      return { type, q: 1 };
+    }
+  }).sort((a, b) => b.q - a.q);
+}
 async function serial_default4(fastify) {
   fastify.route({
     method: "GET",
     url: "/api/device/:serial",
     schema: {
       response: {
-        200: {
-          type: "object",
-          nullable: true,
-          properties: {
-            deviceName: { type: "string" },
-            width: { type: "number" },
-            height: { type: "number" },
-            server: { type: "string" }
-          }
-        }
+        200: __spreadProps(__spreadValues({}, cellInfoSchema), {
+          nullable: true
+        })
       }
     },
     async handler(request, reply) {
@@ -1726,32 +1811,36 @@ async function serial_default4(fastify) {
   fastify.route({
     method: "POST",
     url: "/api/device/:serial",
-    schema: {
-      response: {
-        200: {
-          type: "object",
-          nullable: true,
-          properties: {
-            deviceName: { type: "string" },
-            width: { type: "number" },
-            height: { type: "number" },
-            server: { type: "string" }
-          }
+    async handler(request, reply) {
+      const {
+        body,
+        params: { serial }
+      } = request;
+      console.log(body);
+      await repo.registerCell({
+        serial: body.serial || serial,
+        server: body.server || `${request.protocol}://${request.hostname}`,
+        deviceName: body.deviceName,
+        width: body.width,
+        height: body.height,
+        x: body.x,
+        y: body.y
+      });
+      const accepts = parseAccept(request.headers);
+      const acceptsHtml = accepts.find((accept) => accept.type === "text/html");
+      if (acceptsHtml) {
+        const acceptsJson = accepts.find((accept) => accept.type === "application/json");
+        if (!acceptsJson || acceptsJson.q < acceptsHtml.q) {
+          reply.redirect(`/cell/frame/blank?id=${serial}`);
         }
       }
-    },
-    async handler(request, reply) {
-      const { serial } = request.params;
-      const info = request.body;
-      info.serial = serial;
-      info.server ||= `${request.protocol}://${request.hostname}`;
-      await repo.registerCell(info);
       reply.send([serial]);
     }
   });
 }
 var init_serial4 = __esm({
   "src/routes/api/device/[serial].ts"() {
+    init_define_process_env();
     init_store();
     init_repository2();
   }
@@ -1773,6 +1862,7 @@ async function device_default(fastify) {
 }
 var init_device = __esm({
   "src/routes/api/device/index.ts"() {
+    init_define_process_env();
     init_store();
     init_repository2();
   }
@@ -1810,6 +1900,7 @@ async function freebusy_default(fastify) {
 }
 var init_freebusy = __esm({
   "src/routes/api/third_party/freebusy.ts"() {
+    init_define_process_env();
     init_repository2();
   }
 });
@@ -1834,13 +1925,34 @@ async function cellwall_version_default(fastify) {
       }
     },
     async handler(request, reply) {
-      reply.send({ version: VERSION });
+      reply.send({ version: env_exports.VERSION });
     }
   });
 }
 var init_cellwall_version = __esm({
   "src/routes/api/cellwall-version.ts"() {
+    init_define_process_env();
     init_env();
+  }
+});
+
+// src/routes/index.ts
+var routes_exports = {};
+__export(routes_exports, {
+  default: () => routes_default
+});
+async function routes_default(fastify) {
+  fastify.route({
+    method: "GET",
+    url: "/",
+    async handler(request, reply) {
+      reply.redirect(301, "/remote/");
+    }
+  });
+}
+var init_routes = __esm({
+  "src/routes/index.ts"() {
+    init_define_process_env();
   }
 });
 
@@ -1867,17 +1979,26 @@ async function oauth2callback_default(fastify) {
 }
 var init_oauth2callback = __esm({
   "src/routes/oauth2callback.ts"() {
+    init_define_process_env();
     init_repository2();
   }
 });
 
 // src/index.ts
+init_define_process_env();
 init_env();
-import Fastify from "fastify";
-import middie from "middie";
 import { handler } from "@cell-wall/client";
 
+// src/server.ts
+init_define_process_env();
+import Fastify from "fastify";
+import middie from "middie";
+
+// src/routes.ts
+init_define_process_env();
+
 // src/parser/urlencoded.ts
+init_define_process_env();
 async function urlEncodedPlugin(fastify) {
   fastify.addContentTypeParser("application/x-www-form-urlencoded", async (_request, payload) => {
     const chunks = [];
@@ -1892,28 +2013,72 @@ async function urlEncodedPlugin(fastify) {
 // src/routes.ts
 async function routesSubsystem(fastify) {
   await urlEncodedPlugin(fastify);
-  await fastify.register(Promise.resolve().then(() => (init_serial(), serial_exports))).register(Promise.resolve().then(() => (init_image3(), image_exports))).register(Promise.resolve().then(() => (init_install(), install_exports))).register(Promise.resolve().then(() => (init_refresh(), refresh_exports))).register(Promise.resolve().then(() => (init_text(), text_exports))).register(Promise.resolve().then(() => (init_serial2(), serial_exports2))).register(Promise.resolve().then(() => (init_power2(), power_exports))).register(Promise.resolve().then(() => (init_serial3(), serial_exports3))).register(Promise.resolve().then(() => (init_state2(), state_exports))).register(Promise.resolve().then(() => (init_preset(), preset_exports))).register(Promise.resolve().then(() => (init_serial4(), serial_exports4))).register(Promise.resolve().then(() => (init_device(), device_exports))).register(Promise.resolve().then(() => (init_freebusy(), freebusy_exports))).register(Promise.resolve().then(() => (init_cellwall_version(), cellwall_version_exports))).register(Promise.resolve().then(() => (init_oauth2callback(), oauth2callback_exports)));
+  await fastify.register(Promise.resolve().then(() => (init_serial(), serial_exports))).register(Promise.resolve().then(() => (init_image3(), image_exports))).register(Promise.resolve().then(() => (init_install(), install_exports))).register(Promise.resolve().then(() => (init_refresh(), refresh_exports))).register(Promise.resolve().then(() => (init_text(), text_exports))).register(Promise.resolve().then(() => (init_serial2(), serial_exports2))).register(Promise.resolve().then(() => (init_power2(), power_exports))).register(Promise.resolve().then(() => (init_serial3(), serial_exports3))).register(Promise.resolve().then(() => (init_state2(), state_exports))).register(Promise.resolve().then(() => (init_preset(), preset_exports))).register(Promise.resolve().then(() => (init_serial4(), serial_exports4))).register(Promise.resolve().then(() => (init_device(), device_exports))).register(Promise.resolve().then(() => (init_freebusy(), freebusy_exports))).register(Promise.resolve().then(() => (init_cellwall_version(), cellwall_version_exports))).register(Promise.resolve().then(() => (init_routes(), routes_exports))).register(Promise.resolve().then(() => (init_oauth2callback(), oauth2callback_exports)));
 }
 
 // src/websocket.ts
-import websocket from "fastify-websocket";
-async function websocketSubsystem(fastify, options) {
-  const { store } = options;
-  await fastify.register(websocket, {
-    errorHandler(error, connection) {
-      console.error("websocket error:", error);
-      connection.destroy(error);
+init_define_process_env();
+init_cells();
+init_repository2();
+import { blankState as blankState4 } from "@cell-wall/cell-state";
+import { WebSocketServer } from "ws";
+var CELL_SERIAL = /^\/cells\/(\w+)\/?$/;
+var blankBuffer = new ArrayBuffer(0);
+function handleCellConnection(ws, request) {
+  const { pathname } = new URL(request.url, `http://${request.headers.host}`);
+  const [, serial] = pathname.match(CELL_SERIAL);
+  repo.webSockets.add(serial, {});
+  let lastState = blankState4;
+  const unsubscribe = cellStateFor(repo.cellState, serial).subscribe((state) => {
+    if (!state)
+      return;
+    if (state.type === lastState.type) {
+      const { payload = blankBuffer } = state;
+      ws.send(payload);
     }
+    ws.send(JSON.stringify(state));
+    ws.send(blankBuffer);
+    lastState = state;
   });
-  fastify.get("/", { websocket: true }, ({ socket }) => {
-    console.log("connection");
-    const unsubscribe = store.subscribe((value) => socket.send(value));
-    socket.on("close", unsubscribe);
+  ws.on("message", (data) => {
+    const info = JSON.parse(data.toString());
+    repo.webSockets.add(serial, info);
+  });
+  ws.on("close", () => {
+    unsubscribe();
+    repo.webSockets.delete(serial);
   });
 }
+function handleRemoteConnection(ws) {
+  const unsubscribe = repo.cellData.subscribe((data) => {
+    const dataObject = JSON.stringify(Object.fromEntries(data));
+    ws.send(dataObject);
+  });
+  ws.on("close", unsubscribe);
+}
+async function websocketSubsystem(fastify) {
+  const remoteServer = new WebSocketServer({ noServer: true });
+  const cellServer = new WebSocketServer({ noServer: true });
+  fastify.server.on("upgrade", (request, socket, head) => {
+    const { pathname } = new URL(request.url, `http://${request.headers.host}`);
+    if (pathname === "/remote") {
+      remoteServer.handleUpgrade(request, socket, head, (ws) => {
+        remoteServer.emit("connection", ws, request);
+      });
+    } else if (CELL_SERIAL.test(pathname)) {
+      cellServer.handleUpgrade(request, socket, head, (ws) => {
+        cellServer.emit("connection", ws, request);
+      });
+    } else {
+      socket.destroy();
+    }
+  });
+  remoteServer.on("connection", handleRemoteConnection);
+  cellServer.on("connection", handleCellConnection);
+}
 
-// src/index.ts
-async function main() {
+// src/server.ts
+async function createServer() {
   const fastify = Fastify({
     logger: {
       prettyPrint: true
@@ -1922,8 +2087,14 @@ async function main() {
   });
   await fastify.register(middie);
   await fastify.register(routesSubsystem).register(websocketSubsystem);
+  return fastify;
+}
+
+// src/index.ts
+async function main() {
+  const fastify = await createServer();
   fastify.use(handler);
-  const address = await fastify.listen(PORT, "0.0.0.0");
+  const address = await fastify.listen(env_exports.PORT, "0.0.0.0");
   console.log(`Listening on ${address}`);
 }
 main().catch((err) => {

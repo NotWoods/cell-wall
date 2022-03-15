@@ -1,9 +1,11 @@
-import { c as create_ssr_component, h as compute_rest_props, j as spread, k as escape_object, v as validate_component, e as escape, b as add_attribute, p as each } from "../../../chunks/index-50854321.js";
-import { c as createLoadWithDevices, H as HorizontalField, D as DeviceOption } from "../../../chunks/_DeviceOption-8c4da22d.js";
-import { F as Form } from "../../../chunks/SubmitButton-185fe575.js";
-import { R as ResetSubmit } from "../../../chunks/_ResetSubmit-902f2b92.js";
-import "../../../chunks/snackbar-host-0b24a4c8.js";
-import "../../../chunks/index-06c8ab10.js";
+import { c as create_ssr_component, h as compute_rest_props, j as spread, k as escape_object, a as subscribe, v as validate_component, e as escape, b as add_attribute, p as each } from "../../../chunks/index-4d214b4e.js";
+import { R as ResetSubmit } from "../../../chunks/ResetSubmit-c389bea7.js";
+import { H as HorizontalField, D as DeviceOption } from "../../../chunks/HorizontalField-ca2aa46e.js";
+import { F as Form } from "../../../chunks/SubmitButton-5db79bf7.js";
+import { g as getRemoteContext, s as storeValues } from "../../../chunks/__layout-905ad6c6.js";
+import "../../../chunks/snackbar-host-f2ed4131.js";
+import "../../../chunks/index-23b4b723.js";
+import "../../../chunks/TopBar-fb618005.js";
 const FileInput = create_ssr_component(($$result, $$props, $$bindings, slots) => {
   let $$restProps = compute_rest_props($$props, []);
   return `<label class="${"file-label relative w-full shadow-sm rounded-md flex-1 bg-white border border-gray-300"}"><input${spread([
@@ -18,7 +20,6 @@ const FileInput = create_ssr_component(($$result, $$props, $$bindings, slots) =>
 		</span>
 		<span class="${"flex-1 block bg-white w-full rounded-none rounded-r-md sm:text-sm border-gray-300 px-3 py-2"}" aria-hidden="${"true"}">${slots.default ? slots.default({}) : ``}</span></div></label>`;
 });
-const load = createLoadWithDevices();
 async function submit(data, action) {
   const image = data.get("image");
   data.delete("image");
@@ -40,10 +41,12 @@ async function submit(data, action) {
   }
 }
 const Image = create_ssr_component(($$result, $$props, $$bindings, slots) => {
-  let { devices } = $$props;
+  let $devices, $$unsubscribe_devices;
+  const { state: remoteState } = getRemoteContext();
+  const devices = storeValues(remoteState);
+  $$unsubscribe_devices = subscribe(devices, (value) => $devices = value);
   let fileName = "No file selected.";
-  if ($$props.devices === void 0 && $$bindings.devices && devices !== void 0)
-    $$bindings.devices(devices);
+  $$unsubscribe_devices();
   return `${validate_component(Form, "Form").$$render($$result, {
     class: "flex flex-col gap-y-4",
     action: "/api/action/image/",
@@ -67,7 +70,7 @@ const Image = create_ssr_component(($$result, $$props, $$bindings, slots) => {
 
 	${validate_component(HorizontalField, "HorizontalField").$$render($$result, { for: "control-serial", label: "Devices" }, {}, {
         default: ({ inputClassName }) => {
-          return `<select multiple name="${"device"}" id="${"control-serial"}"${add_attribute("class", inputClassName, 0)}>${each(devices, (device) => {
+          return `<select multiple name="${"device"}" id="${"control-serial"}"${add_attribute("class", inputClassName, 0)}${add_attribute("value", $devices.map((device) => device.serial), 0)}>${each($devices, (device) => {
             return `${validate_component(DeviceOption, "DeviceOption").$$render($$result, { device }, {}, {})}`;
           })}</select>`;
         }
@@ -113,4 +116,4 @@ const Image = create_ssr_component(($$result, $$props, $$bindings, slots) => {
     }
   })}`;
 });
-export { Image as default, load };
+export { Image as default };

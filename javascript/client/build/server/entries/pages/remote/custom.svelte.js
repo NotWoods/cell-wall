@@ -1,13 +1,18 @@
-import { c as create_ssr_component, p as each, v as validate_component, e as escape, b as add_attribute } from "../../../chunks/index-50854321.js";
-import { H as HorizontalField, c as createLoadWithDevices, D as DeviceOption } from "../../../chunks/_DeviceOption-8c4da22d.js";
-import { g as getTypeFromSchema, a as allCellStateSchemas } from "../../../chunks/state-832ea5b1.js";
-import { F as Form } from "../../../chunks/SubmitButton-185fe575.js";
+import { c as create_ssr_component, p as each, v as validate_component, e as escape, b as add_attribute, a as subscribe } from "../../../chunks/index-4d214b4e.js";
+import { R as ResetSubmit } from "../../../chunks/ResetSubmit-c389bea7.js";
+import { H as HorizontalField, D as DeviceOption } from "../../../chunks/HorizontalField-ca2aa46e.js";
+import { F as Form } from "../../../chunks/SubmitButton-5db79bf7.js";
+import { g as getRemoteContext, s as storeValues } from "../../../chunks/__layout-905ad6c6.js";
+import { g as getTypeFromSchema, a as allCellStateSchemas } from "../../../chunks/schema-7c735d14.js";
 import startCase from "lodash.startcase";
-import { P as PowerButtons } from "../../../chunks/_PowerButtons-34decfe4.js";
+import { P as PowerButtons } from "../../../chunks/_PowerButtons-ce1efc0a.js";
 import { p as post } from "../../../chunks/_form-52443b97.js";
-import { R as ResetSubmit } from "../../../chunks/_ResetSubmit-902f2b92.js";
-import "../../../chunks/snackbar-host-0b24a4c8.js";
-import "../../../chunks/index-06c8ab10.js";
+import "../../../chunks/snackbar-host-f2ed4131.js";
+import "../../../chunks/index-23b4b723.js";
+import "../../../chunks/TopBar-fb618005.js";
+const Tabs = create_ssr_component(($$result, $$props, $$bindings, slots) => {
+  return `<ul class="${"flex flex-wrap border-b-2 border-slate-700"}" role="${"tablist"}">${slots.default ? slots.default({}) : ``}</ul>`;
+});
 function getInputType(name, property) {
   if (Array.isArray(property.enum))
     return "select";
@@ -23,21 +28,31 @@ function getInputType(name, property) {
   }
 }
 const ControllerFields = create_ssr_component(($$result, $$props, $$bindings, slots) => {
+  let getInputName;
   let required;
   let properties;
-  function getInputName(name) {
-    switch (name) {
-      case "url":
-        return "URL";
-      case "src":
-        return "Source";
-      default:
-        return startCase(name);
-    }
-  }
   let { schema } = $$props;
+  let { state = void 0 } = $$props;
   if ($$props.schema === void 0 && $$bindings.schema && schema !== void 0)
     $$bindings.schema(schema);
+  if ($$props.state === void 0 && $$bindings.state && state !== void 0)
+    $$bindings.state(state);
+  getInputName = (name) => {
+    if (name === "payload") {
+      const type = schema?.properties?.type?.enum?.[0];
+      switch (type) {
+        case "WEB":
+          return "URL";
+        case "IMAGE":
+          return "Source";
+        case "TEXT":
+          return "Text";
+        default:
+          return startCase(name);
+      }
+    }
+    return startCase(name);
+  };
   required = new Set(schema?.required || []);
   properties = Object.entries(schema?.properties || {}).filter(([name]) => name !== "type").map(([name, property]) => ({
     name,
@@ -52,7 +67,7 @@ const ControllerFields = create_ssr_component(($$result, $$props, $$bindings, sl
       default: ({ inputClassName }) => {
         return `${Array.isArray(property.enum) ? `<select id="${"control-" + escape(name)}"${add_attribute("name", name, 0)}${add_attribute("class", inputClassName, 0)}>${each(property.enum, (option) => {
           return `<option${add_attribute("value", option, 0)}>${escape(option)}</option>`;
-        })}</select>` : `<input id="${"control-" + escape(name)}"${add_attribute("class", type === "color" ? "" : inputClassName, 0)}${add_attribute("name", name, 0)}${add_attribute("type", type, 0)} ${required.has(name) ? "required" : ""}>`}
+        })}</select>` : `<input id="${"control-" + escape(name)}"${add_attribute("class", type === "color" ? "" : inputClassName, 0)}${add_attribute("name", name, 0)}${add_attribute("type", type, 0)} ${required.has(name) ? "required" : ""}${add_attribute("value", state?.[name] ?? "", 0)}>`}
 	`;
       }
     })}`;
@@ -90,25 +105,26 @@ const TypeTab = create_ssr_component(($$result, $$props, $$bindings, slots) => {
     }
   })}`;
 });
-const Tabs = create_ssr_component(($$result, $$props, $$bindings, slots) => {
-  return `<ul class="${"flex flex-wrap border-b-2 border-slate-700"}" role="${"tablist"}">${slots.default ? slots.default({}) : ``}</ul>`;
-});
-const load = createLoadWithDevices();
 const Custom = create_ssr_component(($$result, $$props, $$bindings, slots) => {
+  let selectedDevice;
   let activeSchema;
-  let { devices } = $$props;
+  let $remoteState, $$unsubscribe_remoteState;
+  let $devices, $$unsubscribe_devices;
+  const { state: remoteState } = getRemoteContext();
+  $$unsubscribe_remoteState = subscribe(remoteState, (value) => $remoteState = value);
+  const devices = storeValues(remoteState);
+  $$unsubscribe_devices = subscribe(devices, (value) => $devices = value);
   let selectedType = "BLANK";
-  let selectedDevice = "";
+  let selectedDeviceSerial = "";
   async function submit(formData, action) {
     const data = Object.fromEntries(formData);
     await post(action.toString(), { ...data, type: selectedType });
   }
-  if ($$props.devices === void 0 && $$bindings.devices && devices !== void 0)
-    $$bindings.devices(devices);
   let $$settled;
   let $$rendered;
   do {
     $$settled = true;
+    selectedDevice = $remoteState.get(selectedDeviceSerial);
     activeSchema = allCellStateSchemas.find((schema) => getTypeFromSchema(schema) === selectedType);
     $$rendered = `<nav class="${"mb-6"}">${validate_component(Tabs, "Tabs").$$render($$result, {}, {}, {
       default: () => {
@@ -127,30 +143,35 @@ ${validate_component(Form, "Form").$$render($$result, {
       id: "custom-form",
       class: "flex flex-col gap-y-4 px-2",
       role: "tabpanel",
-      action: "/api/device/state/" + selectedDevice,
+      action: "/api/device/state/" + selectedDeviceSerial,
       onSubmit: submit
     }, {}, {
       default: ({ loading }) => {
         return `${validate_component(HorizontalField, "HorizontalField").$$render($$result, { for: "control-serial", label: "Device" }, {}, {
           default: ({ inputClassName }) => {
-            return `<select class="${escape(inputClassName) + " cursor-pointer"}" id="${"control-serial"}"><option value="${""}">All devices</option>${each(devices, (device) => {
+            return `<select class="${escape(inputClassName) + " cursor-pointer"}" id="${"control-serial"}"><option value="${""}">All devices</option>${each($devices, (device) => {
               return `${validate_component(DeviceOption, "DeviceOption").$$render($$result, { device }, {}, {})}`;
             })}</select>`;
           }
         })}
 
-	${validate_component(HorizontalField, "HorizontalField").$$render($$result, { label: "Power" }, {}, {
+	${selectedDevice?.connection === "android" ? `${validate_component(HorizontalField, "HorizontalField").$$render($$result, { label: "Power" }, {}, {
           default: () => {
-            return `${validate_component(PowerButtons, "PowerButtons").$$render($$result, { serial: selectedDevice }, {}, {})}`;
+            return `${validate_component(PowerButtons, "PowerButtons").$$render($$result, { serial: selectedDeviceSerial }, {}, {})}`;
           }
-        })}
+        })}` : ``}
 
-	${validate_component(ControllerFields, "ControllerFields").$$render($$result, { schema: activeSchema }, {}, {})}
+	${validate_component(ControllerFields, "ControllerFields").$$render($$result, {
+          schema: activeSchema,
+          state: selectedDevice?.state
+        }, {}, {})}
 
 	${validate_component(ResetSubmit, "ResetSubmit").$$render($$result, { loading }, {}, {})}`;
       }
     })}`;
   } while (!$$settled);
+  $$unsubscribe_remoteState();
+  $$unsubscribe_devices();
   return $$rendered;
 });
-export { Custom as default, load };
+export { Custom as default };

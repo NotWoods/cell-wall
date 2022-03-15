@@ -1,0 +1,27 @@
+import { c as create_ssr_component, v as validate_component, p as each, e as escape, b as add_attribute } from "../../chunks/index-4d214b4e.js";
+import { T as TopBar, R as RemoteFrame } from "../../chunks/TopBar-fb618005.js";
+var demo_svelte_svelte_type_style_lang = "";
+const css = {
+  code: ".demo-wall.svelte-e6vggo{display:grid;height:50rem;width:60rem;gap:1rem;grid-template:'demo1 demo2' 2fr\n			'demo1 demo3' 2fr\n			'demo4 demo4' 3fr\n			/ 1fr 2fr}",
+  map: null
+};
+const Demo = create_ssr_component(($$result, $$props, $$bindings, slots) => {
+  let demoEntries = [
+    { id: "demo1", name: "Demo_1" },
+    { id: "demo2", name: "Demo_2" },
+    { id: "demo3", name: "Demo_3" },
+    { id: "demo4", name: "Demo_Tablet" }
+  ];
+  $$result.css.add(css);
+  return `${$$result.head += `${$$result.title = `<title>CellWall Demo</title>`, ""}`, ""}
+
+${validate_component(TopBar, "TopBar").$$render($$result, {}, {}, {})}
+${validate_component(RemoteFrame, "RemoteFrame").$$render($$result, { fullWidth: true }, {}, {
+    default: () => {
+      return `<div class="${"demo-wall mx-auto svelte-e6vggo"}">${each(demoEntries, ({ id, name }) => {
+        return `<iframe class="${"demo-cell shadow-lg bg-zinc-900 h-full w-full"}" src="${"/cell?id=" + escape(id) + "&name=" + escape(name) + "&autojoin"}"${add_attribute("title", name, 0)} style="${"grid-area: " + escape(id)}"></iframe>`;
+      })}</div>`;
+    }
+  })}`;
+});
+export { Demo as default };
