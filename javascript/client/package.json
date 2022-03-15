@@ -17,8 +17,8 @@
 	},
 	"dependencies": {
 		"@cell-wall/cell-state": "workspace:*",
+		"@cell-wall/env": "workspace:*",
 		"@js-temporal/polyfill": "^0.4.0",
-		"dotenv": "^16.0.0",
 		"lodash.startcase": "^4.4.0"
 	},
 	"devDependencies": {
