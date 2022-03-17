@@ -1,4 +1,5 @@
 import type { CellInfo, CellState } from '@cell-wall/shared';
+import { memo } from '@cell-wall/shared';
 import { get, Readable } from 'svelte/store';
 import { DeviceManager } from '../android/device-manager';
 import { GithubApi } from '../android/github';
@@ -17,7 +18,6 @@ import { authenticateGoogle, initializeGoogle } from '../google';
 import { SplitImageCache } from '../image/cache';
 import { asArray, getAll } from '../map/get';
 import { subscribeToMapStore } from '../map/subscribe';
-import { memo } from '../memo';
 import { deriveCellData } from './combine-cell';
 import { database } from './database';
 import type { Repository } from './interface';

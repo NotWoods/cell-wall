@@ -68,6 +68,15 @@ cd ./android
 gradlew build
 ```
 
+### Development
+
+Test locally in development environment by spinning up two servers: client & server.
+
+```shell
+pnpm run dev --filter server
+pnpm run dev --filter client
+```
+
 ### Deployment
 
 The server communicates with phones over ADB. ADB should be installed and the phones should be in debug mode. Check that all phones appear when running `adb devices`.

@@ -1,4 +1,5 @@
-import { mergeAbortSignals, wait } from '$lib/timer';
+import { abortSignalAny } from '$lib/timer';
+import { setTimeout } from '@cell-wall/shared';
 import { writable, type Readable } from 'svelte/store';
 
 export enum SnackbarDuration {
@@ -31,7 +32,7 @@ export class SnackbarHostState {
 			duration,
 			dismiss: dismissController.abort.bind(dismissController)
 		};
-		const signal = mergeAbortSignals(dismissController.signal, options.signal);
+		const signal = abortSignalAny(dismissController.signal, options.signal);
 
 		const snackbarPromise = this._lastSnackbar
 			.catch(() => {
@@ -41,7 +42,7 @@ export class SnackbarHostState {
 				if (signal?.aborted) return;
 
 				this._currentSnackbarData.set(snackbarData);
-				return wait(duration, { signal }).finally(() => {
+				return setTimeout(duration, { signal }).finally(() => {
 					this._currentSnackbarData.set(undefined);
 				});
 			});

@@ -1,10 +1,10 @@
+import { memo } from '@cell-wall/shared';
 import { Octokit } from '@octokit/core';
 import type { OctokitOptions } from '@octokit/core/dist-types/types';
 import { createWriteStream, promises as fs } from 'fs';
 import { tmpdir } from 'os';
 import { join } from 'path';
 import { pipeline } from 'stream/promises';
-import { memo } from '../memo';
 
 declare global {
 	interface ReadableStream<R> {

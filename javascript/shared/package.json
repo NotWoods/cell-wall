@@ -2,7 +2,11 @@
 	"name": "@cell-wall/shared",
 	"version": "4.0.0",
 	"type": "module",
-	"exports": "./src/index.js",
+	"exports": {
+    ".": "./src/index.js",
+    "./src/env": "./src/env.js",
+    "./src/env.mocks": "./src/env.mocks.js"
+  },
 	"module": "./src/index.js",
 	"types": "./src/index.d.ts",
 	"scripts": {
