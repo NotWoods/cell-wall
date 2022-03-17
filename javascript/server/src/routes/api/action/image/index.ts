@@ -1,4 +1,4 @@
-import { blankState } from '@cell-wall/cell-state';
+import { blankState } from '@cell-wall/shared';
 import type { FastifyInstance } from 'fastify';
 import type Jimp from 'jimp';
 import { get as getState } from 'svelte/store';

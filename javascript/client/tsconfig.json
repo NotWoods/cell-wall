@@ -7,6 +7,6 @@
 		},
 		"types": ["@sveltejs/kit"]
 	},
-	"references": [{ "path": "../cell-state" }, { "path": "../env" }],
+	"references": [{ "path": "../shared" }],
 	"include": ["src/**/*.d.ts", "src/**/*.ts", "src/**/*.svelte"]
 }

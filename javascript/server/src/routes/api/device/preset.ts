@@ -1,4 +1,4 @@
-import type { CellState } from '@cell-wall/cell-state';
+import type { CellState } from '@cell-wall/shared';
 import type { FastifyInstance } from 'fastify';
 import fetch from 'node-fetch';
 import { repo } from '../../../lib/repository';

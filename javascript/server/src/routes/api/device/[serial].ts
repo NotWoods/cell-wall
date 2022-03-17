@@ -1,4 +1,4 @@
-import { CellInfo, cellInfoSchema } from '@cell-wall/cell-state';
+import { CellInfo, cellInfoSchema } from '@cell-wall/shared';
 import type { FastifyInstance, FastifyRequest } from 'fastify';
 import { get as getState } from 'svelte/store';
 import { repo } from '../../../lib/repository';

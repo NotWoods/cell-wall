@@ -1,4 +1,4 @@
-import type { CellData, CellInfo } from '@cell-wall/cell-state';
+import type { CellData, CellInfo } from '@cell-wall/shared';
 import type { InstallOrUpgradeResult } from 'appium-adb';
 import type { Readable } from 'svelte/store';
 import type { DeviceMap } from '../android/device-manager';

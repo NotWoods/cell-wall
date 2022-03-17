@@ -1,4 +1,4 @@
-import type { CellInfo } from '@cell-wall/cell-state';
+import type { CellInfo } from '@cell-wall/shared';
 import type { Readable, Subscriber, Unsubscriber } from 'svelte/store';
 import { get, writable } from 'svelte/store';
 import type { Database } from '../repository/database';

@@ -1,4 +1,4 @@
-import type { CellInfo, CellState } from '@cell-wall/cell-state';
+import type { CellInfo, CellState } from '@cell-wall/shared';
 import { get, Readable } from 'svelte/store';
 import { DeviceManager } from '../android/device-manager';
 import { GithubApi } from '../android/github';

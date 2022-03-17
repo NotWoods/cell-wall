@@ -1,5 +1,5 @@
 <script context="module" lang="ts">
-	import type { CellData } from '@cell-wall/cell-state';
+	import type { CellData } from '@cell-wall/shared';
 	import { getContext } from 'svelte';
 	import type { Readable } from 'svelte/store';
 

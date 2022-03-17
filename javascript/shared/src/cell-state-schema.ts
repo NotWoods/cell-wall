@@ -1,4 +1,4 @@
-import type { CellState } from './interface';
+import type { CellState } from './cell-state-interface';
 
 type Keys<T> = keyof T extends never ? string : keyof T;
 

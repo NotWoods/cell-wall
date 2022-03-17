@@ -1,4 +1,4 @@
-import type { CellInfo } from '@cell-wall/cell-state';
+import type { CellInfo } from '@cell-wall/shared';
 
 interface KnownDevice {
 	readonly model: string;

@@ -1,4 +1,4 @@
-import { blankState, type CellState } from '@cell-wall/cell-state';
+import { blankState, type CellState } from '@cell-wall/shared';
 import type { FastifyInstance } from 'fastify';
 import { get as getState } from 'svelte/store';
 import { transformMap } from '../../../../lib/map/transform';

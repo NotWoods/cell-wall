@@ -1,6 +1,6 @@
 {
-	"name": "@cell-wall/env",
-	"version": "1.0.0",
+	"name": "@cell-wall/shared",
+	"version": "4.0.0",
 	"type": "module",
 	"exports": "./src/index.js",
 	"module": "./src/index.js",
@@ -9,12 +9,15 @@
 		"check": "tsc --project .",
 		"check:watch": "tsc --project . --watch",
 		"lint": "prettier --check . --ignore-path ../.prettierignore && eslint --ignore-path ../.prettierignore .",
-		"format": "prettier --write . --ignore-path ../.prettierignore"
+		"format": "prettier --write . --ignore-path ../.prettierignore",
+		"test": "tsc --project test && node --experimental-vm-modules node_modules/jest/bin/jest.js"
 	},
 	"dependencies": {
 		"dotenv": "^16.0.0"
 	},
 	"devDependencies": {
+		"@jest/globals": "^27.5.1",
+		"jest": "^27.5.1",
 		"tslib": "^2.3.1",
 		"typescript": "^4.6.2"
 	}

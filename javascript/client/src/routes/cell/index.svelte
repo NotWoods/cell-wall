@@ -21,7 +21,7 @@
 	import RemoteFrame from '$lib/components/RemoteFrame.svelte';
 	import TopBar from '$lib/components/TopBar/TopBar.svelte';
 	import { requestFullScreen, requestWakeLock } from '$lib/wakelock';
-	import type { CellInfo } from '@cell-wall/cell-state';
+	import type { CellInfo } from '@cell-wall/shared';
 	import { post } from '../remote/_form';
 	import { windowSizeStore } from '$lib/connection/window-size';
 

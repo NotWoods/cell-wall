@@ -9,8 +9,7 @@
 		"**/*.js.map": {
 			"when": "$(basename)"
 		},
-		"javascript/cell-state/**/*.d.ts": true,
-		"javascript/env/**/*.d.ts": true
+		"javascript/shared/**/*.d.ts": true
 	},
 	"editor.formatOnSave": true,
 	"search.exclude": {

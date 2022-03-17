@@ -1,4 +1,4 @@
-import type { CellData, CellInfo, CellState } from '@cell-wall/cell-state';
+import type { CellData, CellInfo, CellState } from '@cell-wall/shared';
 import type { Readable } from 'svelte/store';
 import { derived } from 'svelte/store';
 import type { DeviceMap } from '../android/device-manager';

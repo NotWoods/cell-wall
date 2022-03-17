@@ -1,6 +1,6 @@
 <script lang="ts">
 	import startCase from 'lodash.startcase';
-	import type { CellState, CellStateJsonSchema } from '@cell-wall/cell-state';
+	import type { CellState, CellStateJsonSchema } from '@cell-wall/shared';
 	import HorizontalField from '$lib/components/Field/HorizontalField.svelte';
 
 	function getInputType(

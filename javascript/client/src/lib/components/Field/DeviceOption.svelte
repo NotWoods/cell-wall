@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { CellData } from '@cell-wall/cell-state';
+	import type { CellData } from '@cell-wall/shared';
 
 	export let device: CellData;
 </script>

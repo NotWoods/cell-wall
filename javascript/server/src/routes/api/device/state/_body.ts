@@ -1,4 +1,4 @@
-import { CellState, cellStateTypes } from '@cell-wall/cell-state';
+import { CellState, cellStateTypes } from '@cell-wall/shared';
 import { setHas } from 'ts-extras';
 
 function isObject(maybe: unknown): maybe is object {

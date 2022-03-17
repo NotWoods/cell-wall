@@ -1,1 +1,1 @@
-export * from '@cell-wall/env';
+export * from '@cell-wall/shared/src/env';

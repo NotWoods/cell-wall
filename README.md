@@ -83,7 +83,7 @@ pnpm start -w
 
 Some paths and API keys are set via environment variables. The project uses `dotenv`, so an `.env` file will automatically be loaded by the server.
 
-See [env.ts](javascript/env/src/env.ts) for a list of environment variables.
+See [env.ts](javascript/shared/src/env.ts) for a list of environment variables.
 
 ## Built with
 

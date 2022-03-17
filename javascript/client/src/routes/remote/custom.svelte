@@ -5,7 +5,7 @@
 	import Form from '$lib/components/Form.svelte';
 	import Tabs from '$lib/components/Tabs/Tabs.svelte';
 	import { storeValues } from '$lib/connection/remote-socket';
-	import { allCellStateSchemas, getTypeFromSchema } from '@cell-wall/cell-state';
+	import { allCellStateSchemas, getTypeFromSchema } from '@cell-wall/shared';
 	import ControllerFields from './custom/_ControllerFields.svelte';
 	import PowerButtons from './custom/_PowerButtons.svelte';
 	import TypeTab from './custom/_TypeTab.svelte';

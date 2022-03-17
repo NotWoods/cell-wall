@@ -1,4 +1,4 @@
-import { blankState, CellState } from '@cell-wall/cell-state';
+import { blankState, CellState } from '@cell-wall/shared';
 import type { FastifyInstance } from 'fastify';
 import type { IncomingMessage } from 'http';
 import { WebSocket, WebSocketServer } from 'ws';

@@ -16,22 +16,9 @@ importers:
       eslint-config-prettier: 8.5.0_eslint@8.11.0
       prettier: 2.5.1
 
-  javascript/cell-state:
-    specifiers:
-      '@jest/globals': ^27.5.1
-      jest: ^27.5.1
-      tslib: ^2.3.1
-      typescript: ^4.6.2
-    devDependencies:
-      '@jest/globals': 27.5.1
-      jest: 27.5.1
-      tslib: 2.3.1
-      typescript: 4.6.2
-
   javascript/client:
     specifiers:
-      '@cell-wall/cell-state': workspace:*
-      '@cell-wall/env': workspace:*
+      '@cell-wall/shared': workspace:*
       '@jest/globals': ^27.5.1
       '@js-temporal/polyfill': ^0.4.0
       '@sveltejs/adapter-node': next
@@ -59,14 +46,13 @@ importers:
       tslib: ^2.3.1
       typescript: ^4.6.2
     dependencies:
-      '@cell-wall/cell-state': link:../cell-state
-      '@cell-wall/env': link:../env
+      '@cell-wall/shared': link:../shared
       '@js-temporal/polyfill': 0.4.0
       lodash.startcase: 4.4.0
     devDependencies:
       '@jest/globals': 27.5.1
       '@sveltejs/adapter-node': 1.0.0-next.72
-      '@sveltejs/kit': 1.0.0-next.298_svelte@3.46.4
+      '@sveltejs/kit': 1.0.0-next.299_svelte@3.46.4
       '@tailwindcss/forms': 0.5.0_tailwindcss@3.0.23
       '@testing-library/jest-dom': 5.16.2
       '@testing-library/svelte': 3.0.3_svelte@3.46.4
@@ -89,22 +75,10 @@ importers:
       tslib: 2.3.1
       typescript: 4.6.2
 
-  javascript/env:
-    specifiers:
-      dotenv: ^16.0.0
-      tslib: ^2.3.1
-      typescript: ^4.6.2
-    dependencies:
-      dotenv: 16.0.0
-    devDependencies:
-      tslib: 2.3.1
-      typescript: 4.6.2
-
   javascript/server:
     specifiers:
-      '@cell-wall/cell-state': workspace:*
       '@cell-wall/client': workspace:*
-      '@cell-wall/env': workspace:*
+      '@cell-wall/shared': workspace:*
       '@jest/globals': ^27.5.1
       '@js-temporal/polyfill': ^0.4.0
       '@octokit/core': ^3.6.0
@@ -131,9 +105,8 @@ importers:
       typescript: ^4.6.2
       ws: ^8.5.0
     dependencies:
-      '@cell-wall/cell-state': link:../cell-state
       '@cell-wall/client': link:../client
-      '@cell-wall/env': link:../env
+      '@cell-wall/shared': link:../shared
       '@js-temporal/polyfill': 0.4.0
       '@octokit/core': 3.6.0
       appium-adb: 9.2.0
@@ -158,6 +131,21 @@ importers:
       fastify-reply-from: 6.5.0
       jest: 27.5.1
       svelte: 3.46.4
+      tslib: 2.3.1
+      typescript: 4.6.2
+
+  javascript/shared:
+    specifiers:
+      '@jest/globals': ^27.5.1
+      dotenv: ^16.0.0
+      jest: ^27.5.1
+      tslib: ^2.3.1
+      typescript: ^4.6.2
+    dependencies:
+      dotenv: 16.0.0
+    devDependencies:
+      '@jest/globals': 27.5.1
+      jest: 27.5.1
       tslib: 2.3.1
       typescript: 4.6.2
 
@@ -1374,8 +1362,8 @@ packages:
       tiny-glob: 0.2.9
     dev: true
 
-  /@sveltejs/kit/1.0.0-next.298_svelte@3.46.4:
-    resolution: {integrity: sha512-HUna2KgBc9NdeSCAqZBo6NUuRHab1tRMW6O3OtLvPs7ldSY+cEarDmUJb1ZeHwPrbcS2RTHSnBNNc0l+UyiFIw==}
+  /@sveltejs/kit/1.0.0-next.299_svelte@3.46.4:
+    resolution: {integrity: sha512-m8VBccfX3ozgHjjz193pZbfTK02P47bqdhj07cveUEhVLwbujOVWbgblPCrNh0rkTER7z1k5hRZnWrFYaDjQJA==}
     engines: {node: '>=14.13'}
     hasBin: true
     peerDependencies:

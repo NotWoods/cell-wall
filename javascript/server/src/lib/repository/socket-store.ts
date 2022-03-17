@@ -1,4 +1,4 @@
-import type { CellInfo } from '@cell-wall/cell-state';
+import type { CellInfo } from '@cell-wall/shared';
 import { writable, type Writable } from 'svelte/store';
 
 export type WebSocketInfo = Pick<CellInfo, 'width' | 'height'>;

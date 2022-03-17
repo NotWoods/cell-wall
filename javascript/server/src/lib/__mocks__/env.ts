@@ -1,1 +1,1 @@
-export * from '@cell-wall/env/src/mocks';
+export * from '@cell-wall/shared/src/env.mocks';

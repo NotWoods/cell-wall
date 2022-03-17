@@ -1,4 +1,4 @@
-import type { CellInfo, CellState } from '@cell-wall/cell-state';
+import type { CellInfo, CellState } from '@cell-wall/shared';
 import { describe, expect, it, jest } from '@jest/globals';
 import type ADB from 'appium-adb';
 import { get, writable } from 'svelte/store';

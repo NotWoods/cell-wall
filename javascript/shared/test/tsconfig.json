@@ -4,5 +4,5 @@
 		"types": ["jest"]
 	},
 	"include": ["**/*.ts"],
-	"references": [{ "path": "..//tsconfig.json" }]
+	"references": [{ "path": "../tsconfig.json" }]
 }

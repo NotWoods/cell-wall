@@ -16,8 +16,7 @@
 		"test": "jest"
 	},
 	"dependencies": {
-		"@cell-wall/cell-state": "workspace:*",
-		"@cell-wall/env": "workspace:*",
+		"@cell-wall/shared": "workspace:*",
 		"@js-temporal/polyfill": "^0.4.0",
 		"lodash.startcase": "^4.4.0"
 	},

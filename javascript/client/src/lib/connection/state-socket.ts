@@ -1,5 +1,5 @@
 import { browser } from '$app/env';
-import { blankState, type CellInfo, type CellState } from '@cell-wall/cell-state';
+import { blankState, type CellInfo, type CellState } from '@cell-wall/shared';
 import { readable, type Readable } from 'svelte/store';
 
 export function connect(serial: string): WebSocket | undefined {

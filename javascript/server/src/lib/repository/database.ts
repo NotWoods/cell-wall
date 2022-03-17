@@ -1,4 +1,4 @@
-import type { CellInfo } from '@cell-wall/cell-state';
+import type { CellInfo } from '@cell-wall/shared';
 import type { Auth } from 'googleapis';
 import type { Adapter } from 'lowdb';
 import { JSONFile, Memory, Low } from 'lowdb';

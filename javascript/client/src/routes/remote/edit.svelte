@@ -4,7 +4,7 @@
 	import HorizontalField from '$lib/components/Field/HorizontalField.svelte';
 	import Form from '$lib/components/Form.svelte';
 	import { storeValues } from '$lib/connection/remote-socket';
-	import type { CellInfo } from '@cell-wall/cell-state';
+	import type { CellInfo } from '@cell-wall/shared';
 	import PowerButtons from './custom/_PowerButtons.svelte';
 	import { post } from './_form';
 	import { getRemoteContext } from './__layout.svelte';

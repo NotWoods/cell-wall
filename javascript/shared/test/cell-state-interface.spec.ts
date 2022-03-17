@@ -1,5 +1,5 @@
 import { describe, expect, it } from '@jest/globals';
-import { filterState } from '../src/interface';
+import { filterState } from '../src/cell-state-interface';
 
 describe('filterState', () => {
 	it('filters WEB', () => {

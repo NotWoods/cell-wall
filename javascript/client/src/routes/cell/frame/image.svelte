@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { createBlobUrlFactory } from '$lib/blob';
-	import { type CellStateImage, filterState } from '@cell-wall/cell-state';
+	import { type CellStateImage, filterState } from '@cell-wall/shared';
 	import { getFrameContext } from './__layout.svelte';
 
 	const createBlobUrl = createBlobUrlFactory();

@@ -1,5 +1,5 @@
 import { browser } from '$app/env';
-import type { CellData } from '@cell-wall/cell-state';
+import type { CellData } from '@cell-wall/shared';
 import { derived, readable, type Readable } from 'svelte/store';
 
 export function connectRemote(): WebSocket | undefined {

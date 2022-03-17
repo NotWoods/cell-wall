@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { filterState } from '@cell-wall/cell-state';
+	import { filterState } from '@cell-wall/shared';
 	import { getFrameContext } from './__layout.svelte';
 
 	const { state } = getFrameContext();

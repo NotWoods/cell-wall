@@ -1,4 +1,4 @@
-import type { CellState, CellStateImage, CellStateWeb } from '@cell-wall/cell-state';
+import type { CellState, CellStateImage, CellStateWeb } from '@cell-wall/shared';
 import { derived, Readable, writable, type Writable } from 'svelte/store';
 import { SERVER_ADDRESS } from '../env';
 
