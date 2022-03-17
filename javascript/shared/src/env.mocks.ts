@@ -1,29 +1,13 @@
 export const VERSION = '4.0.0';
 
-/**
- * Path to the cell info file.
- *
- * This file contains the expected cell phones,
- * and represents them as a map of device serial numbers to cell info.
- *
- * Cell info includes the user-friendly name of a device,
- * the width and height of the display in density independent pixels,
- * and the x/y location relative to other phones.
- */
-export const CELLS_PATH = 'cells.test.json';
-
-/**
- * The Google API client ID for your application.
- */
-export const GOOGLE_CLIENT_ID = '';
-
-/**
- * The Google API client secret for your application.
- */
-export const GOOGLE_CLIENT_SECRET = '';
-
-export const SERVER_ADDRESS = new URL('http://192.168.0.1');
-
-export const PACKAGE_NAME = 'com.tigeroakes.cellwall.client';
-
-export const SQLITE_FILENAME = undefined;
+export function env() {
+	return {
+		SERVER_ADDRESS: new URL('http://192.168.0.1'),
+		PORT: 3000,
+		PACKAGE_NAME: 'com.tigeroakes.cellwall.client',
+		GOOGLE_CLIENT_ID: '',
+		GOOGLE_CLIENT_SECRET: '',
+		GITHUB_TOKEN: undefined,
+		DATABASE_FILENAME: undefined
+	};
+}

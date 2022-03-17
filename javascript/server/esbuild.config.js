@@ -12,8 +12,5 @@ build({
 	platform: 'node',
 	target: 'node16',
 	format: 'esm',
-	external: [...Object.keys(pkg.dependencies), 'fastify-reply-from'],
-	define: {
-		'process.env': JSON.stringify({ NODE_ENV: devMode ? 'development' : 'production' })
-	}
+	external: [...Object.keys(pkg.dependencies), 'fastify-reply-from']
 }).catch(() => process.exit(1));

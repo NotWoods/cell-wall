@@ -1,7 +1,3 @@
-import { config } from 'dotenv';
-
-config();
-
 function formatURL(address = '0.0.0.0', port = '3000') {
 	let portN = Number(port);
 	if (Number.isNaN(portN)) {
@@ -16,35 +12,47 @@ function formatURL(address = '0.0.0.0', port = '3000') {
 
 export const VERSION = '4.0.0';
 
-const formatted = formatURL(
-	process.env['SERVER_ADDRESS'] as string,
-	process.env['PORT'] as string | undefined
-);
+export function env(envVariables: Partial<Record<string, string | boolean | undefined>>) {
+	const formatted = formatURL(
+		envVariables['SERVER_ADDRESS'] as string,
+		envVariables['PORT'] as string | undefined
+	);
 
-export const SERVER_ADDRESS = formatted.base;
-export const PORT = formatted.port;
+	const SERVER_ADDRESS = formatted.base;
+	const PORT = formatted.port;
 
-/**
- * Package name for the Android app
- */
-export const PACKAGE_NAME = 'com.tigeroakes.cellwall.client';
+	/**
+	 * Package name for the Android app
+	 */
+	const PACKAGE_NAME = 'com.tigeroakes.cellwall.client';
 
-/**
- * The Google API client ID for your application.
- */
-export const GOOGLE_CLIENT_ID = process.env['GOOGLE_CLIENT_ID'] as string | undefined;
+	/**
+	 * The Google API client ID for your application.
+	 */
+	const GOOGLE_CLIENT_ID = envVariables['GOOGLE_CLIENT_ID'] as string | undefined;
 
-/**
- * The Google API client secret for your application.
- */
-export const GOOGLE_CLIENT_SECRET = process.env['GOOGLE_CLIENT_SECRET'] as string | undefined;
+	/**
+	 * The Google API client secret for your application.
+	 */
+	const GOOGLE_CLIENT_SECRET = envVariables['GOOGLE_CLIENT_SECRET'] as string | undefined;
 
-/**
- * GitHub API personal access token
- */
-export const GITHUB_TOKEN = process.env['GITHUB_TOKEN'] as string | undefined;
+	/**
+	 * GitHub API personal access token
+	 */
+	const GITHUB_TOKEN = envVariables['GITHUB_TOKEN'] as string | undefined;
 
-/**
- * Path where the database file will be stored
- */
-export const DATABASE_FILENAME = process.env['DATABASE_FILENAME'] as string | undefined;
+	/**
+	 * Path where the database file will be stored
+	 */
+	const DATABASE_FILENAME = envVariables['DATABASE_FILENAME'] as string | undefined;
+
+	return {
+		SERVER_ADDRESS,
+		PORT,
+		PACKAGE_NAME,
+		GOOGLE_CLIENT_ID,
+		GOOGLE_CLIENT_SECRET,
+		GITHUB_TOKEN,
+		DATABASE_FILENAME
+	};
+}
