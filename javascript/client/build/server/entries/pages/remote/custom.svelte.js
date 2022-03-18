@@ -1,9 +1,9 @@
 import { c as create_ssr_component, p as each, v as validate_component, e as escape, b as add_attribute, a as subscribe } from "../../../chunks/index-4d214b4e.js";
 import { R as ResetSubmit } from "../../../chunks/ResetSubmit-d9940feb.js";
-import { D as DeviceOption } from "../../../chunks/DeviceOption-5e834f75.js";
+import { D as DeviceOptions } from "../../../chunks/DeviceOptions-8dcbbe6c.js";
 import { H as HorizontalField } from "../../../chunks/HorizontalField-12292c4d.js";
 import { F as Form } from "../../../chunks/SubmitButton-87e0ffcd.js";
-import { a as getRemoteContext, s as storeValues } from "../../../chunks/__layout-55cce9c8.js";
+import { a as getRemoteContext, s as storeEntries } from "../../../chunks/__layout-828ca917.js";
 import { g as getTypeFromSchema, a as allCellStateSchemas } from "../../../chunks/cell-state-schema-b294815b.js";
 import startCase from "lodash.startcase";
 import { P as PowerButtons } from "../../../chunks/_PowerButtons-d2fc377c.js";
@@ -114,7 +114,7 @@ const Custom = create_ssr_component(($$result, $$props, $$bindings, slots) => {
   let $devices, $$unsubscribe_devices;
   const { state: remoteState } = getRemoteContext();
   $$unsubscribe_remoteState = subscribe(remoteState, (value) => $remoteState = value);
-  const devices = storeValues(remoteState);
+  const devices = storeEntries(remoteState);
   $$unsubscribe_devices = subscribe(devices, (value) => $devices = value);
   let selectedType = "BLANK";
   let selectedDeviceSerial = "";
@@ -151,13 +151,11 @@ ${validate_component(Form, "Form").$$render($$result, {
       default: ({ loading }) => {
         return `${validate_component(HorizontalField, "HorizontalField").$$render($$result, { for: "control-serial", label: "Device" }, {}, {
           default: ({ inputClassName }) => {
-            return `<select class="${escape(inputClassName) + " cursor-pointer"}" id="${"control-serial"}"><option value="${""}">All devices</option>${each($devices, (device) => {
-              return `${validate_component(DeviceOption, "DeviceOption").$$render($$result, { device }, {}, {})}`;
-            })}</select>`;
+            return `<select class="${escape(inputClassName) + " cursor-pointer"}" id="${"control-serial"}"><option value="${""}">All devices</option>${validate_component(DeviceOptions, "DeviceOptions").$$render($$result, { devices: $devices }, {}, {})}</select>`;
           }
         })}
 
-	${selectedDevice?.connection === "android" ? `${validate_component(HorizontalField, "HorizontalField").$$render($$result, { label: "Power" }, {}, {
+	${!selectedDevice || selectedDevice?.connection?.includes("android") ? `${validate_component(HorizontalField, "HorizontalField").$$render($$result, { label: "Power" }, {}, {
           default: () => {
             return `${validate_component(PowerButtons, "PowerButtons").$$render($$result, { serial: selectedDeviceSerial }, {}, {})}`;
           }

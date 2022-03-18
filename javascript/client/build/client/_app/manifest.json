@@ -1,6 +1,6 @@
 {
   ".svelte-kit/runtime/client/start.js": {
-    "file": "start-ca49b4f9.js",
+    "file": "start-56cf13f3.js",
     "src": ".svelte-kit/runtime/client/start.js",
     "isEntry": true,
     "imports": [
@@ -11,7 +11,7 @@
       ".svelte-kit/runtime/components/layout.svelte",
       "src/routes/__error.svelte",
       "src/routes/index.svelte",
-      "___layout-b3bcd805.js",
+      "___layout-79eb542d.js",
       "src/routes/remote/__error.svelte",
       "src/routes/remote/index.svelte",
       "src/routes/remote/third_party.svelte",
@@ -85,7 +85,7 @@
     ]
   },
   "src/routes/remote/third_party.svelte": {
-    "file": "pages/remote/third_party.svelte-a1ead5d6.js",
+    "file": "pages/remote/third_party.svelte-d791d879.js",
     "src": "src/routes/remote/third_party.svelte",
     "isEntry": true,
     "isDynamicEntry": true,
@@ -93,24 +93,24 @@
       "_vendor-e399076d.js",
       "_HorizontalField-e9e4ce0a.js",
       "_LoadingSpinner-1dda806c.js",
-      "___layout-b3bcd805.js",
+      "___layout-79eb542d.js",
       "_TopBar-bec206db.js",
       "_snackbar-host-7b34ee00.js",
       "_cell-state-schema-b294815b.js"
     ]
   },
   "src/routes/remote/custom.svelte": {
-    "file": "pages/remote/custom.svelte-a7d631b1.js",
+    "file": "pages/remote/custom.svelte-7ae209a8.js",
     "src": "src/routes/remote/custom.svelte",
     "isEntry": true,
     "isDynamicEntry": true,
     "imports": [
       "_vendor-e399076d.js",
       "_ResetSubmit-91d58d6b.js",
-      "_DeviceOption-8cf67013.js",
+      "_DeviceOptions-a96187b4.js",
       "_HorizontalField-e9e4ce0a.js",
       "_SubmitButton-4475d829.js",
-      "___layout-b3bcd805.js",
+      "___layout-79eb542d.js",
       "_cell-state-schema-b294815b.js",
       "__PowerButtons-ab2253c4.js",
       "__form-52443b97.js",
@@ -120,17 +120,17 @@
     ]
   },
   "src/routes/remote/image.svelte": {
-    "file": "pages/remote/image.svelte-ff2555d0.js",
+    "file": "pages/remote/image.svelte-5ca205c2.js",
     "src": "src/routes/remote/image.svelte",
     "isEntry": true,
     "isDynamicEntry": true,
     "imports": [
       "_vendor-e399076d.js",
       "_ResetSubmit-91d58d6b.js",
-      "_DeviceOption-8cf67013.js",
+      "_DeviceOptions-a96187b4.js",
       "_HorizontalField-e9e4ce0a.js",
       "_SubmitButton-4475d829.js",
-      "___layout-b3bcd805.js",
+      "___layout-79eb542d.js",
       "_LoadingSpinner-1dda806c.js",
       "_snackbar-host-7b34ee00.js",
       "_cell-state-schema-b294815b.js",
@@ -138,17 +138,17 @@
     ]
   },
   "src/routes/remote/edit.svelte": {
-    "file": "pages/remote/edit.svelte-374997d5.js",
+    "file": "pages/remote/edit.svelte-f8c44d58.js",
     "src": "src/routes/remote/edit.svelte",
     "isEntry": true,
     "isDynamicEntry": true,
     "imports": [
       "_vendor-e399076d.js",
       "_ResetSubmit-91d58d6b.js",
-      "_DeviceOption-8cf67013.js",
+      "_DeviceOptions-a96187b4.js",
       "_HorizontalField-e9e4ce0a.js",
       "_SubmitButton-4475d829.js",
-      "___layout-b3bcd805.js",
+      "___layout-79eb542d.js",
       "__PowerButtons-ab2253c4.js",
       "__form-52443b97.js",
       "_LoadingSpinner-1dda806c.js",
@@ -158,18 +158,18 @@
     ]
   },
   "src/routes/remote/text.svelte": {
-    "file": "pages/remote/text.svelte-9c484482.js",
+    "file": "pages/remote/text.svelte-bf4fa651.js",
     "src": "src/routes/remote/text.svelte",
     "isEntry": true,
     "isDynamicEntry": true,
     "imports": [
       "_vendor-e399076d.js",
       "_ResetSubmit-91d58d6b.js",
-      "_DeviceOption-8cf67013.js",
+      "_DeviceOptions-a96187b4.js",
       "_HorizontalField-e9e4ce0a.js",
       "_VerticalField-1b909771.js",
       "_SubmitButton-4475d829.js",
-      "___layout-b3bcd805.js",
+      "___layout-79eb542d.js",
       "_LoadingSpinner-1dda806c.js",
       "_snackbar-host-7b34ee00.js",
       "_cell-state-schema-b294815b.js",
@@ -196,7 +196,7 @@
     ]
   },
   "src/routes/cell/frame/__layout.svelte": {
-    "file": "pages/cell/frame/__layout.svelte-e6670114.js",
+    "file": "pages/cell/frame/__layout.svelte-f645bfad.js",
     "src": "src/routes/cell/frame/__layout.svelte",
     "isEntry": true,
     "isDynamicEntry": true,
@@ -223,7 +223,7 @@
     ]
   },
   "src/routes/cell/frame/image.svelte": {
-    "file": "pages/cell/frame/image.svelte-b13fa4e6.js",
+    "file": "pages/cell/frame/image.svelte-9b209984.js",
     "src": "src/routes/cell/frame/image.svelte",
     "isEntry": true,
     "isDynamicEntry": true,
@@ -237,7 +237,7 @@
     ]
   },
   "src/routes/cell/frame/text.svelte": {
-    "file": "pages/cell/frame/text.svelte-c969ef64.js",
+    "file": "pages/cell/frame/text.svelte-9ad7f9e9.js",
     "src": "src/routes/cell/frame/text.svelte",
     "isEntry": true,
     "isDynamicEntry": true,
@@ -254,7 +254,7 @@
     ]
   },
   "src/routes/cell/frame/web.svelte": {
-    "file": "pages/cell/frame/web.svelte-19afbb59.js",
+    "file": "pages/cell/frame/web.svelte-ca4cc01c.js",
     "src": "src/routes/cell/frame/web.svelte",
     "isEntry": true,
     "isDynamicEntry": true,
@@ -296,12 +296,12 @@
     ]
   },
   "src/routes/remote/__layout.svelte": {
-    "file": "pages/remote/__layout.svelte-5928fba2.js",
+    "file": "pages/remote/__layout.svelte-51415ca2.js",
     "src": "src/routes/remote/__layout.svelte",
     "isEntry": true,
     "imports": [
       "_vendor-e399076d.js",
-      "___layout-b3bcd805.js",
+      "___layout-79eb542d.js",
       "_TopBar-bec206db.js",
       "_snackbar-host-7b34ee00.js",
       "_cell-state-schema-b294815b.js"
@@ -313,8 +313,8 @@
   "_singletons-d1fb5791.js": {
     "file": "chunks/singletons-d1fb5791.js"
   },
-  "___layout-b3bcd805.js": {
-    "file": "chunks/__layout-b3bcd805.js",
+  "___layout-79eb542d.js": {
+    "file": "chunks/__layout-79eb542d.js",
     "isDynamicEntry": true,
     "imports": [
       "_vendor-e399076d.js",
@@ -382,8 +382,8 @@
       "_SubmitButton-4475d829.js"
     ]
   },
-  "_DeviceOption-8cf67013.js": {
-    "file": "chunks/DeviceOption-8cf67013.js",
+  "_DeviceOptions-a96187b4.js": {
+    "file": "chunks/DeviceOptions-a96187b4.js",
     "imports": [
       "_vendor-e399076d.js"
     ]

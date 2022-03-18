@@ -740,16 +740,31 @@ var init_get = __esm({
   }
 });
 
-// src/lib/map/subscribe.ts
-function subscribeToMapStore(store, subscription) {
-  let oldMap;
-  return store.subscribe((newMap) => {
-    subscription(newMap, oldMap);
-    oldMap = newMap;
+// src/lib/store/changes.ts
+function withLastState(store) {
+  let oldState;
+  return derived(store, (newState) => {
+    const result = [newState, oldState];
+    oldState = newState;
+    return result;
   });
 }
-var init_subscribe = __esm({
-  "src/lib/map/subscribe.ts"() {
+function onlyNewEntries(store) {
+  return derived(withLastState(store), ([newMap, oldMap]) => {
+    const changes = new Map(newMap);
+    if (oldMap) {
+      for (const [serial, state] of oldMap) {
+        if (changes.get(serial) === state) {
+          changes.delete(serial);
+        }
+      }
+    }
+    return changes;
+  });
+}
+var init_changes = __esm({
+  "src/lib/store/changes.ts"() {
+    init_store();
   }
 });
 
@@ -806,6 +821,14 @@ var init_known = __esm({
 });
 
 // src/lib/repository/combine-cell.ts
+import { blankState } from "@cell-wall/shared";
+function equalConnectionArrays(a, b) {
+  if (a.length !== b.length) {
+    return false;
+  }
+  const aSet = new Set(a);
+  return b.every((type) => aSet.has(type));
+}
 function deriveCellInfo(stores) {
   let lastResult = /* @__PURE__ */ new Map();
   return derived([stores.info, stores.devices, stores.webSockets], ([infoMap, devices, webSockets]) => {
@@ -839,10 +862,12 @@ function deriveConnection(stores) {
   return derived([stores.devices, stores.webSockets], ([devices, webSockets]) => {
     const connections = /* @__PURE__ */ new Map();
     for (const id of webSockets.keys()) {
-      connections.set(id, "web");
+      connections.set(id, ["web"]);
     }
     for (const serial of devices.keys()) {
-      connections.set(serial, "android");
+      const array = connections.get(serial) ?? [];
+      array.push("android");
+      connections.set(serial, array);
     }
     return connections;
   });
@@ -857,12 +882,11 @@ function deriveCellData(stores) {
     for (const serial of keys) {
       const oldData = lastResult.get(serial);
       const newData = {
-        serial,
         info: infoMap.get(serial),
-        state: stateMap.get(serial),
-        connection: connectionMap.get(serial)
+        state: stateMap.get(serial) ?? blankState,
+        connection: connectionMap.get(serial) ?? []
       };
-      if (oldData && newData.info === oldData.info && newData.state === oldData.state && newData.connection === oldData.connection) {
+      if (oldData && newData.info === oldData.info && newData.state === oldData.state && equalConnectionArrays(newData.connection, oldData.connection)) {
         result.set(serial, oldData);
       } else {
         result.set(serial, newData);
@@ -1073,26 +1097,26 @@ var init_third_party_connect = __esm({
 });
 
 // src/lib/repository/repository.ts
-function sendIntentOnStateChange(stores, deviceManager) {
-  subscribeToMapStore(stores.state, (newStates, oldStates) => {
-    const changes = new Map(newStates);
-    if (oldStates) {
-      for (const [serial, state] of oldStates) {
-        if (changes.get(serial) === state) {
-          changes.delete(serial);
-        }
+function sendIntentOnStateChange(cellData, deviceManager) {
+  const connectionInfoStore = derived(cellData, (data) => transformMap(data, (cellData2) => {
+    var _a;
+    return {
+      server: (_a = cellData2.info) == null ? void 0 : _a.server,
+      connection: new Set(cellData2.connection)
+    };
+  }));
+  const cellStates = onlyNewEntries(derived(cellData, (data) => transformMap(data, (cellData2) => cellData2.state)));
+  return cellStates.subscribe((stateChanges) => {
+    const connectionInfo = get_store_value(connectionInfoStore);
+    Promise.all(Array.from(stateChanges).map(async ([serial, state]) => {
+      const { server = SERVER_ADDRESS, connection = /* @__PURE__ */ new Set() } = connectionInfo.get(serial) ?? {};
+      if (state && connection.has("android") && !connection.has("web")) {
+        await deviceManager.startIntent(serial, {
+          action: `${PACKAGE_NAME}.DISPLAY`,
+          dataUri: toUri(state, server),
+          waitForLaunch: true
+        });
       }
-    }
-    const info = get_store_value(stores.info);
-    Promise.all(Array.from(changes).map(([serial, state]) => {
-      var _a;
-      console.log(serial, state);
-      const base = ((_a = info.get(serial)) == null ? void 0 : _a.server) || SERVER_ADDRESS;
-      return deviceManager.startIntent(serial, {
-        action: `${PACKAGE_NAME}.DISPLAY`,
-        dataUri: toUri(state, base),
-        waitForLaunch: true
-      });
     }));
   });
 }
@@ -1104,13 +1128,13 @@ function repository() {
   let deviceManagerPromise = deviceManager.refreshDevices().then(() => deviceManager);
   const cellManager = new CellManager();
   const cellManagerPromise = dbPromise.then((db) => cellManager.loadInfo(db));
-  sendIntentOnStateChange({ info: cellManager, state: cellState }, deviceManager);
   const cellData = deriveCellData({
     info: cellManager,
     state: cellState,
     devices: deviceManager,
     webSockets
   });
+  sendIntentOnStateChange(cellData, deviceManager);
   cellData.subscribe((state) => console.info("CellData", state));
   const thirdParty = thirdPartyConnectRepository(dbPromise);
   return {
@@ -1171,7 +1195,8 @@ var init_repository = __esm({
     init_env();
     init_cache();
     init_get();
-    init_subscribe();
+    init_transform();
+    init_changes();
     init_combine_cell();
     init_database();
     init_socket_store();
@@ -1271,11 +1296,11 @@ var image_exports = {};
 __export(image_exports, {
   default: () => image_default
 });
-import { blankState } from "@cell-wall/shared";
+import { blankState as blankState2 } from "@cell-wall/shared";
 async function updateRemainingCells(remaining, behaviour) {
   switch (behaviour) {
     case "blank":
-      repo.cellState.setStates(new Map(remaining.map((serial) => [serial, blankState])));
+      repo.cellState.setStates(new Map(remaining.map((serial) => [serial, blankState2])));
       break;
     case "off":
       await repo.setPower(remaining, false);
@@ -1317,7 +1342,7 @@ async function image_default(fastify) {
       const devices = new Set(Array.isArray(request.query.device) ? request.query.device : [request.query.device]);
       const includes = devices.size > 0 ? devices.has.bind(devices) : () => true;
       const cellData = get_store_value(repo.cellData);
-      const cells = filterMap(cellData, (cell) => validRect(cell.info) && includes(cell.serial));
+      const cells = filterMap(cellData, (cell, serial) => validRect(cell.info) && includes(serial));
       const rects = transformMap(cells, (cell) => {
         var _a, _b, _c, _d;
         return {
@@ -1489,15 +1514,12 @@ async function text_default(fastify) {
     url: "/api/action/text",
     async handler(request, reply) {
       const lines = typeof request.body === "string" ? request.body.split(/\s*\n\s*/g) : request.body;
-      const devices = Array.from(get_store_value(repo.cellData).values()).sort((a, b) => {
-        var _a, _b;
-        return (((_a = b.info) == null ? void 0 : _a.width) ?? 0) - (((_b = a.info) == null ? void 0 : _b.width) ?? 0);
-      });
-      const deviceToText = new Map(devices.map((device) => [device.serial, []]));
+      const deviceIds = get_store_value(sortedDeviceIds);
+      const deviceToText = new Map(deviceIds.map((serial) => [serial, []]));
       for (const [i, line] of lines.entries()) {
-        const index = i % devices.length;
-        const device = devices[index];
-        deviceToText.get(device.serial).push(line);
+        const index = i % deviceIds.length;
+        const deviceId = deviceIds[index];
+        deviceToText.get(deviceId).push(line);
       }
       const colors = new RandomColor();
       const states = transformMap(deviceToText, (lines2) => textState(lines2.join(", "), request.query.backgroundColor ?? colors.next()));
@@ -1506,12 +1528,19 @@ async function text_default(fastify) {
     }
   });
 }
+var sortedDeviceIds;
 var init_text = __esm({
   "src/routes/api/action/text.ts"() {
     init_store();
     init_color();
     init_transform();
     init_repository2();
+    sortedDeviceIds = derived(repo.cellData, (devices) => {
+      return Array.from(devices).sort(([, a], [, b]) => {
+        var _a, _b;
+        return (((_a = b.info) == null ? void 0 : _a.width) ?? 0) - (((_b = a.info) == null ? void 0 : _b.width) ?? 0);
+      }).map(([id]) => id);
+    });
   }
 });
 
@@ -1633,7 +1662,7 @@ var serial_exports3 = {};
 __export(serial_exports3, {
   default: () => serial_default3
 });
-import { blankState as blankState2 } from "@cell-wall/shared";
+import { blankState as blankState3 } from "@cell-wall/shared";
 async function serial_default3(fastify) {
   fastify.route({
     method: "GET",
@@ -1642,7 +1671,7 @@ async function serial_default3(fastify) {
       var _a;
       const { serial } = request.params;
       reply.send({
-        [serial]: ((_a = get_store_value(repo.cellData).get(serial)) == null ? void 0 : _a.state) ?? blankState2
+        [serial]: ((_a = get_store_value(repo.cellData).get(serial)) == null ? void 0 : _a.state) ?? blankState3
       });
     }
   });
@@ -1674,13 +1703,12 @@ var state_exports = {};
 __export(state_exports, {
   default: () => state_default
 });
-import { blankState as blankState3 } from "@cell-wall/shared";
 async function state_default(fastify) {
   fastify.route({
     method: "GET",
     url: "/api/device/state/",
     async handler(request, reply) {
-      reply.send(Object.fromEntries(transformMap(get_store_value(repo.cellData), (data) => data.state ?? blankState3)));
+      reply.send(Object.fromEntries(transformMap(get_store_value(repo.cellData), (data) => data.state)));
     }
   });
   fastify.route({
@@ -1764,8 +1792,9 @@ async function serial_default4(fastify) {
       }
     },
     async handler(request, reply) {
+      var _a;
       const { serial } = request.params;
-      reply.send(get_store_value(repo.cellData).get(serial) ?? null);
+      reply.send(((_a = get_store_value(repo.cellData).get(serial)) == null ? void 0 : _a.info) ?? null);
     }
   });
   fastify.route({
@@ -2090,7 +2119,12 @@ async function websocketSubsystem(fastify) {
 async function createServer() {
   const fastify = Fastify({
     logger: {
-      prettyPrint: true
+      prettyPrint: {
+        translateTime: "yyyy-mm-dd HH:MM:ss.l",
+        levelFirst: true,
+        ignore: "pid,hostname,reqId,responseTime,req,res",
+        messageFormat: "{msg} [id={reqId} {req.method} {req.url}]"
+      }
     },
     trustProxy: true
   });

@@ -40,8 +40,11 @@ function remoteState(socket) {
     return () => controller.abort();
   });
 }
-function storeValues(store) {
-  return derived(store, (map) => Array.from(map.values()));
+function storeEntries(store) {
+  return derived(store, (map) => Array.from(map.entries()));
+}
+function storeKeys(store) {
+  return derived(store, (map) => Array.from(map.keys()));
 }
 function getRemoteContext() {
   return getContext("remote");
@@ -77,4 +80,4 @@ ${validate_component(RemoteFrame, "RemoteFrame").$$render($$result, {}, {}, {
 
 ${validate_component(Snackbar, "Snackbar").$$render($$result, { data: $currentSnackbarData }, {}, {})}`;
 });
-export { _layout as _, getRemoteContext as a, getSnackbarHostContext as g, storeValues as s };
+export { _layout as _, getRemoteContext as a, storeKeys as b, getSnackbarHostContext as g, storeEntries as s };

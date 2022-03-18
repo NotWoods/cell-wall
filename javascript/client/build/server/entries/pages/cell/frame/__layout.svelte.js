@@ -6,6 +6,9 @@ function connect(serial) {
     return void 0;
   }
 }
+function isCellState(state) {
+  return Boolean(state && typeof state === "object" && "type" in state);
+}
 function emptyData(data) {
   if (data instanceof ArrayBuffer) {
     return data.byteLength === 0;
@@ -21,7 +24,7 @@ function cellState(socket) {
     function handleMessage({ data }) {
       if (typeof data === "string") {
         const maybeJson = JSON.parse(data);
-        if (maybeJson && typeof maybeJson === "object" && "type" in maybeJson) {
+        if (isCellState(maybeJson)) {
           receivedState = maybeJson;
           return;
         }

@@ -1,10 +1,10 @@
-import { c as create_ssr_component, a as subscribe, v as validate_component, b as add_attribute, p as each } from "../../../chunks/index-4d214b4e.js";
+import { c as create_ssr_component, a as subscribe, v as validate_component, b as add_attribute } from "../../../chunks/index-4d214b4e.js";
 import { R as ResetSubmit } from "../../../chunks/ResetSubmit-d9940feb.js";
-import { D as DeviceOption } from "../../../chunks/DeviceOption-5e834f75.js";
+import { D as DeviceOptions } from "../../../chunks/DeviceOptions-8dcbbe6c.js";
 import { H as HorizontalField } from "../../../chunks/HorizontalField-12292c4d.js";
 import { V as VerticalField } from "../../../chunks/VerticalField-55978348.js";
 import { F as Form } from "../../../chunks/SubmitButton-87e0ffcd.js";
-import { a as getRemoteContext, s as storeValues } from "../../../chunks/__layout-55cce9c8.js";
+import { a as getRemoteContext, s as storeEntries, b as storeKeys } from "../../../chunks/__layout-828ca917.js";
 import "../../../chunks/LoadingSpinner-97b51d95.js";
 import "../../../chunks/snackbar-host-d6555a45.js";
 import "../../../chunks/cell-state-schema-b294815b.js";
@@ -31,10 +31,14 @@ async function submit(data, action) {
   }
 }
 const Text = create_ssr_component(($$result, $$props, $$bindings, slots) => {
+  let $deviceIds, $$unsubscribe_deviceIds;
   let $devices, $$unsubscribe_devices;
   const { state: remoteState } = getRemoteContext();
-  const devices = storeValues(remoteState);
+  const devices = storeEntries(remoteState);
   $$unsubscribe_devices = subscribe(devices, (value) => $devices = value);
+  const deviceIds = storeKeys(remoteState);
+  $$unsubscribe_deviceIds = subscribe(deviceIds, (value) => $deviceIds = value);
+  $$unsubscribe_deviceIds();
   $$unsubscribe_devices();
   return `${validate_component(Form, "Form").$$render($$result, {
     class: "flex flex-col gap-y-4",
@@ -59,9 +63,7 @@ const Text = create_ssr_component(($$result, $$props, $$bindings, slots) => {
 
 	${validate_component(HorizontalField, "HorizontalField").$$render($$result, { for: "control-serial", label: "Devices" }, {}, {
         default: ({ inputClassName }) => {
-          return `<select multiple name="${"device"}" id="${"control-serial"}"${add_attribute("class", inputClassName, 0)}${add_attribute("value", $devices.map((device) => device.serial), 0)}>${each($devices, (device) => {
-            return `${validate_component(DeviceOption, "DeviceOption").$$render($$result, { device }, {}, {})}`;
-          })}</select>`;
+          return `<select multiple name="${"device"}" id="${"control-serial"}"${add_attribute("class", inputClassName, 0)}${add_attribute("value", $deviceIds, 0)}>${validate_component(DeviceOptions, "DeviceOptions").$$render($$result, { devices: $devices }, {}, {})}</select>`;
         }
       })}
 

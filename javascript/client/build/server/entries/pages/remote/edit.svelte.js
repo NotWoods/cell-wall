@@ -1,9 +1,9 @@
-import { c as create_ssr_component, a as subscribe, v as validate_component, b as add_attribute, p as each } from "../../../chunks/index-4d214b4e.js";
+import { c as create_ssr_component, a as subscribe, v as validate_component, b as add_attribute } from "../../../chunks/index-4d214b4e.js";
 import { R as ResetSubmit } from "../../../chunks/ResetSubmit-d9940feb.js";
-import { D as DeviceOption } from "../../../chunks/DeviceOption-5e834f75.js";
+import { c as connectionToString, D as DeviceOptions } from "../../../chunks/DeviceOptions-8dcbbe6c.js";
 import { H as HorizontalField } from "../../../chunks/HorizontalField-12292c4d.js";
 import { F as Form } from "../../../chunks/SubmitButton-87e0ffcd.js";
-import { a as getRemoteContext, s as storeValues } from "../../../chunks/__layout-55cce9c8.js";
+import { a as getRemoteContext, s as storeEntries, b as storeKeys } from "../../../chunks/__layout-828ca917.js";
 import { P as PowerButtons } from "../../../chunks/_PowerButtons-d2fc377c.js";
 import { p as post } from "../../../chunks/_form-52443b97.js";
 import "../../../chunks/LoadingSpinner-97b51d95.js";
@@ -14,12 +14,16 @@ import "../../../chunks/TopBar-fb618005.js";
 const Edit = create_ssr_component(($$result, $$props, $$bindings, slots) => {
   let firstDevice;
   let selectedCell;
+  let connection;
   let $remoteState, $$unsubscribe_remoteState;
+  let $devicesIds, $$unsubscribe_devicesIds;
   let $devices, $$unsubscribe_devices;
   const { state: remoteState } = getRemoteContext();
   $$unsubscribe_remoteState = subscribe(remoteState, (value) => $remoteState = value);
-  const devices = storeValues(remoteState);
+  const devices = storeEntries(remoteState);
   $$unsubscribe_devices = subscribe(devices, (value) => $devices = value);
+  const devicesIds = storeKeys(remoteState);
+  $$unsubscribe_devicesIds = subscribe(devicesIds, (value) => $devicesIds = value);
   let selectedDeviceSerial;
   async function submit(formData, action) {
     function getNumber(key) {
@@ -40,9 +44,11 @@ const Edit = create_ssr_component(($$result, $$props, $$bindings, slots) => {
     };
     await post(action.toString(), data);
   }
-  firstDevice = $devices[0]?.serial;
+  firstDevice = $devicesIds[0];
   selectedCell = $remoteState.get(firstDevice);
+  connection = connectionToString(selectedCell?.connection);
   $$unsubscribe_remoteState();
+  $$unsubscribe_devicesIds();
   $$unsubscribe_devices();
   return `${validate_component(Form, "Form").$$render($$result, {
     class: "flex flex-col gap-y-4",
@@ -52,9 +58,7 @@ const Edit = create_ssr_component(($$result, $$props, $$bindings, slots) => {
     default: ({ loading }) => {
       return `${validate_component(HorizontalField, "HorizontalField").$$render($$result, { for: "control-serial", label: "Device" }, {}, {
         default: ({ inputClassName }) => {
-          return `<select${add_attribute("class", inputClassName, 0)} name="${"serial"}" id="${"control-serial"}">${each($devices, (device) => {
-            return `${validate_component(DeviceOption, "DeviceOption").$$render($$result, { device }, {}, {})}`;
-          })}</select>`;
+          return `<select${add_attribute("class", inputClassName, 0)} name="${"serial"}" id="${"control-serial"}">${validate_component(DeviceOptions, "DeviceOptions").$$render($$result, { devices: $devices }, {}, {})}</select>`;
         }
       })}
 
@@ -63,11 +67,11 @@ const Edit = create_ssr_component(($$result, $$props, $$bindings, slots) => {
         label: "Connection"
       }, {}, {
         default: ({ inputClassName }) => {
-          return `<select name="${"connection"}" id="${"control-connection"}"${add_attribute("value", selectedCell?.connection ?? "none", 0)} disabled${add_attribute("class", inputClassName, 0)}><option value="${"none"}"></option><option value="${"web"}">Web</option><option value="${"android"}">Android</option></select>`;
+          return `<input name="${"connection"}" id="${"control-connection"}"${add_attribute("value", connection, 0)} readonly${add_attribute("class", inputClassName, 0)}>`;
         }
       })}
 
-	${selectedCell?.connection === "android" ? `${validate_component(HorizontalField, "HorizontalField").$$render($$result, { label: "Power" }, {}, {
+	${selectedCell?.connection?.includes("android") ? `${validate_component(HorizontalField, "HorizontalField").$$render($$result, { label: "Power" }, {}, {
         default: () => {
           return `${validate_component(PowerButtons, "PowerButtons").$$render($$result, { serial: selectedDeviceSerial }, {}, {})}`;
         }
