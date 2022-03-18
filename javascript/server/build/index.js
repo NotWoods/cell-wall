@@ -1984,9 +1984,10 @@ function resolvedPromiseStore(promise) {
 function thirdPartySocketStore(repo2) {
   const googleAuthUrl = derived(resolvedPromiseStore(repo2.thirdParty.google), (client, set) => {
     if (client) {
-      client.authorizeUrl.subscribe((authorizeUrl) => set({ loading: false, authorizeUrl }));
+      return client.authorizeUrl.subscribe((authorizeUrl) => set({ loading: false, authorizeUrl }));
     } else {
       set({ loading: true });
+      return void 0;
     }
   }, { loading: true });
   return derived(googleAuthUrl, (googleState) => {
