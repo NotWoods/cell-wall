@@ -1,20 +1,9 @@
 import type { CellInfo, CellState } from '@cell-wall/shared';
-import { memo } from '@cell-wall/shared';
 import { get, Readable } from 'svelte/store';
 import { DeviceManager } from '../android/device-manager';
-import { GithubApi } from '../android/github';
 import { setPower } from '../android/power';
 import { CellManager, cellStateStore, toUri } from '../cells';
-import {
-	DATABASE_FILENAME,
-	GITHUB_TOKEN,
-	GOOGLE_CLIENT_ID,
-	GOOGLE_CLIENT_SECRET,
-	PACKAGE_NAME,
-	SERVER_ADDRESS
-} from '../env';
-import type { GoogleClient } from '../google';
-import { authenticateGoogle, initializeGoogle } from '../google';
+import { DATABASE_FILENAME, PACKAGE_NAME, SERVER_ADDRESS } from '../env';
 import { SplitImageCache } from '../image/cache';
 import { asArray, getAll } from '../map/get';
 import { subscribeToMapStore } from '../map/subscribe';
@@ -22,6 +11,7 @@ import { deriveCellData } from './combine-cell';
 import { database } from './database';
 import type { Repository } from './interface';
 import { webSocketStore } from './socket-store';
+import { thirdPartyConnectRepository } from './third-party-connect';
 
 function sendIntentOnStateChange(
 	stores: {
@@ -77,42 +67,21 @@ export function repository(): Repository {
 	});
 	cellData.subscribe((state) => console.info('CellData', state));
 
-	const googleApi = memo(async function googleApi(): Promise<GoogleClient> {
-		if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET) {
-			throw new Error(`Missing Google API keys`);
-		}
-
-		const db = await dbPromise;
-		const credentials = await db.getGoogleCredentials();
-		const googleClient = initializeGoogle(credentials, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET);
-
-		if (googleClient.authorizeUrl) {
-			console.log(`\n---\nAuthenticate with Google:\n${googleClient.authorizeUrl}\n---\n`);
-		}
-
-		return googleClient;
-	});
-
-	const github = memo(() => {
-		if (!GITHUB_TOKEN) {
-			throw new Error(`Missing GitHub API keys`);
-		}
-
-		return new GithubApi({ auth: GITHUB_TOKEN });
-	});
+	const thirdParty = thirdPartyConnectRepository(dbPromise);
 
 	return {
 		cellData,
 		cellState,
 		images: new SplitImageCache(),
 		webSockets,
+		thirdParty,
 		refreshDevices() {
 			const refreshPromise = deviceManager.refreshDevices();
 			deviceManagerPromise = refreshPromise.then(() => deviceManager);
 			return refreshPromise;
 		},
 		async installApk(tag) {
-			const apkPath = await github().downloadApk(tag);
+			const apkPath = await thirdParty.github.downloadApk(tag);
 			if (apkPath) {
 				return await deviceManager.installApkToAll(apkPath, PACKAGE_NAME);
 			} else {
@@ -132,13 +101,6 @@ export function repository(): Repository {
 			} else {
 				return false;
 			}
-		},
-		googleApi,
-		async authenticateGoogleApi(code: string) {
-			const db = await dbPromise;
-			const googleClient = await googleApi();
-			const credentials = await authenticateGoogle(googleClient.client, code);
-			await db.setGoogleCredentials(credentials);
 		},
 		async getPower(serial) {
 			const deviceManager = await deviceManagerPromise;

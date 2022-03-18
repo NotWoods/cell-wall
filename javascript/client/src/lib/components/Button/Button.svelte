@@ -1,5 +1,5 @@
 <script lang="ts">
-	let className = 'bg-slate-700 hover:bg-slate-800';
+	let className = 'bg-slate-700 hover:bg-slate-800 disabled:bg-slate-600 disabled:opacity-50';
 	export { className as class };
 </script>
 

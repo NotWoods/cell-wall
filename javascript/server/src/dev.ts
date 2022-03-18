@@ -9,6 +9,7 @@ const CLIENT_ROUTES = [
 	'/remote/*',
 	'/remote',
 	'/demo',
+	'/third_party',
 	'/css/*',
 	'/logo.png',
 	'/src/*',

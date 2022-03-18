@@ -14,7 +14,8 @@ export default async function (fastify: FastifyInstance): Promise<void> {
 		},
 		async handler(request, reply) {
 			const { code } = request.query;
-			await repo.authenticateGoogleApi(code);
+			const googleClient = await repo.thirdParty.google;
+			await googleClient.authenticate(code);
 			reply.send('Authentication successful! Please return to the console.');
 		}
 	});

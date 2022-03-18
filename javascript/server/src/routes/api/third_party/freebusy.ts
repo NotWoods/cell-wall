@@ -1,6 +1,5 @@
 import type { FastifyInstance } from 'fastify';
 import type { calendar_v3 } from 'googleapis';
-import { google } from 'googleapis';
 import { repo } from '../../../lib/repository';
 
 export default async function (fastify: FastifyInstance): Promise<void> {
@@ -13,13 +12,11 @@ export default async function (fastify: FastifyInstance): Promise<void> {
 		 * Query the Google Calendar Free/Busy API
 		 */
 		async handler(request, reply) {
-			const { client } = await repo.googleApi();
+			const googleClient = await repo.thirdParty.google;
 			const requestBody =
 				request.body instanceof URLSearchParams ? Object.fromEntries(request.body) : request.body;
 
-			const api = google.calendar({ version: 'v3', auth: client });
-
-			const res = await api.freebusy.query({
+			const res = await googleClient.freebusy({
 				requestBody: requestBody as calendar_v3.Schema$FreeBusyRequest
 			});
 

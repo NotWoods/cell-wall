@@ -1,10 +1,10 @@
 import { memo } from '@cell-wall/shared';
 import { Octokit } from '@octokit/core';
-import type { OctokitOptions } from '@octokit/core/dist-types/types';
 import { createWriteStream, promises as fs } from 'fs';
 import { tmpdir } from 'os';
 import { join } from 'path';
 import { pipeline } from 'stream/promises';
+import { GITHUB_TOKEN } from '../../env';
 
 declare global {
 	interface ReadableStream<R> {
@@ -14,11 +14,15 @@ declare global {
 
 const buildTempDir = memo(() => fs.mkdtemp(join(tmpdir(), 'apk-')));
 
-export class GithubApi {
+export class GithubClient {
 	private readonly octokit: Octokit;
 
-	constructor(options?: OctokitOptions) {
-		this.octokit = new Octokit(options);
+	constructor() {
+		if (!GITHUB_TOKEN) {
+			throw new Error(`Missing GitHub API keys`);
+		}
+
+		this.octokit = new Octokit({ auth: GITHUB_TOKEN });
 	}
 
 	private fetchRelease(tag: string | undefined) {

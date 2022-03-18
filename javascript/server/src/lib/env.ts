@@ -1,4 +1,7 @@
-import { env } from '@cell-wall/shared/src/env';
+import { config } from 'dotenv';
+import { env, VERSION } from '@cell-wall/shared/src/env';
+
+config({ path: '../../.env' });
 
 const {
 	SERVER_ADDRESS,
@@ -11,6 +14,7 @@ const {
 } = env(process.env);
 
 export {
+	VERSION,
 	SERVER_ADDRESS,
 	PORT,
 	PACKAGE_NAME,

@@ -3,10 +3,10 @@
 	"version": "4.0.0",
 	"type": "module",
 	"exports": {
-    ".": "./src/index.js",
-    "./src/env": "./src/env.js",
-    "./src/env.mocks": "./src/env.mocks.js"
-  },
+		".": "./src/index.js",
+		"./src/env": "./src/env.js",
+		"./src/env.mocks": "./src/env.mocks.js"
+	},
 	"module": "./src/index.js",
 	"types": "./src/index.d.ts",
 	"scripts": {
@@ -16,9 +16,7 @@
 		"format": "prettier --write . --ignore-path ../.prettierignore",
 		"test": "tsc --project test && node --experimental-vm-modules node_modules/jest/bin/jest.js"
 	},
-	"dependencies": {
-		"dotenv": "^16.0.0"
-	},
+	"dependencies": {},
 	"devDependencies": {
 		"@jest/globals": "^27.5.1",
 		"jest": "^27.5.1",

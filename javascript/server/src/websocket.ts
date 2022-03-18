@@ -1,73 +1,126 @@
 import { blankState, CellState } from '@cell-wall/shared';
 import type { FastifyInstance } from 'fastify';
-import type { IncomingMessage } from 'http';
+import type { IncomingMessage, Server } from 'http';
 import { WebSocket, WebSocketServer } from 'ws';
 import { cellStateFor } from './lib/cells';
 import { repo } from './lib/repository';
 import type { WebSocketInfo } from './lib/repository/socket-store';
+import { thirdPartySocketStore } from './lib/store/third-party';
 
 const CELL_SERIAL = /^\/cells\/(\w+)\/?$/;
 const blankBuffer = new ArrayBuffer(0);
 
-function handleCellConnection(ws: WebSocket, request: IncomingMessage) {
-	const { pathname } = new URL(request.url!, `http://${request.headers.host}`);
-	const [, serial] = pathname.match(CELL_SERIAL)!;
-
-	repo.webSockets.add(serial, {});
-
-	let lastState: CellState = blankState;
-	const unsubscribe = cellStateFor(repo.cellState, serial).subscribe((state) => {
-		if (!state) return;
-
-		if (state.type === lastState.type) {
-			const { payload = blankBuffer } = state;
-			ws.send(payload);
-		}
-
-		ws.send(JSON.stringify(state));
-		ws.send(blankBuffer);
-		lastState = state;
-	});
-
-	ws.on('message', (data) => {
-		const info = JSON.parse(data.toString()) as WebSocketInfo;
-		repo.webSockets.add(serial, info);
-	});
-
-	ws.on('close', () => {
-		unsubscribe();
-		repo.webSockets.delete(serial);
-	});
+interface WebSocketHandler {
+	/** Path that corresponds to the handler */
+	path: string | ((pathname: string) => boolean);
+	/**
+	 * Handler function that is called for each new websocket.
+	 * @param ws New connected websocket
+	 * @returns CLeanup function called on websocket close
+	 */
+	onConnect(ws: WebSocket, request: IncomingMessage): (() => void) | undefined;
 }
 
-function handleRemoteConnection(ws: WebSocket) {
-	const unsubscribe = repo.cellData.subscribe((data) => {
-		const dataObject = JSON.stringify(Object.fromEntries(data));
-		ws.send(dataObject);
-	});
+const cellSocketHandler: WebSocketHandler = {
+	path: (pathname) => CELL_SERIAL.test(pathname),
+	onConnect(ws, request) {
+		const { pathname } = new URL(request.url!, `http://${request.headers.host}`);
+		const [, serial] = pathname.match(CELL_SERIAL)!;
 
-	ws.on('close', unsubscribe);
+		repo.webSockets.add(serial, {});
+
+		let lastState: CellState = blankState;
+		const unsubscribe = cellStateFor(repo.cellState, serial).subscribe((state) => {
+			if (!state) return;
+
+			if (state.type === lastState.type) {
+				const { payload = blankBuffer } = state;
+				ws.send(payload);
+			}
+
+			ws.send(JSON.stringify(state));
+			ws.send(blankBuffer);
+			lastState = state;
+		});
+
+		ws.on('message', (data) => {
+			const info = JSON.parse(data.toString()) as WebSocketInfo;
+			repo.webSockets.add(serial, info);
+		});
+
+		return () => {
+			unsubscribe();
+			repo.webSockets.delete(serial);
+		};
+	}
+};
+
+const remoteSocketHandler: WebSocketHandler = {
+	path: '/remote',
+	onConnect(ws) {
+		return repo.cellData.subscribe((data) => {
+			const dataObject = JSON.stringify(Object.fromEntries(data));
+			ws.send(dataObject);
+		});
+	}
+};
+
+const thirdPartySocketHandler: WebSocketHandler = {
+	path: '/third_party',
+	onConnect(ws) {
+		return thirdPartySocketStore(repo).subscribe((socketState) => {
+			ws.send(JSON.stringify(socketState));
+		});
+	}
+};
+
+function attachWebsocketHandlers(server: Server, websocketHandlers: readonly WebSocketHandler[]) {
+	const webSocketServers = new WeakMap(
+		websocketHandlers.map((handler) => {
+			const webSocketServer = new WebSocketServer({ noServer: true });
+			webSocketServer.on('connection', handler.onConnect);
+			return [handler, webSocketServer];
+		})
+	);
+
+	const pathHandlers = new Map<string, WebSocketHandler>();
+	const otherHandlers = websocketHandlers.filter(
+		(handler): handler is WebSocketHandler & { path: (pathname: string) => boolean } => {
+			if (typeof handler.path === 'string') {
+				pathHandlers.set(handler.path, handler);
+				return false;
+			} else {
+				return true;
+			}
+		}
+	);
+
+	server.on('upgrade', (request, socket, head) => {
+		const { pathname } = new URL(request.url!, `http://${request.headers.host}`);
+
+		// Start by exact matching path
+		let handler = pathHandlers.get(pathname);
+		if (!handler) {
+			// Then try matching by functions
+			handler = otherHandlers.find((handler) => handler.path(pathname));
+		}
+		if (!handler) {
+			// If no handler found, close the connection
+			socket.destroy();
+			return;
+		}
+
+		const webSocketServer = webSocketServers.get(handler)!;
+		webSocketServer.handleUpgrade(request, socket, head, (ws) => {
+			webSocketServer.emit('connection', ws, request);
+		});
+	});
 }
 
 export async function websocketSubsystem(fastify: FastifyInstance): Promise<void> {
-	const remoteServer = new WebSocketServer({ noServer: true });
-	const cellServer = new WebSocketServer({ noServer: true });
-
-	fastify.server.on('upgrade', (request, socket, head) => {
-		const { pathname } = new URL(request.url!, `http://${request.headers.host}`);
-		if (pathname === '/remote') {
-			remoteServer.handleUpgrade(request, socket, head, (ws) => {
-				remoteServer.emit('connection', ws, request);
-			});
-		} else if (CELL_SERIAL.test(pathname)) {
-			cellServer.handleUpgrade(request, socket, head, (ws) => {
-				cellServer.emit('connection', ws, request);
-			});
-		} else {
-			socket.destroy();
-		}
-	});
-
-	remoteServer.on('connection', handleRemoteConnection);
-	cellServer.on('connection', handleCellConnection);
+	attachWebsocketHandlers(fastify.server, [
+		cellSocketHandler,
+		remoteSocketHandler,
+		thirdPartySocketHandler
+	]);
 }
