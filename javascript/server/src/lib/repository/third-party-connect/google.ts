@@ -1,19 +1,21 @@
-import type { Auth, calendar_v3 } from 'googleapis';
-import { google } from 'googleapis';
+import { auth, calendar, type calendar_v3 } from '@googleapis/calendar';
 import { Readable, Writable, writable } from 'svelte/store';
 import { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET } from '../../env';
 import type { Database } from '../database';
 
+type OAuth2Client = InstanceType<typeof auth.OAuth2>;
+export type Credentials = OAuth2Client['credentials'];
+
 export class GoogleClient {
-	private readonly client: Auth.OAuth2Client;
+	private readonly client: OAuth2Client;
 	private readonly authUrl: Writable<string | undefined>;
 
 	/**
 	 * Set up Google API client
 	 * @param credentials Saved Google credentials, if any
 	 */
-	private constructor(private readonly db: Database, credentials: Auth.Credentials | undefined) {
-		this.client = new google.auth.OAuth2(
+	private constructor(private readonly db: Database, credentials: Credentials | undefined) {
+		this.client = new auth.OAuth2(
 			GOOGLE_CLIENT_ID,
 			GOOGLE_CLIENT_SECRET,
 			'https://cellwall.tigeroakes.com/oauth2callback'
@@ -53,7 +55,7 @@ export class GoogleClient {
 	/**
 	 * Authenticate with Google using an auth code
 	 */
-	async authenticate(code: string): Promise<Auth.Credentials> {
+	async authenticate(code: string): Promise<void> {
 		const res = await this.client.getToken(code);
 
 		this.authUrl.set(undefined);
@@ -64,8 +66,6 @@ export class GoogleClient {
 		} catch {
 			// swallow errors
 		}
-
-		return res.tokens;
 	}
 
 	/**
@@ -73,7 +73,7 @@ export class GoogleClient {
 	 * @param params - Parameters for request
 	 */
 	async freebusy(params: calendar_v3.Params$Resource$Freebusy$Query) {
-		const api = google.calendar({ version: 'v3', auth: this.client });
+		const api = calendar({ version: 'v3', auth: this.client });
 		return await api.freebusy.query(params);
 	}
 }

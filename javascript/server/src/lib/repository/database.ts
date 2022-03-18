@@ -1,16 +1,16 @@
 import type { CellInfo } from '@cell-wall/shared';
-import type { Auth } from 'googleapis';
 import type { Adapter } from 'lowdb';
-import { JSONFile, Memory, Low } from 'lowdb';
+import { JSONFile, Low, Memory } from 'lowdb';
+import type { Credentials } from './third-party-connect/google';
 
 interface LowData {
-	googleCredentials?: Auth.Credentials | undefined;
+	googleCredentials?: Credentials | undefined;
 	cells: Record<string, CellInfo>;
 }
 
 export interface Database {
-	getGoogleCredentials(): Promise<Auth.Credentials | undefined>;
-	setGoogleCredentials(credentials: Auth.Credentials): Promise<void>;
+	getGoogleCredentials(): Promise<Credentials | undefined>;
+	setGoogleCredentials(credentials: Credentials): Promise<void>;
 	getCell(serial: string): Promise<CellInfo | undefined>;
 	getCells(): Promise<CellInfo[]>;
 	insertCell(cell: CellInfo): Promise<void>;

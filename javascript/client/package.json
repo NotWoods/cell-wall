@@ -35,7 +35,6 @@
 		"cross-env": "^7.0.3",
 		"esbuild-jest": "^0.5.0",
 		"eslint-plugin-svelte3": "^3.4.1",
-		"googleapis": "^97.0.0",
 		"jest": "^27.5.1",
 		"prettier-plugin-svelte": "^2.6.0",
 		"svelte": "^3.46.4",

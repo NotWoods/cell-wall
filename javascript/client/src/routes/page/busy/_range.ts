@@ -1,12 +1,18 @@
 import { Temporal } from '@js-temporal/polyfill';
-import type { calendar_v3 } from 'googleapis';
+
+export interface TimePeriod {
+	/** The (inclusive) start of the time period. */
+	start?: string | null;
+	/** The (exclusive) end of the time period. */
+	end?: string | null;
+}
 
 export interface DateTimeRange {
 	start: Temporal.ZonedDateTime | undefined;
 	end: Temporal.ZonedDateTime | undefined;
 }
 
-function convert(range: calendar_v3.Schema$TimePeriod): DateTimeRange {
+function convert(range: TimePeriod): DateTimeRange {
 	function fromTimeStamp(timestamp: string | Temporal.Instant | null | undefined) {
 		if (timestamp) {
 			return Temporal.Instant.from(timestamp).toZonedDateTimeISO('UTC');
@@ -49,7 +55,7 @@ function isBusy(time: Temporal.ZonedDateTime, ranges: readonly DateTimeRange[]) 
  * @param callback
  */
 export function isBusyInterval(
-	ranges: readonly calendar_v3.Schema$TimePeriod[],
+	ranges: readonly TimePeriod[],
 	callback: (inRange: boolean) => void
 ): void {
 	const dateTimeRanges = ranges.map(convert);

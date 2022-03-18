@@ -1,8 +1,19 @@
 <script lang="ts" context="module">
 	import { Temporal } from '@js-temporal/polyfill';
 	import type { Load } from '@sveltejs/kit';
-	import type { calendar_v3 } from 'googleapis';
-	import { isBusyInterval } from './_range';
+	import { isBusyInterval, TimePeriod } from './_range';
+
+	interface FreeBusyRequest {
+		/** List of calendars and/or groups to query. */
+		items?: {
+			/** The identifier of a calendar or a group. */
+			id?: string | null;
+		}[];
+		/** The end of the interval for the query formatted as per RFC3339. */
+		timeMax?: string | null;
+		/** The start of the interval for the query formatted as per RFC3339. */
+		timeMin?: string | null;
+	}
 
 	const people = {
 		tiger: {
@@ -51,7 +62,7 @@
 			smallestUnit: 'second'
 		} as const;
 
-		const body: calendar_v3.Schema$FreeBusyRequest = {
+		const body: FreeBusyRequest = {
 			timeMin: today.toString(toStringOptions),
 			timeMax: nextWeek.toString(toStringOptions),
 			items: [{ id: people[person].calendar }]
@@ -83,7 +94,7 @@
 </script>
 
 <script lang="ts">
-	export let busyRanges: readonly calendar_v3.Schema$TimePeriod[];
+	export let busyRanges: readonly TimePeriod[];
 	export let name: keyof People;
 	$: person = people[name];
 

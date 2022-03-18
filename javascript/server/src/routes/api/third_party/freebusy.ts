@@ -1,5 +1,5 @@
+import type { calendar_v3 } from '@googleapis/calendar';
 import type { FastifyInstance } from 'fastify';
-import type { calendar_v3 } from 'googleapis';
 import { repo } from '../../../lib/repository';
 
 export default async function (fastify: FastifyInstance): Promise<void> {

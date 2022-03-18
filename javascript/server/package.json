@@ -17,12 +17,12 @@
 	"dependencies": {
 		"@cell-wall/client": "workspace:*",
 		"@cell-wall/shared": "workspace:*",
+		"@googleapis/calendar": "^1.0.2",
 		"@js-temporal/polyfill": "^0.4.0",
 		"@octokit/core": "^3.6.0",
 		"appium-adb": "^9.2.0",
 		"dotenv": "^16.0.0",
 		"fastify": "^3.27.4",
-		"googleapis": "^97.0.0",
 		"jimp": "^0.16.1",
 		"lowdb": "^3.0.0",
 		"middie": "^6.0.0",
