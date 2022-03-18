@@ -1,9 +1,21 @@
-import type { CellData, CellInfo, CellState } from '@cell-wall/shared';
+import type { CellData, CellInfo, CellState, ConnectionType } from '@cell-wall/shared';
 import type { Readable } from 'svelte/store';
 import { derived } from 'svelte/store';
 import type { DeviceMap } from '../android/device-manager';
 import { computeInfo } from './known';
 import type { WebSocketInfo } from './socket-store';
+
+function equalConnectionArrays(
+	a: readonly ConnectionType[],
+	b: readonly ConnectionType[]
+): boolean {
+	if (a.length !== b.length) {
+		return false;
+	}
+
+	const aSet = new Set(a);
+	return b.every((type) => aSet.has(type));
+}
 
 function deriveCellInfo(stores: {
 	info: Readable<ReadonlyMap<string, CellInfo>>;
@@ -63,15 +75,17 @@ function deriveCellInfo(stores: {
 function deriveConnection(stores: {
 	devices: Readable<DeviceMap>;
 	webSockets: Readable<ReadonlyMap<string, WebSocketInfo>>;
-}): Readable<ReadonlyMap<string, 'web' | 'android'>> {
+}): Readable<ReadonlyMap<string, readonly ConnectionType[]>> {
 	return derived([stores.devices, stores.webSockets], ([devices, webSockets]) => {
-		const connections = new Map<string, 'web' | 'android'>();
+		const connections = new Map<string, ConnectionType[]>();
 
 		for (const id of webSockets.keys()) {
-			connections.set(id, 'web');
+			connections.set(id, ['web']);
 		}
 		for (const serial of devices.keys()) {
-			connections.set(serial, 'android');
+			const array = connections.get(serial) ?? [];
+			array.push('android');
+			connections.set(serial, array);
 		}
 
 		return connections;
@@ -98,7 +112,7 @@ export function deriveCellData(stores: {
 				serial,
 				info: infoMap.get(serial),
 				state: stateMap.get(serial),
-				connection: connectionMap.get(serial)
+				connection: connectionMap.get(serial) ?? []
 			};
 
 			// Don't change the object instance if data is the same
@@ -106,7 +120,7 @@ export function deriveCellData(stores: {
 				oldData &&
 				newData.info === oldData.info &&
 				newData.state === oldData.state &&
-				newData.connection === oldData.connection
+				equalConnectionArrays(newData.connection, oldData.connection)
 			) {
 				result.set(serial, oldData);
 			} else {

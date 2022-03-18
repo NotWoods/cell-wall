@@ -88,6 +88,13 @@ pnpm run build -r
 pnpm start -w
 ```
 
+A production build is available on the `pi-deploy` branch. It can be started by running:
+
+```shell
+pnpm install --frozen-lockfile --prod
+node javascript/server/build/index.js
+```
+
 ### Environment variables
 
 Some paths and API keys are set via environment variables. The project uses `dotenv`, so an `.env` file will automatically be loaded by the server.

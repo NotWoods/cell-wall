@@ -64,7 +64,7 @@
 		</select>
 	</HorizontalField>
 
-	{#if selectedDevice?.connection === 'android'}
+	{#if !selectedDevice || selectedDevice?.connection?.includes('android')}
 		<HorizontalField label="Power">
 			<PowerButtons serial={selectedDeviceSerial} />
 		</HorizontalField>

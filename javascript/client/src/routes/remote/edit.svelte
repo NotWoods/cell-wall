@@ -1,6 +1,6 @@
 <script lang="ts">
 	import ResetSubmit from '$lib/components/Button/ResetSubmit.svelte';
-	import DeviceOption from '$lib/components/Field/DeviceOption.svelte';
+	import DeviceOption, { connectionToString } from '$lib/components/Field/DeviceOption.svelte';
 	import HorizontalField from '$lib/components/Field/HorizontalField.svelte';
 	import Form from '$lib/components/Form.svelte';
 	import { storeValues } from '$lib/connection/remote-socket';
@@ -17,6 +17,7 @@
 
 	$: firstDevice = $devices[0]?.serial;
 	$: selectedCell = $remoteState.get(selectedDeviceSerial ?? firstDevice);
+	$: connection = connectionToString(selectedCell?.connection);
 
 	async function submit(formData: FormData, action: URL) {
 		function getNumber(key: string) {
@@ -61,20 +62,16 @@
 	</HorizontalField>
 
 	<HorizontalField for="control-connection" label="Connection" let:inputClassName>
-		<select
+		<input
 			name="connection"
 			id="control-connection"
-			value={selectedCell?.connection ?? 'none'}
-			disabled
+			value={connection}
+			readonly
 			class={inputClassName}
-		>
-			<option value="none" />
-			<option value="web">Web</option>
-			<option value="android">Android</option>
-		</select>
+		/>
 	</HorizontalField>
 
-	{#if selectedCell?.connection === 'android'}
+	{#if selectedCell?.connection?.includes('android')}
 		<HorizontalField label="Power">
 			<PowerButtons serial={selectedDeviceSerial} />
 		</HorizontalField>
