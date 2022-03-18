@@ -6,7 +6,12 @@ import { websocketSubsystem } from './websocket';
 export async function createServer() {
 	const fastify = Fastify({
 		logger: {
-			prettyPrint: true
+			prettyPrint: {
+				translateTime: 'yyyy-mm-dd HH:MM:ss.l',
+				levelFirst: true,
+				ignore: 'pid,hostname,reqId,responseTime,req,res',
+				messageFormat: '{msg} [id={reqId} {req.method} {req.url}]'
+			}
 		},
 		trustProxy: true
 	});

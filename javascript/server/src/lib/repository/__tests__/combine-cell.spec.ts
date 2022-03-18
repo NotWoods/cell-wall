@@ -1,4 +1,4 @@
-import type { CellInfo, CellState } from '@cell-wall/shared';
+import { blankState, CellInfo, CellState } from '@cell-wall/shared';
 import { describe, expect, it, jest } from '@jest/globals';
 import type ADB from 'appium-adb';
 import { get, writable } from 'svelte/store';
@@ -44,28 +44,32 @@ describe('deriveCellData', () => {
 		const derived = get(derivedStore);
 		expect(derived.size).toBe(4);
 		expect(derived.get('DEVICEA')).toEqual({
-			connection: 'android',
+			connection: ['android'],
+			state: blankState,
 			info: {
 				serial: 'DEVICEA',
 				deviceName: 'ManufacturerA ModelA'
 			}
 		});
 		expect(derived.get('DEVICEB')).toEqual({
-			connection: 'android',
+			connection: ['android'],
+			state: blankState,
 			info: {
 				serial: 'DEVICEB',
 				deviceName: 'ManuB ModelB'
 			}
 		});
 		expect(derived.get('DEVICEC')).toEqual({
-			connection: 'android',
+			connection: ['android'],
+			state: blankState,
 			info: {
 				serial: 'DEVICEC',
 				deviceName: 'ManuC ModelC'
 			}
 		});
 		expect(derived.get('DEVICED')).toEqual({
-			connection: 'android',
+			connection: ['android'],
+			state: blankState,
 			info: {
 				serial: 'DEVICED',
 				deviceName: 'OnePlus One',
