@@ -62,6 +62,8 @@ jobs:
             javascript/server/build/
             javascript/server/.gitignore
             javascript/server/package.json
+            javascript/shared/src/
+            javascript/shared/package.json
             deploy.gitignore
             pnpm-lock.yaml
             pnpm-workspace.yaml
