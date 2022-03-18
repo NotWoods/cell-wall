@@ -1,4 +1,4 @@
-import type { Readable, Unsubscriber } from 'svelte/store';
+import { derived, Readable, Unsubscriber } from 'svelte/store';
 
 export function subscribeToMapStore<Key, Value>(
 	store: Readable<ReadonlyMap<Key, Value>>,
