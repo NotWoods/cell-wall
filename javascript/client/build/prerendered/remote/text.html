@@ -7,20 +7,23 @@
 		<link rel="stylesheet" href="/css/base.css" />
 		<meta http-equiv="content-security-policy" content=""><title>CellWall Remote</title><link rel="manifest" href="/manifest.webmanifest" data-svelte="svelte-1tkg7m6">
 	<link rel="stylesheet" href="/_app/assets/__layout-f9525609.css">
-	<link rel="stylesheet" href="/_app/assets/TopBar-bc80edfe.css">
-	<link rel="modulepreload" href="/_app/start-4d69d5a0.js">
+	<link rel="stylesheet" href="/_app/assets/TopBar-950c56a9.css">
+	<link rel="modulepreload" href="/_app/start-2307dd89.js">
 	<link rel="modulepreload" href="/_app/chunks/vendor-e399076d.js">
 	<link rel="modulepreload" href="/_app/chunks/singletons-d1fb5791.js">
 	<link rel="modulepreload" href="/_app/layout.svelte-2d8274e1.js">
-	<link rel="modulepreload" href="/_app/pages/remote/__layout.svelte-5cdb0955.js">
-	<link rel="modulepreload" href="/_app/chunks/__layout-c56c0233.js">
+	<link rel="modulepreload" href="/_app/pages/remote/__layout.svelte-5928fba2.js">
+	<link rel="modulepreload" href="/_app/chunks/__layout-b3bcd805.js">
 	<link rel="modulepreload" href="/_app/chunks/TopBar-bec206db.js">
-	<link rel="modulepreload" href="/_app/chunks/snackbar-host-867f3ede.js">
-	<link rel="modulepreload" href="/_app/pages/remote/text.svelte-7cdfc029.js">
-	<link rel="modulepreload" href="/_app/chunks/ResetSubmit-e100b998.js">
-	<link rel="modulepreload" href="/_app/chunks/SubmitButton-bf07f081.js">
-	<link rel="modulepreload" href="/_app/chunks/HorizontalField-7014eec1.js">
-	<link rel="modulepreload" href="/_app/chunks/VerticalField-2c292413.js">
+	<link rel="modulepreload" href="/_app/chunks/snackbar-host-7b34ee00.js">
+	<link rel="modulepreload" href="/_app/chunks/cell-state-schema-b294815b.js">
+	<link rel="modulepreload" href="/_app/pages/remote/text.svelte-9c484482.js">
+	<link rel="modulepreload" href="/_app/chunks/ResetSubmit-91d58d6b.js">
+	<link rel="modulepreload" href="/_app/chunks/SubmitButton-4475d829.js">
+	<link rel="modulepreload" href="/_app/chunks/LoadingSpinner-1dda806c.js">
+	<link rel="modulepreload" href="/_app/chunks/DeviceOption-8cf67013.js">
+	<link rel="modulepreload" href="/_app/chunks/HorizontalField-e9e4ce0a.js">
+	<link rel="modulepreload" href="/_app/chunks/VerticalField-1b909771.js">
 	</head>
 	<body class="bg-slate-900">
 		<div id="svelte" class="min-h-full">
@@ -49,7 +52,7 @@
 	<div class="flex flex-col sm:flex-row sm:items-center text-black "><label for="control-serial" class="block text-sm font-medium text-gray-100 mb-4 sm:mb-0 sm:mr-4 flex-initial w-36">Devices</label>
 	<select multiple name="device" id="control-serial" class="block w-full shadow-sm sm:text-sm border-gray-300 rounded-md flex-1" value=""></select></div>
 
-	<div class="mt-6 ml-auto"><button type="reset" class="px-4 py-2 rounded-md shadow-sm text-sm font-medium text-white transition-colors bg-slate-700 hover:bg-slate-800">Reset</button>
+	<div class="mt-6 ml-auto"><button type="reset" class="px-4 py-2 rounded-md shadow-sm text-sm font-medium text-white transition-colors bg-slate-700 hover:bg-slate-800 disabled:bg-slate-600 disabled:opacity-50">Reset</button>
 	
 	<button type="submit" class="px-4 py-2 rounded-md shadow-sm text-sm font-medium text-white transition-colors  relative bg-green-500"><div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"><span class="sr-only">Loading</span>
 <span class="h-4 w-4 block border-2 rounded-full border-r-transparent border-t-transparent animate-spin"></span></div>
@@ -59,10 +62,10 @@
 
 
 
-		<script type="module" data-hydrate="e7qrel">
-		import { start } from "/_app/start-4d69d5a0.js";
+		<script type="module" data-hydrate="1mt9x2o">
+		import { start } from "/_app/start-2307dd89.js";
 		start({
-			target: document.querySelector('[data-hydrate="e7qrel"]').parentNode,
+			target: document.querySelector('[data-hydrate="1mt9x2o"]').parentNode,
 			paths: {"base":"","assets":""},
 			session: {},
 			route: true,
@@ -73,10 +76,11 @@
 				error: null,
 				nodes: [
 					import("/_app/layout.svelte-2d8274e1.js"),
-						import("/_app/pages/remote/__layout.svelte-5cdb0955.js"),
-						import("/_app/pages/remote/text.svelte-7cdfc029.js")
+						import("/_app/pages/remote/__layout.svelte-5928fba2.js"),
+						import("/_app/pages/remote/text.svelte-9c484482.js")
 				],
-				params: {}
+				params: {},
+				routeId: "remote/text"
 			}
 		});
 	</script></div>

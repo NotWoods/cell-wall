@@ -1,4 +1,4 @@
-import { p as parse$4, h as handler } from './handler-a8995a71.js';
+import { p as parse$4, e as env, h as handler } from './handler-edaaddc2.js';
 import path$1 from 'path';
 import require$$0$1 from 'buffer';
 import require$$0$2 from 'tty';
@@ -13897,11 +13897,9 @@ function polka (opts) {
 	return new Polka(opts);
 }
 
-/* global "SOCKET_PATH", "HOST", "PORT" */
-
-const path = process.env["SOCKET_PATH"] || false;
-const host = process.env["HOST"] || '0.0.0.0';
-const port = process.env["PORT"] || (!path && '3000');
+const path = env('SOCKET_PATH', false);
+const host = env('HOST', '0.0.0.0');
+const port = env('PORT', !path && '3000');
 
 const server = polka().use(
 	// https://github.com/lukeed/polka/issues/173

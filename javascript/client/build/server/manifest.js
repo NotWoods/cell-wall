@@ -3,7 +3,7 @@ export const manifest = {
 	assets: new Set(["css/base.css","img/daphne.jpg","img/tiger.jpg","logo.png","manifest.webmanifest","preset/info.json","preset/tea.json"]),
 	mimeTypes: {".css":"text/css",".jpg":"image/jpeg",".png":"image/png",".webmanifest":"application/manifest+json",".json":"application/json"},
 	_: {
-		entry: {"file":"start-4d69d5a0.js","js":["start-4d69d5a0.js","chunks/vendor-e399076d.js","chunks/singletons-d1fb5791.js"],"css":[]},
+		entry: {"file":"start-2307dd89.js","js":["start-2307dd89.js","chunks/vendor-e399076d.js","chunks/singletons-d1fb5791.js"],"css":[]},
 		nodes: [
 			() => import('./nodes/0.js'),
 			() => import('./nodes/1.js'),
@@ -22,14 +22,16 @@ export const manifest = {
 			() => import('./nodes/14.js'),
 			() => import('./nodes/15.js'),
 			() => import('./nodes/16.js'),
-			() => import('./nodes/17.js')
+			() => import('./nodes/17.js'),
+			() => import('./nodes/18.js')
 		],
 		routes: [
 			{
 				type: 'page',
-				key: "",
+				id: "",
 				pattern: /^\/$/,
-				params: null,
+				names: [],
+				types: [],
 				path: "/",
 				shadow: null,
 				a: [0,2],
@@ -37,9 +39,10 @@ export const manifest = {
 			},
 			{
 				type: 'page',
-				key: "remote",
+				id: "remote",
 				pattern: /^\/remote\/?$/,
-				params: null,
+				names: [],
+				types: [],
 				path: "/remote",
 				shadow: null,
 				a: [0,3,4],
@@ -47,114 +50,140 @@ export const manifest = {
 			},
 			{
 				type: 'page',
-				key: "remote/custom",
-				pattern: /^\/remote\/custom\/?$/,
-				params: null,
-				path: "/remote/custom",
+				id: "remote/third_party",
+				pattern: /^\/remote\/third_party\/?$/,
+				names: [],
+				types: [],
+				path: "/remote/third_party",
 				shadow: null,
 				a: [0,3,6],
 				b: [1,5]
 			},
 			{
 				type: 'page',
-				key: "remote/image",
-				pattern: /^\/remote\/image\/?$/,
-				params: null,
-				path: "/remote/image",
+				id: "remote/custom",
+				pattern: /^\/remote\/custom\/?$/,
+				names: [],
+				types: [],
+				path: "/remote/custom",
 				shadow: null,
 				a: [0,3,7],
 				b: [1,5]
 			},
 			{
 				type: 'page',
-				key: "remote/edit",
-				pattern: /^\/remote\/edit\/?$/,
-				params: null,
-				path: "/remote/edit",
+				id: "remote/image",
+				pattern: /^\/remote\/image\/?$/,
+				names: [],
+				types: [],
+				path: "/remote/image",
 				shadow: null,
 				a: [0,3,8],
 				b: [1,5]
 			},
 			{
 				type: 'page',
-				key: "remote/text",
-				pattern: /^\/remote\/text\/?$/,
-				params: null,
-				path: "/remote/text",
+				id: "remote/edit",
+				pattern: /^\/remote\/edit\/?$/,
+				names: [],
+				types: [],
+				path: "/remote/edit",
 				shadow: null,
 				a: [0,3,9],
 				b: [1,5]
 			},
 			{
 				type: 'page',
-				key: "cell",
+				id: "remote/text",
+				pattern: /^\/remote\/text\/?$/,
+				names: [],
+				types: [],
+				path: "/remote/text",
+				shadow: null,
+				a: [0,3,10],
+				b: [1,5]
+			},
+			{
+				type: 'page',
+				id: "cell",
 				pattern: /^\/cell\/?$/,
-				params: null,
+				names: [],
+				types: [],
 				path: "/cell",
 				shadow: null,
-				a: [0,10],
+				a: [0,11],
 				b: [1]
 			},
 			{
 				type: 'page',
-				key: "cell/frame/blank",
+				id: "cell/frame/blank",
 				pattern: /^\/cell\/frame\/blank\/?$/,
-				params: null,
+				names: [],
+				types: [],
 				path: "/cell/frame/blank",
 				shadow: null,
-				a: [0,11,12],
+				a: [0,12,13],
 				b: [1]
 			},
 			{
 				type: 'page',
-				key: "cell/frame/image",
+				id: "cell/frame/image",
 				pattern: /^\/cell\/frame\/image\/?$/,
-				params: null,
+				names: [],
+				types: [],
 				path: "/cell/frame/image",
 				shadow: null,
-				a: [0,11,13],
+				a: [0,12,14],
 				b: [1]
 			},
 			{
 				type: 'page',
-				key: "cell/frame/text",
+				id: "cell/frame/text",
 				pattern: /^\/cell\/frame\/text\/?$/,
-				params: null,
+				names: [],
+				types: [],
 				path: "/cell/frame/text",
 				shadow: null,
-				a: [0,11,14],
+				a: [0,12,15],
 				b: [1]
 			},
 			{
 				type: 'page',
-				key: "cell/frame/web",
+				id: "cell/frame/web",
 				pattern: /^\/cell\/frame\/web\/?$/,
-				params: null,
+				names: [],
+				types: [],
 				path: "/cell/frame/web",
 				shadow: null,
-				a: [0,11,15],
+				a: [0,12,16],
 				b: [1]
 			},
 			{
 				type: 'page',
-				key: "demo",
+				id: "demo",
 				pattern: /^\/demo\/?$/,
-				params: null,
+				names: [],
+				types: [],
 				path: "/demo",
-				shadow: null,
-				a: [0,16],
-				b: [1]
-			},
-			{
-				type: 'page',
-				key: "page/busy/[person]",
-				pattern: /^\/page\/busy\/([^/]+?)\/?$/,
-				params: (m) => ({ person: m[1]}),
-				path: null,
 				shadow: null,
 				a: [0,17],
 				b: [1]
+			},
+			{
+				type: 'page',
+				id: "page/busy/[person]",
+				pattern: /^\/page\/busy\/([^/]+?)\/?$/,
+				names: ["person"],
+				types: [null],
+				path: null,
+				shadow: null,
+				a: [0,18],
+				b: [1]
 			}
-		]
+		],
+		matchers: async () => {
+			
+			return {  };
+		}
 	}
 };

@@ -46,6 +46,13 @@ const css = {
   code: "body.svelte-8rd6l6{display:flex;flex-direction:column;justify-content:center}.profile.svelte-8rd6l6{display:block;border-radius:50%}",
   map: null
 };
+async function freebusy(request) {
+  return await fetch("/api/third_party/freebusy", {
+    method: "post",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(request)
+  });
+}
 const people = {
   tiger: {
     name: "Tiger",
@@ -79,23 +86,18 @@ const load = async ({ params }) => {
     timeZoneName: "never",
     smallestUnit: "second"
   };
-  const body = {
+  const response = await freebusy({
     timeMin: today.toString(toStringOptions),
     timeMax: nextWeek.toString(toStringOptions),
     items: [{ id: people[person].calendar }]
-  };
-  const res = await fetch("/api/third_party/freebusy", {
-    method: "post",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(body)
   });
-  if (!res.ok) {
+  if (!response.ok) {
     return {
-      status: res.status,
-      error: new Error(`Could not load calendar, ${res.statusText}`)
+      status: response.status,
+      error: new Error(`Could not load calendar, ${response.statusText}`)
     };
   }
-  const busy = await res.json();
+  const busy = await response.json();
   return {
     props: { name: person, busyRanges: busy }
   };

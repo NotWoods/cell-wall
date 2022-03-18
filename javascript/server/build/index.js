@@ -1,6 +1,5 @@
 var __defProp = Object.defineProperty;
 var __defProps = Object.defineProperties;
-var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __getOwnPropSymbols = Object.getOwnPropertySymbols;
@@ -38,31 +37,23 @@ var __export = (target, all) => {
   for (var name in all)
     __defProp(target, name, { get: all[name], enumerable: true });
 };
-var __reExport = (target, module, copyDefault, desc) => {
-  if (module && typeof module === "object" || typeof module === "function") {
-    for (let key of __getOwnPropNames(module))
-      if (!__hasOwnProp.call(target, key) && (copyDefault || key !== "default"))
-        __defProp(target, key, { get: () => module[key], enumerable: !(desc = __getOwnPropDesc(module, key)) || desc.enumerable });
-  }
-  return target;
-};
-
-// <define:process.env>
-var NODE_ENV, define_process_env_default;
-var init_define_process_env = __esm({
-  "<define:process.env>"() {
-    NODE_ENV = "production";
-    define_process_env_default = { NODE_ENV };
-  }
-});
 
 // src/lib/env.ts
-var env_exports = {};
-import * as env_star from "@cell-wall/env";
+import { config } from "dotenv";
+import { env, VERSION } from "@cell-wall/shared/src/env";
+var SERVER_ADDRESS, PORT, PACKAGE_NAME, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GITHUB_TOKEN, DATABASE_FILENAME;
 var init_env = __esm({
   "src/lib/env.ts"() {
-    init_define_process_env();
-    __reExport(env_exports, env_star);
+    config({ path: "../../.env" });
+    ({
+      SERVER_ADDRESS,
+      PORT,
+      PACKAGE_NAME,
+      GOOGLE_CLIENT_ID,
+      GOOGLE_CLIENT_SECRET,
+      GITHUB_TOKEN,
+      DATABASE_FILENAME
+    } = env(process.env));
   }
 });
 
@@ -108,7 +99,6 @@ function destroy_component(component, detaching) {
 var resolved_promise, globals, SvelteElement;
 var init_internal = __esm({
   "../../node_modules/.pnpm/svelte@3.46.4/node_modules/svelte/internal/index.mjs"() {
-    init_define_process_env();
     resolved_promise = Promise.resolve();
     globals = typeof window !== "undefined" ? window : typeof globalThis !== "undefined" ? globalThis : global;
     if (typeof HTMLElement === "function") {
@@ -243,7 +233,6 @@ function derived(stores, fn, initial_value) {
 var subscriber_queue;
 var init_store = __esm({
   "../../node_modules/.pnpm/svelte@3.46.4/node_modules/svelte/store/index.mjs"() {
-    init_define_process_env();
     init_internal();
     init_internal();
     subscriber_queue = [];
@@ -266,7 +255,6 @@ async function transformMapAsync(map, transform) {
 }
 var init_transform = __esm({
   "src/lib/map/transform.ts"() {
-    init_define_process_env();
   }
 });
 
@@ -342,7 +330,6 @@ async function startIntent(adb, options) {
 var StartIntentError, UnresolvedIntentError;
 var init_adb_action = __esm({
   "src/lib/android/adb-action.ts"() {
-    init_define_process_env();
     StartIntentError = class extends Error {
       constructor() {
         super(...arguments);
@@ -366,7 +353,6 @@ function noDeviceError(err) {
 var DeviceManager;
 var init_device_manager = __esm({
   "src/lib/android/device-manager.ts"() {
-    init_define_process_env();
     init_store();
     init_env();
     init_transform();
@@ -383,7 +369,7 @@ var init_device_manager = __esm({
       }
       async refreshDevices() {
         const adbGlobal = await ADB.createADB({
-          allowOfflineDevices: define_process_env_default["NODE_ENV"] !== "production"
+          allowOfflineDevices: process.env["NODE_ENV"] !== "production"
         });
         let devices;
         try {
@@ -443,74 +429,9 @@ var init_device_manager = __esm({
       }
       async connectPort(serial, devicePort) {
         return this.run(serial, async (adb) => {
-          await adb.reversePort(devicePort, env_exports.PORT);
+          await adb.reversePort(devicePort, PORT);
           return true;
         });
-      }
-    };
-  }
-});
-
-// src/lib/memo.ts
-function memo(func) {
-  let result;
-  return function memoized(...args) {
-    if (result === void 0) {
-      result = func.apply(this, args);
-    }
-    return result;
-  };
-}
-var init_memo = __esm({
-  "src/lib/memo.ts"() {
-    init_define_process_env();
-  }
-});
-
-// src/lib/android/github.ts
-import { Octokit } from "@octokit/core";
-import { createWriteStream, promises as fs } from "fs";
-import { tmpdir } from "os";
-import { join } from "path";
-import { pipeline } from "stream/promises";
-var buildTempDir, GithubApi;
-var init_github = __esm({
-  "src/lib/android/github.ts"() {
-    init_define_process_env();
-    init_memo();
-    buildTempDir = memo(() => fs.mkdtemp(join(tmpdir(), "apk-")));
-    GithubApi = class {
-      constructor(options) {
-        this.octokit = new Octokit(options);
-      }
-      fetchRelease(tag) {
-        if (tag) {
-          return this.octokit.request("GET /repos/{owner}/{repo}/releases/tags/{tag}", {
-            owner: "NotWooods",
-            repo: "cell-wall",
-            tag
-          });
-        } else {
-          return this.octokit.request("GET /repos/{owner}/{repo}/releases/latest", {
-            owner: "NotWooods",
-            repo: "cell-wall"
-          });
-        }
-      }
-      async downloadApk(tag) {
-        const tmpDirReady = buildTempDir();
-        const response = await this.fetchRelease(tag);
-        const release = response.data;
-        const asset = release.assets.find((asset2) => asset2.name.endsWith(".apk"));
-        if (asset) {
-          const res = await fetch(asset.browser_download_url);
-          const tmpDirPath = await tmpDirReady;
-          const destPath = join(tmpDirPath, asset.name);
-          await pipeline(res.body, createWriteStream(destPath));
-          return destPath;
-        } else {
-          throw new Error(`Could not find APK attached to release ${release.tag_name}`);
-        }
       }
     };
   }
@@ -566,7 +487,6 @@ async function setPower(device, on) {
 var KEYCODE_POWER;
 var init_power = __esm({
   "src/lib/android/power.ts"() {
-    init_define_process_env();
     init_adb_action();
     KEYCODE_POWER = 26;
   }
@@ -576,7 +496,6 @@ var init_power = __esm({
 var CellManager;
 var init_manager = __esm({
   "src/lib/cells/manager.ts"() {
-    init_define_process_env();
     init_store();
     CellManager = class {
       constructor() {
@@ -636,7 +555,7 @@ function cellStateStore() {
 function cellStateFor(store, serial) {
   return derived(store, (map) => map.get(serial));
 }
-function toUri(state, base = env_exports.SERVER_ADDRESS) {
+function toUri(state, base = SERVER_ADDRESS) {
   const _a = state, { type } = _a, props = __objRest(_a, ["type"]);
   switch (type.toUpperCase()) {
     case "WEB": {
@@ -660,7 +579,6 @@ function toUri(state, base = env_exports.SERVER_ADDRESS) {
 }
 var init_state = __esm({
   "src/lib/cells/state.ts"() {
-    init_define_process_env();
     init_store();
     init_env();
   }
@@ -669,35 +587,8 @@ var init_state = __esm({
 // src/lib/cells/index.ts
 var init_cells = __esm({
   "src/lib/cells/index.ts"() {
-    init_define_process_env();
     init_manager();
     init_state();
-  }
-});
-
-// src/lib/google.ts
-import { google } from "googleapis";
-function initializeGoogle(credentials, googleClientId, googleClientServer) {
-  const client = new google.auth.OAuth2(googleClientId, googleClientServer, "https://cellwall.tigeroakes.com/oauth2callback");
-  if (credentials) {
-    console.log("Loading Google authentication from storage");
-    client.setCredentials(credentials);
-    return { client };
-  }
-  const authorizeUrl = client.generateAuthUrl({
-    access_type: "offline",
-    scope: ["https://www.googleapis.com/auth/calendar.readonly"]
-  });
-  return { client, authorizeUrl };
-}
-async function authenticateGoogle(client, code) {
-  const res = await client.getToken(code);
-  client.setCredentials(res.tokens);
-  return res.tokens;
-}
-var init_google = __esm({
-  "src/lib/google.ts"() {
-    init_define_process_env();
   }
 });
 
@@ -726,7 +617,6 @@ function shiftCell(canvas, cell) {
 var AXIS_TO_POS;
 var init_canvas = __esm({
   "src/lib/cells/canvas.ts"() {
-    init_define_process_env();
     AXIS_TO_POS = (/* @__PURE__ */ new Map()).set("width", "x").set("height", "y");
   }
 });
@@ -763,7 +653,6 @@ function crop(image, cell) {
 var ALIGN_QUERY, RESIZE;
 var init_manipulate = __esm({
   "src/lib/image/manipulate.ts"() {
-    init_define_process_env();
     ALIGN_QUERY = {
       left: Jimp.HORIZONTAL_ALIGN_LEFT,
       right: Jimp.HORIZONTAL_ALIGN_RIGHT,
@@ -798,7 +687,6 @@ async function splitImage(image, cells, options = {}) {
 }
 var init_split = __esm({
   "src/lib/image/split.ts"() {
-    init_define_process_env();
     init_canvas();
     init_transform();
     init_manipulate();
@@ -809,7 +697,6 @@ var init_split = __esm({
 var SplitImageCache;
 var init_cache = __esm({
   "src/lib/image/cache.ts"() {
-    init_define_process_env();
     init_transform();
     init_split();
     SplitImageCache = class {
@@ -850,7 +737,6 @@ function getAll(map, keys) {
 }
 var init_get = __esm({
   "src/lib/map/get.ts"() {
-    init_define_process_env();
   }
 });
 
@@ -864,7 +750,6 @@ function subscribeToMapStore(store, subscription) {
 }
 var init_subscribe = __esm({
   "src/lib/map/subscribe.ts"() {
-    init_define_process_env();
   }
 });
 
@@ -887,7 +772,6 @@ function computeInfo(model, manufacturer) {
 var knownDevices;
 var init_known = __esm({
   "src/lib/repository/known.ts"() {
-    init_define_process_env();
     knownDevices = [
       {
         model: "A0001",
@@ -990,14 +874,13 @@ function deriveCellData(stores) {
 }
 var init_combine_cell = __esm({
   "src/lib/repository/combine-cell.ts"() {
-    init_define_process_env();
     init_store();
     init_known();
   }
 });
 
 // src/lib/repository/database.ts
-import { JSONFile, Memory, Low } from "lowdb";
+import { JSONFile, Low, Memory } from "lowdb";
 async function database(filename) {
   const adapter = filename ? new JSONFile(filename) : new Memory();
   const db = new Low(adapter);
@@ -1036,7 +919,6 @@ async function database(filename) {
 }
 var init_database = __esm({
   "src/lib/repository/database.ts"() {
-    init_define_process_env();
   }
 });
 
@@ -1058,8 +940,135 @@ function webSocketStore() {
 }
 var init_socket_store = __esm({
   "src/lib/repository/socket-store.ts"() {
-    init_define_process_env();
     init_store();
+  }
+});
+
+// src/lib/repository/third-party-connect/github.ts
+import { memo } from "@cell-wall/shared";
+import { Octokit } from "@octokit/core";
+import { createWriteStream, promises as fs } from "fs";
+import { tmpdir } from "os";
+import { join } from "path";
+import { pipeline } from "stream/promises";
+var buildTempDir, GithubClient;
+var init_github = __esm({
+  "src/lib/repository/third-party-connect/github.ts"() {
+    init_env();
+    buildTempDir = memo(() => fs.mkdtemp(join(tmpdir(), "apk-")));
+    GithubClient = class {
+      constructor() {
+        if (!GITHUB_TOKEN) {
+          throw new Error(`Missing GitHub API keys`);
+        }
+        this.octokit = new Octokit({ auth: GITHUB_TOKEN });
+      }
+      fetchRelease(tag) {
+        if (tag) {
+          return this.octokit.request("GET /repos/{owner}/{repo}/releases/tags/{tag}", {
+            owner: "NotWooods",
+            repo: "cell-wall",
+            tag
+          });
+        } else {
+          return this.octokit.request("GET /repos/{owner}/{repo}/releases/latest", {
+            owner: "NotWooods",
+            repo: "cell-wall"
+          });
+        }
+      }
+      async downloadApk(tag) {
+        const tmpDirReady = buildTempDir();
+        const response = await this.fetchRelease(tag);
+        const release = response.data;
+        const asset = release.assets.find((asset2) => asset2.name.endsWith(".apk"));
+        if (asset) {
+          const res = await fetch(asset.browser_download_url);
+          const tmpDirPath = await tmpDirReady;
+          const destPath = join(tmpDirPath, asset.name);
+          await pipeline(res.body, createWriteStream(destPath));
+          return destPath;
+        } else {
+          throw new Error(`Could not find APK attached to release ${release.tag_name}`);
+        }
+      }
+    };
+  }
+});
+
+// src/lib/repository/third-party-connect/google.ts
+import { auth, calendar } from "@googleapis/calendar";
+var GoogleClient;
+var init_google = __esm({
+  "src/lib/repository/third-party-connect/google.ts"() {
+    init_store();
+    init_env();
+    GoogleClient = class {
+      constructor(db, credentials) {
+        this.db = db;
+        this.client = new auth.OAuth2(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, "https://cellwall.tigeroakes.com/oauth2callback");
+        if (credentials) {
+          this.authUrl = writable(void 0);
+          this.client.setCredentials(credentials);
+        } else {
+          const authorizeUrl = this.client.generateAuthUrl({
+            access_type: "offline",
+            scope: ["https://www.googleapis.com/auth/calendar.readonly"]
+          });
+          this.authUrl = writable(authorizeUrl);
+        }
+      }
+      static async create(dbPromise) {
+        if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET) {
+          throw new Error(`Missing Google API keys`);
+        }
+        const db = await dbPromise;
+        const credentials = await db.getGoogleCredentials();
+        return new GoogleClient(db, credentials);
+      }
+      get authorizeUrl() {
+        return this.authUrl;
+      }
+      async authenticate(code) {
+        const res = await this.client.getToken(code);
+        this.authUrl.set(void 0);
+        this.client.setCredentials(res.tokens);
+        try {
+          await this.db.setGoogleCredentials(res.tokens);
+        } catch {
+        }
+      }
+      async freebusy(params) {
+        const api = calendar({ version: "v3", auth: this.client });
+        return await api.freebusy.query(params);
+      }
+    };
+  }
+});
+
+// src/lib/repository/third-party-connect/index.ts
+function thirdPartyConnectRepository(dbPromise) {
+  let github;
+  let google;
+  return {
+    get github() {
+      if (!github) {
+        github = new GithubClient();
+      }
+      return github;
+    },
+    get google() {
+      if (!google) {
+        google = GoogleClient.create(dbPromise);
+      }
+      return google;
+    }
+  };
+}
+var init_third_party_connect = __esm({
+  "src/lib/repository/third-party-connect/index.ts"() {
+    init_github();
+    init_google();
   }
 });
 
@@ -1078,9 +1087,9 @@ function sendIntentOnStateChange(stores, deviceManager) {
     Promise.all(Array.from(changes).map(([serial, state]) => {
       var _a;
       console.log(serial, state);
-      const base = ((_a = info.get(serial)) == null ? void 0 : _a.server) || env_exports.SERVER_ADDRESS;
+      const base = ((_a = info.get(serial)) == null ? void 0 : _a.server) || SERVER_ADDRESS;
       return deviceManager.startIntent(serial, {
-        action: `${env_exports.PACKAGE_NAME}.DISPLAY`,
+        action: `${PACKAGE_NAME}.DISPLAY`,
         dataUri: toUri(state, base),
         waitForLaunch: true
       });
@@ -1088,7 +1097,7 @@ function sendIntentOnStateChange(stores, deviceManager) {
   });
 }
 function repository() {
-  const dbPromise = database(env_exports.DATABASE_FILENAME);
+  const dbPromise = database(DATABASE_FILENAME);
   const cellState = cellStateStore();
   const webSockets = webSocketStore();
   const deviceManager = new DeviceManager();
@@ -1103,43 +1112,22 @@ function repository() {
     webSockets
   });
   cellData.subscribe((state) => console.info("CellData", state));
-  const googleApi = memo(async function googleApi2() {
-    if (!env_exports.GOOGLE_CLIENT_ID || !env_exports.GOOGLE_CLIENT_SECRET) {
-      throw new Error(`Missing Google API keys`);
-    }
-    const db = await dbPromise;
-    const credentials = await db.getGoogleCredentials();
-    const googleClient = initializeGoogle(credentials, env_exports.GOOGLE_CLIENT_ID, env_exports.GOOGLE_CLIENT_SECRET);
-    if (googleClient.authorizeUrl) {
-      console.log(`
----
-Authenticate with Google:
-${googleClient.authorizeUrl}
----
-`);
-    }
-    return googleClient;
-  });
-  const github = memo(() => {
-    if (!env_exports.GITHUB_TOKEN) {
-      throw new Error(`Missing GitHub API keys`);
-    }
-    return new GithubApi({ auth: env_exports.GITHUB_TOKEN });
-  });
+  const thirdParty = thirdPartyConnectRepository(dbPromise);
   return {
     cellData,
     cellState,
     images: new SplitImageCache(),
     webSockets,
+    thirdParty,
     refreshDevices() {
       const refreshPromise = deviceManager.refreshDevices();
       deviceManagerPromise = refreshPromise.then(() => deviceManager);
       return refreshPromise;
     },
     async installApk(tag) {
-      const apkPath = await github().downloadApk(tag);
+      const apkPath = await thirdParty.github.downloadApk(tag);
       if (apkPath) {
-        return await deviceManager.installApkToAll(apkPath, env_exports.PACKAGE_NAME);
+        return await deviceManager.installApkToAll(apkPath, PACKAGE_NAME);
       } else {
         return /* @__PURE__ */ new Map();
       }
@@ -1155,13 +1143,6 @@ ${googleClient.authorizeUrl}
       } else {
         return false;
       }
-    },
-    googleApi,
-    async authenticateGoogleApi(code) {
-      const db = await dbPromise;
-      const googleClient = await googleApi();
-      const credentials = await authenticateGoogle(googleClient.client, code);
-      await db.setGoogleCredentials(credentials);
     },
     async getPower(serial) {
       const deviceManager2 = await deviceManagerPromise;
@@ -1183,28 +1164,24 @@ ${googleClient.authorizeUrl}
 }
 var init_repository = __esm({
   "src/lib/repository/repository.ts"() {
-    init_define_process_env();
     init_store();
     init_device_manager();
-    init_github();
     init_power();
     init_cells();
     init_env();
-    init_google();
     init_cache();
     init_get();
     init_subscribe();
-    init_memo();
     init_combine_cell();
     init_database();
     init_socket_store();
+    init_third_party_connect();
   }
 });
 
 // src/lib/repository/interface.ts
 var init_interface = __esm({
   "src/lib/repository/interface.ts"() {
-    init_define_process_env();
   }
 });
 
@@ -1212,7 +1189,6 @@ var init_interface = __esm({
 var repo;
 var init_repository2 = __esm({
   "src/lib/repository/index.ts"() {
-    init_define_process_env();
     init_repository();
     init_interface();
     repo = repository();
@@ -1243,7 +1219,6 @@ async function serial_default(fastify) {
 }
 var init_serial = __esm({
   "src/routes/api/action/image/[serial].ts"() {
-    init_define_process_env();
     init_repository2();
   }
 });
@@ -1257,14 +1232,12 @@ function validRect(rect = {}) {
 }
 var init_rect = __esm({
   "src/lib/image/rect.ts"() {
-    init_define_process_env();
   }
 });
 
 // src/lib/image/index.ts
 var init_image = __esm({
   "src/lib/image/index.ts"() {
-    init_define_process_env();
     init_cache();
     init_manipulate();
     init_rect();
@@ -1289,7 +1262,6 @@ async function imagePlugin(fastify, options = {}) {
 var MB;
 var init_image2 = __esm({
   "src/parser/image.ts"() {
-    init_define_process_env();
     MB = 1048576;
   }
 });
@@ -1299,7 +1271,7 @@ var image_exports = {};
 __export(image_exports, {
   default: () => image_default
 });
-import { blankState } from "@cell-wall/cell-state";
+import { blankState } from "@cell-wall/shared";
 async function updateRemainingCells(remaining, behaviour) {
   switch (behaviour) {
     case "blank":
@@ -1389,7 +1361,6 @@ async function image_default(fastify) {
 }
 var init_image3 = __esm({
   "src/routes/api/action/image/index.ts"() {
-    init_define_process_env();
     init_store();
     init_image();
     init_transform();
@@ -1429,7 +1400,6 @@ async function install_default(fastify) {
 }
 var init_install = __esm({
   "src/routes/api/action/install.ts"() {
-    init_define_process_env();
     init_repository2();
   }
 });
@@ -1454,7 +1424,6 @@ async function refresh_default(fastify) {
 }
 var init_refresh = __esm({
   "src/routes/api/action/refresh.ts"() {
-    init_define_process_env();
     init_transform();
     init_repository2();
   }
@@ -1464,7 +1433,6 @@ var init_refresh = __esm({
 var RAINBOW_COLORS, RandomColor;
 var init_color = __esm({
   "src/lib/color.ts"() {
-    init_define_process_env();
     RAINBOW_COLORS = [
       "#0F172A",
       "#7F1D1D",
@@ -1514,7 +1482,7 @@ var text_exports = {};
 __export(text_exports, {
   default: () => text_default
 });
-import { textState } from "@cell-wall/cell-state";
+import { textState } from "@cell-wall/shared";
 async function text_default(fastify) {
   fastify.route({
     method: "POST",
@@ -1540,7 +1508,6 @@ async function text_default(fastify) {
 }
 var init_text = __esm({
   "src/routes/api/action/text.ts"() {
-    init_define_process_env();
     init_store();
     init_color();
     init_transform();
@@ -1564,7 +1531,6 @@ function parsePowerBody(body) {
 }
 var init_body = __esm({
   "src/routes/api/device/power/_body.ts"() {
-    init_define_process_env();
     init_power();
   }
 });
@@ -1601,7 +1567,6 @@ async function serial_default2(fastify) {
 }
 var init_serial2 = __esm({
   "src/routes/api/device/power/[serial].ts"() {
-    init_define_process_env();
     init_repository2();
     init_body();
   }
@@ -1636,7 +1601,6 @@ async function power_default(fastify) {
 }
 var init_power2 = __esm({
   "src/routes/api/device/power/index.ts"() {
-    init_define_process_env();
     init_store();
     init_transform();
     init_repository2();
@@ -1645,7 +1609,7 @@ var init_power2 = __esm({
 });
 
 // src/routes/api/device/state/_body.ts
-import { cellStateTypes } from "@cell-wall/cell-state";
+import { cellStateTypes } from "@cell-wall/shared";
 import { setHas as setHas2 } from "ts-extras";
 function isObject(maybe) {
   return typeof maybe === "object" && maybe !== null;
@@ -1661,7 +1625,6 @@ function asCellState(maybeState) {
 }
 var init_body2 = __esm({
   "src/routes/api/device/state/_body.ts"() {
-    init_define_process_env();
   }
 });
 
@@ -1670,7 +1633,7 @@ var serial_exports3 = {};
 __export(serial_exports3, {
   default: () => serial_default3
 });
-import { blankState as blankState2 } from "@cell-wall/cell-state";
+import { blankState as blankState2 } from "@cell-wall/shared";
 async function serial_default3(fastify) {
   fastify.route({
     method: "GET",
@@ -1700,7 +1663,6 @@ async function serial_default3(fastify) {
 }
 var init_serial3 = __esm({
   "src/routes/api/device/state/[serial].ts"() {
-    init_define_process_env();
     init_store();
     init_repository2();
     init_body2();
@@ -1712,7 +1674,7 @@ var state_exports = {};
 __export(state_exports, {
   default: () => state_default
 });
-import { blankState as blankState3 } from "@cell-wall/cell-state";
+import { blankState as blankState3 } from "@cell-wall/shared";
 async function state_default(fastify) {
   fastify.route({
     method: "GET",
@@ -1739,7 +1701,6 @@ async function state_default(fastify) {
 }
 var init_state2 = __esm({
   "src/routes/api/device/state/index.ts"() {
-    init_define_process_env();
     init_store();
     init_transform();
     init_repository2();
@@ -1768,7 +1729,6 @@ async function preset_default(fastify) {
 }
 var init_preset = __esm({
   "src/routes/api/device/preset.ts"() {
-    init_define_process_env();
     init_repository2();
   }
 });
@@ -1778,7 +1738,7 @@ var serial_exports4 = {};
 __export(serial_exports4, {
   default: () => serial_default4
 });
-import { cellInfoSchema } from "@cell-wall/cell-state";
+import { cellInfoSchema } from "@cell-wall/shared";
 function parseAccept(headers) {
   var _a;
   const acceptValues = ((_a = headers["accept"]) == null ? void 0 : _a.split(",")) ?? [];
@@ -1840,7 +1800,6 @@ async function serial_default4(fastify) {
 }
 var init_serial4 = __esm({
   "src/routes/api/device/[serial].ts"() {
-    init_define_process_env();
     init_store();
     init_repository2();
   }
@@ -1862,7 +1821,6 @@ async function device_default(fastify) {
 }
 var init_device = __esm({
   "src/routes/api/device/index.ts"() {
-    init_define_process_env();
     init_store();
     init_repository2();
   }
@@ -1873,16 +1831,14 @@ var freebusy_exports = {};
 __export(freebusy_exports, {
   default: () => freebusy_default
 });
-import { google as google2 } from "googleapis";
 async function freebusy_default(fastify) {
   fastify.route({
     method: "GET",
     url: "/api/third_party/freebusy",
     async handler(request, reply) {
-      const { client } = await repo.googleApi();
+      const googleClient = await repo.thirdParty.google;
       const requestBody = request.body instanceof URLSearchParams ? Object.fromEntries(request.body) : request.body;
-      const api = google2.calendar({ version: "v3", auth: client });
-      const res = await api.freebusy.query({
+      const res = await googleClient.freebusy({
         requestBody
       });
       if (res.status < 200 || res.status >= 300) {
@@ -1900,7 +1856,6 @@ async function freebusy_default(fastify) {
 }
 var init_freebusy = __esm({
   "src/routes/api/third_party/freebusy.ts"() {
-    init_define_process_env();
     init_repository2();
   }
 });
@@ -1925,13 +1880,12 @@ async function cellwall_version_default(fastify) {
       }
     },
     async handler(request, reply) {
-      reply.send({ version: env_exports.VERSION });
+      reply.send({ version: VERSION });
     }
   });
 }
 var init_cellwall_version = __esm({
   "src/routes/api/cellwall-version.ts"() {
-    init_define_process_env();
     init_env();
   }
 });
@@ -1952,7 +1906,6 @@ async function routes_default(fastify) {
 }
 var init_routes = __esm({
   "src/routes/index.ts"() {
-    init_define_process_env();
   }
 });
 
@@ -1972,33 +1925,27 @@ async function oauth2callback_default(fastify) {
     },
     async handler(request, reply) {
       const { code } = request.query;
-      await repo.authenticateGoogleApi(code);
+      const googleClient = await repo.thirdParty.google;
+      await googleClient.authenticate(code);
       reply.send("Authentication successful! Please return to the console.");
     }
   });
 }
 var init_oauth2callback = __esm({
   "src/routes/oauth2callback.ts"() {
-    init_define_process_env();
     init_repository2();
   }
 });
 
 // src/index.ts
-init_define_process_env();
 init_env();
 import { handler } from "@cell-wall/client";
 
 // src/server.ts
-init_define_process_env();
 import Fastify from "fastify";
 import middie from "middie";
 
-// src/routes.ts
-init_define_process_env();
-
 // src/parser/urlencoded.ts
-init_define_process_env();
 async function urlEncodedPlugin(fastify) {
   fastify.addContentTypeParser("application/x-www-form-urlencoded", async (_request, payload) => {
     const chunks = [];
@@ -2017,64 +1964,125 @@ async function routesSubsystem(fastify) {
 }
 
 // src/websocket.ts
-init_define_process_env();
 init_cells();
 init_repository2();
-import { blankState as blankState4 } from "@cell-wall/cell-state";
+import { blankState as blankState4 } from "@cell-wall/shared";
 import { WebSocketServer } from "ws";
+
+// src/lib/store/third-party.ts
+init_store();
+
+// src/lib/store/promise.ts
+init_store();
+function resolvedPromiseStore(promise) {
+  return readable(void 0, (set) => {
+    promise.then(set);
+  });
+}
+
+// src/lib/store/third-party.ts
+function thirdPartySocketStore(repo2) {
+  const googleAuthUrl = derived(resolvedPromiseStore(repo2.thirdParty.google), (client, set) => {
+    if (client) {
+      client.authorizeUrl.subscribe((authorizeUrl) => set({ loading: false, authorizeUrl }));
+    } else {
+      set({ loading: true });
+    }
+  }, { loading: true });
+  return derived(googleAuthUrl, (googleState) => {
+    const socketState = {
+      google_loading: googleState.loading,
+      google_authorize_url: googleState.authorizeUrl
+    };
+    return socketState;
+  });
+}
+
+// src/websocket.ts
 var CELL_SERIAL = /^\/cells\/(\w+)\/?$/;
 var blankBuffer = new ArrayBuffer(0);
-function handleCellConnection(ws, request) {
-  const { pathname } = new URL(request.url, `http://${request.headers.host}`);
-  const [, serial] = pathname.match(CELL_SERIAL);
-  repo.webSockets.add(serial, {});
-  let lastState = blankState4;
-  const unsubscribe = cellStateFor(repo.cellState, serial).subscribe((state) => {
-    if (!state)
-      return;
-    if (state.type === lastState.type) {
-      const { payload = blankBuffer } = state;
-      ws.send(payload);
+var cellSocketHandler = {
+  path: (pathname) => CELL_SERIAL.test(pathname),
+  onConnect(ws, request) {
+    const { pathname } = new URL(request.url, `http://${request.headers.host}`);
+    const [, serial] = pathname.match(CELL_SERIAL);
+    repo.webSockets.add(serial, {});
+    let lastState = blankState4;
+    const unsubscribe = cellStateFor(repo.cellState, serial).subscribe((state) => {
+      if (!state)
+        return;
+      if (state.type === lastState.type) {
+        const { payload = blankBuffer } = state;
+        ws.send(payload);
+      }
+      ws.send(JSON.stringify(state));
+      ws.send(blankBuffer);
+      lastState = state;
+    });
+    ws.on("message", (data) => {
+      const info = JSON.parse(data.toString());
+      repo.webSockets.add(serial, info);
+    });
+    return () => {
+      unsubscribe();
+      repo.webSockets.delete(serial);
+    };
+  }
+};
+var remoteSocketHandler = {
+  path: "/remote",
+  onConnect(ws) {
+    return repo.cellData.subscribe((data) => {
+      const dataObject = JSON.stringify(Object.fromEntries(data));
+      ws.send(dataObject);
+    });
+  }
+};
+var thirdPartySocketHandler = {
+  path: "/third_party",
+  onConnect(ws) {
+    return thirdPartySocketStore(repo).subscribe((socketState) => {
+      ws.send(JSON.stringify(socketState));
+    });
+  }
+};
+function attachWebsocketHandlers(server, websocketHandlers) {
+  const webSocketServers = new WeakMap(websocketHandlers.map((handler2) => {
+    const webSocketServer = new WebSocketServer({ noServer: true });
+    webSocketServer.on("connection", handler2.onConnect);
+    return [handler2, webSocketServer];
+  }));
+  const pathHandlers = /* @__PURE__ */ new Map();
+  const otherHandlers = websocketHandlers.filter((handler2) => {
+    if (typeof handler2.path === "string") {
+      pathHandlers.set(handler2.path, handler2);
+      return false;
+    } else {
+      return true;
     }
-    ws.send(JSON.stringify(state));
-    ws.send(blankBuffer);
-    lastState = state;
   });
-  ws.on("message", (data) => {
-    const info = JSON.parse(data.toString());
-    repo.webSockets.add(serial, info);
+  server.on("upgrade", (request, socket, head) => {
+    const { pathname } = new URL(request.url, `http://${request.headers.host}`);
+    let handler2 = pathHandlers.get(pathname);
+    if (!handler2) {
+      handler2 = otherHandlers.find((handler3) => handler3.path(pathname));
+    }
+    if (!handler2) {
+      socket.destroy();
+      return;
+    }
+    const webSocketServer = webSocketServers.get(handler2);
+    webSocketServer.handleUpgrade(request, socket, head, (ws) => {
+      webSocketServer.emit("connection", ws, request);
+    });
   });
-  ws.on("close", () => {
-    unsubscribe();
-    repo.webSockets.delete(serial);
-  });
-}
-function handleRemoteConnection(ws) {
-  const unsubscribe = repo.cellData.subscribe((data) => {
-    const dataObject = JSON.stringify(Object.fromEntries(data));
-    ws.send(dataObject);
-  });
-  ws.on("close", unsubscribe);
 }
 async function websocketSubsystem(fastify) {
-  const remoteServer = new WebSocketServer({ noServer: true });
-  const cellServer = new WebSocketServer({ noServer: true });
-  fastify.server.on("upgrade", (request, socket, head) => {
-    const { pathname } = new URL(request.url, `http://${request.headers.host}`);
-    if (pathname === "/remote") {
-      remoteServer.handleUpgrade(request, socket, head, (ws) => {
-        remoteServer.emit("connection", ws, request);
-      });
-    } else if (CELL_SERIAL.test(pathname)) {
-      cellServer.handleUpgrade(request, socket, head, (ws) => {
-        cellServer.emit("connection", ws, request);
-      });
-    } else {
-      socket.destroy();
-    }
-  });
-  remoteServer.on("connection", handleRemoteConnection);
-  cellServer.on("connection", handleCellConnection);
+  attachWebsocketHandlers(fastify.server, [
+    cellSocketHandler,
+    remoteSocketHandler,
+    thirdPartySocketHandler
+  ]);
 }
 
 // src/server.ts
@@ -2094,7 +2102,7 @@ async function createServer() {
 async function main() {
   const fastify = await createServer();
   fastify.use(handler);
-  const address = await fastify.listen(env_exports.PORT, "0.0.0.0");
+  const address = await fastify.listen(PORT, "0.0.0.0");
   console.log(`Listening on ${address}`);
 }
 main().catch((err) => {

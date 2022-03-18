@@ -1,9 +1,10 @@
 import { c as create_ssr_component, e as escape, v as validate_component, f as add_classes, b as add_attribute } from "../../../chunks/index-4d214b4e.js";
-import { S as SubmitButton, F as Form } from "../../../chunks/SubmitButton-5db79bf7.js";
-import { V as VerticalField } from "../../../chunks/VerticalField-03539574.js";
+import { S as SubmitButton, F as Form } from "../../../chunks/SubmitButton-d1b813d7.js";
+import { V as VerticalField } from "../../../chunks/VerticalField-55978348.js";
 import { f as formDataAsSearchParams } from "../../../chunks/_form-52443b97.js";
-import "../../../chunks/snackbar-host-f2ed4131.js";
-import "../../../chunks/index-23b4b723.js";
+import "../../../chunks/snackbar-host-d0a4350f.js";
+import "../../../chunks/cell-state-schema-bc84e86f.js";
+import "../../../chunks/LoadingSpinner-97b51d95.js";
 const Card = create_ssr_component(($$result, $$props, $$bindings, slots) => {
   let { class: className = "" } = $$props;
   if ($$props.class === void 0 && $$bindings.class && className !== void 0)
@@ -117,7 +118,8 @@ const Remote = create_ssr_component(($$result, $$props, $$bindings, slots) => {
             }
           })}`;
         }
-      })}`;
+      })}
+	<div><a class="${"px-4 py-2 rounded-md shadow-sm text-sm font-medium text-white transition-colors bg-slate-700 hover:bg-slate-800"}" href="${"/remote/third_party"}">SDK Login</a></div>`;
     }
   })}`;
 });
