@@ -1,4 +1,5 @@
 import { Temporal } from '@js-temporal/polyfill';
+import { readable } from 'svelte/store';
 
 export interface TimePeriod {
 	/** The (inclusive) start of the time period. */
@@ -52,26 +53,25 @@ function isBusy(time: Temporal.ZonedDateTime, ranges: readonly DateTimeRange[]) 
 
 /**
  * @param ranges List of time ranges
- * @param callback
+ * @return Store that is true when the current time is in the busy range
  */
-export function isBusyInterval(
-	ranges: readonly TimePeriod[],
-	callback: (inRange: boolean) => void
-): void {
-	const dateTimeRanges = ranges.map(convert);
+export function isBusyInterval(ranges: readonly TimePeriod[]) {
+	return readable(false, (set) => {
+		const dateTimeRanges = ranges.map(convert);
 
-	function checkBusy() {
-		const now = Temporal.Now.zonedDateTimeISO('UTC');
-		const { busy, next } = isBusy(now, dateTimeRanges);
-		callback(busy);
+		function checkBusy() {
+			const now = Temporal.Now.zonedDateTimeISO('UTC');
+			const { busy, next } = isBusy(now, dateTimeRanges);
+			set(busy);
 
-		if (next) {
-			const duration = now.until(next);
-			console.log(`Waiting until ${duration}`);
+			if (next) {
+				const duration = now.until(next);
+				console.log(`Waiting until ${duration}`);
 
-			const ms = duration.total({ unit: 'milliseconds' });
-			setTimeout(checkBusy, Math.max(ms, 1000));
+				const ms = duration.total({ unit: 'milliseconds' });
+				setTimeout(checkBusy, Math.max(ms, 1000));
+			}
 		}
-	}
-	checkBusy();
+		checkBusy();
+	});
 }

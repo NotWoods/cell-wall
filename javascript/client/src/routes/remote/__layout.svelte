@@ -12,6 +12,10 @@
 			state: Readable<ReadonlyMap<string, CellData>>;
 		};
 	}
+
+	export function getSnackbarHostContext() {
+		return getContext(SnackbarHostState) as SnackbarHostState;
+	}
 </script>
 
 <script lang="ts">
@@ -32,7 +36,10 @@
 	const { currentSnackbarData } = snackbarHostState;
 	setContext(SnackbarHostState, snackbarHostState);
 
-	socket?.addEventListener('error', (event) => console.error('RemoteSocket error', event));
+	socket?.addEventListener('error', (event) => {
+		console.error('RemoteSocket error', event);
+		snackbarHostState.showSnackbar('Remote socket error');
+	});
 	socket?.addEventListener('open', (event) => console.info('RemoteSocket open', event));
 	socket?.addEventListener('close', (event) => console.info('RemoteSocket close', event));
 </script>

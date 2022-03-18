@@ -5,7 +5,7 @@
 
 	interface FreeBusyRequest {
 		/** List of calendars and/or groups to query. */
-		items?: {
+		items?: readonly {
 			/** The identifier of a calendar or a group. */
 			id?: string | null;
 		}[];
@@ -13,6 +13,16 @@
 		timeMax?: string | null;
 		/** The start of the interval for the query formatted as per RFC3339. */
 		timeMin?: string | null;
+	}
+
+	async function freebusy(request: FreeBusyRequest) {
+		return await fetch('/api/third_party/freebusy', {
+			method: 'post',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(request)
+		});
 	}
 
 	const people = {
@@ -62,27 +72,20 @@
 			smallestUnit: 'second'
 		} as const;
 
-		const body: FreeBusyRequest = {
+		const response = await freebusy({
 			timeMin: today.toString(toStringOptions),
 			timeMax: nextWeek.toString(toStringOptions),
 			items: [{ id: people[person].calendar }]
-		};
-		const res = await fetch('/api/third_party/freebusy', {
-			method: 'post',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify(body)
 		});
 
-		if (!res.ok) {
+		if (!response.ok) {
 			return {
-				status: res.status,
-				error: new Error(`Could not load calendar, ${res.statusText}`)
+				status: response.status,
+				error: new Error(`Could not load calendar, ${response.statusText}`)
 			};
 		}
 
-		const busy = await res.json();
+		const busy = (await response.json()) as TimePeriod[];
 
 		return {
 			props: {
@@ -98,12 +101,8 @@
 	export let name: keyof People;
 	$: person = people[name];
 
-	let stateName: keyof typeof states = 'free';
-	$: state = states[stateName];
-
-	isBusyInterval(busyRanges, (isBusy) => {
-		stateName = isBusy ? 'busy' : 'free';
-	});
+	const isBusy = isBusyInterval(busyRanges);
+	$: state = states[$isBusy ? 'busy' : 'free'];
 </script>
 
 <body style="background: {state.background}">
