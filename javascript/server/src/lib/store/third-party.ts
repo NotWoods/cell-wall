@@ -11,9 +11,12 @@ export function thirdPartySocketStore(repo: Repository) {
 		resolvedPromiseStore(repo.thirdParty.google),
 		(client, set) => {
 			if (client) {
-				client.authorizeUrl.subscribe((authorizeUrl) => set({ loading: false, authorizeUrl }));
+				return client.authorizeUrl.subscribe((authorizeUrl) =>
+					set({ loading: false, authorizeUrl })
+				);
 			} else {
 				set({ loading: true });
+				return undefined;
 			}
 		},
 		{ loading: true } as { loading: boolean; authorizeUrl?: string }
