@@ -30,8 +30,20 @@ export function remoteState(
 	});
 }
 
-export function storeValues<Value>(
-	store: Readable<ReadonlyMap<unknown, Value>>
-): Readable<readonly Value[]> {
-	return derived(store, (map) => Array.from(map.values()));
+/**
+ * Transforms map into an array of entries.
+ */
+export function storeEntries<Key, Value>(
+	store: Readable<ReadonlyMap<Key, Value>>
+): Readable<readonly [Key, Value][]> {
+	return derived(store, (map) => Array.from(map.entries()));
+}
+
+/**
+ * Transforms map into an array of keys.
+ */
+export function storeKeys<Key>(
+	store: Readable<ReadonlyMap<Key, unknown>>
+): Readable<readonly Key[]> {
+	return derived(store, (map) => Array.from(map.keys()));
 }

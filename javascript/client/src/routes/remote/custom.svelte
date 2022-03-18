@@ -1,10 +1,10 @@
 <script lang="ts">
 	import ResetSubmit from '$lib/components/Button/ResetSubmit.svelte';
-	import DeviceOption from '$lib/components/Field/DeviceOption.svelte';
+	import DeviceOptions from '$lib/components/Field/DeviceOptions.svelte';
 	import HorizontalField from '$lib/components/Field/HorizontalField.svelte';
 	import Form from '$lib/components/Form.svelte';
 	import Tabs from '$lib/components/Tabs/Tabs.svelte';
-	import { storeValues } from '$lib/connection/remote-socket';
+	import { storeEntries } from '$lib/connection/remote-socket';
 	import { allCellStateSchemas, getTypeFromSchema } from '@cell-wall/shared';
 	import ControllerFields from './custom/_ControllerFields.svelte';
 	import PowerButtons from './custom/_PowerButtons.svelte';
@@ -13,7 +13,7 @@
 	import { getRemoteContext } from './__layout.svelte';
 
 	const { state: remoteState } = getRemoteContext();
-	const devices = storeValues(remoteState);
+	const devices = storeEntries(remoteState);
 
 	// Selected schema type
 	let selectedType = 'BLANK';
@@ -58,9 +58,7 @@
 			id="control-serial"
 		>
 			<option value="">All devices</option>
-			{#each $devices as device (device.serial)}
-				<DeviceOption {device} />
-			{/each}
+			<DeviceOptions devices={$devices} />
 		</select>
 	</HorizontalField>
 

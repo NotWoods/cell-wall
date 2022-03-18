@@ -1,11 +1,11 @@
-import type { CellInfo } from '@cell-wall/shared';
+import type { CellData } from '@cell-wall/shared';
 import type { FastifyInstance } from 'fastify';
 import { get as getState } from 'svelte/store';
 import { repo } from '../../../lib/repository';
 
 export default async function (fastify: FastifyInstance): Promise<void> {
 	fastify.route<{
-		Reply: Record<string, CellInfo>;
+		Reply: Record<string, CellData>;
 	}>({
 		method: 'GET',
 		url: '/api/device/',

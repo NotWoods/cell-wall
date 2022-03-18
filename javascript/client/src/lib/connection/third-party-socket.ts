@@ -1,6 +1,6 @@
 import { browser } from '$app/env';
 import type { ThirdPartySocketState } from '@cell-wall/shared';
-import { derived, readable, type Readable } from 'svelte/store';
+import { readable, type Readable } from 'svelte/store';
 
 export function connectThirdParty(): WebSocket | undefined {
 	if (browser) {
@@ -25,10 +25,4 @@ export function thirdPartyState(socket: WebSocket | undefined): Readable<ThirdPa
 		socket?.addEventListener('message', handleMessage, controller);
 		return () => controller.abort();
 	});
-}
-
-export function storeValues<Value>(
-	store: Readable<ReadonlyMap<unknown, Value>>
-): Readable<readonly Value[]> {
-	return derived(store, (map) => Array.from(map.values()));
 }

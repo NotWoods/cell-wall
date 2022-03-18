@@ -1,14 +1,15 @@
 <script lang="ts">
 	import ResetSubmit from '$lib/components/Button/ResetSubmit.svelte';
-	import DeviceOption from '$lib/components/Field/DeviceOption.svelte';
+	import DeviceOptions from '$lib/components/Field/DeviceOptions.svelte';
 	import FileInput from '$lib/components/Field/FileInput.svelte';
 	import HorizontalField from '$lib/components/Field/HorizontalField.svelte';
 	import Form from '$lib/components/Form.svelte';
-	import { storeValues } from '$lib/connection/remote-socket';
+	import { storeEntries, storeKeys } from '$lib/connection/remote-socket';
 	import { getRemoteContext } from './__layout.svelte';
 
 	const { state: remoteState } = getRemoteContext();
-	const devices = storeValues(remoteState);
+	const devices = storeEntries(remoteState);
+	const deviceIds = storeKeys(remoteState);
 
 	let fileName = 'No file selected.';
 
@@ -52,16 +53,8 @@
 	</HorizontalField>
 
 	<HorizontalField for="control-serial" label="Devices" let:inputClassName>
-		<select
-			multiple
-			name="device"
-			id="control-serial"
-			class={inputClassName}
-			value={$devices.map((device) => device.serial)}
-		>
-			{#each $devices as device (device.serial)}
-				<DeviceOption {device} />
-			{/each}
+		<select multiple name="device" id="control-serial" class={inputClassName} value={$deviceIds}>
+			<DeviceOptions devices={$devices} />
 		</select>
 	</HorizontalField>
 

@@ -39,7 +39,7 @@ export default async function (fastify: FastifyInstance): Promise<void> {
 		 */
 		async handler(request, reply) {
 			const { serial } = request.params;
-			reply.send(getState(repo.cellData).get(serial) ?? null);
+			reply.send(getState(repo.cellData).get(serial)?.info ?? null);
 		}
 	});
 

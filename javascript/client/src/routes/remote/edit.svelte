@@ -1,21 +1,23 @@
 <script lang="ts">
 	import ResetSubmit from '$lib/components/Button/ResetSubmit.svelte';
-	import DeviceOption, { connectionToString } from '$lib/components/Field/DeviceOption.svelte';
+	import { connectionToString } from '$lib/components/Field/DeviceOption.svelte';
+	import DeviceOptions from '$lib/components/Field/DeviceOptions.svelte';
 	import HorizontalField from '$lib/components/Field/HorizontalField.svelte';
 	import Form from '$lib/components/Form.svelte';
-	import { storeValues } from '$lib/connection/remote-socket';
+	import { storeEntries, storeKeys } from '$lib/connection/remote-socket';
 	import type { CellInfo } from '@cell-wall/shared';
 	import PowerButtons from './custom/_PowerButtons.svelte';
 	import { post } from './_form';
 	import { getRemoteContext } from './__layout.svelte';
 
 	const { state: remoteState } = getRemoteContext();
-	const devices = storeValues(remoteState);
+	const devices = storeEntries(remoteState);
+	const devicesIds = storeKeys(remoteState);
 
 	// serial from selected device
 	let selectedDeviceSerial: string | undefined;
 
-	$: firstDevice = $devices[0]?.serial;
+	$: firstDevice = $devicesIds[0];
 	$: selectedCell = $remoteState.get(selectedDeviceSerial ?? firstDevice);
 	$: connection = connectionToString(selectedCell?.connection);
 
@@ -55,9 +57,7 @@
 			bind:value={selectedDeviceSerial}
 			id="control-serial"
 		>
-			{#each $devices as device (device.serial)}
-				<DeviceOption {device} />
-			{/each}
+			<DeviceOptions devices={$devices} />
 		</select>
 	</HorizontalField>
 

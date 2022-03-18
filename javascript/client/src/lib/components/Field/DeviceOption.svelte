@@ -17,11 +17,12 @@
 <script lang="ts">
 	import type { CellData } from '@cell-wall/shared';
 
+	export let serial: string;
 	export let device: CellData;
 
 	$: connection = connectionToString(device.connection);
 </script>
 
-<option value={device.serial}>
-	{device.info?.deviceName || device.serial} ({connection})
+<option value={serial}>
+	{device.info?.deviceName || serial} ({connection})
 </option>
