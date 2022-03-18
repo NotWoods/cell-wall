@@ -1,5 +1,6 @@
-import { c as create_ssr_component, e as escape } from "../../../../chunks/index-4d214b4e.js";
+import { c as create_ssr_component, a as subscribe, e as escape } from "../../../../chunks/index-4d214b4e.js";
 import { Temporal } from "@js-temporal/polyfill";
+import { r as readable } from "../../../../chunks/index-23b4b723.js";
 function convert(range) {
   function fromTimeStamp(timestamp) {
     if (timestamp) {
@@ -26,20 +27,22 @@ function isBusy(time, ranges) {
   }
   return { busy: false, next: void 0 };
 }
-function isBusyInterval(ranges, callback) {
-  const dateTimeRanges = ranges.map(convert);
-  function checkBusy() {
-    const now = Temporal.Now.zonedDateTimeISO("UTC");
-    const { busy, next } = isBusy(now, dateTimeRanges);
-    callback(busy);
-    if (next) {
-      const duration = now.until(next);
-      console.log(`Waiting until ${duration}`);
-      const ms = duration.total({ unit: "milliseconds" });
-      setTimeout(checkBusy, Math.max(ms, 1e3));
+function isBusyInterval(ranges) {
+  return readable(false, (set) => {
+    const dateTimeRanges = ranges.map(convert);
+    function checkBusy() {
+      const now = Temporal.Now.zonedDateTimeISO("UTC");
+      const { busy, next } = isBusy(now, dateTimeRanges);
+      set(busy);
+      if (next) {
+        const duration = now.until(next);
+        console.log(`Waiting until ${duration}`);
+        const ms = duration.total({ unit: "milliseconds" });
+        setTimeout(checkBusy, Math.max(ms, 1e3));
+      }
     }
-  }
-  checkBusy();
+    checkBusy();
+  });
 }
 var _person__svelte_svelte_type_style_lang = "";
 const css = {
@@ -105,19 +108,19 @@ const load = async ({ params }) => {
 const U5Bpersonu5D = create_ssr_component(($$result, $$props, $$bindings, slots) => {
   let person;
   let state;
+  let $isBusy, $$unsubscribe_isBusy;
   let { busyRanges } = $$props;
   let { name } = $$props;
-  let stateName = "free";
-  isBusyInterval(busyRanges, (isBusy2) => {
-    stateName = isBusy2 ? "busy" : "free";
-  });
+  const isBusy2 = isBusyInterval(busyRanges);
+  $$unsubscribe_isBusy = subscribe(isBusy2, (value) => $isBusy = value);
   if ($$props.busyRanges === void 0 && $$bindings.busyRanges && busyRanges !== void 0)
     $$bindings.busyRanges(busyRanges);
   if ($$props.name === void 0 && $$bindings.name && name !== void 0)
     $$bindings.name(name);
   $$result.css.add(css);
   person = people[name];
-  state = states[stateName];
+  state = states[$isBusy ? "busy" : "free"];
+  $$unsubscribe_isBusy();
   return `<body style="${"background: " + escape(state.background)}" class="${"svelte-8rd6l6"}"><img class="${"profile svelte-8rd6l6"}" alt="${"Portrait of $" + escape(person.name)}" src="${"$" + escape(person.image)}" width="${"150"}" height="${"150"}">
 	<h1 class="${"headline-1"}">${escape(state.text)}</h1>
 </body>`;
