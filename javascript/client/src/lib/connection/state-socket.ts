@@ -1,5 +1,5 @@
 import { browser } from '$app/env';
-import { blankState, type CellInfo, type CellState } from '@cell-wall/shared';
+import { blankState, type Mutable, type CellInfo, type CellState } from '@cell-wall/shared';
 import { readable, type Readable } from 'svelte/store';
 
 export function connect(serial: string): WebSocket | undefined {
@@ -10,7 +10,11 @@ export function connect(serial: string): WebSocket | undefined {
 	}
 }
 
-function emptyData(data: ArrayBuffer | Blob) {
+function isCellState(state: unknown): state is Mutable<CellState> {
+	return Boolean(state && typeof state === 'object' && 'type' in state);
+}
+
+function emptyData(data: ArrayBuffer | Blob | string) {
 	if (data instanceof ArrayBuffer) {
 		return data.byteLength === 0;
 	} else if (data instanceof Blob) {
@@ -27,7 +31,7 @@ function emptyData(data: ArrayBuffer | Blob) {
  * Binary data can be sent multiple times, and updates the last sent state type.
  */
 export function cellState(socket: WebSocket | undefined): Readable<CellState> {
-	let receivedState: CellState = blankState;
+	let receivedState: Mutable<CellState> = blankState;
 	return readable<CellState>(blankState, (set) => {
 		const controller = new AbortController();
 
@@ -35,8 +39,8 @@ export function cellState(socket: WebSocket | undefined): Readable<CellState> {
 			// Messages are expected to be sent as pairs of JSON state to associated data
 			if (typeof data === 'string') {
 				const maybeJson: unknown = JSON.parse(data);
-				if (maybeJson && typeof maybeJson === 'object' && 'type' in maybeJson) {
-					receivedState = maybeJson as CellState;
+				if (isCellState(maybeJson)) {
+					receivedState = maybeJson;
 					return;
 				}
 				// else fall through

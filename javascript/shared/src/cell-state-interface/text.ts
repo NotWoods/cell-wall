@@ -1,7 +1,7 @@
 export interface CellStateText {
-	type: 'TEXT';
-	payload: string;
-	backgroundColor?: string;
+	readonly type: 'TEXT';
+	readonly payload: string;
+	readonly backgroundColor?: string;
 }
 
 export function textState(text: string, backgroundColor?: string): CellStateText {

@@ -1,6 +1,6 @@
 export interface CellStateWeb {
-	type: 'WEB';
-	payload: string;
+	readonly type: 'WEB';
+	readonly payload: string;
 }
 
 export function webState(url: string): CellStateWeb {

@@ -1,4 +1,4 @@
-import { type Readable, writable, derived } from 'svelte/store';
+import { derived, writable, type Readable } from 'svelte/store';
 
 declare global {
 	type WakeLockType = 'screen';

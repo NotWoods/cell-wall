@@ -1,5 +1,5 @@
-import type { CellState, CellStateImage, CellStateWeb } from '@cell-wall/shared';
-import { derived, Readable, writable, type Writable } from 'svelte/store';
+import type { CellState, CellStateImage, CellStateWeb, Mutable } from '@cell-wall/shared';
+import { derived, writable, type Readable, type Writable } from 'svelte/store';
 import { SERVER_ADDRESS } from '../env';
 
 export interface CellStateStore extends Writable<ReadonlyMap<string, CellState>> {
@@ -34,7 +34,7 @@ export function toUri(state: CellState, base: string | URL = SERVER_ADDRESS): UR
 			return new URL(web.payload, base);
 		}
 		case 'IMAGE': {
-			const imgProps = props as CellStateImage;
+			const imgProps = props as Mutable<CellStateImage>;
 			if (typeof imgProps.payload === 'string') {
 				imgProps.payload = new URL(imgProps.payload, base).toString();
 			}

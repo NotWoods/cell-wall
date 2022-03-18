@@ -1,6 +1,6 @@
 export interface CellStateBlank {
-	type: 'BLANK';
-	payload?: '';
+	readonly type: 'BLANK';
+	readonly payload?: '';
 }
 
 export const blankBuffer = new ArrayBuffer(0);

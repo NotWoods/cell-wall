@@ -40,3 +40,7 @@ export function filterState<State extends CellState>(
 		return undefined;
 	}
 }
+
+export type Mutable<T> = {
+	-readonly [P in keyof T]: T[P];
+};

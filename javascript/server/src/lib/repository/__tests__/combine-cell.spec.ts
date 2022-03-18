@@ -44,7 +44,6 @@ describe('deriveCellData', () => {
 		const derived = get(derivedStore);
 		expect(derived.size).toBe(4);
 		expect(derived.get('DEVICEA')).toEqual({
-			serial: 'DEVICEA',
 			connection: 'android',
 			info: {
 				serial: 'DEVICEA',
@@ -52,7 +51,6 @@ describe('deriveCellData', () => {
 			}
 		});
 		expect(derived.get('DEVICEB')).toEqual({
-			serial: 'DEVICEB',
 			connection: 'android',
 			info: {
 				serial: 'DEVICEB',
@@ -60,7 +58,6 @@ describe('deriveCellData', () => {
 			}
 		});
 		expect(derived.get('DEVICEC')).toEqual({
-			serial: 'DEVICEC',
 			connection: 'android',
 			info: {
 				serial: 'DEVICEC',
@@ -68,7 +65,6 @@ describe('deriveCellData', () => {
 			}
 		});
 		expect(derived.get('DEVICED')).toEqual({
-			serial: 'DEVICED',
 			connection: 'android',
 			info: {
 				serial: 'DEVICED',
