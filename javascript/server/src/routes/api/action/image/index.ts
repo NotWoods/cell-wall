@@ -70,7 +70,7 @@ export default async function (fastify: FastifyInstance): Promise<void> {
 			);
 			const includes = devices.size > 0 ? devices.has.bind(devices) : () => true;
 			const cellData = getState(repo.cellData);
-			const cells = filterMap(cellData, (cell) => validRect(cell.info) && includes(cell.serial));
+			const cells = filterMap(cellData, (cell, serial) => validRect(cell.info) && includes(serial));
 			const rects: ReadonlyMap<string, RectangleWithPosition> = transformMap(cells, (cell) => ({
 				width: cell.info?.width ?? 1,
 				height: cell.info?.height ?? 1,

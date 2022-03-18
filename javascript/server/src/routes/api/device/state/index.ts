@@ -1,4 +1,4 @@
-import { blankState, type CellState } from '@cell-wall/shared';
+import type { CellState } from '@cell-wall/shared';
 import type { FastifyInstance } from 'fastify';
 import { get as getState } from 'svelte/store';
 import { transformMap } from '../../../../lib/map/transform';
@@ -15,11 +15,7 @@ export default async function (fastify: FastifyInstance): Promise<void> {
 		 * Get states from all cells
 		 */
 		async handler(request, reply) {
-			reply.send(
-				Object.fromEntries(
-					transformMap(getState(repo.cellData), (data) => data.state ?? blankState)
-				)
-			);
+			reply.send(Object.fromEntries(transformMap(getState(repo.cellData), (data) => data.state)));
 		}
 	});
 

@@ -1,4 +1,4 @@
-import type { CellData, CellInfo, CellState, ConnectionType } from '@cell-wall/shared';
+import { blankState, CellData, CellInfo, CellState, ConnectionType } from '@cell-wall/shared';
 import type { Readable } from 'svelte/store';
 import { derived } from 'svelte/store';
 import type { DeviceMap } from '../android/device-manager';
@@ -109,9 +109,8 @@ export function deriveCellData(stores: {
 		for (const serial of keys) {
 			const oldData = lastResult.get(serial);
 			const newData: CellData = {
-				serial,
 				info: infoMap.get(serial),
-				state: stateMap.get(serial),
+				state: stateMap.get(serial) ?? blankState,
 				connection: connectionMap.get(serial) ?? []
 			};
 
