@@ -31,14 +31,16 @@ export class RandomColor {
         this.unusedColors = this.colors.slice();
     }
     next() {
+        if (this.unusedColors.length <= 1) {
+            const color = this.unusedColors[0];
+            // Reset the list of unused colors if it's empty
+            this.reset();
+            return color;
+        }
         const randomIndex = Math.floor(Math.random() * this.unusedColors.length);
         const color = this.unusedColors[randomIndex];
         // Remove the color from the list of unused colors
         this.unusedColors.splice(randomIndex, 1);
-        // Reset the list of unused colors if it's empty
-        if (this.unusedColors.length === 0) {
-            this.reset();
-        }
         return color;
     }
 }

@@ -44,12 +44,14 @@ class RandomColor {
     this.unusedColors = this.colors.slice();
   }
   next() {
+    if (this.unusedColors.length <= 1) {
+      const color2 = this.unusedColors[0];
+      this.reset();
+      return color2;
+    }
     const randomIndex = Math.floor(Math.random() * this.unusedColors.length);
     const color = this.unusedColors[randomIndex];
     this.unusedColors.splice(randomIndex, 1);
-    if (this.unusedColors.length === 0) {
-      this.reset();
-    }
     return color;
   }
 }

@@ -1449,6 +1449,38 @@ var init_install = __esm({
   }
 });
 
+// src/routes/api/action/launch.ts
+var launch_exports = {};
+__export(launch_exports, {
+  default: () => launch_default
+});
+async function launch_default(fastify) {
+  fastify.route({
+    method: ["GET", "POST"],
+    url: "/api/action/launch",
+    async handler(request, reply) {
+      const devices = get_store_value(repo.cellData);
+      const promises = Array.from(devices).map(([serial, data]) => {
+        return {
+          serial,
+          connection: new Set(data.connection)
+        };
+      }).filter(({ connection }) => connection.has("android") && !connection.has("web")).map(async ({ serial }) => {
+        await repo.openClientOnDevice(serial);
+        return serial;
+      });
+      const results = await Promise.allSettled(promises);
+      reply.send(results.filter((result) => result.status === "fulfilled").map((result) => result.value));
+    }
+  });
+}
+var init_launch = __esm({
+  "src/routes/api/action/launch.ts"() {
+    init_store();
+    init_repository2();
+  }
+});
+
 // src/routes/api/action/refresh.ts
 var refresh_exports = {};
 __export(refresh_exports, {
@@ -1480,12 +1512,25 @@ __export(text_exports, {
   default: () => text_default
 });
 import { RandomColor, textState } from "@cell-wall/shared";
+function parseLines(body) {
+  if (typeof body === "string") {
+    return body.split(/\s*\n\s*/g);
+  } else if (Array.isArray(body)) {
+    return body;
+  } else if (Array.isArray(body.lines)) {
+    return body.lines;
+  } else if (typeof body.text === "string") {
+    return parseLines(body.text);
+  } else {
+    return [];
+  }
+}
 async function text_default(fastify) {
   fastify.route({
     method: "POST",
     url: "/api/action/text",
     async handler(request, reply) {
-      const lines = typeof request.body === "string" ? request.body.split(/\s*\n\s*/g) : request.body;
+      const lines = parseLines(request.body);
       const deviceIds = get_store_value(sortedDeviceIds);
       const deviceToText = new Map(deviceIds.map((serial) => [serial, []]));
       for (const [i, line] of lines.entries()) {
@@ -1960,7 +2005,7 @@ async function urlEncodedPlugin(fastify) {
 // src/routes.ts
 async function routesSubsystem(fastify) {
   await urlEncodedPlugin(fastify);
-  await fastify.register(Promise.resolve().then(() => (init_serial(), serial_exports))).register(Promise.resolve().then(() => (init_image3(), image_exports))).register(Promise.resolve().then(() => (init_install(), install_exports))).register(Promise.resolve().then(() => (init_refresh(), refresh_exports))).register(Promise.resolve().then(() => (init_text(), text_exports))).register(Promise.resolve().then(() => (init_serial2(), serial_exports2))).register(Promise.resolve().then(() => (init_power2(), power_exports))).register(Promise.resolve().then(() => (init_serial3(), serial_exports3))).register(Promise.resolve().then(() => (init_state2(), state_exports))).register(Promise.resolve().then(() => (init_preset(), preset_exports))).register(Promise.resolve().then(() => (init_serial4(), serial_exports4))).register(Promise.resolve().then(() => (init_device(), device_exports))).register(Promise.resolve().then(() => (init_freebusy(), freebusy_exports))).register(Promise.resolve().then(() => (init_cellwall_version(), cellwall_version_exports))).register(Promise.resolve().then(() => (init_routes(), routes_exports))).register(Promise.resolve().then(() => (init_oauth2callback(), oauth2callback_exports)));
+  await fastify.register(Promise.resolve().then(() => (init_serial(), serial_exports))).register(Promise.resolve().then(() => (init_image3(), image_exports))).register(Promise.resolve().then(() => (init_install(), install_exports))).register(Promise.resolve().then(() => (init_launch(), launch_exports))).register(Promise.resolve().then(() => (init_refresh(), refresh_exports))).register(Promise.resolve().then(() => (init_text(), text_exports))).register(Promise.resolve().then(() => (init_serial2(), serial_exports2))).register(Promise.resolve().then(() => (init_power2(), power_exports))).register(Promise.resolve().then(() => (init_serial3(), serial_exports3))).register(Promise.resolve().then(() => (init_state2(), state_exports))).register(Promise.resolve().then(() => (init_preset(), preset_exports))).register(Promise.resolve().then(() => (init_serial4(), serial_exports4))).register(Promise.resolve().then(() => (init_device(), device_exports))).register(Promise.resolve().then(() => (init_freebusy(), freebusy_exports))).register(Promise.resolve().then(() => (init_cellwall_version(), cellwall_version_exports))).register(Promise.resolve().then(() => (init_routes(), routes_exports))).register(Promise.resolve().then(() => (init_oauth2callback(), oauth2callback_exports)));
 }
 
 // src/websocket.ts
