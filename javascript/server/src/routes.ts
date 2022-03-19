@@ -7,6 +7,7 @@ export async function routesSubsystem(fastify: FastifyInstance): Promise<void> {
 		.register(import('./routes/api/action/image/[serial]'))
 		.register(import('./routes/api/action/image/index'))
 		.register(import('./routes/api/action/install'))
+		.register(import('./routes/api/action/launch'))
 		.register(import('./routes/api/action/refresh'))
 		.register(import('./routes/api/action/text'))
 		.register(import('./routes/api/device/power/[serial]'))
