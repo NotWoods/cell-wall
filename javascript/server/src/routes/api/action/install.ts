@@ -2,6 +2,10 @@ import type { FastifyInstance } from 'fastify';
 import { repo } from '../../../lib/repository';
 import type { ReadonlyURLSearchParams } from '../../../parser/urlencoded';
 
+/**
+ * Installs the latest CellWall Client APK to all devices
+ * @deprecated Moving away from Android client
+ */
 export default async function (fastify: FastifyInstance): Promise<void> {
 	fastify.route<{
 		Body: ReadonlyURLSearchParams;

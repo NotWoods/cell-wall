@@ -2,6 +2,9 @@ import type { FastifyInstance } from 'fastify';
 import { repo } from '../../../../lib/repository';
 import { parsePowerBody } from './_body';
 
+/**
+ * Control power for individual ADB devices
+ */
 export default async function (fastify: FastifyInstance): Promise<void> {
 	fastify.route<{
 		Params: { serial: string };

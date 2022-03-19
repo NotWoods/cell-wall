@@ -2,6 +2,9 @@ import type { FastifyInstance } from 'fastify';
 import { transformMap } from '../../../lib/map/transform';
 import { repo } from '../../../lib/repository';
 
+/**
+ * Refresh the list of ADB-connected devices.
+ */
 export default async function (fastify: FastifyInstance): Promise<void> {
 	fastify.route<{
 		Reply: Record<string, { model: string; manufacturer: string }>;

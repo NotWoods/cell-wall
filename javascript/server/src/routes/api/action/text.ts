@@ -16,17 +16,35 @@ const sortedDeviceIds = derived(repo.cellData, (devices) => {
 	);
 });
 
+function parseLines(
+	body: string | string[] | { text?: string; lines?: string[] }
+): readonly string[] {
+	if (typeof body === 'string') {
+		return body.split(/\s*\n\s*/g);
+	} else if (Array.isArray(body)) {
+		return body;
+	} else if (Array.isArray(body.lines)) {
+		return body.lines;
+	} else if (typeof body.text === 'string') {
+		return parseLines(body.text);
+	} else {
+		return [];
+	}
+}
+
+/**
+ * Display lines of text across different cells.
+ */
 export default async function (fastify: FastifyInstance): Promise<void> {
 	fastify.route<{
-		Body: string | readonly string[];
+		Body: string | string[] | { text?: string; lines?: string[] };
 		Querystring: { backgroundColor?: string };
 		Reply: Record<string, CellState>;
 	}>({
 		method: 'POST',
 		url: '/api/action/text',
 		async handler(request, reply) {
-			const lines =
-				typeof request.body === 'string' ? request.body.split(/\s*\n\s*/g) : request.body;
+			const lines = parseLines(request.body);
 
 			// Sort devices by screen width
 			const deviceIds = getState(sortedDeviceIds);
