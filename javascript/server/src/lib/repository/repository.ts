@@ -120,9 +120,9 @@ export function repository(): Repository {
 		},
 		async openClientOnDevice(serial) {
 			const deviceManager = await deviceManagerPromise;
-			const { server = SERVER_ADDRESS, deviceName = '' } = get(cellData).get(serial)?.info ?? {};
+			const { server = SERVER_ADDRESS } = get(cellData).get(serial)?.info ?? {};
 
-			await deviceManager.startWebClient(serial, server, deviceName);
+			await deviceManager.startWebClient(serial, server);
 		}
 	};
 }

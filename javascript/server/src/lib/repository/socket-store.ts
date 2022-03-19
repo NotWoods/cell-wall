@@ -1,7 +1,9 @@
 import type { CellInfo } from '@cell-wall/shared';
 import { writable, type Writable } from 'svelte/store';
 
-export type WebSocketInfo = Pick<CellInfo, 'width' | 'height'>;
+export interface WebSocketInfo extends Pick<CellInfo, 'width' | 'height'> {
+	url: URL;
+}
 
 export interface WebSocketStore extends Writable<ReadonlyMap<string, WebSocketInfo>> {
 	add(serial: string, socket: WebSocketInfo): void;

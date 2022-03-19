@@ -122,10 +122,10 @@ export class DeviceManager implements Readable<DeviceMap> {
 		});
 	}
 
-	async startWebClient(serial: string, server: URL | string, deviceName: string) {
+	async startWebClient(serial: string, server: URL | string) {
 		return this.startIntent(serial, {
 			action: 'android.intent.action.VIEW',
-			dataUri: new URL(`/cell?id=${serial}&name=${deviceName}&autojoin`, server),
+			dataUri: new URL(`/cell?id=${serial}&autojoin`, server),
 			waitForLaunch: true
 		});
 	}

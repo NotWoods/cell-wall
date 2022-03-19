@@ -47,7 +47,8 @@ function deriveCellInfo(stores: {
 			mergeFrom(infoMap, (info) => info);
 			mergeFrom(webSockets, (socketInfo) => ({
 				width: socketInfo.width,
-				height: socketInfo.height
+				height: socketInfo.height,
+				server: socketInfo.url.origin
 			}));
 			mergeFrom(devices, ({ model, manufacturer }) => computeInfo(model, manufacturer));
 

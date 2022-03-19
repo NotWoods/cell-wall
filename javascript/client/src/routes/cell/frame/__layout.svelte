@@ -29,13 +29,17 @@
 	import { browser } from '$app/env';
 	import { goto } from '$app/navigation';
 	import { cellState, connect, sendResizeEvents } from '$lib/connection/state-socket';
+	import { onMount } from 'svelte';
 	import PageTransition from './_PageTransition.svelte';
 
 	export let serial: string;
 
 	const socket = connect(serial);
 	const state = cellState(socket);
-	sendResizeEvents(socket);
+
+	onMount(() => {
+		sendResizeEvents(socket);
+	});
 
 	setContext('frame', { socket, state });
 

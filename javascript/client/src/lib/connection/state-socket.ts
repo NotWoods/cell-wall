@@ -68,7 +68,6 @@ export function sendResizeEvents(
 				width: window.innerWidth,
 				height: window.innerHeight
 			};
-			console.log(socket.readyState, 'socket ready state');
 			socket.send(JSON.stringify(data));
 		};
 
@@ -76,5 +75,16 @@ export function sendResizeEvents(
 		socket.addEventListener('close', () => {
 			document.removeEventListener('resize', handleResize);
 		});
+
+		switch (socket.readyState) {
+			case 0: // CONNECTING
+				socket.addEventListener('open', handleResize, options);
+				break;
+			case 1: // OPEN
+				handleResize();
+				break;
+			default:
+			// do nothing, socket is closing or closed
+		}
 	}
 }

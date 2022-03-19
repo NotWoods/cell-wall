@@ -63,11 +63,12 @@
 
 	<HorizontalField for="control-connection" label="Connection" let:inputClassName>
 		<input
-			name="connection"
 			id="control-connection"
+			name="connection"
+			type="text"
 			value={connection}
 			readonly
-			class={inputClassName}
+			class="{inputClassName} bg-slate-300"
 		/>
 	</HorizontalField>
 

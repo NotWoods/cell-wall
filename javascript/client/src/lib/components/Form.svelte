@@ -47,8 +47,8 @@
 </script>
 
 <form
-	{...$$restProps}
 	method="post"
+	{...$$restProps}
 	{action}
 	on:submit|preventDefault={handleSubmit}
 	bind:this={form}

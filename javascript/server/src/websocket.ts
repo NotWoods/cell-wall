@@ -1,10 +1,9 @@
-import { blankState, CellState } from '@cell-wall/shared';
+import { blankState, type CellInfo, type CellState } from '@cell-wall/shared';
 import type { FastifyInstance } from 'fastify';
 import type { IncomingMessage, Server } from 'http';
 import { WebSocket, WebSocketServer } from 'ws';
 import { cellStateFor } from './lib/cells';
 import { repo } from './lib/repository';
-import type { WebSocketInfo } from './lib/repository/socket-store';
 import { thirdPartySocketStore } from './lib/store/third-party';
 
 const CELL_SERIAL = /^\/cells\/(\w+)\/?$/;
@@ -24,10 +23,11 @@ interface WebSocketHandler {
 const cellSocketHandler: WebSocketHandler = {
 	path: (pathname) => CELL_SERIAL.test(pathname),
 	onConnect(ws, request) {
-		const { pathname } = new URL(request.url!, `http://${request.headers.host}`);
+		const url = new URL(request.url!, `http://${request.headers.host}`);
+		const { pathname } = url;
 		const [, serial] = pathname.match(CELL_SERIAL)!;
 
-		repo.webSockets.add(serial, {});
+		repo.webSockets.add(serial, { url });
 
 		let lastState: CellState = blankState;
 		const unsubscribe = cellStateFor(repo.cellState, serial).subscribe((state) => {
@@ -44,8 +44,8 @@ const cellSocketHandler: WebSocketHandler = {
 		});
 
 		ws.on('message', (data) => {
-			const info = JSON.parse(data.toString()) as WebSocketInfo;
-			repo.webSockets.add(serial, info);
+			const { width, height } = JSON.parse(data.toString()) as Pick<CellInfo, 'width' | 'height'>;
+			repo.webSockets.add(serial, { width, height, url });
 		});
 
 		return () => {

@@ -2,17 +2,7 @@
 	import RemoteFrame from '$lib/components/RemoteFrame.svelte';
 	import TopBar from '$lib/components/TopBar/TopBar.svelte';
 
-	interface DemoEntry {
-		id: string;
-		name: string;
-	}
-
-	let demoEntries: readonly DemoEntry[] = [
-		{ id: 'demo1', name: 'Demo_1' },
-		{ id: 'demo2', name: 'Demo_2' },
-		{ id: 'demo3', name: 'Demo_3' },
-		{ id: 'demo4', name: 'Demo_Tablet' }
-	];
+	let demoEntries: readonly string[] = ['demo1', 'demo2', 'demo3', 'demo4'];
 </script>
 
 <svelte:head>
@@ -22,11 +12,11 @@
 <TopBar />
 <RemoteFrame fullWidth>
 	<div class="demo-wall mx-auto">
-		{#each demoEntries as { id, name } (id)}
+		{#each demoEntries as id (id)}
 			<iframe
 				class="demo-cell shadow-lg bg-zinc-900 h-full w-full"
-				src="/cell?id={id}&name={name}&autojoin"
-				title={name}
+				src="/cell?id={id}&autojoin"
+				title={id}
 				style="grid-area: {id}"
 			/>
 		{/each}
