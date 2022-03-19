@@ -239,6 +239,48 @@ var init_store = __esm({
   }
 });
 
+// src/lib/cells/state.ts
+function cellStateStore() {
+  const store = writable(/* @__PURE__ */ new Map());
+  return __spreadProps(__spreadValues({}, store), {
+    setStates(states) {
+      const entries = typeof states.entries === "function" ? states.entries() : Object.entries(states);
+      store.update((map) => new Map([...map, ...entries]));
+    }
+  });
+}
+function cellStateFor(store, serial) {
+  return derived(store, (map) => map.get(serial));
+}
+function toUri(state, base = SERVER_ADDRESS) {
+  const _a = state, { type } = _a, props = __objRest(_a, ["type"]);
+  switch (type.toUpperCase()) {
+    case "WEB": {
+      const web = props;
+      return new URL(web.payload, base);
+    }
+    case "IMAGE": {
+      const imgProps = props;
+      if (typeof imgProps.payload === "string") {
+        imgProps.payload = new URL(imgProps.payload, base).toString();
+      }
+    }
+    default: {
+      const url = new URL(`cellwall://${type}`);
+      for (const [key, value] of Object.entries(props)) {
+        url.searchParams.append(key, value);
+      }
+      return url;
+    }
+  }
+}
+var init_state = __esm({
+  "src/lib/cells/state.ts"() {
+    init_store();
+    init_env();
+  }
+});
+
 // src/lib/map/transform.ts
 function transformMap(map, transform) {
   return new Map(Array.from(map.entries(), ([key, value]) => {
@@ -354,6 +396,7 @@ var DeviceManager;
 var init_device_manager = __esm({
   "src/lib/android/device-manager.ts"() {
     init_store();
+    init_state();
     init_env();
     init_transform();
     init_adb_action();
@@ -431,6 +474,20 @@ var init_device_manager = __esm({
         return this.run(serial, async (adb) => {
           await adb.reversePort(devicePort, PORT);
           return true;
+        });
+      }
+      async startWebClient(serial, server) {
+        return this.startIntent(serial, {
+          action: "android.intent.action.VIEW",
+          dataUri: new URL(`/cell?id=${serial}&autojoin`, server),
+          waitForLaunch: true
+        });
+      }
+      async startAndroidClient(serial, server, state) {
+        return this.startIntent(serial, {
+          action: `${PACKAGE_NAME}.DISPLAY`,
+          dataUri: toUri(state, server),
+          waitForLaunch: true
         });
       }
     };
@@ -539,48 +596,6 @@ var init_manager = __esm({
         });
       }
     };
-  }
-});
-
-// src/lib/cells/state.ts
-function cellStateStore() {
-  const store = writable(/* @__PURE__ */ new Map());
-  return __spreadProps(__spreadValues({}, store), {
-    setStates(states) {
-      const entries = typeof states.entries === "function" ? states.entries() : Object.entries(states);
-      store.update((map) => new Map([...map, ...entries]));
-    }
-  });
-}
-function cellStateFor(store, serial) {
-  return derived(store, (map) => map.get(serial));
-}
-function toUri(state, base = SERVER_ADDRESS) {
-  const _a = state, { type } = _a, props = __objRest(_a, ["type"]);
-  switch (type.toUpperCase()) {
-    case "WEB": {
-      const web = props;
-      return new URL(web.payload, base);
-    }
-    case "IMAGE": {
-      const imgProps = props;
-      if (typeof imgProps.payload === "string") {
-        imgProps.payload = new URL(imgProps.payload, base).toString();
-      }
-    }
-    default: {
-      const url = new URL(`cellwall://${type}`);
-      for (const [key, value] of Object.entries(props)) {
-        url.searchParams.append(key, value);
-      }
-      return url;
-    }
-  }
-}
-var init_state = __esm({
-  "src/lib/cells/state.ts"() {
-    init_store();
-    init_env();
   }
 });
 
@@ -845,7 +860,8 @@ function deriveCellInfo(stores) {
     mergeFrom(infoMap, (info) => info);
     mergeFrom(webSockets, (socketInfo) => ({
       width: socketInfo.width,
-      height: socketInfo.height
+      height: socketInfo.height,
+      server: socketInfo.url.origin
     }));
     mergeFrom(devices, ({ model, manufacturer }) => computeInfo(model, manufacturer));
     for (const [serial, newInfo] of cellInfoMap) {
@@ -875,30 +891,32 @@ function deriveConnection(stores) {
 function deriveCellData(stores) {
   const cellInfo = deriveCellInfo(stores);
   const connections = deriveConnection(stores);
-  let lastResult = /* @__PURE__ */ new Map();
-  return derived([stores.state, cellInfo, connections], ([stateMap, infoMap, connectionMap]) => {
+  const cellDataMap = derived([stores.state, cellInfo, connections], ([stateMap, infoMap, connectionMap]) => {
     const keys = /* @__PURE__ */ new Set([...stateMap.keys(), ...infoMap.keys(), ...connectionMap.keys()]);
-    const result = /* @__PURE__ */ new Map();
-    for (const serial of keys) {
-      const oldData = lastResult.get(serial);
+    return new Map(Array.from(keys).map((serial) => {
       const newData = {
         info: infoMap.get(serial),
         state: stateMap.get(serial) ?? blankState,
         connection: connectionMap.get(serial) ?? []
       };
+      return [serial, newData];
+    }));
+  });
+  return derived(withLastState(cellDataMap), ([result, lastResult]) => {
+    return new Map(Array.from(result.entries()).map(([serial, newData]) => {
+      const oldData = lastResult == null ? void 0 : lastResult.get(serial);
       if (oldData && newData.info === oldData.info && newData.state === oldData.state && equalConnectionArrays(newData.connection, oldData.connection)) {
-        result.set(serial, oldData);
+        return [serial, oldData];
       } else {
-        result.set(serial, newData);
+        return [serial, newData];
       }
-    }
-    lastResult = result;
-    return lastResult;
+    }));
   });
 }
 var init_combine_cell = __esm({
   "src/lib/repository/combine-cell.ts"() {
     init_store();
+    init_changes();
     init_known();
   }
 });
@@ -1111,11 +1129,7 @@ function sendIntentOnStateChange(cellData, deviceManager) {
     Promise.all(Array.from(stateChanges).map(async ([serial, state]) => {
       const { server = SERVER_ADDRESS, connection = /* @__PURE__ */ new Set() } = connectionInfo.get(serial) ?? {};
       if (state && connection.has("android") && !connection.has("web")) {
-        await deviceManager.startIntent(serial, {
-          action: `${PACKAGE_NAME}.DISPLAY`,
-          dataUri: toUri(state, server),
-          waitForLaunch: true
-        });
+        await deviceManager.startAndroidClient(serial, server, state);
       }
     }));
   });
@@ -1183,6 +1197,12 @@ function repository() {
       cellManager2.register(info.serial, info);
       const db = await dbPromise;
       await cellManager2.writeInfo(db);
+    },
+    async openClientOnDevice(serial) {
+      var _a;
+      const deviceManager2 = await deviceManagerPromise;
+      const { server = SERVER_ADDRESS } = ((_a = get_store_value(cellData).get(serial)) == null ? void 0 : _a.info) ?? {};
+      await deviceManager2.startWebClient(serial, server);
     }
   };
 }
@@ -1454,60 +1474,12 @@ var init_refresh = __esm({
   }
 });
 
-// src/lib/color.ts
-var RAINBOW_COLORS, RandomColor;
-var init_color = __esm({
-  "src/lib/color.ts"() {
-    RAINBOW_COLORS = [
-      "#0F172A",
-      "#7F1D1D",
-      "#7C2D12",
-      "#78350F",
-      "#713F12",
-      "#365314",
-      "#14532D",
-      "#064E3B",
-      "#134E4A",
-      "#164E63",
-      "#0C4A6E",
-      "#1E3A8A",
-      "#312E81",
-      "#4C1D95",
-      "#581C87",
-      "#701A75",
-      "#831843",
-      "#881337"
-    ];
-    RandomColor = class {
-      constructor(colors = RAINBOW_COLORS) {
-        this.colors = colors;
-        if (colors.length === 0) {
-          throw new TypeError("No colors provided");
-        }
-        this.reset();
-      }
-      reset() {
-        this.unusedColors = this.colors.slice();
-      }
-      next() {
-        const randomIndex = Math.floor(Math.random() * this.unusedColors.length);
-        const color = this.unusedColors[randomIndex];
-        this.unusedColors.splice(randomIndex, 1);
-        if (this.unusedColors.length === 0) {
-          this.reset();
-        }
-        return color;
-      }
-    };
-  }
-});
-
 // src/routes/api/action/text.ts
 var text_exports = {};
 __export(text_exports, {
   default: () => text_default
 });
-import { textState } from "@cell-wall/shared";
+import { RandomColor, textState } from "@cell-wall/shared";
 async function text_default(fastify) {
   fastify.route({
     method: "POST",
@@ -1532,7 +1504,6 @@ var sortedDeviceIds;
 var init_text = __esm({
   "src/routes/api/action/text.ts"() {
     init_store();
-    init_color();
     init_transform();
     init_repository2();
     sortedDeviceIds = derived(repo.cellData, (devices) => {
@@ -2034,9 +2005,10 @@ var blankBuffer = new ArrayBuffer(0);
 var cellSocketHandler = {
   path: (pathname) => CELL_SERIAL.test(pathname),
   onConnect(ws, request) {
-    const { pathname } = new URL(request.url, `http://${request.headers.host}`);
+    const url = new URL(request.url, `http://${request.headers.host}`);
+    const { pathname } = url;
     const [, serial] = pathname.match(CELL_SERIAL);
-    repo.webSockets.add(serial, {});
+    repo.webSockets.add(serial, { url });
     let lastState = blankState4;
     const unsubscribe = cellStateFor(repo.cellState, serial).subscribe((state) => {
       if (!state)
@@ -2050,8 +2022,8 @@ var cellSocketHandler = {
       lastState = state;
     });
     ws.on("message", (data) => {
-      const info = JSON.parse(data.toString());
-      repo.webSockets.add(serial, info);
+      const { width, height } = JSON.parse(data.toString());
+      repo.webSockets.add(serial, { width, height, url });
     });
     return () => {
       unsubscribe();

@@ -38,22 +38,6 @@ function cellState(socket) {
     return () => controller.abort();
   });
 }
-function sendResizeEvents(socket, options) {
-  if (socket) {
-    const handleResize = () => {
-      const data = {
-        width: window.innerWidth,
-        height: window.innerHeight
-      };
-      console.log(socket.readyState, "socket ready state");
-      socket.send(JSON.stringify(data));
-    };
-    document.addEventListener("resize", handleResize, options);
-    socket.addEventListener("close", () => {
-      document.removeEventListener("resize", handleResize);
-    });
-  }
-}
 var _PageTransition_svelte_svelte_type_style_lang = "";
 const css = {
   code: ".layout.svelte-e2gi4i{height:100vh;height:100dvh;width:100vw}",
@@ -86,7 +70,6 @@ const _layout = create_ssr_component(($$result, $$props, $$bindings, slots) => {
   const socket = connect();
   const state = cellState(socket);
   $$unsubscribe_state = subscribe(state, (value) => $state = value);
-  sendResizeEvents(socket);
   setContext("frame", { socket, state });
   socket?.addEventListener("error", (event) => console.error("Socket error", event));
   socket?.addEventListener("open", (event) => console.info("Socket open", event));

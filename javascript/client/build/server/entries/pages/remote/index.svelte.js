@@ -1,5 +1,5 @@
 import { c as create_ssr_component, e as escape, v as validate_component, f as add_classes, b as add_attribute } from "../../../chunks/index-4d214b4e.js";
-import { S as SubmitButton, F as Form } from "../../../chunks/SubmitButton-87e0ffcd.js";
+import { S as SubmitButton, F as Form } from "../../../chunks/SubmitButton-c96a2606.js";
 import { V as VerticalField } from "../../../chunks/VerticalField-55978348.js";
 import { f as formDataAsSearchParams } from "../../../chunks/_form-52443b97.js";
 import "../../../chunks/snackbar-host-d6555a45.js";

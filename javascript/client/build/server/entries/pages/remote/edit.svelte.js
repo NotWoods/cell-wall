@@ -1,10 +1,10 @@
-import { c as create_ssr_component, a as subscribe, v as validate_component, b as add_attribute } from "../../../chunks/index-4d214b4e.js";
-import { R as ResetSubmit } from "../../../chunks/ResetSubmit-d9940feb.js";
+import { c as create_ssr_component, a as subscribe, v as validate_component, b as add_attribute, e as escape } from "../../../chunks/index-4d214b4e.js";
+import { R as ResetSubmit } from "../../../chunks/ResetSubmit-703d5a7b.js";
 import { c as connectionToString, D as DeviceOptions } from "../../../chunks/DeviceOptions-8dcbbe6c.js";
 import { H as HorizontalField } from "../../../chunks/HorizontalField-12292c4d.js";
-import { F as Form } from "../../../chunks/SubmitButton-87e0ffcd.js";
+import { F as Form } from "../../../chunks/SubmitButton-c96a2606.js";
 import { a as getRemoteContext, s as storeEntries, b as storeKeys } from "../../../chunks/__layout-828ca917.js";
-import { P as PowerButtons } from "../../../chunks/_PowerButtons-d2fc377c.js";
+import { P as PowerButtons } from "../../../chunks/_PowerButtons-9ee3a43c.js";
 import { p as post } from "../../../chunks/_form-52443b97.js";
 import "../../../chunks/LoadingSpinner-97b51d95.js";
 import "../../../chunks/snackbar-host-d6555a45.js";
@@ -67,7 +67,7 @@ const Edit = create_ssr_component(($$result, $$props, $$bindings, slots) => {
         label: "Connection"
       }, {}, {
         default: ({ inputClassName }) => {
-          return `<input name="${"connection"}" id="${"control-connection"}"${add_attribute("value", connection, 0)} readonly${add_attribute("class", inputClassName, 0)}>`;
+          return `<input id="${"control-connection"}" name="${"connection"}" type="${"text"}"${add_attribute("value", connection, 0)} readonly class="${escape(inputClassName) + " bg-slate-300"}">`;
         }
       })}
 

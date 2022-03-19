@@ -1,17 +1,58 @@
 import { c as create_ssr_component, p as each, v as validate_component, e as escape, b as add_attribute, a as subscribe } from "../../../chunks/index-4d214b4e.js";
-import { R as ResetSubmit } from "../../../chunks/ResetSubmit-d9940feb.js";
+import { R as ResetSubmit } from "../../../chunks/ResetSubmit-703d5a7b.js";
 import { D as DeviceOptions } from "../../../chunks/DeviceOptions-8dcbbe6c.js";
 import { H as HorizontalField } from "../../../chunks/HorizontalField-12292c4d.js";
-import { F as Form } from "../../../chunks/SubmitButton-87e0ffcd.js";
+import { F as Form } from "../../../chunks/SubmitButton-c96a2606.js";
 import { a as getRemoteContext, s as storeEntries } from "../../../chunks/__layout-828ca917.js";
 import { g as getTypeFromSchema, a as allCellStateSchemas } from "../../../chunks/cell-state-schema-b294815b.js";
 import startCase from "lodash.startcase";
-import { P as PowerButtons } from "../../../chunks/_PowerButtons-d2fc377c.js";
+import { P as PowerButtons } from "../../../chunks/_PowerButtons-9ee3a43c.js";
 import { p as post } from "../../../chunks/_form-52443b97.js";
 import "../../../chunks/LoadingSpinner-97b51d95.js";
 import "../../../chunks/snackbar-host-d6555a45.js";
 import "../../../chunks/index-23b4b723.js";
 import "../../../chunks/TopBar-fb618005.js";
+const RAINBOW_COLORS = [
+  "#0F172A",
+  "#7F1D1D",
+  "#7C2D12",
+  "#78350F",
+  "#713F12",
+  "#365314",
+  "#14532D",
+  "#064E3B",
+  "#134E4A",
+  "#164E63",
+  "#0C4A6E",
+  "#1E3A8A",
+  "#312E81",
+  "#4C1D95",
+  "#581C87",
+  "#701A75",
+  "#831843",
+  "#881337"
+];
+class RandomColor {
+  constructor(colors = RAINBOW_COLORS) {
+    this.colors = colors;
+    if (colors.length === 0) {
+      throw new TypeError("No colors provided");
+    }
+    this.reset();
+  }
+  reset() {
+    this.unusedColors = this.colors.slice();
+  }
+  next() {
+    const randomIndex = Math.floor(Math.random() * this.unusedColors.length);
+    const color = this.unusedColors[randomIndex];
+    this.unusedColors.splice(randomIndex, 1);
+    if (this.unusedColors.length === 0) {
+      this.reset();
+    }
+    return color;
+  }
+}
 const Tabs = create_ssr_component(($$result, $$props, $$bindings, slots) => {
   return `<ul class="${"flex flex-wrap border-b-2 border-slate-700"}" role="${"tablist"}">${slots.default ? slots.default({}) : ``}</ul>`;
 });
@@ -33,6 +74,7 @@ const ControllerFields = create_ssr_component(($$result, $$props, $$bindings, sl
   let getInputName;
   let required;
   let properties;
+  const randomColor = new RandomColor();
   let { schema } = $$props;
   let { state = void 0 } = $$props;
   if ($$props.schema === void 0 && $$bindings.schema && schema !== void 0)
@@ -56,12 +98,16 @@ const ControllerFields = create_ssr_component(($$result, $$props, $$bindings, sl
     return startCase(name);
   };
   required = new Set(schema?.required || []);
-  properties = Object.entries(schema?.properties || {}).filter(([name]) => name !== "type").map(([name, property]) => ({
-    name,
-    property,
-    type: getInputType(name, property)
-  }));
-  return `${each(properties, ({ name, type, property }) => {
+  properties = Object.entries(schema?.properties || {}).filter(([name]) => name !== "type").map(([name, property]) => {
+    const type = getInputType(name, property);
+    return {
+      name,
+      property,
+      type,
+      fallback: type === "color" ? randomColor.next() : ""
+    };
+  });
+  return `${each(properties, ({ name, type, property, fallback }) => {
     return `${validate_component(HorizontalField, "HorizontalField").$$render($$result, {
       for: "control-" + name,
       label: getInputName(name)
@@ -69,7 +115,7 @@ const ControllerFields = create_ssr_component(($$result, $$props, $$bindings, sl
       default: ({ inputClassName }) => {
         return `${Array.isArray(property.enum) ? `<select id="${"control-" + escape(name)}"${add_attribute("name", name, 0)}${add_attribute("class", inputClassName, 0)}>${each(property.enum, (option) => {
           return `<option${add_attribute("value", option, 0)}>${escape(option)}</option>`;
-        })}</select>` : `<input id="${"control-" + escape(name)}"${add_attribute("class", type === "color" ? "" : inputClassName, 0)}${add_attribute("name", name, 0)}${add_attribute("type", type, 0)} ${required.has(name) ? "required" : ""}${add_attribute("value", state?.[name] ?? "", 0)}>`}
+        })}</select>` : `<input id="${"control-" + escape(name)}"${add_attribute("class", type === "color" ? "" : inputClassName, 0)}${add_attribute("name", name, 0)}${add_attribute("type", type, 0)} ${required.has(name) ? "required" : ""}${add_attribute("value", state?.[name] ?? fallback, 0)}>`}
 	`;
       }
     })}`;

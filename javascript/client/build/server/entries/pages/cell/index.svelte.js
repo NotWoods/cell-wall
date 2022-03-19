@@ -1,10 +1,9 @@
-import { c as create_ssr_component, a as subscribe, v as validate_component, b as add_attribute } from "../../../chunks/index-4d214b4e.js";
-import { R as ResetSubmit } from "../../../chunks/ResetSubmit-d9940feb.js";
+import { c as create_ssr_component, v as validate_component, b as add_attribute } from "../../../chunks/index-4d214b4e.js";
+import { R as ResetSubmit } from "../../../chunks/ResetSubmit-703d5a7b.js";
 import { V as VerticalField } from "../../../chunks/VerticalField-55978348.js";
-import { F as Form } from "../../../chunks/SubmitButton-87e0ffcd.js";
+import { F as Form } from "../../../chunks/SubmitButton-c96a2606.js";
 import { T as TopBar, R as RemoteFrame } from "../../../chunks/TopBar-fb618005.js";
-import { d as derived, w as writable, r as readable } from "../../../chunks/index-23b4b723.js";
-import { p as post } from "../../../chunks/_form-52443b97.js";
+import { d as derived, w as writable } from "../../../chunks/index-23b4b723.js";
 import "../../../chunks/LoadingSpinner-97b51d95.js";
 import "../../../chunks/snackbar-host-d6555a45.js";
 import "../../../chunks/cell-state-schema-b294815b.js";
@@ -91,53 +90,33 @@ function requestWakeLock() {
     return void 0;
   }
 }
-function windowSizeStore() {
-  return readable(void 0);
-}
 const load = async ({ url }) => {
   return {
     props: {
       id: url.searchParams.get("id") || "",
-      deviceName: url.searchParams.get("name") || "",
       autoJoin: url.searchParams.has("autojoin")
     }
   };
 };
 const Cell = create_ssr_component(($$result, $$props, $$bindings, slots) => {
-  let $windowSize, $$unsubscribe_windowSize;
-  const windowSize = windowSizeStore();
-  $$unsubscribe_windowSize = subscribe(windowSize, (value) => $windowSize = value);
   let { id = "" } = $$props;
-  let { deviceName = "" } = $$props;
   let { autoJoin = false } = $$props;
-  async function submit(formData, action) {
-    const data = {
-      serial: formData.get("id"),
-      deviceName: formData.get("deviceName"),
-      width: $windowSize?.innerWidth,
-      height: $windowSize?.innerHeight
-    };
-    console.log("submitting", data);
+  async function submit() {
     requestFullScreen();
     requestWakeLock();
-    await post(action.toString(), data);
     await goto(`/cell/frame/blank?id=${id}`, { replaceState: false });
   }
   if ($$props.id === void 0 && $$bindings.id && id !== void 0)
     $$bindings.id(id);
-  if ($$props.deviceName === void 0 && $$bindings.deviceName && deviceName !== void 0)
-    $$bindings.deviceName(deviceName);
   if ($$props.autoJoin === void 0 && $$bindings.autoJoin && autoJoin !== void 0)
     $$bindings.autoJoin(autoJoin);
   {
     {
       if (autoJoin && browser) {
-        const form = document.querySelector("form");
-        submit(new FormData(form), new URL(form.action));
+        submit();
       }
     }
   }
-  $$unsubscribe_windowSize();
   return `${$$result.head += `${$$result.title = `<title>New Cell | CellWall</title>`, ""}`, ""}
 
 ${!autoJoin ? `${validate_component(TopBar, "TopBar").$$render($$result, {}, {}, {})}` : ``}
@@ -145,7 +124,8 @@ ${validate_component(RemoteFrame, "RemoteFrame").$$render($$result, {}, {}, {
     default: () => {
       return `${validate_component(Form, "Form").$$render($$result, {
         class: "flex flex-col gap-y-4",
-        action: "/api/device/" + id,
+        action: "/cell/frame/blank",
+        method: "get",
         onSubmit: submit
       }, {}, {
         default: ({ loading }) => {
@@ -154,13 +134,6 @@ ${validate_component(RemoteFrame, "RemoteFrame").$$render($$result, {}, {}, {
               return `<input id="${"control-id"}"${add_attribute("class", inputClassName, 0)} name="${"id"}" type="${"text"}" required${add_attribute("value", id, 0)}>`;
             }
           })}
-		${validate_component(VerticalField, "VerticalField").$$render($$result, { for: "control-name", label: "Name" }, {}, {
-            default: ({ inputClassName }) => {
-              return `<input id="${"control-name"}"${add_attribute("class", inputClassName, 0)} name="${"deviceName"}" type="${"text"}" required${add_attribute("value", deviceName, 0)}>`;
-            }
-          })}
-		<input type="${"hidden"}" name="${"width"}"${add_attribute("value", $windowSize?.innerWidth, 0)}>
-		<input type="${"hidden"}" name="${"height"}"${add_attribute("value", $windowSize?.innerHeight, 0)}>
 
 		${validate_component(ResetSubmit, "ResetSubmit").$$render($$result, { loading }, {}, {})}`;
         }

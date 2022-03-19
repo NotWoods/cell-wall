@@ -6,20 +6,15 @@ const css = {
   map: null
 };
 const Demo = create_ssr_component(($$result, $$props, $$bindings, slots) => {
-  let demoEntries = [
-    { id: "demo1", name: "Demo_1" },
-    { id: "demo2", name: "Demo_2" },
-    { id: "demo3", name: "Demo_3" },
-    { id: "demo4", name: "Demo_Tablet" }
-  ];
+  let demoEntries = ["demo1", "demo2", "demo3", "demo4"];
   $$result.css.add(css);
   return `${$$result.head += `${$$result.title = `<title>CellWall Demo</title>`, ""}`, ""}
 
 ${validate_component(TopBar, "TopBar").$$render($$result, {}, {}, {})}
 ${validate_component(RemoteFrame, "RemoteFrame").$$render($$result, { fullWidth: true }, {}, {
     default: () => {
-      return `<div class="${"demo-wall mx-auto svelte-e6vggo"}">${each(demoEntries, ({ id, name }) => {
-        return `<iframe class="${"demo-cell shadow-lg bg-zinc-900 h-full w-full"}" src="${"/cell?id=" + escape(id) + "&name=" + escape(name) + "&autojoin"}"${add_attribute("title", name, 0)} style="${"grid-area: " + escape(id)}"></iframe>`;
+      return `<div class="${"demo-wall mx-auto svelte-e6vggo"}">${each(demoEntries, (id) => {
+        return `<iframe class="${"demo-cell shadow-lg bg-zinc-900 h-full w-full"}" src="${"/cell?id=" + escape(id) + "&autojoin"}"${add_attribute("title", id, 0)} style="${"grid-area: " + escape(id)}"></iframe>`;
       })}</div>`;
     }
   })}`;
