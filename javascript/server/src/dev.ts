@@ -1,6 +1,6 @@
 import type { FastifyReply, FastifyRequest } from 'fastify';
 import fastifyReplyFrom from 'fastify-reply-from';
-import { PORT } from './lib/env';
+import { PORT, SERVER_ADDRESS } from './lib/env';
 import { createServer } from './server';
 
 const CLIENT_ROUTES = [
@@ -36,6 +36,7 @@ async function main() {
 
 	const address = await fastify.listen(PORT, '0.0.0.0');
 	console.log(`Dev mode: Listening on ${address}`);
+	console.log(`IP is ${SERVER_ADDRESS}`);
 }
 
 main().catch((err: unknown) => {

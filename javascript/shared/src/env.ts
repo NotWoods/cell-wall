@@ -12,9 +12,12 @@ function formatURL(address = '0.0.0.0', port = '3000') {
 
 export const VERSION = '4.0.0';
 
-export function env(envVariables: Partial<Record<string, string | boolean | undefined>>) {
+export function env(
+	envVariables: Partial<Record<string, string | boolean | undefined>>,
+	address?: string
+) {
 	const formatted = formatURL(
-		envVariables['SERVER_ADDRESS'] as string,
+		(envVariables['SERVER_ADDRESS'] as string | undefined) ?? address,
 		envVariables['PORT'] as string | undefined
 	);
 
