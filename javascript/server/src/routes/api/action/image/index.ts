@@ -1,4 +1,4 @@
-import { blankState, validRect, type RectangleWithPosition } from '@cell-wall/shared';
+import { blankState, validRectWithPos, type RectangleWithPosition } from '@cell-wall/shared';
 import type { FastifyInstance } from 'fastify';
 import type Jimp from 'jimp';
 import { get as getState } from 'svelte/store';
@@ -70,7 +70,10 @@ export default async function (fastify: FastifyInstance): Promise<void> {
 			);
 			const includes = devices.size > 0 ? devices.has.bind(devices) : () => true;
 			const cellData = getState(repo.cellData);
-			const cells = filterMap(cellData, (cell, serial) => validRect(cell.info) && includes(serial));
+			const cells = filterMap(
+				cellData,
+				(cell, serial) => validRectWithPos(cell.info) && includes(serial)
+			);
 			const rects: ReadonlyMap<string, RectangleWithPosition> = transformMap(cells, (cell) => ({
 				width: cell.info?.width ?? 1,
 				height: cell.info?.height ?? 1,

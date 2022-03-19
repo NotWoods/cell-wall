@@ -14,8 +14,12 @@ function isNumber(number: unknown) {
 	return typeof number === 'number' && !Number.isNaN(number);
 }
 
-export function validRect(
+export function validRect(rect: Partial<Rectangle> | undefined = {}): rect is Rectangle {
+	return isNumber(rect.width) && isNumber(rect.height);
+}
+
+export function validRectWithPos(
 	rect: Partial<RectangleWithPosition> | undefined = {}
 ): rect is RectangleWithPosition {
-	return isNumber(rect.x) && isNumber(rect.y) && isNumber(rect.width) && isNumber(rect.height);
+	return isNumber(rect.x) && isNumber(rect.y) && validRect(rect);
 }
