@@ -1299,7 +1299,7 @@ var image_exports = {};
 __export(image_exports, {
   default: () => image_default
 });
-import { blankState as blankState2, validRect } from "@cell-wall/shared";
+import { blankState as blankState2, validRectWithPos } from "@cell-wall/shared";
 async function updateRemainingCells(remaining, behaviour) {
   switch (behaviour) {
     case "blank":
@@ -1345,7 +1345,7 @@ async function image_default(fastify) {
       const devices = new Set(Array.isArray(request.query.device) ? request.query.device : [request.query.device]);
       const includes = devices.size > 0 ? devices.has.bind(devices) : () => true;
       const cellData = get_store_value(repo.cellData);
-      const cells = filterMap(cellData, (cell, serial) => validRect(cell.info) && includes(serial));
+      const cells = filterMap(cellData, (cell, serial) => validRectWithPos(cell.info) && includes(serial));
       const rects = transformMap(cells, (cell) => {
         var _a, _b, _c, _d;
         return {
