@@ -1,7 +1,6 @@
-import { textState, type CellState } from '@cell-wall/shared';
+import { RandomColor, textState, type CellState } from '@cell-wall/shared';
 import type { FastifyInstance } from 'fastify';
 import { derived, get as getState } from 'svelte/store';
-import { RandomColor } from '../../../lib/color';
 import { transformMap } from '../../../lib/map/transform';
 import { repo } from '../../../lib/repository';
 

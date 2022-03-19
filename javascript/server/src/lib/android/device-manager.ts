@@ -1,8 +1,10 @@
+import type { CellState } from '@cell-wall/shared';
 import type { Device, InstallOrUpgradeResult } from 'appium-adb';
 import { ADB } from 'appium-adb';
 import type { Readable, Subscriber, Unsubscriber } from 'svelte/store';
 import { writable } from 'svelte/store';
-import { PORT } from '../env';
+import { toUri } from '../cells/state';
+import { PACKAGE_NAME, PORT } from '../env';
 import { transformMapAsync } from '../map/transform';
 import type { StartIntentOptions } from './adb-action';
 import { checkIfOn, startIntent } from './adb-action';
@@ -101,7 +103,7 @@ export class DeviceManager implements Readable<DeviceMap> {
 		});
 	}
 
-	async startIntent(serial: string, options: StartIntentOptions): Promise<boolean> {
+	private async startIntent(serial: string, options: StartIntentOptions): Promise<boolean> {
 		return this.run(serial, async (adb) => {
 			try {
 				await startIntent(adb, options);
@@ -117,6 +119,22 @@ export class DeviceManager implements Readable<DeviceMap> {
 		return this.run(serial, async (adb) => {
 			await adb.reversePort(devicePort, PORT);
 			return true;
+		});
+	}
+
+	async startWebClient(serial: string, server: URL | string, deviceName: string) {
+		return this.startIntent(serial, {
+			action: 'android.intent.action.VIEW',
+			dataUri: new URL(`/cell?id=${serial}&name=${deviceName}&autojoin`, server),
+			waitForLaunch: true
+		});
+	}
+
+	async startAndroidClient(serial: string, server: URL | string, state: CellState) {
+		return this.startIntent(serial, {
+			action: `${PACKAGE_NAME}.DISPLAY`,
+			dataUri: toUri(state, server),
+			waitForLaunch: true
 		});
 	}
 }

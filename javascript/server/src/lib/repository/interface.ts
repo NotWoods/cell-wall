@@ -19,4 +19,5 @@ export interface Repository {
 	getPower(serial: string): Promise<boolean>;
 	setPower(serial: string | readonly string[], on: boolean | 'toggle'): Promise<boolean>;
 	registerCell(info: CellInfo): Promise<void>;
+	openClientOnDevice(serial: string): Promise<void>;
 }

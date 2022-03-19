@@ -1,8 +1,8 @@
 import type { CellData } from '@cell-wall/shared';
-import { derived, get, Readable, Unsubscriber } from 'svelte/store';
+import { derived, get, type Readable, type Unsubscriber } from 'svelte/store';
 import { DeviceManager } from '../android/device-manager';
 import { setPower } from '../android/power';
-import { CellManager, cellStateStore, toUri } from '../cells';
+import { CellManager, cellStateStore } from '../cells';
 import { DATABASE_FILENAME, PACKAGE_NAME, SERVER_ADDRESS } from '../env';
 import { SplitImageCache } from '../image/cache';
 import { asArray, getAll } from '../map/get';
@@ -39,11 +39,7 @@ function sendIntentOnStateChange(
 
 				// WebSocket connections override Android connections
 				if (state && connection.has('android') && !connection.has('web')) {
-					await deviceManager.startIntent(serial, {
-						action: `${PACKAGE_NAME}.DISPLAY`,
-						dataUri: toUri(state, server),
-						waitForLaunch: true
-					});
+					await deviceManager.startAndroidClient(serial, server, state);
 				}
 			})
 		);
@@ -121,6 +117,12 @@ export function repository(): Repository {
 
 			const db = await dbPromise;
 			await cellManager.writeInfo(db);
+		},
+		async openClientOnDevice(serial) {
+			const deviceManager = await deviceManagerPromise;
+			const { server = SERVER_ADDRESS, deviceName = '' } = get(cellData).get(serial)?.info ?? {};
+
+			await deviceManager.startWebClient(serial, server, deviceName);
 		}
 	};
 }
