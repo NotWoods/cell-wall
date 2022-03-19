@@ -52,11 +52,11 @@
     "isEntry": true,
     "imports": [
       "_index-4d214b4e.js",
-      "_SubmitButton-c96a2606.js",
+      "_SubmitButton-113a8403.js",
       "_VerticalField-55978348.js",
       "__form-52443b97.js",
-      "_snackbar-host-d6555a45.js",
-      "_cell-state-schema-b294815b.js",
+      "_snackbar-host-6f301a82.js",
+      "_cell-state-schema-de0c81a8.js",
       "_index-23b4b723.js",
       "_LoadingSpinner-97b51d95.js"
     ]
@@ -70,10 +70,18 @@
       "_HorizontalField-12292c4d.js",
       "_LoadingSpinner-97b51d95.js",
       "_index-23b4b723.js",
-      "___layout-828ca917.js",
+      "___layout-3ca1fd0f.js",
       "_TopBar-fb618005.js",
-      "_snackbar-host-d6555a45.js",
-      "_cell-state-schema-b294815b.js"
+      "_snackbar-host-6f301a82.js",
+      "_cell-state-schema-de0c81a8.js"
+    ]
+  },
+  "src/routes/remote/canvas.svelte": {
+    "file": "entries/pages/remote/canvas.svelte.js",
+    "src": "src/routes/remote/canvas.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index-4d214b4e.js"
     ]
   },
   "src/routes/remote/custom.svelte": {
@@ -82,16 +90,16 @@
     "isEntry": true,
     "imports": [
       "_index-4d214b4e.js",
-      "_ResetSubmit-703d5a7b.js",
+      "_ResetSubmit-ef1937a5.js",
       "_DeviceOptions-8dcbbe6c.js",
       "_HorizontalField-12292c4d.js",
-      "_SubmitButton-c96a2606.js",
-      "___layout-828ca917.js",
-      "_cell-state-schema-b294815b.js",
-      "__PowerButtons-9ee3a43c.js",
+      "_SubmitButton-113a8403.js",
+      "___layout-3ca1fd0f.js",
+      "_cell-state-schema-de0c81a8.js",
+      "__PowerButtons-f8730e1a.js",
       "__form-52443b97.js",
       "_LoadingSpinner-97b51d95.js",
-      "_snackbar-host-d6555a45.js",
+      "_snackbar-host-6f301a82.js",
       "_index-23b4b723.js",
       "_TopBar-fb618005.js"
     ]
@@ -102,14 +110,14 @@
     "isEntry": true,
     "imports": [
       "_index-4d214b4e.js",
-      "_ResetSubmit-703d5a7b.js",
+      "_ResetSubmit-ef1937a5.js",
       "_DeviceOptions-8dcbbe6c.js",
       "_HorizontalField-12292c4d.js",
-      "_SubmitButton-c96a2606.js",
-      "___layout-828ca917.js",
+      "_SubmitButton-113a8403.js",
+      "___layout-3ca1fd0f.js",
       "_LoadingSpinner-97b51d95.js",
-      "_snackbar-host-d6555a45.js",
-      "_cell-state-schema-b294815b.js",
+      "_snackbar-host-6f301a82.js",
+      "_cell-state-schema-de0c81a8.js",
       "_index-23b4b723.js",
       "_TopBar-fb618005.js"
     ]
@@ -120,16 +128,16 @@
     "isEntry": true,
     "imports": [
       "_index-4d214b4e.js",
-      "_ResetSubmit-703d5a7b.js",
+      "_ResetSubmit-ef1937a5.js",
       "_DeviceOptions-8dcbbe6c.js",
       "_HorizontalField-12292c4d.js",
-      "_SubmitButton-c96a2606.js",
-      "___layout-828ca917.js",
-      "__PowerButtons-9ee3a43c.js",
+      "_SubmitButton-113a8403.js",
+      "___layout-3ca1fd0f.js",
+      "__PowerButtons-f8730e1a.js",
       "__form-52443b97.js",
       "_LoadingSpinner-97b51d95.js",
-      "_snackbar-host-d6555a45.js",
-      "_cell-state-schema-b294815b.js",
+      "_snackbar-host-6f301a82.js",
+      "_cell-state-schema-de0c81a8.js",
       "_index-23b4b723.js",
       "_TopBar-fb618005.js"
     ]
@@ -140,15 +148,15 @@
     "isEntry": true,
     "imports": [
       "_index-4d214b4e.js",
-      "_ResetSubmit-703d5a7b.js",
+      "_ResetSubmit-ef1937a5.js",
       "_DeviceOptions-8dcbbe6c.js",
       "_HorizontalField-12292c4d.js",
       "_VerticalField-55978348.js",
-      "_SubmitButton-c96a2606.js",
-      "___layout-828ca917.js",
+      "_SubmitButton-113a8403.js",
+      "___layout-3ca1fd0f.js",
       "_LoadingSpinner-97b51d95.js",
-      "_snackbar-host-d6555a45.js",
-      "_cell-state-schema-b294815b.js",
+      "_snackbar-host-6f301a82.js",
+      "_cell-state-schema-de0c81a8.js",
       "_index-23b4b723.js",
       "_TopBar-fb618005.js"
     ]
@@ -159,14 +167,14 @@
     "isEntry": true,
     "imports": [
       "_index-4d214b4e.js",
-      "_ResetSubmit-703d5a7b.js",
+      "_ResetSubmit-ef1937a5.js",
       "_VerticalField-55978348.js",
-      "_SubmitButton-c96a2606.js",
+      "_SubmitButton-113a8403.js",
       "_TopBar-fb618005.js",
       "_index-23b4b723.js",
       "_LoadingSpinner-97b51d95.js",
-      "_snackbar-host-d6555a45.js",
-      "_cell-state-schema-b294815b.js"
+      "_snackbar-host-6f301a82.js",
+      "_cell-state-schema-de0c81a8.js"
     ]
   },
   "src/routes/cell/frame/__layout.svelte": {
@@ -175,7 +183,7 @@
     "isEntry": true,
     "imports": [
       "_index-4d214b4e.js",
-      "_cell-state-schema-b294815b.js",
+      "_cell-state-schema-de0c81a8.js",
       "_index-23b4b723.js"
     ],
     "css": [
@@ -199,8 +207,8 @@
     "isEntry": true,
     "imports": [
       "_index-4d214b4e.js",
-      "_index-36b7e429.js",
-      "_cell-state-schema-b294815b.js",
+      "_cell-state-schema-de0c81a8.js",
+      "_index-55db9420.js",
       "src/routes/cell/frame/__layout.svelte",
       "_index-23b4b723.js"
     ]
@@ -211,8 +219,8 @@
     "isEntry": true,
     "imports": [
       "_index-4d214b4e.js",
-      "_index-36b7e429.js",
-      "_cell-state-schema-b294815b.js",
+      "_cell-state-schema-de0c81a8.js",
+      "_index-55db9420.js",
       "src/routes/cell/frame/__layout.svelte",
       "_index-23b4b723.js"
     ],
@@ -226,8 +234,8 @@
     "isEntry": true,
     "imports": [
       "_index-4d214b4e.js",
-      "_index-36b7e429.js",
-      "_cell-state-schema-b294815b.js",
+      "_cell-state-schema-de0c81a8.js",
+      "_index-55db9420.js",
       "src/routes/cell/frame/__layout.svelte",
       "_index-23b4b723.js"
     ],
@@ -265,23 +273,23 @@
     "isEntry": true,
     "imports": [
       "_index-4d214b4e.js",
-      "___layout-828ca917.js",
+      "___layout-3ca1fd0f.js",
       "_TopBar-fb618005.js",
-      "_snackbar-host-d6555a45.js",
+      "_snackbar-host-6f301a82.js",
       "_index-23b4b723.js",
-      "_cell-state-schema-b294815b.js"
+      "_cell-state-schema-de0c81a8.js"
     ]
   },
   "_index-4d214b4e.js": {
     "file": "chunks/index-4d214b4e.js"
   },
-  "___layout-828ca917.js": {
-    "file": "chunks/__layout-828ca917.js",
+  "___layout-3ca1fd0f.js": {
+    "file": "chunks/__layout-3ca1fd0f.js",
     "imports": [
       "_index-4d214b4e.js",
       "_TopBar-fb618005.js",
       "_index-23b4b723.js",
-      "_snackbar-host-d6555a45.js"
+      "_snackbar-host-6f301a82.js"
     ],
     "css": [
       "assets/__layout-71ab9adf.css"
@@ -296,10 +304,10 @@
       "assets/TopBar-54ec2d4e.css"
     ]
   },
-  "_snackbar-host-d6555a45.js": {
-    "file": "chunks/snackbar-host-d6555a45.js",
+  "_snackbar-host-6f301a82.js": {
+    "file": "chunks/snackbar-host-6f301a82.js",
     "imports": [
-      "_cell-state-schema-b294815b.js",
+      "_cell-state-schema-de0c81a8.js",
       "_index-23b4b723.js"
     ]
   },
@@ -309,14 +317,14 @@
       "_index-4d214b4e.js"
     ]
   },
-  "_cell-state-schema-b294815b.js": {
-    "file": "chunks/cell-state-schema-b294815b.js"
+  "_cell-state-schema-de0c81a8.js": {
+    "file": "chunks/cell-state-schema-de0c81a8.js"
   },
-  "_SubmitButton-c96a2606.js": {
-    "file": "chunks/SubmitButton-c96a2606.js",
+  "_SubmitButton-113a8403.js": {
+    "file": "chunks/SubmitButton-113a8403.js",
     "imports": [
       "_index-4d214b4e.js",
-      "_snackbar-host-d6555a45.js",
+      "_snackbar-host-6f301a82.js",
       "_LoadingSpinner-97b51d95.js"
     ]
   },
@@ -343,11 +351,11 @@
       "_LoadingSpinner-97b51d95.js"
     ]
   },
-  "_ResetSubmit-703d5a7b.js": {
-    "file": "chunks/ResetSubmit-703d5a7b.js",
+  "_ResetSubmit-ef1937a5.js": {
+    "file": "chunks/ResetSubmit-ef1937a5.js",
     "imports": [
       "_index-4d214b4e.js",
-      "_SubmitButton-c96a2606.js"
+      "_SubmitButton-113a8403.js"
     ]
   },
   "_DeviceOptions-8dcbbe6c.js": {
@@ -356,17 +364,17 @@
       "_index-4d214b4e.js"
     ]
   },
-  "__PowerButtons-9ee3a43c.js": {
-    "file": "chunks/_PowerButtons-9ee3a43c.js",
+  "__PowerButtons-f8730e1a.js": {
+    "file": "chunks/_PowerButtons-f8730e1a.js",
     "imports": [
       "_index-4d214b4e.js",
-      "_SubmitButton-c96a2606.js"
+      "_SubmitButton-113a8403.js"
     ]
   },
-  "_index-36b7e429.js": {
-    "file": "chunks/index-36b7e429.js",
+  "_index-55db9420.js": {
+    "file": "chunks/index-55db9420.js",
     "imports": [
-      "_cell-state-schema-b294815b.js"
+      "_cell-state-schema-de0c81a8.js"
     ]
   },
   ".svelte-kit/build/hooks.js": {

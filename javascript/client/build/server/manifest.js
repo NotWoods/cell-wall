@@ -3,7 +3,7 @@ export const manifest = {
 	assets: new Set(["css/base.css","img/daphne.jpg","img/tiger.jpg","logo.png","manifest.webmanifest","preset/info.json","preset/tea.json"]),
 	mimeTypes: {".css":"text/css",".jpg":"image/jpeg",".png":"image/png",".webmanifest":"application/manifest+json",".json":"application/json"},
 	_: {
-		entry: {"file":"start-57ba22e1.js","js":["start-57ba22e1.js","chunks/vendor-75710b0b.js","chunks/singletons-d1fb5791.js"],"css":[]},
+		entry: {"file":"start-1930c28c.js","js":["start-1930c28c.js","chunks/vendor-75710b0b.js","chunks/singletons-d1fb5791.js"],"css":[]},
 		nodes: [
 			() => import('./nodes/0.js'),
 			() => import('./nodes/1.js'),
@@ -23,7 +23,8 @@ export const manifest = {
 			() => import('./nodes/15.js'),
 			() => import('./nodes/16.js'),
 			() => import('./nodes/17.js'),
-			() => import('./nodes/18.js')
+			() => import('./nodes/18.js'),
+			() => import('./nodes/19.js')
 		],
 		routes: [
 			{
@@ -61,13 +62,24 @@ export const manifest = {
 			},
 			{
 				type: 'page',
+				id: "remote/canvas",
+				pattern: /^\/remote\/canvas\/?$/,
+				names: [],
+				types: [],
+				path: "/remote/canvas",
+				shadow: null,
+				a: [0,3,7],
+				b: [1,5]
+			},
+			{
+				type: 'page',
 				id: "remote/custom",
 				pattern: /^\/remote\/custom\/?$/,
 				names: [],
 				types: [],
 				path: "/remote/custom",
 				shadow: null,
-				a: [0,3,7],
+				a: [0,3,8],
 				b: [1,5]
 			},
 			{
@@ -78,7 +90,7 @@ export const manifest = {
 				types: [],
 				path: "/remote/image",
 				shadow: null,
-				a: [0,3,8],
+				a: [0,3,9],
 				b: [1,5]
 			},
 			{
@@ -89,7 +101,7 @@ export const manifest = {
 				types: [],
 				path: "/remote/edit",
 				shadow: null,
-				a: [0,3,9],
+				a: [0,3,10],
 				b: [1,5]
 			},
 			{
@@ -100,7 +112,7 @@ export const manifest = {
 				types: [],
 				path: "/remote/text",
 				shadow: null,
-				a: [0,3,10],
+				a: [0,3,11],
 				b: [1,5]
 			},
 			{
@@ -111,7 +123,7 @@ export const manifest = {
 				types: [],
 				path: "/cell",
 				shadow: null,
-				a: [0,11],
+				a: [0,12],
 				b: [1]
 			},
 			{
@@ -122,7 +134,7 @@ export const manifest = {
 				types: [],
 				path: "/cell/frame/blank",
 				shadow: null,
-				a: [0,12,13],
+				a: [0,13,14],
 				b: [1]
 			},
 			{
@@ -133,7 +145,7 @@ export const manifest = {
 				types: [],
 				path: "/cell/frame/image",
 				shadow: null,
-				a: [0,12,14],
+				a: [0,13,15],
 				b: [1]
 			},
 			{
@@ -144,7 +156,7 @@ export const manifest = {
 				types: [],
 				path: "/cell/frame/text",
 				shadow: null,
-				a: [0,12,15],
+				a: [0,13,16],
 				b: [1]
 			},
 			{
@@ -155,7 +167,7 @@ export const manifest = {
 				types: [],
 				path: "/cell/frame/web",
 				shadow: null,
-				a: [0,12,16],
+				a: [0,13,17],
 				b: [1]
 			},
 			{
@@ -166,7 +178,7 @@ export const manifest = {
 				types: [],
 				path: "/demo",
 				shadow: null,
-				a: [0,17],
+				a: [0,18],
 				b: [1]
 			},
 			{
@@ -177,7 +189,7 @@ export const manifest = {
 				types: [null],
 				path: null,
 				shadow: null,
-				a: [0,18],
+				a: [0,19],
 				b: [1]
 			}
 		],

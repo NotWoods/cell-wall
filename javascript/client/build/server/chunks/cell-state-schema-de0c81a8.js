@@ -1,3 +1,4 @@
+(/* @__PURE__ */ new Map()).set("width", "x").set("height", "y");
 const blankState = Object.freeze({ type: "BLANK", payload: "" });
 function buildCellState(options) {
   const { type, properties = {}, required = [] } = options;

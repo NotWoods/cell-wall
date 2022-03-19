@@ -1,9 +1,9 @@
-import { c as create_ssr_component, e as escape, v as validate_component, f as add_classes, b as add_attribute } from "../../../chunks/index-4d214b4e.js";
-import { S as SubmitButton, F as Form } from "../../../chunks/SubmitButton-c96a2606.js";
+import { c as create_ssr_component, e as escape, v as validate_component, f as add_classes } from "../../../chunks/index-4d214b4e.js";
+import { S as SubmitButton, F as Form } from "../../../chunks/SubmitButton-113a8403.js";
 import { V as VerticalField } from "../../../chunks/VerticalField-55978348.js";
 import { f as formDataAsSearchParams } from "../../../chunks/_form-52443b97.js";
-import "../../../chunks/snackbar-host-d6555a45.js";
-import "../../../chunks/cell-state-schema-b294815b.js";
+import "../../../chunks/snackbar-host-6f301a82.js";
+import "../../../chunks/cell-state-schema-de0c81a8.js";
 import "../../../chunks/index-23b4b723.js";
 import "../../../chunks/LoadingSpinner-97b51d95.js";
 const Card = create_ssr_component(($$result, $$props, $$bindings, slots) => {
@@ -107,20 +107,26 @@ const Remote = create_ssr_component(($$result, $$props, $$bindings, slots) => {
         }
       })}
 	${validate_component(PresetCard, "PresetCard").$$render($$result, {
-        title: "Install Android update",
-        button: "Install",
-        formAction: "/api/action/install",
+        title: "Actions",
+        button: "Launch on devices",
+        formAction: "/api/action/launch",
         status
       }, {}, {
         default: () => {
-          return `${validate_component(VerticalField, "VerticalField").$$render($$result, { label: "Tag", for: "control-tag" }, {}, {
-            default: ({ inputClassName }) => {
-              return `<input${add_attribute("class", inputClassName, 0)} id="${"control-tag"}" name="${"tag"}" type="${"text"}" placeholder="${"Latest"}">`;
+          return `<a class="${"px-4 py-2 rounded-md shadow-sm text-sm font-medium text-white transition-colors bg-slate-700 hover:bg-slate-800"}" href="${"/remote/third_party"}">SDK Login
+		</a>
+		${validate_component(SubmitButton, "SubmitButton").$$render($$result, {
+            name: "action",
+            value: "install",
+            loading: status.submitterName === "action" && status.submitterValue === "install" ? status.loading : Promise.resolve(),
+            formaction: "/api/action/install"
+          }, {}, {
+            default: () => {
+              return `Install`;
             }
           })}`;
         }
-      })}
-	<div><a class="${"px-4 py-2 rounded-md shadow-sm text-sm font-medium text-white transition-colors bg-slate-700 hover:bg-slate-800"}" href="${"/remote/third_party"}">SDK Login</a></div>`;
+      })}`;
     }
   })}`;
 });

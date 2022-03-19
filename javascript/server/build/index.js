@@ -450,6 +450,9 @@ var init_device_manager = __esm({
           return false;
         return action(adb);
       }
+      webClientUrl(serial, server) {
+        return new URL(`/cell?id=${serial}&autojoin`, server);
+      }
       async checkIfOn(serial) {
         return this.run(serial, checkIfOn);
       }
@@ -479,11 +482,18 @@ var init_device_manager = __esm({
       async startWebClient(serial, server) {
         return this.startIntent(serial, {
           action: "android.intent.action.VIEW",
-          dataUri: new URL(`/cell?id=${serial}&autojoin`, server),
+          dataUri: this.webClientUrl(serial, server),
           waitForLaunch: true
         });
       }
-      async startAndroidClient(serial, server, state) {
+      async startAndroidClient(serial, server) {
+        return this.startIntent(serial, {
+          action: `${PACKAGE_NAME}.DISPLAY`,
+          dataUri: this.webClientUrl(serial, server),
+          waitForLaunch: true
+        });
+      }
+      async sendAndroidClientState(serial, server, state) {
         return this.startIntent(serial, {
           action: `${PACKAGE_NAME}.DISPLAY`,
           dataUri: toUri(state, server),
@@ -607,35 +617,6 @@ var init_cells = __esm({
   }
 });
 
-// src/lib/cells/canvas.ts
-function cellCanvas(cells) {
-  const canvas = { x: Infinity, y: Infinity, width: 0, height: 0 };
-  for (const info of cells) {
-    for (const [axis, pos] of AXIS_TO_POS) {
-      const value = info[pos] + info[axis];
-      if (!Number.isNaN(value)) {
-        canvas[pos] = Math.min(canvas[pos], info[pos]);
-        canvas[axis] = Math.max(canvas[axis], info[pos] + info[axis]);
-      }
-    }
-  }
-  canvas.width = canvas.width - canvas.x;
-  canvas.height = canvas.height - canvas.y;
-  return canvas;
-}
-function shiftCell(canvas, cell) {
-  const copy = __spreadValues({}, cell);
-  copy.x = cell.x - canvas.x;
-  copy.y = cell.y - canvas.y;
-  return copy;
-}
-var AXIS_TO_POS;
-var init_canvas = __esm({
-  "src/lib/cells/canvas.ts"() {
-    AXIS_TO_POS = (/* @__PURE__ */ new Map()).set("width", "x").set("height", "y");
-  }
-});
-
 // src/lib/image/manipulate.ts
 import Jimp from "jimp";
 import { setHas } from "ts-extras";
@@ -687,6 +668,7 @@ var init_manipulate = __esm({
 });
 
 // src/lib/image/split.ts
+import { cellCanvas, shiftCell } from "@cell-wall/shared";
 import Jimp2 from "jimp";
 async function splitImage(image, cells, options = {}) {
   const canvas = cellCanvas(cells.values());
@@ -702,7 +684,6 @@ async function splitImage(image, cells, options = {}) {
 }
 var init_split = __esm({
   "src/lib/image/split.ts"() {
-    init_canvas();
     init_transform();
     init_manipulate();
   }
@@ -1129,7 +1110,7 @@ function sendIntentOnStateChange(cellData, deviceManager) {
     Promise.all(Array.from(stateChanges).map(async ([serial, state]) => {
       const { server = SERVER_ADDRESS, connection = /* @__PURE__ */ new Set() } = connectionInfo.get(serial) ?? {};
       if (state && connection.has("android") && !connection.has("web")) {
-        await deviceManager.startAndroidClient(serial, server, state);
+        await deviceManager.sendAndroidClientState(serial, server, state);
       }
     }));
   });
@@ -1202,7 +1183,7 @@ function repository() {
       var _a;
       const deviceManager2 = await deviceManagerPromise;
       const { server = SERVER_ADDRESS } = ((_a = get_store_value(cellData).get(serial)) == null ? void 0 : _a.info) ?? {};
-      await deviceManager2.startWebClient(serial, server);
+      await deviceManager2.startAndroidClient(serial, server);
     }
   };
 }
@@ -1268,24 +1249,11 @@ var init_serial = __esm({
   }
 });
 
-// src/lib/image/rect.ts
-function isNumber(number) {
-  return typeof number === "number" && !Number.isNaN(number);
-}
-function validRect(rect = {}) {
-  return isNumber(rect.x) && isNumber(rect.y) && isNumber(rect.width) && isNumber(rect.height);
-}
-var init_rect = __esm({
-  "src/lib/image/rect.ts"() {
-  }
-});
-
 // src/lib/image/index.ts
 var init_image = __esm({
   "src/lib/image/index.ts"() {
     init_cache();
     init_manipulate();
-    init_rect();
     init_split();
   }
 });
@@ -1316,7 +1284,7 @@ var image_exports = {};
 __export(image_exports, {
   default: () => image_default
 });
-import { blankState as blankState2 } from "@cell-wall/shared";
+import { blankState as blankState2, validRect } from "@cell-wall/shared";
 async function updateRemainingCells(remaining, behaviour) {
   switch (behaviour) {
     case "blank":
