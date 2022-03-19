@@ -1,7 +1,7 @@
+import type { RectangleWithPosition } from '@cell-wall/shared';
 import type Jimp from 'jimp';
 import { transformMap } from '../map/transform';
 import type { ResizeOptions } from './manipulate';
-import type { RectangleWithPosition } from './rect';
 import { splitImage } from './split';
 
 export class SplitImageCache {

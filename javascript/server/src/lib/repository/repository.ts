@@ -39,7 +39,7 @@ function sendIntentOnStateChange(
 
 				// WebSocket connections override Android connections
 				if (state && connection.has('android') && !connection.has('web')) {
-					await deviceManager.startAndroidClient(serial, server, state);
+					await deviceManager.sendAndroidClientState(serial, server, state);
 				}
 			})
 		);
@@ -122,7 +122,7 @@ export function repository(): Repository {
 			const deviceManager = await deviceManagerPromise;
 			const { server = SERVER_ADDRESS } = get(cellData).get(serial)?.info ?? {};
 
-			await deviceManager.startWebClient(serial, server);
+			await deviceManager.startAndroidClient(serial, server);
 		}
 	};
 }

@@ -1,8 +1,8 @@
-import { blankState } from '@cell-wall/shared';
+import { blankState, validRect, type RectangleWithPosition } from '@cell-wall/shared';
 import type { FastifyInstance } from 'fastify';
 import type Jimp from 'jimp';
 import { get as getState } from 'svelte/store';
-import { RectangleWithPosition, RESIZE, ResizeOptions, validRect } from '../../../../lib/image';
+import { RESIZE, type ResizeOptions } from '../../../../lib/image';
 import { filterMap, transformMap, transformMapAsync } from '../../../../lib/map/transform';
 import { repo } from '../../../../lib/repository';
 import { imagePlugin } from '../../../../parser/image';

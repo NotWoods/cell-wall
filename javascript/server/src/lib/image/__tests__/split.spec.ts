@@ -1,6 +1,6 @@
+import type { RectangleWithPosition } from '@cell-wall/shared';
 import { describe, expect, it } from '@jest/globals';
 import Jimp from 'jimp';
-import type { RectangleWithPosition } from '../rect';
 import { splitImage } from '../split';
 
 const cellInfo = {

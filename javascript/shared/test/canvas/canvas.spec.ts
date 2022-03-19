@@ -1,5 +1,5 @@
 import { describe, expect, it } from '@jest/globals';
-import { cellCanvas, shiftCell } from '../canvas';
+import { cellCanvas, shiftCell } from '../../src/canvas/canvas';
 
 const pixel = {
 	serial: 'ABC',

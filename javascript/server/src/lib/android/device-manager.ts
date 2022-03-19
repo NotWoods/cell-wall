@@ -92,6 +92,10 @@ export class DeviceManager implements Readable<DeviceMap> {
 		return action(adb);
 	}
 
+	private webClientUrl(serial: string, server: URL | string) {
+		return new URL(`/cell?id=${serial}&autojoin`, server);
+	}
+
 	async checkIfOn(serial: string): Promise<boolean> {
 		return this.run(serial, checkIfOn);
 	}
@@ -125,12 +129,20 @@ export class DeviceManager implements Readable<DeviceMap> {
 	async startWebClient(serial: string, server: URL | string) {
 		return this.startIntent(serial, {
 			action: 'android.intent.action.VIEW',
-			dataUri: new URL(`/cell?id=${serial}&autojoin`, server),
+			dataUri: this.webClientUrl(serial, server),
 			waitForLaunch: true
 		});
 	}
 
-	async startAndroidClient(serial: string, server: URL | string, state: CellState) {
+	async startAndroidClient(serial: string, server: URL | string) {
+		return this.startIntent(serial, {
+			action: `${PACKAGE_NAME}.DISPLAY`,
+			dataUri: this.webClientUrl(serial, server),
+			waitForLaunch: true
+		});
+	}
+
+	async sendAndroidClientState(serial: string, server: URL | string, state: CellState) {
 		return this.startIntent(serial, {
 			action: `${PACKAGE_NAME}.DISPLAY`,
 			dataUri: toUri(state, server),

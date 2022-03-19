@@ -1,3 +1,5 @@
+export * from './canvas/canvas.js';
+export * from './canvas/rect.js';
 export * from './cell-data.js';
 export * from './cell-info.js';
 export * from './cell-state-interface/index.js';

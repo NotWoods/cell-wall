@@ -8,6 +8,8 @@
 	import VerticalField from '$lib/components/Field/VerticalField.svelte';
 	import { formDataAsSearchParams } from './_form';
 	import PresetCard from './_PresetCard.svelte';
+	import Button from '$lib/components/Button/Button.svelte';
+	import SubmitButton from '$lib/components/Button/SubmitButton.svelte';
 
 	async function submit(data: FormData, action: URL) {
 		const res = await fetch(action.toString(), {
@@ -49,20 +51,20 @@
 		Calendar indicators and the week's weather.
 	</PresetCard>
 	<PresetCard title="Tea list" preset="tea" large {status}>What's avaliable to drink?</PresetCard>
-	<PresetCard
-		title="Install Android update"
-		button="Install"
-		formAction="/api/action/install"
-		{status}
-	>
-		<VerticalField label="Tag" for="control-tag" let:inputClassName>
-			<input class={inputClassName} id="control-tag" name="tag" type="text" placeholder="Latest" />
-		</VerticalField>
-	</PresetCard>
-	<div>
+	<PresetCard title="Actions" button="Launch on devices" formAction="/api/action/launch" {status}>
 		<a
 			class="px-4 py-2 rounded-md shadow-sm text-sm font-medium text-white transition-colors bg-slate-700 hover:bg-slate-800"
-			href="/remote/third_party">SDK Login</a
+			href="/remote/third_party"
 		>
-	</div>
+			SDK Login
+		</a>
+		<SubmitButton
+			name="action"
+			value="install"
+			loading={status.submitterName === 'action' && status.submitterValue === 'install'
+				? status.loading
+				: Promise.resolve()}
+			formaction="/api/action/install">Install</SubmitButton
+		>
+	</PresetCard>
 </Form>

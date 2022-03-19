@@ -1,6 +1,6 @@
+import type { Rectangle, RectangleWithPosition } from '@cell-wall/shared';
 import Jimp from 'jimp';
 import { setHas } from 'ts-extras';
-import type { Rectangle, RectangleWithPosition } from './rect';
 
 export interface ResizeOptions {
 	horizontalAlign?: string | null;

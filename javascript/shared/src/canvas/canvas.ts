@@ -1,9 +1,8 @@
-import type { Rectangle, RectangleWithPosition } from '../image/rect';
+import type { Position, Rectangle, RectangleWithPosition } from './rect';
 
-const AXIS_TO_POS: ReadonlyMap<
-	keyof Rectangle,
-	Exclude<keyof RectangleWithPosition, keyof Rectangle>
-> = new Map().set('width', 'x').set('height', 'y');
+const AXIS_TO_POS: ReadonlyMap<keyof Rectangle, keyof Position> = new Map()
+	.set('width', 'x')
+	.set('height', 'y');
 
 export function cellCanvas(cells: Iterable<RectangleWithPosition>): RectangleWithPosition {
 	const canvas: RectangleWithPosition = { x: Infinity, y: Infinity, width: 0, height: 0 };

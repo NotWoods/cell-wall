@@ -3,10 +3,12 @@ export interface Rectangle {
 	height: number;
 }
 
-export interface RectangleWithPosition extends Rectangle {
+export interface Position {
 	x: number;
 	y: number;
 }
+
+export type RectangleWithPosition = Rectangle & Position;
 
 function isNumber(number: unknown) {
 	return typeof number === 'number' && !Number.isNaN(number);
