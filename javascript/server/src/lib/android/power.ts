@@ -2,18 +2,18 @@ import type { ADB } from 'appium-adb';
 import { checkIfOn } from './adb-action';
 import type { DeviceMap } from './device-manager';
 
-export type Power = boolean | 'toggle';
-
 const KEYCODE_POWER = 26;
 
-export function asPower(primitive: unknown): Power | undefined {
+export function asPower(primitive: unknown): boolean | undefined {
 	switch (primitive) {
-		case 'toggle':
 		case true:
 		case false:
 			return primitive;
-		case 'true':
 		case 'false':
+			return false;
+		case 0:
+		case 1:
+		case 'true':
 			return Boolean(primitive);
 		default:
 			return undefined;
@@ -36,28 +36,13 @@ async function setPowerOne(client: ADB, on?: boolean) {
 /**
  * Turn all devices on or off.
  */
-export async function setPower(device: ADB | DeviceMap, on: Power): Promise<boolean> {
+export async function setPower(device: ADB | DeviceMap, on: boolean): Promise<boolean> {
 	if (device instanceof Map) {
 		const devices: DeviceMap = device;
-		let allOn: boolean;
-		if (on === 'toggle') {
-			const powerStates = await Promise.all(
-				Array.from(devices.values()).map(async ({ adb: client }) => ({
-					on: await checkIfOn(client),
-					client
-				}))
-			);
-			const numOn = powerStates.filter((state) => state.on).length;
-			const numOff = powerStates.length - numOn;
-			allOn = numOn < numOff;
-		} else {
-			allOn = on;
-		}
-
 		await Promise.all(
-			Array.from(devices.values()).map(({ adb: client }) => setPowerOne(client, allOn))
+			Array.from(devices.values()).map(({ adb: client }) => setPowerOne(client, on))
 		);
-		return allOn;
+		return on;
 	} else {
 		return await setPowerOne(device as ADB);
 	}

@@ -1,7 +1,6 @@
-import type { Power } from '../../../../lib/android/power';
 import { asPower } from '../../../../lib/android/power';
 
-export function parsePowerBody(body: unknown): Power | undefined {
+export function parsePowerBody(body: unknown): boolean | undefined {
 	if (typeof body === 'boolean' || typeof body === 'string') {
 		return asPower(body);
 	} else if (typeof body === 'object' && body !== null) {
