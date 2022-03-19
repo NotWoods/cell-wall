@@ -2,6 +2,7 @@ import { blankState, CellData, CellInfo, CellState, ConnectionType } from '@cell
 import type { Readable } from 'svelte/store';
 import { derived } from 'svelte/store';
 import type { DeviceMap } from '../android/device-manager';
+import { withLastState } from '../store/changes';
 import { computeInfo } from './known';
 import type { WebSocketInfo } from './socket-store';
 
@@ -101,33 +102,42 @@ export function deriveCellData(stores: {
 	const cellInfo = deriveCellInfo(stores);
 	const connections = deriveConnection(stores);
 
-	let lastResult: ReadonlyMap<string, CellData> = new Map();
-	return derived([stores.state, cellInfo, connections], ([stateMap, infoMap, connectionMap]) => {
-		const keys = new Set([...stateMap.keys(), ...infoMap.keys(), ...connectionMap.keys()]);
-		const result = new Map<string, CellData>();
+	const cellDataMap = derived(
+		[stores.state, cellInfo, connections],
+		([stateMap, infoMap, connectionMap]) => {
+			const keys = new Set([...stateMap.keys(), ...infoMap.keys(), ...connectionMap.keys()]);
 
-		for (const serial of keys) {
-			const oldData = lastResult.get(serial);
-			const newData: CellData = {
-				info: infoMap.get(serial),
-				state: stateMap.get(serial) ?? blankState,
-				connection: connectionMap.get(serial) ?? []
-			};
+			return new Map<string, CellData>(
+				Array.from(keys).map((serial) => {
+					const newData: CellData = {
+						info: infoMap.get(serial),
+						state: stateMap.get(serial) ?? blankState,
+						connection: connectionMap.get(serial) ?? []
+					};
 
-			// Don't change the object instance if data is the same
-			if (
-				oldData &&
-				newData.info === oldData.info &&
-				newData.state === oldData.state &&
-				equalConnectionArrays(newData.connection, oldData.connection)
-			) {
-				result.set(serial, oldData);
-			} else {
-				result.set(serial, newData);
-			}
+					return [serial, newData];
+				})
+			);
 		}
+	);
 
-		lastResult = result;
-		return lastResult;
+	return derived(withLastState(cellDataMap), ([result, lastResult]) => {
+		return new Map(
+			Array.from(result.entries()).map(([serial, newData]) => {
+				const oldData = lastResult?.get(serial);
+
+				// Don't change the object instance if data is the same
+				if (
+					oldData &&
+					newData.info === oldData.info &&
+					newData.state === oldData.state &&
+					equalConnectionArrays(newData.connection, oldData.connection)
+				) {
+					return [serial, oldData];
+				} else {
+					return [serial, newData];
+				}
+			})
+		);
 	});
 }
