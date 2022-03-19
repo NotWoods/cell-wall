@@ -83,7 +83,7 @@ const _layout = create_ssr_component(($$result, $$props, $$bindings, slots) => {
     }
   }
   $$unsubscribe_state();
-  return `${$$result.head += `${$$result.title = `<title>Cell</title>`, ""}`, ""}
+  return `${$$result.head += `${$$result.title = `<title>Cell</title>`, ""}<meta name="${"apple-mobile-web-app-capable"}" content="${"yes"}" data-svelte="svelte-ct4vxn"><meta name="${"apple-mobile-web-app-status-bar-style"}" content="${"black-translucent"}" data-svelte="svelte-ct4vxn"><meta name="${"apple-mobile-web-app-title"}" content="${"CellWall"}" data-svelte="svelte-ct4vxn"><link rel="${"apple-touch-icon"}" sizes="${"274x274"}" href="${"/maskable_icon.png"}" data-svelte="svelte-ct4vxn">`, ""}
 
 ${validate_component(PageTransition, "PageTransition").$$render($$result, { key: url }, {}, {
     default: () => {

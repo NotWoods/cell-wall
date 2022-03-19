@@ -117,7 +117,7 @@ const Cell = create_ssr_component(($$result, $$props, $$bindings, slots) => {
       }
     }
   }
-  return `${$$result.head += `${$$result.title = `<title>New Cell | CellWall</title>`, ""}`, ""}
+  return `${$$result.head += `${$$result.title = `<title>New Cell | CellWall</title>`, ""}<meta name="${"apple-mobile-web-app-capable"}" content="${"yes"}" data-svelte="svelte-1vwepwj"><meta name="${"apple-mobile-web-app-status-bar-style"}" content="${"black-translucent"}" data-svelte="svelte-1vwepwj"><meta name="${"apple-mobile-web-app-title"}" content="${"CellWall"}" data-svelte="svelte-1vwepwj"><link rel="${"apple-touch-icon"}" sizes="${"274x274"}" href="${"/maskable_icon.png"}" data-svelte="svelte-1vwepwj">`, ""}
 
 ${!autoJoin ? `${validate_component(TopBar, "TopBar").$$render($$result, {}, {}, {})}` : ``}
 ${validate_component(RemoteFrame, "RemoteFrame").$$render($$result, {}, {}, {
