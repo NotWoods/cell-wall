@@ -8,8 +8,8 @@ function formatURL(address = '0.0.0.0', port = '3000') {
     return { base: new URL(host), port: portN };
 }
 export const VERSION = '4.0.0';
-export function env(envVariables) {
-    const formatted = formatURL(envVariables['SERVER_ADDRESS'], envVariables['PORT']);
+export function env(envVariables, address) {
+    const formatted = formatURL(envVariables['SERVER_ADDRESS'] ?? address, envVariables['PORT']);
     const SERVER_ADDRESS = formatted.base;
     const PORT = formatted.port;
     /**

@@ -39,8 +39,23 @@ var __export = (target, all) => {
 };
 
 // src/lib/env.ts
-import { config } from "dotenv";
 import { env, VERSION } from "@cell-wall/shared/src/env";
+import { config } from "dotenv";
+import { networkInterfaces } from "os";
+function lookupLocalIp() {
+  var _a, _b;
+  const interfaces = networkInterfaces();
+  const results = /* @__PURE__ */ new Map();
+  for (const [name, networks = []] of Object.entries(interfaces)) {
+    networks.filter((network) => network.family === "IPv4" && !network.internal).forEach((network) => {
+      const resultArray = results.get(name) || [];
+      resultArray.push(network.address);
+      results.set(name, resultArray);
+    });
+  }
+  const [firstResult] = results.values();
+  return ((_a = results.get("eth0")) == null ? void 0 : _a[0]) ?? ((_b = results.get("wlan0")) == null ? void 0 : _b[0]) ?? (firstResult == null ? void 0 : firstResult[0]);
+}
 var SERVER_ADDRESS, PORT, PACKAGE_NAME, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GITHUB_TOKEN, DATABASE_FILENAME;
 var init_env = __esm({
   "src/lib/env.ts"() {
@@ -53,7 +68,7 @@ var init_env = __esm({
       GOOGLE_CLIENT_SECRET,
       GITHUB_TOKEN,
       DATABASE_FILENAME
-    } = env(process.env));
+    } = env(process.env, lookupLocalIp()));
   }
 });
 
@@ -2124,6 +2139,7 @@ async function main() {
   fastify.use(handler);
   const address = await fastify.listen(PORT, "0.0.0.0");
   console.log(`Listening on ${address}`);
+  console.log(`IP is ${SERVER_ADDRESS}`);
 }
 main().catch((err) => {
   console.error("error starting server", err);
