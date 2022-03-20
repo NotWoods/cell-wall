@@ -1,6 +1,17 @@
 import { derived, Readable } from 'svelte/store';
 
 /**
+ * Transforms an array store into a map containing the array's elements,
+ * indexed by the key returned from `keySelector` applied to each element.
+ */
+export function associateBy<Key, Value>(
+	store: Readable<readonly Value[]>,
+	keySelector: (value: Value) => Key
+): Readable<ReadonlyMap<Key, Value>> {
+	return derived(store, (values) => new Map(values.map((value) => [keySelector(value), value])));
+}
+
+/**
  * Transform a store value into a tuple that includes the previous state.
  */
 export function withLastState<T>(

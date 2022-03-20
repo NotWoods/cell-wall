@@ -1,22 +1,20 @@
 import { blankState, CellInfo, CellState } from '@cell-wall/shared';
-import { describe, expect, it, jest } from '@jest/globals';
-import type ADB from 'appium-adb';
+import { describe, expect, it } from '@jest/globals';
 import { get, writable } from 'svelte/store';
-import type { DeviceMap } from '../../android/device-manager';
+import type { AndroidProperties } from '../../android/android-properties';
 import { deriveCellData } from '../combine-cell';
 import type { WebSocketInfo } from '../socket-store';
 
 function createStores() {
 	const info = writable(new Map<string, CellInfo>());
 	const state = writable(new Map<string, CellState>());
-	const devices = writable<DeviceMap>(new Map());
+	const androidProperties = writable(new Map<string, AndroidProperties>());
 	const webSockets = writable(new Map<string, WebSocketInfo>());
-	return { info, state, devices, webSockets };
+	return { info, state, androidProperties, webSockets };
 }
 
 function mockDevice(model: string, manufacturer: string) {
 	return {
-		adb: jest.fn() as unknown as ADB,
 		model,
 		manufacturer
 	};
@@ -33,7 +31,7 @@ describe('deriveCellData', () => {
 		const stores = createStores();
 		const derivedStore = deriveCellData(stores);
 
-		stores.devices.set(
+		stores.androidProperties.set(
 			new Map()
 				.set('DEVICEA', mockDevice('ModelA', 'ManufacturerA'))
 				.set('DEVICEB', mockDevice('ManuB ModelB', 'ManuB'))

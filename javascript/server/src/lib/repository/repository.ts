@@ -1,11 +1,9 @@
 import type { CellData } from '@cell-wall/shared';
 import { derived, get, type Readable, type Unsubscriber } from 'svelte/store';
-import { DeviceManager } from '../android/device-manager';
-import { setPower } from '../android/power';
+import { AndroidDeviceManager } from '../android/android-device-manager';
 import { CellManager, cellStateStore } from '../cells';
-import { DATABASE_FILENAME, PACKAGE_NAME, SERVER_ADDRESS } from '../env';
+import { DATABASE_FILENAME, SERVER_ADDRESS } from '../env';
 import { SplitImageCache } from '../image/cache';
-import { asArray, getAll } from '../map/get';
 import { transformMap } from '../map/transform';
 import { onlyNewEntries } from '../store/changes';
 import { deriveCellData } from './combine-cell';
@@ -16,7 +14,7 @@ import { thirdPartyConnectRepository } from './third-party-connect';
 
 function sendIntentOnStateChange(
 	cellData: Readable<ReadonlyMap<string, CellData>>,
-	deviceManager: DeviceManager
+	deviceManager: AndroidDeviceManager
 ): Unsubscriber {
 	const connectionInfoStore = derived(cellData, (data) =>
 		transformMap(data, (cellData) => ({
@@ -39,7 +37,7 @@ function sendIntentOnStateChange(
 
 				// WebSocket connections override Android connections
 				if (state && connection.has('android') && !connection.has('web')) {
-					await deviceManager.sendAndroidClientState(serial, server, state);
+					await deviceManager.launchClient(serial, server, state);
 				}
 			})
 		);
@@ -51,8 +49,9 @@ export function repository(): Repository {
 	const cellState = cellStateStore();
 	const webSockets = webSocketStore();
 
-	const deviceManager = new DeviceManager();
-	let deviceManagerPromise = deviceManager.refreshDevices().then(() => deviceManager);
+	const deviceManager = new AndroidDeviceManager();
+	let deviceManagerPromise = deviceManager.devices.refresh().then(() => deviceManager);
+
 	const cellManager = new CellManager();
 	const cellManagerPromise = dbPromise.then((db) => cellManager.loadInfo(db));
 
@@ -60,7 +59,7 @@ export function repository(): Repository {
 	const cellData = deriveCellData({
 		info: cellManager,
 		state: cellState,
-		devices: deviceManager,
+		androidProperties: deviceManager.properties,
 		webSockets
 	});
 	sendIntentOnStateChange(cellData, deviceManager);
@@ -75,41 +74,46 @@ export function repository(): Repository {
 		webSockets,
 		thirdParty,
 		refreshDevices() {
-			const refreshPromise = deviceManager.refreshDevices();
+			const refreshPromise = deviceManager.devices.refresh();
 			deviceManagerPromise = refreshPromise.then(() => deviceManager);
 			return refreshPromise;
 		},
 		async installApk(tag) {
 			const apkPath = await thirdParty.github.downloadApk(tag);
 			if (apkPath) {
-				return await deviceManager.installApkToAll(apkPath, PACKAGE_NAME);
+				return await deviceManager.updateClient(apkPath);
 			} else {
 				return new Map();
 			}
 		},
 		async connectDevicePort(serial, port) {
 			const deviceManager = await deviceManagerPromise;
-			if (await deviceManager.connectPort(serial, port)) {
-				const cellManager = await cellManagerPromise;
-				cellManager.registerServer(serial, `http://localhost:${port}`);
+			await deviceManager.connectOverUsb(serial, port);
 
-				const db = await dbPromise;
-				await cellManager.writeInfo(db);
+			const cellManager = await cellManagerPromise;
+			cellManager.registerServer(serial, `http://localhost:${port}`);
 
-				return true;
-			} else {
-				return false;
+			const db = await dbPromise;
+			await cellManager.writeInfo(db);
+		},
+		async getPower(serial, refresh) {
+			const deviceManager = await deviceManagerPromise;
+			if (refresh) {
+				await deviceManager.powered.refresh();
 			}
+			return get(deviceManager.powered).has(serial);
 		},
-		async getPower(serial) {
+		async setPower(serials, on) {
 			const deviceManager = await deviceManagerPromise;
-			return deviceManager.checkIfOn(serial);
-		},
-		async setPower(serial, on) {
-			const deviceManager = await deviceManagerPromise;
-			const devices = get(deviceManager);
-			const serialList = asArray(serial);
-			return setPower(getAll(devices, serialList), on);
+			return deviceManager.powered.update((oldSet) => {
+				const newSet = new Set(oldSet);
+				if (on) {
+					serials.forEach((serial) => newSet.add(serial));
+				} else {
+					serials.forEach((serial) => newSet.delete(serial));
+				}
+				return newSet;
+			});
 		},
 		async registerCell(info) {
 			const cellManager = await cellManagerPromise;
@@ -122,7 +126,7 @@ export function repository(): Repository {
 			const deviceManager = await deviceManagerPromise;
 			const { server = SERVER_ADDRESS } = get(cellData).get(serial)?.info ?? {};
 
-			await deviceManager.startAndroidClient(serial, server);
+			await deviceManager.launchClient(serial, server);
 		}
 	};
 }

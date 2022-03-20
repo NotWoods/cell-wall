@@ -42,3 +42,22 @@ export async function transformMapAsync<Key, Value, Result>(
 		)
 	);
 }
+
+/**
+ * Run `transform` over every entry in the map in parallel.
+ * Returns a map of promise settled result objects, so errors don't stop the iteration.
+ */
+export async function allSettledMap<Key, Value, Result>(
+	map: ReadonlyMap<Key, Value>,
+	transform: (value: Value, key: Key) => Promise<Result>
+): Promise<Map<Key, PromiseSettledResult<Result>>> {
+	const newValues = await Promise.allSettled(
+		Array.from(map.entries(), async ([key, value]) => transform(value, key))
+	);
+	const result = new Map<Key, PromiseSettledResult<Result>>();
+	for (const [i, key] of Array.from(map.keys()).entries()) {
+		const value = newValues[i];
+		result.set(key, value);
+	}
+	return result;
+}

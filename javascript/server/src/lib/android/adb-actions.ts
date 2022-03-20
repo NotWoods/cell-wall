@@ -1,15 +1,23 @@
 import type { ADB } from 'appium-adb';
 import { escapeShellArg } from 'appium-adb/build/lib/helpers.js';
 
+// Simple actions missing from appium-adb
+
+/**
+ * Returns the device power status.
+ * @returns "Awake" if the device is awake.
+ */
+export async function getWakefulness(adb: ADB) {
+	const stdout = await adb.shell(['dumpsys', 'power', '|', 'grep', '"mWakefulness="']);
+	const wakefulness = /mWakefulness=(\w+)/.exec(stdout)?.[1];
+	return wakefulness;
+}
+
 /**
  * Checks if an Android device is on.
  */
-export async function checkIfOn(
-	adb: ADB,
-	cmdOutput: string | undefined = undefined
-): Promise<boolean> {
-	const stdout = cmdOutput || (await adb.shell(['dumpsys', 'power']));
-	const wakefulness = /mWakefulness=(\w+)/.exec(stdout)?.[1];
+export async function checkIfOn(adb: ADB): Promise<boolean> {
+	const wakefulness = await getWakefulness(adb);
 	return wakefulness === 'Awake';
 }
 
@@ -34,6 +42,19 @@ export interface StartIntentOptions {
 	waitForLaunch?: boolean | undefined;
 }
 
+/**
+ * Launch an intent on the given ADB device.
+ * @param adb ADB device to use.
+ * @param options.action The general action to be performed, represented as a package name.
+ * @param options.dataUri The data to operate on, represented as a URI.
+ * @param options.category Gives additional information about the action to execute
+ * @param options.mimeType Specifies an explicit MIME type of the intent data.
+ * Normally the type is inferred from the data itself.
+ * @param options.component Specifies an explicit name of a component class to use for the intent.
+ * @param options.extras This is a Bundle of any additional information.
+ * This can be used to provide extended information to the component.
+ * @param options.waitForLaunch Don't resolve until the intent has launched.
+ */
 export async function startIntent(adb: ADB, options: StartIntentOptions): Promise<void> {
 	const { waitForLaunch = true, flags = [], extras = {} } = options;
 

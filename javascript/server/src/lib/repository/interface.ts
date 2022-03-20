@@ -1,7 +1,6 @@
 import type { CellData, CellInfo } from '@cell-wall/shared';
 import type { InstallOrUpgradeResult } from 'appium-adb';
 import type { Readable } from 'svelte/store';
-import type { DeviceMap } from '../android/device-manager';
 import type { CellStateStore } from '../cells';
 import type { SplitImageCache } from '../image/cache';
 import type { WebSocketStore } from './socket-store';
@@ -13,11 +12,14 @@ export interface Repository {
 	images: SplitImageCache;
 	webSockets: WebSocketStore;
 	thirdParty: ThirdPartyConnect;
-	refreshDevices(): Promise<DeviceMap>;
+	refreshDevices(): Promise<void>;
 	installApk(tag?: string): Promise<Map<string, InstallOrUpgradeResult>>;
-	connectDevicePort(serial: string, port: number): Promise<boolean>;
-	getPower(serial: string): Promise<boolean>;
-	setPower(serial: string | readonly string[], on: boolean | 'toggle'): Promise<boolean>;
+	connectDevicePort(serial: string, port: number): Promise<void>;
+	getPower(serial: string, refresh?: boolean): Promise<boolean>;
+	setPower(
+		serials: readonly string[],
+		on: boolean
+	): Promise<ReadonlyMap<string, PromiseSettledResult<void>>>;
 	registerCell(info: CellInfo): Promise<void>;
 	openClientOnDevice(serial: string): Promise<void>;
 }

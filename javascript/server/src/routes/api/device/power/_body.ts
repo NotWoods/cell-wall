@@ -1,4 +1,18 @@
-import { asPower } from '../../../../lib/android/power';
+export function asPower(primitive: unknown): boolean | undefined {
+	switch (primitive) {
+		case true:
+		case false:
+			return primitive;
+		case 'false':
+			return false;
+		case 0:
+		case 1:
+		case 'true':
+			return Boolean(primitive);
+		default:
+			return undefined;
+	}
+}
 
 export function parsePowerBody(body: unknown): boolean | undefined {
 	if (typeof body === 'boolean' || typeof body === 'string') {

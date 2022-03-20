@@ -41,7 +41,12 @@ export default async function (fastify: FastifyInstance): Promise<void> {
 
 			const serials = Array.from(getState(repo.cellData).keys());
 
-			reply.send(await repo.setPower(serials, power));
+			const settled = await repo.setPower(serials, power);
+			if (Array.from(settled.values()).every(({ status }) => status === 'fulfilled')) {
+				reply.status(200).send(power);
+			} else {
+				reply.status(500).send(new Error('Some error occured'));
+			}
 		}
 	});
 }

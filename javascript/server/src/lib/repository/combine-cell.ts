@@ -1,7 +1,7 @@
 import { blankState, CellData, CellInfo, CellState, ConnectionType } from '@cell-wall/shared';
 import type { Readable } from 'svelte/store';
 import { derived } from 'svelte/store';
-import type { DeviceMap } from '../android/device-manager';
+import type { AndroidProperties } from '../android/android-properties';
 import { withLastState } from '../store/changes';
 import { computeInfo } from './known';
 import type { WebSocketInfo } from './socket-store';
@@ -20,12 +20,12 @@ function equalConnectionArrays(
 
 function deriveCellInfo(stores: {
 	info: Readable<ReadonlyMap<string, CellInfo>>;
-	devices: Readable<DeviceMap>;
+	androidProperties: Readable<ReadonlyMap<string, AndroidProperties>>;
 	webSockets: Readable<ReadonlyMap<string, WebSocketInfo>>;
 }): Readable<ReadonlyMap<string, CellInfo>> {
 	let lastResult: ReadonlyMap<string, CellInfo> = new Map();
 	return derived(
-		[stores.info, stores.devices, stores.webSockets],
+		[stores.info, stores.androidProperties, stores.webSockets],
 		([infoMap, devices, webSockets]) => {
 			const cellInfoMap = new Map<string, CellInfo>();
 
@@ -75,10 +75,10 @@ function deriveCellInfo(stores: {
 }
 
 function deriveConnection(stores: {
-	devices: Readable<DeviceMap>;
+	androidProperties: Readable<ReadonlyMap<string, unknown>>;
 	webSockets: Readable<ReadonlyMap<string, WebSocketInfo>>;
 }): Readable<ReadonlyMap<string, readonly ConnectionType[]>> {
-	return derived([stores.devices, stores.webSockets], ([devices, webSockets]) => {
+	return derived([stores.androidProperties, stores.webSockets], ([devices, webSockets]) => {
 		const connections = new Map<string, ConnectionType[]>();
 
 		for (const id of webSockets.keys()) {
@@ -97,7 +97,7 @@ function deriveConnection(stores: {
 export function deriveCellData(stores: {
 	info: Readable<ReadonlyMap<string, CellInfo>>;
 	state: Readable<ReadonlyMap<string, CellState>>;
-	devices: Readable<DeviceMap>;
+	androidProperties: Readable<ReadonlyMap<string, AndroidProperties>>;
 	webSockets: Readable<ReadonlyMap<string, WebSocketInfo>>;
 }): Readable<ReadonlyMap<string, CellData>> {
 	const cellInfo = deriveCellInfo(stores);

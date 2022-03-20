@@ -43,7 +43,18 @@ export default async function (fastify: FastifyInstance): Promise<void> {
 				return;
 			}
 
-			reply.send(await repo.setPower(serial, power));
+			const settled = await repo.setPower([serial], power);
+			const serialSettled = settled.get(serial);
+			switch (serialSettled?.status) {
+				case 'fulfilled':
+					reply.status(200).send(power);
+					break;
+				case 'rejected':
+					reply.status(500).send(serialSettled?.reason);
+					break;
+				default:
+					reply.status(404).send(new Error(`Device ${serial} not found`));
+			}
 		}
 	});
 }
