@@ -49,9 +49,6 @@
 
 	$: url = `/cell/frame/${$state.type.toLowerCase()}`;
 	$: {
-		console.log('CellState', $state);
-	}
-	$: {
 		if (browser) {
 			goto(`${url}?id=${serial}`, { replaceState: true });
 		}

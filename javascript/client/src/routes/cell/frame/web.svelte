@@ -7,14 +7,10 @@
 	let frame: HTMLIFrameElement | undefined;
 
 	$: webState = filterState('WEB', $state);
-	$: {
-		console.log($state, $state.type, webState);
-	}
 
 	$: url = webState?.payload || 'about:blank';
 	$: {
 		if (frame) {
-			console.log('web state', $state, url);
 			frame.src = url;
 		}
 	}

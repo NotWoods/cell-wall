@@ -8,7 +8,6 @@
 	import VerticalField from '$lib/components/Field/VerticalField.svelte';
 	import { formDataAsSearchParams } from './_form';
 	import PresetCard from './_PresetCard.svelte';
-	import Button from '$lib/components/Button/Button.svelte';
 	import SubmitButton from '$lib/components/Button/SubmitButton.svelte';
 
 	async function submit(data: FormData, action: URL) {

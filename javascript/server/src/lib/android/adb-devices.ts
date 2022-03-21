@@ -33,21 +33,18 @@ function createChildAdb(parent: ADB) {
 export function adbDevicesStore(): DevicesStore {
 	const devicesStore = writable<ReadonlyMap<string, ADB>>(new Map());
 	// appium-adb interface that's not attached to a specific device
-	const adbGlobalReady = ADB.createADB({
-		allowOfflineDevices: process.env['NODE_ENV'] !== 'production'
-	});
+	const adbGlobalReady = ADB.createADB();
 
 	return {
 		subscribe: devicesStore.subscribe,
 		async refresh() {
 			const adbGlobal = await adbGlobalReady;
-			adbGlobal.createSubProcess;
 
 			let devices: readonly Device[];
 			try {
 				devices = await adbGlobal.getDevicesWithRetry();
 			} catch (err) {
-				if (!noDeviceError(err)) {
+				if (noDeviceError(err)) {
 					devices = [];
 				} else {
 					throw err;
