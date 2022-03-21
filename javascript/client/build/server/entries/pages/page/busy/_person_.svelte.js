@@ -102,23 +102,21 @@ const load = async ({ params }) => {
   }
   const busy = await response.json();
   return {
-    props: { name: person, busyRanges: busy }
+    props: { person: people[person], busyRanges: busy }
   };
 };
 const U5Bpersonu5D = create_ssr_component(($$result, $$props, $$bindings, slots) => {
-  let person;
   let state;
   let $isBusy, $$unsubscribe_isBusy;
   let { busyRanges } = $$props;
-  let { name } = $$props;
+  let { person } = $$props;
   const isBusy2 = isBusyInterval(busyRanges);
   $$unsubscribe_isBusy = subscribe(isBusy2, (value) => $isBusy = value);
   if ($$props.busyRanges === void 0 && $$bindings.busyRanges && busyRanges !== void 0)
     $$bindings.busyRanges(busyRanges);
-  if ($$props.name === void 0 && $$bindings.name && name !== void 0)
-    $$bindings.name(name);
+  if ($$props.person === void 0 && $$bindings.person && person !== void 0)
+    $$bindings.person(person);
   $$result.css.add(css);
-  person = people[name];
   state = states[$isBusy ? "busy" : "free"];
   $$unsubscribe_isBusy();
   return `<body style="${"background: " + escape(state.background)}" class="${"svelte-8rd6l6"}"><img class="${"profile svelte-8rd6l6"}" alt="${"Portrait of $" + escape(person.name)}" src="${"$" + escape(person.image)}" width="${"150"}" height="${"150"}">

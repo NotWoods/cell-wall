@@ -1,5 +1,6 @@
 import { c as create_ssr_component, v as validate_component, e as escape } from "../../../chunks/index-4d214b4e.js";
-import { T as TopBar, R as RemoteFrame } from "../../../chunks/TopBar-fb618005.js";
+import { T as TopBar, R as RemoteFrame } from "../../../chunks/TopBar-cc586f2b.js";
+import "../../../chunks/stores-6d7f4c16.js";
 const load = ({ status, error }) => {
   return { props: { status, error } };
 };

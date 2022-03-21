@@ -1,15 +1,15 @@
 import { c as create_ssr_component, a as subscribe, v as validate_component, b as add_attribute } from "../../../chunks/index-4d214b4e.js";
-import { R as ResetSubmit } from "../../../chunks/ResetSubmit-1ef63641.js";
-import { D as DeviceOptions } from "../../../chunks/DeviceOptions-8dcbbe6c.js";
+import { D as DeviceOptions, R as ResetSubmit } from "../../../chunks/DeviceOptions-e57b9002.js";
 import { H as HorizontalField } from "../../../chunks/HorizontalField-12292c4d.js";
 import { V as VerticalField } from "../../../chunks/VerticalField-55978348.js";
 import { F as Form } from "../../../chunks/SubmitButton-546a9509.js";
-import { a as getRemoteContext, s as storeEntries, b as storeKeys } from "../../../chunks/__layout-60c5d23e.js";
+import { a as getRemoteContext, s as storeEntries, b as storeKeys } from "../../../chunks/__layout-9d80af09.js";
 import "../../../chunks/LoadingSpinner-97b51d95.js";
 import "../../../chunks/snackbar-host-a60c3b5b.js";
 import "../../../chunks/cell-state-schema-a24ecc56.js";
 import "../../../chunks/index-23b4b723.js";
-import "../../../chunks/TopBar-fb618005.js";
+import "../../../chunks/stores-6d7f4c16.js";
+import "../../../chunks/TopBar-cc586f2b.js";
 const prerender = true;
 async function submit(data, action) {
   const backgroundColor = data.get("backgroundColor");

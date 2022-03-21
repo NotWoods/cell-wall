@@ -3,7 +3,7 @@ export const manifest = {
 	assets: new Set(["css/base.css","img/daphne.jpg","img/tiger.jpg","logo.png","manifest.webmanifest","maskable_icon.png","preset/info.json","preset/tea.json"]),
 	mimeTypes: {".css":"text/css",".jpg":"image/jpeg",".png":"image/png",".webmanifest":"application/manifest+json",".json":"application/json"},
 	_: {
-		entry: {"file":"start-c15babb3.js","js":["start-c15babb3.js","chunks/vendor-98a08ead.js","chunks/singletons-d1fb5791.js"],"css":[]},
+		entry: {"file":"start-65eb7240.js","js":["start-65eb7240.js","chunks/vendor-92048905.js","chunks/singletons-d1fb5791.js"],"css":[]},
 		nodes: [
 			() => import('./server/nodes/0.js'),
 			() => import('./server/nodes/1.js'),
@@ -22,7 +22,8 @@ export const manifest = {
 			() => import('./server/nodes/16.js'),
 			() => import('./server/nodes/17.js'),
 			() => import('./server/nodes/18.js'),
-			() => import('./server/nodes/19.js')
+			() => import('./server/nodes/19.js'),
+			() => import('./server/nodes/20.js')
 		],
 		routes: [
 			{
@@ -99,7 +100,7 @@ export const manifest = {
 				types: [],
 				path: "/cell",
 				shadow: null,
-				a: [0,10],
+				a: [0,10,11],
 				b: [1]
 			},
 			{
@@ -110,7 +111,7 @@ export const manifest = {
 				types: [],
 				path: "/cell/frame/blank",
 				shadow: null,
-				a: [0,11,12],
+				a: [0,10,12,13],
 				b: [1]
 			},
 			{
@@ -121,7 +122,7 @@ export const manifest = {
 				types: [],
 				path: "/cell/frame/image",
 				shadow: null,
-				a: [0,11,13],
+				a: [0,10,12,14],
 				b: [1]
 			},
 			{
@@ -132,7 +133,7 @@ export const manifest = {
 				types: [],
 				path: "/cell/frame/text",
 				shadow: null,
-				a: [0,11,14],
+				a: [0,10,12,15],
 				b: [1]
 			},
 			{
@@ -143,7 +144,7 @@ export const manifest = {
 				types: [],
 				path: "/cell/frame/web",
 				shadow: null,
-				a: [0,11,15],
+				a: [0,10,12,16],
 				b: [1]
 			},
 			{
@@ -154,7 +155,7 @@ export const manifest = {
 				types: [],
 				path: "/demo",
 				shadow: null,
-				a: [0,16],
+				a: [0,17],
 				b: [1]
 			},
 			{
@@ -165,7 +166,7 @@ export const manifest = {
 				types: [null],
 				path: null,
 				shadow: null,
-				a: [0,17],
+				a: [0,18],
 				b: [1]
 			}
 		],

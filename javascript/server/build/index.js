@@ -310,18 +310,27 @@ async function transformMapAsync(map, transform) {
     return [key, await transform(value, key)];
   })));
 }
+async function allSettledMap(map, transform) {
+  const newValues = await Promise.allSettled(Array.from(map.entries(), async ([key, value]) => transform(value, key)));
+  const result = /* @__PURE__ */ new Map();
+  for (const [i, key] of Array.from(map.keys()).entries()) {
+    const value = newValues[i];
+    result.set(key, value);
+  }
+  return result;
+}
 var init_transform = __esm({
   "src/lib/map/transform.ts"() {
   }
 });
 
-// src/lib/android/adb-action.ts
+// src/lib/android/adb-actions.ts
 import { escapeShellArg } from "appium-adb/build/lib/helpers.js";
-async function checkIfOn(adb, cmdOutput = void 0) {
+async function getWakefulness(adb) {
   var _a;
-  const stdout = cmdOutput || await adb.shell(["dumpsys", "power"]);
+  const stdout = await adb.shell(["dumpsys", "power", "|", "grep", '"mWakefulness="']);
   const wakefulness = (_a = /mWakefulness=(\w+)/.exec(stdout)) == null ? void 0 : _a[1];
-  return wakefulness === "Awake";
+  return wakefulness;
 }
 async function startIntent(adb, options) {
   const { waitForLaunch = true, flags = [], extras = {} } = options;
@@ -385,8 +394,8 @@ async function startIntent(adb, options) {
   }
 }
 var StartIntentError, UnresolvedIntentError;
-var init_adb_action = __esm({
-  "src/lib/android/adb-action.ts"() {
+var init_adb_actions = __esm({
+  "src/lib/android/adb-actions.ts"() {
     StartIntentError = class extends Error {
       constructor() {
         super(...arguments);
@@ -402,175 +411,205 @@ var init_adb_action = __esm({
   }
 });
 
-// src/lib/android/device-manager.ts
+// src/lib/android/adb-devices.ts
 import { ADB } from "appium-adb";
 function noDeviceError(err) {
   return err instanceof Error && err.message.includes("Could not find a connected Android device");
 }
-var DeviceManager;
-var init_device_manager = __esm({
-  "src/lib/android/device-manager.ts"() {
+function createChildAdb(parent) {
+  const adbChild = new ADB();
+  adbChild.sdkRoot = parent.sdkRoot;
+  adbChild.executable.path = parent.executable.path;
+  return adbChild;
+}
+function adbDevicesStore() {
+  const devicesStore = writable(/* @__PURE__ */ new Map());
+  const adbGlobalReady = ADB.createADB();
+  return {
+    subscribe: devicesStore.subscribe,
+    async refresh() {
+      const adbGlobal = await adbGlobalReady;
+      let devices;
+      try {
+        devices = await adbGlobal.getDevicesWithRetry();
+      } catch (err) {
+        if (noDeviceError(err)) {
+          devices = [];
+        } else {
+          throw err;
+        }
+      }
+      const adbDevices = new Map(devices.map((device) => {
+        const adbChild = createChildAdb(adbGlobal);
+        adbChild.setDevice(device);
+        return [device.udid, adbChild];
+      }));
+      devicesStore.set(adbDevices);
+    }
+  };
+}
+var init_adb_devices = __esm({
+  "src/lib/android/adb-devices.ts"() {
+    init_store();
+  }
+});
+
+// src/lib/android/android-powered.ts
+function androidPowered(devices) {
+  async function refreshDevicePowerStates($devices) {
+    const powered = /* @__PURE__ */ new Set();
+    await Promise.all(Array.from($devices).map(async ([udid, adb]) => {
+      const wakefulness = await getWakefulness(adb);
+      if (wakefulness === "Awake") {
+        powered.add(udid);
+      }
+    }));
+    return powered;
+  }
+  const poweredOn = writable(/* @__PURE__ */ new Set(), (set) => {
+    return devices.subscribe(($devices) => {
+      let invalidated = false;
+      refreshDevicePowerStates($devices).then((powered) => {
+        if (!invalidated) {
+          set(powered);
+        }
+      });
+      return () => {
+        invalidated = true;
+      };
+    });
+  });
+  async function setPowerForDevice(adb, on) {
+    if (!adb)
+      return;
+    const wakefulness = await getWakefulness(adb);
+    if (wakefulness === "Awake") {
+      if (on) {
+        await adb.keyevent(KEYCODE_UNKNOWN);
+      } else {
+        await adb.keyevent(KEYCODE_POWER);
+      }
+    } else {
+      if (on) {
+        await adb.cycleWakeUp();
+      } else {
+      }
+    }
+  }
+  async function updateStore(updater) {
+    const promises = /* @__PURE__ */ new Map();
+    poweredOn.update((oldSet) => {
+      const newSet = updater(oldSet);
+      const $devices = get_store_value(devices);
+      const added = Array.from(newSet).filter((udid) => !oldSet.has(udid));
+      const removed = Array.from(oldSet).filter((udid) => !newSet.has(udid));
+      function updatePower(udid, on) {
+        const device = $devices.get(udid);
+        if (device) {
+          promises.set(udid, setPowerForDevice(device, on));
+        }
+      }
+      added.forEach((udid) => updatePower(udid, true));
+      removed.forEach((udid) => updatePower(udid, false));
+      return newSet;
+    });
+    return allSettledMap(promises, (promise) => promise);
+  }
+  return {
+    subscribe: poweredOn.subscribe,
+    update: updateStore,
+    set(newSet) {
+      return updateStore(() => newSet);
+    },
+    async refresh() {
+      poweredOn.set(await refreshDevicePowerStates(get_store_value(devices)));
+    }
+  };
+}
+var KEYCODE_UNKNOWN, KEYCODE_POWER;
+var init_android_powered = __esm({
+  "src/lib/android/android-powered.ts"() {
+    init_store();
+    init_transform();
+    init_adb_actions();
+    KEYCODE_UNKNOWN = 0;
+    KEYCODE_POWER = 26;
+  }
+});
+
+// src/lib/android/android-properties.ts
+function androidProperties(devices) {
+  return derived(devices, ($devices, set) => {
+    let invalidated = false;
+    Promise.all(Array.from($devices).map(async ([udid, adb]) => {
+      const [model, manufacturer] = await Promise.all([adb.getModel(), adb.getManufacturer()]);
+      const properties = {
+        model,
+        manufacturer
+      };
+      return [udid, properties];
+    })).then((entries) => {
+      if (!invalidated) {
+        set(new Map(entries));
+      }
+    });
+    return () => {
+      invalidated = true;
+    };
+  }, /* @__PURE__ */ new Map());
+}
+var init_android_properties = __esm({
+  "src/lib/android/android-properties.ts"() {
+    init_store();
+  }
+});
+
+// src/lib/android/android-device-manager.ts
+var AndroidDeviceManager;
+var init_android_device_manager = __esm({
+  "src/lib/android/android-device-manager.ts"() {
     init_store();
     init_state();
     init_env();
     init_transform();
-    init_adb_action();
-    DeviceManager = class {
+    init_adb_actions();
+    init_adb_devices();
+    init_android_powered();
+    init_android_properties();
+    AndroidDeviceManager = class {
       constructor() {
-        this._devices = writable(/* @__PURE__ */ new Map());
-        this._devices.subscribe((map) => {
-          this._lastMap = map;
-        });
+        this.devices = adbDevicesStore();
+        this.properties = androidProperties(this.devices);
+        this.powered = androidPowered(this.devices);
       }
-      subscribe(run2, invalidate) {
-        return this._devices.subscribe(run2, invalidate);
-      }
-      async refreshDevices() {
-        const adbGlobal = await ADB.createADB({
-          allowOfflineDevices: process.env["NODE_ENV"] !== "production"
-        });
-        let devices;
-        try {
-          devices = await adbGlobal.getDevicesWithRetry();
-        } catch (err) {
-          if (noDeviceError(err)) {
-            devices = [];
-          } else {
-            throw err;
-          }
-        }
-        const clients = await Promise.all(devices.map(async (device) => {
-          const adb = await ADB.createADB();
-          adb.setDevice(device);
-          const [model, manufacturer] = await Promise.all([adb.getModel(), adb.getManufacturer()]);
-          const adbDevice = {
-            adb,
-            model,
-            manufacturer
-          };
-          return [device.udid, adbDevice];
-        }));
-        const result = new Map(clients);
-        this._devices.set(result);
-        return result;
-      }
-      async installApkToAll(path, pkg) {
-        return transformMapAsync(this._lastMap, ({ adb }) => adb.installOrUpgrade(path, pkg, {
-          enforceCurrentBuild: true
-        }));
-      }
-      async run(serial, action) {
-        const { adb } = this._lastMap.get(serial) ?? {};
+      async launchClient(serial, host, state) {
+        const adb = get_store_value(this.devices).get(serial);
         if (!adb)
-          return false;
-        return action(adb);
-      }
-      webClientUrl(serial, server) {
-        return new URL(`/cell?id=${serial}&autojoin`, server);
-      }
-      async checkIfOn(serial) {
-        return this.run(serial, checkIfOn);
-      }
-      async togglePower(serial) {
-        return this.run(serial, async (adb) => {
-          await adb.cycleWakeUp();
-          return true;
-        });
-      }
-      async startIntent(serial, options) {
-        return this.run(serial, async (adb) => {
-          try {
-            await startIntent(adb, options);
-            return true;
-          } catch (err) {
-            console.warn(err);
-            return false;
-          }
-        });
-      }
-      async connectPort(serial, devicePort) {
-        return this.run(serial, async (adb) => {
-          await adb.reversePort(devicePort, PORT);
-          return true;
-        });
-      }
-      async startWebClient(serial, server) {
-        return this.startIntent(serial, {
-          action: "android.intent.action.VIEW",
-          dataUri: this.webClientUrl(serial, server),
-          waitForLaunch: true
-        });
-      }
-      async startAndroidClient(serial, server) {
-        return this.startIntent(serial, {
+          return;
+        let dataUri;
+        if (state) {
+          dataUri = toUri(state, host);
+        } else {
+          dataUri = new URL(`/cell?id=${serial}&autojoin`, host);
+        }
+        await startIntent(adb, {
           action: `${PACKAGE_NAME}.DISPLAY`,
-          dataUri: this.webClientUrl(serial, server),
+          dataUri,
           waitForLaunch: true
         });
       }
-      async sendAndroidClientState(serial, server, state) {
-        return this.startIntent(serial, {
-          action: `${PACKAGE_NAME}.DISPLAY`,
-          dataUri: toUri(state, server),
-          waitForLaunch: true
-        });
+      async updateClient(apkPath, targetDevices) {
+        const $devices = get_store_value(this.devices);
+        const devicesToUpdate = targetDevices ? new Map(Array.from($devices).filter(([serial]) => targetDevices.has(serial))) : $devices;
+        return transformMapAsync(devicesToUpdate, (adb) => adb.installOrUpgrade(apkPath, PACKAGE_NAME, { enforceCurrentBuild: true }));
+      }
+      async connectOverUsb(serial, devicePort = PORT) {
+        const adb = get_store_value(this.devices).get(serial);
+        if (!adb)
+          return;
+        await adb.reversePort(devicePort, PORT);
       }
     };
-  }
-});
-
-// src/lib/android/power.ts
-function asPower(primitive) {
-  switch (primitive) {
-    case "toggle":
-    case true:
-    case false:
-      return primitive;
-    case "true":
-    case "false":
-      return Boolean(primitive);
-    default:
-      return void 0;
-  }
-}
-async function setPowerOne(client, on) {
-  const isOn = await checkIfOn(client);
-  if (isOn !== on) {
-    if (on === false) {
-      await client.keyevent(KEYCODE_POWER);
-    } else {
-      await client.cycleWakeUp();
-    }
-    return !isOn;
-  }
-  return on;
-}
-async function setPower(device, on) {
-  if (device instanceof Map) {
-    const devices = device;
-    let allOn;
-    if (on === "toggle") {
-      const powerStates = await Promise.all(Array.from(devices.values()).map(async ({ adb: client }) => ({
-        on: await checkIfOn(client),
-        client
-      })));
-      const numOn = powerStates.filter((state) => state.on).length;
-      const numOff = powerStates.length - numOn;
-      allOn = numOn < numOff;
-    } else {
-      allOn = on;
-    }
-    await Promise.all(Array.from(devices.values()).map(({ adb: client }) => setPowerOne(client, allOn)));
-    return allOn;
-  } else {
-    return await setPowerOne(device);
-  }
-}
-var KEYCODE_POWER;
-var init_power = __esm({
-  "src/lib/android/power.ts"() {
-    init_adb_action();
-    KEYCODE_POWER = 26;
   }
 });
 
@@ -732,25 +771,6 @@ var init_cache = __esm({
   }
 });
 
-// src/lib/map/get.ts
-function asArray(items) {
-  return Array.isArray(items) ? items : [items];
-}
-function getAll(map, keys) {
-  const result = /* @__PURE__ */ new Map();
-  for (const key of keys) {
-    const value = map.get(key);
-    if (value !== void 0) {
-      result.set(key, value);
-    }
-  }
-  return result;
-}
-var init_get = __esm({
-  "src/lib/map/get.ts"() {
-  }
-});
-
 // src/lib/store/changes.ts
 function withLastState(store) {
   let oldState;
@@ -842,7 +862,7 @@ function equalConnectionArrays(a, b) {
 }
 function deriveCellInfo(stores) {
   let lastResult = /* @__PURE__ */ new Map();
-  return derived([stores.info, stores.devices, stores.webSockets], ([infoMap, devices, webSockets]) => {
+  return derived([stores.info, stores.androidProperties, stores.webSockets], ([infoMap, devices, webSockets]) => {
     const cellInfoMap = /* @__PURE__ */ new Map();
     function mergeFrom(otherMap, getCellInfo) {
       for (const [serial, otherData] of otherMap) {
@@ -871,7 +891,7 @@ function deriveCellInfo(stores) {
   });
 }
 function deriveConnection(stores) {
-  return derived([stores.devices, stores.webSockets], ([devices, webSockets]) => {
+  return derived([stores.androidProperties, stores.webSockets], ([devices, webSockets]) => {
     const connections = /* @__PURE__ */ new Map();
     for (const id of webSockets.keys()) {
       connections.set(id, ["web"]);
@@ -1125,7 +1145,7 @@ function sendIntentOnStateChange(cellData, deviceManager) {
     Promise.all(Array.from(stateChanges).map(async ([serial, state]) => {
       const { server = SERVER_ADDRESS, connection = /* @__PURE__ */ new Set() } = connectionInfo.get(serial) ?? {};
       if (state && connection.has("android") && !connection.has("web")) {
-        await deviceManager.sendAndroidClientState(serial, server, state);
+        await deviceManager.launchClient(serial, server, state);
       }
     }));
   });
@@ -1134,14 +1154,14 @@ function repository() {
   const dbPromise = database(DATABASE_FILENAME);
   const cellState = cellStateStore();
   const webSockets = webSocketStore();
-  const deviceManager = new DeviceManager();
-  let deviceManagerPromise = deviceManager.refreshDevices().then(() => deviceManager);
+  const deviceManager = new AndroidDeviceManager();
+  let deviceManagerPromise = deviceManager.devices.refresh().then(() => deviceManager);
   const cellManager = new CellManager();
   const cellManagerPromise = dbPromise.then((db) => cellManager.loadInfo(db));
   const cellData = deriveCellData({
     info: cellManager,
     state: cellState,
-    devices: deviceManager,
+    androidProperties: deviceManager.properties,
     webSockets
   });
   sendIntentOnStateChange(cellData, deviceManager);
@@ -1154,39 +1174,44 @@ function repository() {
     webSockets,
     thirdParty,
     refreshDevices() {
-      const refreshPromise = deviceManager.refreshDevices();
+      const refreshPromise = deviceManager.devices.refresh();
       deviceManagerPromise = refreshPromise.then(() => deviceManager);
       return refreshPromise;
     },
     async installApk(tag) {
       const apkPath = await thirdParty.github.downloadApk(tag);
       if (apkPath) {
-        return await deviceManager.installApkToAll(apkPath, PACKAGE_NAME);
+        return await deviceManager.updateClient(apkPath);
       } else {
         return /* @__PURE__ */ new Map();
       }
     },
     async connectDevicePort(serial, port) {
       const deviceManager2 = await deviceManagerPromise;
-      if (await deviceManager2.connectPort(serial, port)) {
-        const cellManager2 = await cellManagerPromise;
-        cellManager2.registerServer(serial, `http://localhost:${port}`);
-        const db = await dbPromise;
-        await cellManager2.writeInfo(db);
-        return true;
-      } else {
-        return false;
+      await deviceManager2.connectOverUsb(serial, port);
+      const cellManager2 = await cellManagerPromise;
+      cellManager2.registerServer(serial, `http://localhost:${port}`);
+      const db = await dbPromise;
+      await cellManager2.writeInfo(db);
+    },
+    async getPower(serial, refresh) {
+      const deviceManager2 = await deviceManagerPromise;
+      if (refresh) {
+        await deviceManager2.powered.refresh();
       }
+      return get_store_value(deviceManager2.powered).has(serial);
     },
-    async getPower(serial) {
+    async setPower(serials, on) {
       const deviceManager2 = await deviceManagerPromise;
-      return deviceManager2.checkIfOn(serial);
-    },
-    async setPower(serial, on) {
-      const deviceManager2 = await deviceManagerPromise;
-      const devices = get_store_value(deviceManager2);
-      const serialList = asArray(serial);
-      return setPower(getAll(devices, serialList), on);
+      return deviceManager2.powered.update((oldSet) => {
+        const newSet = new Set(oldSet);
+        if (on) {
+          serials.forEach((serial) => newSet.add(serial));
+        } else {
+          serials.forEach((serial) => newSet.delete(serial));
+        }
+        return newSet;
+      });
     },
     async registerCell(info) {
       const cellManager2 = await cellManagerPromise;
@@ -1198,19 +1223,17 @@ function repository() {
       var _a;
       const deviceManager2 = await deviceManagerPromise;
       const { server = SERVER_ADDRESS } = ((_a = get_store_value(cellData).get(serial)) == null ? void 0 : _a.info) ?? {};
-      await deviceManager2.startAndroidClient(serial, server);
+      await deviceManager2.launchClient(serial, server);
     }
   };
 }
 var init_repository = __esm({
   "src/lib/repository/repository.ts"() {
     init_store();
-    init_device_manager();
-    init_power();
+    init_android_device_manager();
     init_cells();
     init_env();
     init_cache();
-    init_get();
     init_transform();
     init_changes();
     init_combine_cell();
@@ -1474,18 +1497,17 @@ async function refresh_default(fastify) {
     method: ["GET", "POST"],
     url: "/api/action/refresh",
     async handler(request, reply) {
-      const devices = await repo.refreshDevices();
-      reply.send(Object.fromEntries(transformMap(devices, (device) => ({
-        model: device.model,
-        manufacturer: device.manufacturer
-      }))));
+      await repo.refreshDevices();
+      reply.send(get_store_value(androidDevices));
     }
   });
 }
+var androidDevices;
 var init_refresh = __esm({
   "src/routes/api/action/refresh.ts"() {
-    init_transform();
+    init_store();
     init_repository2();
+    androidDevices = derived(repo.cellData, ($cellData) => Object.fromEntries(Array.from($cellData).filter(([, data]) => data.connection.includes("android")).map(([serial, data]) => [serial, data.info])));
   }
 });
 
@@ -1544,6 +1566,21 @@ var init_text = __esm({
 });
 
 // src/routes/api/device/power/_body.ts
+function asPower(primitive) {
+  switch (primitive) {
+    case true:
+    case false:
+      return primitive;
+    case "false":
+      return false;
+    case 0:
+    case 1:
+    case "true":
+      return Boolean(primitive);
+    default:
+      return void 0;
+  }
+}
 function parsePowerBody(body) {
   if (typeof body === "boolean" || typeof body === "string") {
     return asPower(body);
@@ -1559,7 +1596,6 @@ function parsePowerBody(body) {
 }
 var init_body = __esm({
   "src/routes/api/device/power/_body.ts"() {
-    init_power();
   }
 });
 
@@ -1589,7 +1625,18 @@ async function serial_default2(fastify) {
         reply.status(400).send(new Error(`Invalid body ${request.body}`));
         return;
       }
-      reply.send(await repo.setPower(serial, power));
+      const settled = await repo.setPower([serial], power);
+      const serialSettled = settled.get(serial);
+      switch (serialSettled == null ? void 0 : serialSettled.status) {
+        case "fulfilled":
+          reply.status(200).send(power);
+          break;
+        case "rejected":
+          reply.status(500).send(serialSettled == null ? void 0 : serialSettled.reason);
+          break;
+        default:
+          reply.status(404).send(new Error(`Device ${serial} not found`));
+      }
     }
   });
 }
@@ -1623,11 +1670,16 @@ async function power_default(fastify) {
         return;
       }
       const serials = Array.from(get_store_value(repo.cellData).keys());
-      reply.send(await repo.setPower(serials, power));
+      const settled = await repo.setPower(serials, power);
+      if (Array.from(settled.values()).every(({ status }) => status === "fulfilled")) {
+        reply.status(200).send(power);
+      } else {
+        reply.status(500).send(new Error("Some error occured"));
+      }
     }
   });
 }
-var init_power2 = __esm({
+var init_power = __esm({
   "src/routes/api/device/power/index.ts"() {
     init_store();
     init_transform();
@@ -1804,7 +1856,6 @@ async function serial_default4(fastify) {
         body,
         params: { serial }
       } = request;
-      console.log(body);
       await repo.registerCell({
         serial: body.serial || serial,
         server: body.server || `${request.protocol}://${request.hostname}`,
@@ -1988,7 +2039,7 @@ async function urlEncodedPlugin(fastify) {
 // src/routes.ts
 async function routesSubsystem(fastify) {
   await urlEncodedPlugin(fastify);
-  await fastify.register(Promise.resolve().then(() => (init_serial(), serial_exports))).register(Promise.resolve().then(() => (init_image3(), image_exports))).register(Promise.resolve().then(() => (init_install(), install_exports))).register(Promise.resolve().then(() => (init_launch(), launch_exports))).register(Promise.resolve().then(() => (init_refresh(), refresh_exports))).register(Promise.resolve().then(() => (init_text(), text_exports))).register(Promise.resolve().then(() => (init_serial2(), serial_exports2))).register(Promise.resolve().then(() => (init_power2(), power_exports))).register(Promise.resolve().then(() => (init_serial3(), serial_exports3))).register(Promise.resolve().then(() => (init_state2(), state_exports))).register(Promise.resolve().then(() => (init_preset(), preset_exports))).register(Promise.resolve().then(() => (init_serial4(), serial_exports4))).register(Promise.resolve().then(() => (init_device(), device_exports))).register(Promise.resolve().then(() => (init_freebusy(), freebusy_exports))).register(Promise.resolve().then(() => (init_cellwall_version(), cellwall_version_exports))).register(Promise.resolve().then(() => (init_routes(), routes_exports))).register(Promise.resolve().then(() => (init_oauth2callback(), oauth2callback_exports)));
+  await fastify.register(Promise.resolve().then(() => (init_serial(), serial_exports))).register(Promise.resolve().then(() => (init_image3(), image_exports))).register(Promise.resolve().then(() => (init_install(), install_exports))).register(Promise.resolve().then(() => (init_launch(), launch_exports))).register(Promise.resolve().then(() => (init_refresh(), refresh_exports))).register(Promise.resolve().then(() => (init_text(), text_exports))).register(Promise.resolve().then(() => (init_serial2(), serial_exports2))).register(Promise.resolve().then(() => (init_power(), power_exports))).register(Promise.resolve().then(() => (init_serial3(), serial_exports3))).register(Promise.resolve().then(() => (init_state2(), state_exports))).register(Promise.resolve().then(() => (init_preset(), preset_exports))).register(Promise.resolve().then(() => (init_serial4(), serial_exports4))).register(Promise.resolve().then(() => (init_device(), device_exports))).register(Promise.resolve().then(() => (init_freebusy(), freebusy_exports))).register(Promise.resolve().then(() => (init_cellwall_version(), cellwall_version_exports))).register(Promise.resolve().then(() => (init_routes(), routes_exports))).register(Promise.resolve().then(() => (init_oauth2callback(), oauth2callback_exports)));
 }
 
 // src/websocket.ts

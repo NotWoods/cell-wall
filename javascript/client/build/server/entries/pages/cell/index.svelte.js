@@ -1,12 +1,8 @@
-import { c as create_ssr_component, v as validate_component, b as add_attribute } from "../../../chunks/index-4d214b4e.js";
-import { R as ResetSubmit } from "../../../chunks/ResetSubmit-1ef63641.js";
-import { V as VerticalField } from "../../../chunks/VerticalField-55978348.js";
-import { F as Form } from "../../../chunks/SubmitButton-546a9509.js";
-import { T as TopBar, R as RemoteFrame } from "../../../chunks/TopBar-fb618005.js";
+import { c as create_ssr_component, b as add_attribute } from "../../../chunks/index-4d214b4e.js";
+import { f as frameUrl } from "../../../chunks/state-socket-c1d8cd72.js";
 import { d as derived, w as writable } from "../../../chunks/index-23b4b723.js";
-import "../../../chunks/LoadingSpinner-97b51d95.js";
-import "../../../chunks/snackbar-host-a60c3b5b.js";
 import "../../../chunks/cell-state-schema-a24ecc56.js";
+import { c as cellStateTypes } from "../../../chunks/index-60355bff.js";
 const browser = false;
 function guard(name) {
   return () => {
@@ -14,6 +10,7 @@ function guard(name) {
   };
 }
 const goto = guard("goto");
+const prefetchRoutes = guard("prefetchRoutes");
 function lockState() {
   const state = writable({
     active: false
@@ -90,6 +87,11 @@ function requestWakeLock() {
     return void 0;
   }
 }
+var index_svelte_svelte_type_style_lang = "";
+const css = {
+  code: "form.svelte-1n83scs{display:flex;flex-direction:column;row-gap:1em;max-width:100vw;font-size:1.5rem}input.svelte-1n83scs,button.svelte-1n83scs{font:inherit}.buttons.svelte-1n83scs{display:flex;justify-content:space-between}button.svelte-1n83scs{padding:0.2em 1em}@media(max-width: 21rem){form.svelte-1n83scs{font-size:1rem}label.svelte-1n83scs{font-size:1.5em}}",
+  map: null
+};
 const load = async ({ url }) => {
   return {
     props: {
@@ -102,14 +104,18 @@ const Cell = create_ssr_component(($$result, $$props, $$bindings, slots) => {
   let { id = "" } = $$props;
   let { autoJoin = false } = $$props;
   async function submit() {
+    localStorage.setItem("id", id);
     requestFullScreen();
     requestWakeLock();
-    await goto(`/cell/frame/blank?id=${id}`, { replaceState: false });
+    const routePrefetchJob = prefetchRoutes(Array.from(cellStateTypes, (type) => frameUrl(type, id)));
+    await goto(frameUrl("BLANK", id), { replaceState: false });
+    await routePrefetchJob;
   }
   if ($$props.id === void 0 && $$bindings.id && id !== void 0)
     $$bindings.id(id);
   if ($$props.autoJoin === void 0 && $$bindings.autoJoin && autoJoin !== void 0)
     $$bindings.autoJoin(autoJoin);
+  $$result.css.add(css);
   {
     {
       if (autoJoin && browser) {
@@ -117,28 +123,15 @@ const Cell = create_ssr_component(($$result, $$props, $$bindings, slots) => {
       }
     }
   }
-  return `${$$result.head += `${$$result.title = `<title>New Cell | CellWall</title>`, ""}<meta name="${"apple-mobile-web-app-capable"}" content="${"yes"}" data-svelte="svelte-1vwepwj"><meta name="${"apple-mobile-web-app-status-bar-style"}" content="${"black-translucent"}" data-svelte="svelte-1vwepwj"><meta name="${"apple-mobile-web-app-title"}" content="${"CellWall"}" data-svelte="svelte-1vwepwj"><link rel="${"apple-touch-icon"}" sizes="${"274x274"}" href="${"/maskable_icon.png"}" data-svelte="svelte-1vwepwj">`, ""}
+  return `${$$result.head += `${$$result.title = `<title>New Cell | CellWall</title>`, ""}`, ""}
 
-${!autoJoin ? `${validate_component(TopBar, "TopBar").$$render($$result, {}, {}, {})}` : ``}
-${validate_component(RemoteFrame, "RemoteFrame").$$render($$result, {}, {}, {
-    default: () => {
-      return `${validate_component(Form, "Form").$$render($$result, {
-        class: "flex flex-col gap-y-4",
-        action: "/cell/frame/blank",
-        method: "get",
-        onSubmit: submit
-      }, {}, {
-        default: ({ loading }) => {
-          return `${validate_component(VerticalField, "VerticalField").$$render($$result, { for: "control-id", label: "ID" }, {}, {
-            default: ({ inputClassName }) => {
-              return `<input id="${"control-id"}"${add_attribute("class", inputClassName, 0)} name="${"id"}" type="${"text"}" required${add_attribute("value", id, 0)}>`;
-            }
-          })}
+<div class="${"fill center wrapper"}"><form action="${"/cell/frame/blank"}" method="${"get"}" class="${"svelte-1n83scs"}"><img src="${"/logo.png"}" alt="${""}" width="${"48"}" height="${"48"}">
 
-		${validate_component(ResetSubmit, "ResetSubmit").$$render($$result, { loading }, {}, {})}`;
-        }
-      })}`;
-    }
-  })}`;
+		<label for="${"control-id"}" class="${"svelte-1n83scs"}">Cell ID</label>
+		<input id="${"control-id"}" name="${"id"}" type="${"text"}" required class="${"svelte-1n83scs"}"${add_attribute("value", id, 0)}>
+
+		<div class="${"buttons svelte-1n83scs"}"><button type="${"reset"}" class="${"svelte-1n83scs"}">Reset</button>
+			<button type="${"submit"}" class="${"svelte-1n83scs"}">Join</button></div></form>
+</div>`;
 });
 export { Cell as default, load };

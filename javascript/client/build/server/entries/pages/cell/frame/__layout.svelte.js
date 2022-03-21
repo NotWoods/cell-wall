@@ -1,55 +1,7 @@
-import { c as create_ssr_component, g as getContext, a as subscribe, s as setContext, v as validate_component } from "../../../../chunks/index-4d214b4e.js";
-import { b as blankState } from "../../../../chunks/cell-state-schema-a24ecc56.js";
-import { r as readable } from "../../../../chunks/index-23b4b723.js";
-function connect(serial) {
-  {
-    return void 0;
-  }
-}
-function isCellState(state) {
-  return Boolean(state && typeof state === "object" && "type" in state);
-}
-function emptyData(data) {
-  if (data instanceof ArrayBuffer) {
-    return data.byteLength === 0;
-  } else if (data instanceof Blob) {
-    return data.size === 0;
-  }
-  return false;
-}
-function cellState(socket) {
-  let receivedState = blankState;
-  return readable(blankState, (set) => {
-    const controller = new AbortController();
-    function handleMessage({ data }) {
-      if (typeof data === "string") {
-        const maybeJson = JSON.parse(data);
-        if (isCellState(maybeJson)) {
-          receivedState = maybeJson;
-          return;
-        }
-      }
-      if (!emptyData(data)) {
-        receivedState.payload = data;
-      }
-      set(receivedState);
-    }
-    socket?.addEventListener("message", handleMessage, controller);
-    return () => controller.abort();
-  });
-}
-var _PageTransition_svelte_svelte_type_style_lang = "";
-const css = {
-  code: ".layout.svelte-e2gi4i{height:100vh;height:100dvh;width:100vw}",
-  map: null
-};
-const PageTransition = create_ssr_component(($$result, $$props, $$bindings, slots) => {
-  let { key = "" } = $$props;
-  if ($$props.key === void 0 && $$bindings.key && key !== void 0)
-    $$bindings.key(key);
-  $$result.css.add(css);
-  return `<div class="${"layout svelte-e2gi4i"}">${slots.default ? slots.default({}) : ``}</div>`;
-});
+import { g as getContext, c as create_ssr_component, a as subscribe, s as setContext } from "../../../../chunks/index-4d214b4e.js";
+import { c as cellState, f as frameUrl, a as connect } from "../../../../chunks/state-socket-c1d8cd72.js";
+import "../../../../chunks/cell-state-schema-a24ecc56.js";
+import "../../../../chunks/index-23b4b723.js";
 function getFrameContext() {
   return getContext("frame");
 }
@@ -64,7 +16,6 @@ const load = async ({ url }) => {
   return { props: { serial: id } };
 };
 const _layout = create_ssr_component(($$result, $$props, $$bindings, slots) => {
-  let url;
   let $state, $$unsubscribe_state;
   let { serial } = $$props;
   const socket = connect();
@@ -76,19 +27,10 @@ const _layout = create_ssr_component(($$result, $$props, $$bindings, slots) => {
   socket?.addEventListener("close", (event) => console.info("Socket close", event));
   if ($$props.serial === void 0 && $$bindings.serial && serial !== void 0)
     $$bindings.serial(serial);
-  url = `/cell/frame/${$state.type.toLowerCase()}`;
-  {
-    {
-      console.log("CellState", $state);
-    }
-  }
+  frameUrl($state.type, serial);
   $$unsubscribe_state();
-  return `${$$result.head += `${$$result.title = `<title>Cell</title>`, ""}<meta name="${"apple-mobile-web-app-capable"}" content="${"yes"}" data-svelte="svelte-ct4vxn"><meta name="${"apple-mobile-web-app-status-bar-style"}" content="${"black-translucent"}" data-svelte="svelte-ct4vxn"><meta name="${"apple-mobile-web-app-title"}" content="${"CellWall"}" data-svelte="svelte-ct4vxn"><link rel="${"apple-touch-icon"}" sizes="${"274x274"}" href="${"/maskable_icon.png"}" data-svelte="svelte-ct4vxn">`, ""}
+  return `${$$result.head += `${$$result.title = `<title>Cell</title>`, ""}`, ""}
 
-${validate_component(PageTransition, "PageTransition").$$render($$result, { key: url }, {}, {
-    default: () => {
-      return `${slots.default ? slots.default({}) : ``}`;
-    }
-  })}`;
+${slots.default ? slots.default({}) : ``}`;
 });
 export { _layout as default, getFrameContext, load };

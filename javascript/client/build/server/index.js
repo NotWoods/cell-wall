@@ -28,6 +28,7 @@ const Root = create_ssr_component(($$result, $$props, $$bindings, slots) => {
   let { props_1 = null } = $$props;
   let { props_2 = null } = $$props;
   let { props_3 = null } = $$props;
+  let { props_4 = null } = $$props;
   setContext("__svelte__", stores);
   afterUpdate(stores.page.notify);
   if ($$props.stores === void 0 && $$bindings.stores && stores !== void 0)
@@ -44,6 +45,8 @@ const Root = create_ssr_component(($$result, $$props, $$bindings, slots) => {
     $$bindings.props_2(props_2);
   if ($$props.props_3 === void 0 && $$bindings.props_3 && props_3 !== void 0)
     $$bindings.props_3(props_3);
+  if ($$props.props_4 === void 0 && $$bindings.props_4 && props_4 !== void 0)
+    $$bindings.props_4(props_4);
   {
     stores.page.set(page);
   }
@@ -56,7 +59,11 @@ ${components[1] ? `${validate_component(components[0] || missing_component, "sve
         default: () => {
           return `${components[3] ? `${validate_component(components[2] || missing_component, "svelte:component").$$render($$result, Object.assign(props_2 || {}), {}, {
             default: () => {
-              return `${validate_component(components[3] || missing_component, "svelte:component").$$render($$result, Object.assign(props_3 || {}), {}, {})}`;
+              return `${components[4] ? `${validate_component(components[3] || missing_component, "svelte:component").$$render($$result, Object.assign(props_3 || {}), {}, {
+                default: () => {
+                  return `${validate_component(components[4] || missing_component, "svelte:component").$$render($$result, Object.assign(props_4 || {}), {}, {})}`;
+                }
+              })}` : `${validate_component(components[3] || missing_component, "svelte:component").$$render($$result, Object.assign(props_3 || {}), {}, {})}`}`;
             }
           })}` : `${validate_component(components[2] || missing_component, "svelte:component").$$render($$result, Object.assign(props_2 || {}), {}, {})}`}`;
         }

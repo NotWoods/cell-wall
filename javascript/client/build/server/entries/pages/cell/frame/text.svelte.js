@@ -1,11 +1,12 @@
 import { c as create_ssr_component, a as subscribe, e as escape } from "../../../../chunks/index-4d214b4e.js";
 import "../../../../chunks/cell-state-schema-a24ecc56.js";
-import { f as filterState } from "../../../../chunks/index-31161e5d.js";
+import { f as filterState } from "../../../../chunks/index-60355bff.js";
 import { getFrameContext } from "./__layout.svelte.js";
+import "../../../../chunks/state-socket-c1d8cd72.js";
 import "../../../../chunks/index-23b4b723.js";
 var text_svelte_svelte_type_style_lang = "";
 const css = {
-  code: "main.svelte-1xuwf3b{display:flex;height:100%;align-items:center;justify-content:center;text-align:center}h1.svelte-1xuwf3b{margin:8px}",
+  code: "main.svelte-cak7yr{text-align:center}h1.svelte-cak7yr{margin:8px}",
   map: null
 };
 const Text = create_ssr_component(($$result, $$props, $$bindings, slots) => {
@@ -20,7 +21,7 @@ const Text = create_ssr_component(($$result, $$props, $$bindings, slots) => {
   text = textState?.payload || "CellWall";
   backgroundColor = textState?.backgroundColor || "#429A46";
   $$unsubscribe_state();
-  return `<main style="${"background: " + escape(backgroundColor) + ";"}" class="${"svelte-1xuwf3b"}"><h1 class="${"headline-1 svelte-1xuwf3b"}">${escape(text)}</h1>
+  return `<main class="${"fill center svelte-cak7yr"}" style="${"background: " + escape(backgroundColor) + ";"}"><h1 class="${"headline-1 svelte-cak7yr"}">${escape(text)}</h1>
 </main>`;
 });
 export { Text as default };
