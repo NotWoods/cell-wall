@@ -14,21 +14,33 @@
 <script lang="ts">
 	import { browser } from '$app/env';
 	import { goto } from '$app/navigation';
-	import ResetSubmit from '$lib/components/Button/ResetSubmit.svelte';
-	import VerticalField from '$lib/components/Field/VerticalField.svelte';
-	import Form from '$lib/components/Form.svelte';
-	import RemoteFrame from '$lib/components/RemoteFrame.svelte';
-	import TopBar from '$lib/components/TopBar/TopBar.svelte';
 	import { requestFullScreen, requestWakeLock } from '$lib/wakelock';
+	import { onMount } from 'svelte';
 
 	export let id = '';
 	export let autoJoin = false;
 
+	onMount(() => {
+		// Load previous ID from local storage, if not set by the URL
+		if (!id) {
+			const lastId = localStorage.getItem('id');
+			if (lastId) {
+				id = lastId;
+			}
+		}
+	});
+
 	async function submit() {
+		localStorage.setItem('id', id);
+
 		requestFullScreen();
 		requestWakeLock();
 
 		await goto(`/cell/frame/blank?id=${id}`, { replaceState: false });
+	}
+
+	function reset() {
+		localStorage.removeItem('id');
 	}
 
 	$: {
@@ -46,28 +58,55 @@
 	<link rel="apple-touch-icon" sizes="274x274" href="/maskable_icon.png" />
 </svelte:head>
 
-{#if !autoJoin}
-	<TopBar />
-{/if}
-<RemoteFrame>
-	<Form
-		class="flex flex-col gap-y-4"
-		action="/cell/frame/blank"
-		method="get"
-		onSubmit={submit}
-		let:loading
-	>
-		<VerticalField for="control-id" label="ID" let:inputClassName>
-			<input
-				id="control-id"
-				class={inputClassName}
-				name="id"
-				type="text"
-				required
-				bind:value={id}
-			/>
-		</VerticalField>
+<div class="wrapper">
+	<form action="/cell/frame/blank" method="get">
+		<img src="/logo.png" alt="" width="48" height="48" />
 
-		<ResetSubmit {loading} />
-	</Form>
-</RemoteFrame>
+		<label for="control-id">Cell ID</label>
+		<input id="control-id" name="id" type="text" required bind:value={id} />
+
+		<div class="buttons">
+			<button type="reset" on:click={reset}>Reset</button>
+			<button type="submit">Join</button>
+		</div>
+	</form>
+</div>
+
+<style>
+	.wrapper {
+		height: 100dvh;
+		height: 100vh;
+		background: #429a46;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 1.5rem;
+	}
+	form {
+		display: flex;
+		flex-direction: column;
+		row-gap: 1em;
+		max-width: 100vw;
+	}
+	input,
+	button {
+		font: inherit;
+	}
+
+	.buttons {
+		display: flex;
+		justify-content: space-between;
+	}
+	button {
+		padding: 0.2em 1em;
+	}
+
+	@media (max-width: 21rem) {
+		.wrapper {
+			font-size: 1rem;
+		}
+		label {
+			font-size: 1.5em;
+		}
+	}
+</style>

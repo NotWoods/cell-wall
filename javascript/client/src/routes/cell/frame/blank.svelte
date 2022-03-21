@@ -1,4 +1,4 @@
-<main style="background: #429A46;">
+<main>
 	<img src="/logo.png" alt="" width="192" height="192" />
 </main>
 
@@ -8,5 +8,6 @@
 		height: 100vh;
 		align-items: center;
 		justify-content: center;
+		background: #429a46;
 	}
 </style>
