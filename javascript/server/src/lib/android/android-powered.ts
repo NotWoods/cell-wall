@@ -6,7 +6,7 @@ import { getWakefulness } from './adb-actions';
 const KEYCODE_UNKNOWN = 0;
 const KEYCODE_POWER = 26;
 
-interface AndroidPoweredStore extends Writable<ReadonlySet<string>> {
+export interface AndroidPoweredStore extends Writable<ReadonlySet<string>> {
 	/**
 	 * Set new powered devices and inform subscribers.
 	 * @param value to set

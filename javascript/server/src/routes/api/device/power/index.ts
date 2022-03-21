@@ -1,10 +1,11 @@
 import type { FastifyInstance } from 'fastify';
-import { get as getState } from 'svelte/store';
-import { transformMapAsync } from '../../../../lib/map/transform';
+import { derived, get as getState } from 'svelte/store';
 import { repo } from '../../../../lib/repository';
 import { parsePowerBody } from './_body';
 
 export default async function (fastify: FastifyInstance): Promise<void> {
+	const serials = derived(repo.cellData, ($cellData) => Array.from($cellData.keys()));
+
 	fastify.route<{
 		Reply: Record<string, boolean>;
 	}>({
@@ -14,11 +15,12 @@ export default async function (fastify: FastifyInstance): Promise<void> {
 		 * Check if all cells are turned on or off.
 		 */
 		async handler(request, reply) {
-			reply.send(
-				Object.fromEntries(
-					await transformMapAsync(getState(repo.cellData), (_data, serial) => repo.getPower(serial))
-				)
-			);
+			await repo.powered.refresh();
+
+			const powered = getState(repo.powered);
+			const $serials = getState(serials);
+
+			reply.send(Object.fromEntries($serials.map((serial) => [serial, powered.has(serial)])));
 		}
 	});
 
@@ -39,9 +41,9 @@ export default async function (fastify: FastifyInstance): Promise<void> {
 				return;
 			}
 
-			const serials = Array.from(getState(repo.cellData).keys());
+			const $serials = getState(serials);
 
-			const settled = await repo.setPower(serials, power);
+			const settled = await repo.setPower($serials, power);
 			if (Array.from(settled.values()).every(({ status }) => status === 'fulfilled')) {
 				reply.status(200).send(power);
 			} else {

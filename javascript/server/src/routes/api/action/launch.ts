@@ -1,5 +1,6 @@
 import type { FastifyInstance } from 'fastify';
 import { get as getState } from 'svelte/store';
+import { allSettledMap } from '../../../lib/map/transform';
 import { repo } from '../../../lib/repository';
 
 /**
@@ -7,34 +8,14 @@ import { repo } from '../../../lib/repository';
  */
 export default async function (fastify: FastifyInstance): Promise<void> {
 	fastify.route<{
-		Reply: string[];
+		Reply: Record<string, PromiseSettledResult<void>>;
 	}>({
 		method: ['GET', 'POST'],
 		url: '/api/action/launch',
 		async handler(request, reply) {
-			const devices = getState(repo.cellData);
-			const promises = Array.from(devices)
-				.map(([serial, data]) => {
-					return {
-						serial,
-						connection: new Set(data.connection)
-					};
-				})
-				// Get ADB-only devices
-				.filter(({ connection }) => connection.has('android') && !connection.has('web'))
-				.map(async ({ serial }) => {
-					await repo.openClientOnDevice(serial);
-					return serial;
-				});
-
-			const results = await Promise.allSettled(promises);
-			reply.send(
-				results
-					.filter(
-						(result): result is PromiseFulfilledResult<string> => result.status === 'fulfilled'
-					)
-					.map((result) => result.value)
-			);
+			const devices = getState(repo.androidConnections);
+			const results = await allSettledMap(devices, (_, serial) => repo.openClientOnDevice(serial));
+			reply.send(Object.fromEntries(results));
 		}
 	});
 }

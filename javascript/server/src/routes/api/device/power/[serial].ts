@@ -1,4 +1,5 @@
 import type { FastifyInstance } from 'fastify';
+import { get as getState } from 'svelte/store';
 import { repo } from '../../../../lib/repository';
 import { parsePowerBody } from './_body';
 
@@ -18,8 +19,11 @@ export default async function (fastify: FastifyInstance): Promise<void> {
 		async handler(request, reply) {
 			const { serial } = request.params;
 
+			await repo.powered.refresh();
+			const powered = getState(repo.powered);
+
 			reply.send({
-				[serial]: await repo.getPower(serial)
+				[serial]: powered.has(serial)
 			});
 		}
 	});
