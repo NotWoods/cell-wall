@@ -1,10 +1,9 @@
-import type { CellData, CellState } from '@cell-wall/shared';
-import { derived, get, type Readable, type Unsubscriber } from 'svelte/store';
+import type { CellData } from '@cell-wall/shared';
+import { derived, get } from 'svelte/store';
 import { AndroidDeviceManager } from '../android/android-device-manager';
 import { CellManager, cellStateStore } from '../cells';
 import { DATABASE_FILENAME, SERVER_ADDRESS } from '../env';
 import { filterMap, transformMap } from '../map/transform';
-import { onlyNewEntries } from '../store/changes';
 import { deriveCellData } from './combine-cell';
 import { database } from './database';
 import type { Repository } from './interface';
@@ -28,31 +27,6 @@ export function androidConnections(
 	);
 }
 
-/**
- * Send intents to Android-only cells.
- */
-function sendIntentOnStateChange(
-	cellStateStore: Readable<ReadonlyMap<string, CellState>>,
-	androidConnections: Readable<ReadonlyMap<string, { server: string | undefined }>>,
-	deviceManager: AndroidDeviceManager
-): Unsubscriber {
-	const cellStates = onlyNewEntries(cellStateStore);
-
-	return cellStates.subscribe((stateChanges) => {
-		const connectionInfo = get(androidConnections);
-
-		Promise.all(
-			Array.from(stateChanges).map(async ([serial, state]) => {
-				// WebSocket connections override Android connections
-				if (state && connectionInfo.has(serial)) {
-					const { server = SERVER_ADDRESS } = connectionInfo.get(serial) ?? {};
-					await deviceManager.launchClient(serial, server, state);
-				}
-			})
-		);
-	});
-}
-
 export function repository(): Repository {
 	const dbPromise = database(DATABASE_FILENAME);
 	const cellState = cellStateStore();
@@ -72,7 +46,6 @@ export function repository(): Repository {
 		webSockets
 	});
 	const android = derived(cellData, androidConnections);
-	sendIntentOnStateChange(cellState, android, deviceManager);
 	cellData.subscribe((state) => console.info('CellData', state));
 
 	const thirdParty = thirdPartyConnectRepository(dbPromise);

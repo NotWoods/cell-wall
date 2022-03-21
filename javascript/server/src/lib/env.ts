@@ -2,7 +2,7 @@ import { env, VERSION } from '@cell-wall/shared/src/env';
 import { config } from 'dotenv';
 import { networkInterfaces } from 'os';
 
-config({ path: '../../.env' });
+config({ path: '../../../.env' });
 
 /**
  * Lookup the IP address of the device in the local network

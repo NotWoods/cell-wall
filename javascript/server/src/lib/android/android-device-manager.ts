@@ -1,6 +1,4 @@
-import type { CellState } from '@cell-wall/shared';
 import { get } from 'svelte/store';
-import { toUri } from '../cells/state';
 import { PACKAGE_NAME, PORT } from '../env';
 import { transformMapAsync } from '../map/transform';
 import { startIntent } from './adb-actions';
@@ -15,27 +13,18 @@ export class AndroidDeviceManager {
 
 	/**
 	 * Launch the CellWall Android client app by sending an Intent over ADB.
+	 * Opens a GeckoView browser pointing at the Svelte web client (`http://address:3000/cell?id=serial`).
 	 * @param serial ID of the device to send the intent to.
 	 * @param host URL of the host server, as far as the target device is aware.
 	 * Useful if the target device is running a different network.
-	 * @param state Cell state to display using the Android client, instead of the Svelte web client.
-	 * Planning to deprecate this.
-	 * If not set, the intent will open the Svelte web client via the Android app.
 	 */
-	async launchClient(serial: string, host: URL | string, state?: CellState) {
+	async launchClient(serial: string, host: URL | string) {
 		const adb = get(this.devices).get(serial);
 		if (!adb) return;
 
-		let dataUri: URL;
-		if (state) {
-			dataUri = toUri(state, host);
-		} else {
-			dataUri = new URL(`/cell?id=${serial}&autojoin`, host);
-		}
-
 		await startIntent(adb, {
 			action: `${PACKAGE_NAME}.DISPLAY`,
-			dataUri,
+			dataUri: new URL(`/cell?id=${serial}&autojoin`, host),
 			waitForLaunch: true
 		});
 	}

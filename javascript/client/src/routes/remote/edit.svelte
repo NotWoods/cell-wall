@@ -46,7 +46,7 @@
 
 <Form
 	class="flex flex-col gap-y-4"
-	action="/api/device/{selectedDeviceSerial}"
+	action="/api/device/info/{selectedDeviceSerial}"
 	onSubmit={submit}
 	let:loading
 >
