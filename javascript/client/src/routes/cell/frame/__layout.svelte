@@ -30,7 +30,6 @@
 	import { goto } from '$app/navigation';
 	import { cellState, connect, sendResizeEvents } from '$lib/connection/state-socket';
 	import { onMount } from 'svelte';
-	import PageTransition from './_PageTransition.svelte';
 
 	export let serial: string;
 
@@ -57,12 +56,6 @@
 
 <svelte:head>
 	<title>Cell</title>
-	<meta name="apple-mobile-web-app-capable" content="yes" />
-	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-	<meta name="apple-mobile-web-app-title" content="CellWall" />
-	<link rel="apple-touch-icon" sizes="274x274" href="/maskable_icon.png" />
 </svelte:head>
 
-<PageTransition key={url}>
-	<slot />
-</PageTransition>
+<slot />
