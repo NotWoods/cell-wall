@@ -1,6 +1,5 @@
 package com.tigeroakes.cellwall.client
 
-import android.graphics.Color
 import androidx.fragment.app.FragmentManager
 import androidx.navigation.NavController
 import androidx.navigation.NavDirections
@@ -32,24 +31,6 @@ class CellStateManagerTest {
     }
     fragmentManager = mockk()
     manager = CellStateManager(navController, fragmentManager)
-  }
-
-  @Test
-  fun openTextFragment() {
-    manager.updateState(CellState.Text(
-      text = "Hello world",
-      backgroundColor = Color.BLUE,
-    ))
-
-    verify {
-      navController.navigate(
-        NavGraphDirections.actionGlobalLargeTextFragment(
-          text = "Hello world",
-          backgroundColor = Color.BLUE,
-        ),
-        any<NavOptions>(),
-      )
-    }
   }
 
   @Test

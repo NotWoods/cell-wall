@@ -1,9 +1,7 @@
 package com.tigeroakes.cellwall.client.model
 
-import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
-import androidx.annotation.ColorInt
 import org.json.JSONObject
 import java.util.Locale
 
@@ -26,10 +24,6 @@ sealed class Container {
 
   abstract fun getString(name: String): String?
 
-  @ColorInt
-  open fun getColor(name: String): Int? =
-    getString(name)?.let(Color::parseColor)
-
   inline fun <reified T : Enum<T>> getEnum(name: String): T? =
     getString(name)?.uppercase(Locale.ROOT)?.let { enumValueOf<T>(it) }
 }
@@ -49,6 +43,4 @@ class DataUriContainer(private val uri: Uri) : Container() {
 class BundleContainer(private val bundle: Bundle) : Container() {
   override fun getString(name: String) =
     bundle.getString(name)
-  override fun getColor(name: String) =
-    bundle.getInt(name)
 }

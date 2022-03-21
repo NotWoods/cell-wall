@@ -9,14 +9,8 @@
     android:id="@+id/action_global_splashFragment"
     app:destination="@id/splash" />
   <action
-    android:id="@+id/action_global_largeTextFragment"
-    app:destination="@id/largeTextFragment" />
-  <action
     android:id="@+id/action_global_webFragment"
     app:destination="@id/webFragment" />
-  <action
-    android:id="@+id/action_global_imageFragment"
-    app:destination="@id/imageFragment" />
 
   <fragment
     android:id="@+id/splash"
@@ -24,33 +18,11 @@
     tools:layout="@layout/fragment_splash" />
 
   <fragment
-    android:id="@+id/largeTextFragment"
-    android:name="com.tigeroakes.cellwall.client.ui.text.LargeTextFragment"
-    tools:layout="@layout/fragment_large_text">
-    <argument
-      android:name="text"
-      app:argType="string" />
-    <argument
-      android:name="backgroundColor"
-      app:argType="integer" />
-  </fragment>
-  <fragment
     android:id="@+id/webFragment"
     android:name="com.tigeroakes.cellwall.client.ui.web.WebFragment"
     tools:layout="@layout/fragment_web">
     <argument
       android:name="url"
-      app:argType="string" />
-  </fragment>
-  <fragment
-    android:id="@+id/imageFragment"
-    android:name="com.tigeroakes.cellwall.client.ui.image.ImageFragment"
-    tools:layout="@layout/fragment_image">
-    <argument
-      android:name="src"
-      app:argType="string" />
-    <argument
-      android:name="scaleType"
       app:argType="string" />
   </fragment>
 </navigation>

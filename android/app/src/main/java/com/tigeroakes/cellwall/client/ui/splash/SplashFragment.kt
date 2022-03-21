@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import com.tigeroakes.cellwall.client.R
 import com.tigeroakes.cellwall.client.databinding.FragmentSplashBinding
-import com.tigeroakes.cellwall.client.device.getCellInfo
 import com.tigeroakes.cellwall.client.ui.ViewBindingFragment
 
 class SplashFragment : ViewBindingFragment<FragmentSplashBinding>() {
@@ -22,8 +21,8 @@ class SplashFragment : ViewBindingFragment<FragmentSplashBinding>() {
 
   /** Update the debug text */
   private fun setupDebugText() {
-    val info = getCellInfo(resources.displayMetrics)
-    binding!!.debugDensity.text = getString(R.string.debug_density, info.density)
-    binding!!.debugDisplay.text = getString(R.string.debug_display_dp, info.width, info.height)
+    val metrics = resources.displayMetrics
+    binding!!.debugDensity.text = getString(R.string.debug_density, metrics.density)
+    binding!!.debugDisplay.text = getString(R.string.debug_display_dp, metrics.widthPixels, metrics.heightPixels)
   }
 }
