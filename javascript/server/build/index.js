@@ -1673,12 +1673,15 @@ async function power_default(fastify) {
         reply.status(400).send(new Error(`Invalid body ${request.body}`));
         return;
       }
+      await repo.powered.refresh();
       const $serials = get_store_value(serials);
       const settled = Array.from((await repo.setPower($serials, power)).values());
       if (settled.every(({ status }) => status === "fulfilled")) {
         reply.status(200).send(power);
       } else {
-        reply.status(500).send(new AggregateError(settled.filter((result) => result.status === "rejected").map(({ reason }) => reason)));
+        const errors = settled.filter((result) => result.status === "rejected").map(({ reason }) => reason);
+        console.error(errors);
+        reply.status(500).send(new AggregateError(errors));
       }
     }
   });
@@ -1704,6 +1707,7 @@ async function power_default(fastify) {
         reply.status(400).send(new Error(`Invalid body ${request.body}`));
         return;
       }
+      await repo.powered.refresh();
       const settled = await repo.setPower([serial], power);
       const serialSettled = settled.get(serial);
       switch (serialSettled == null ? void 0 : serialSettled.status) {
@@ -1880,6 +1884,28 @@ var init_freebusy = __esm({
   }
 });
 
+// src/routes/api/third_party/index.ts
+var third_party_exports = {};
+__export(third_party_exports, {
+  default: () => third_party_default
+});
+async function third_party_default(fastify) {
+  fastify.route({
+    method: "GET",
+    url: "/api/third_party/",
+    async handler(request, reply) {
+      const googleClient = await repo.thirdParty.google;
+      reply.send({ google_authorize_url: get_store_value(googleClient.authorizeUrl) });
+    }
+  });
+}
+var init_third_party = __esm({
+  "src/routes/api/third_party/index.ts"() {
+    init_store();
+    init_repository2();
+  }
+});
+
 // src/routes/api/cellwall-version.ts
 var cellwall_version_exports = {};
 __export(cellwall_version_exports, {
@@ -1980,7 +2006,7 @@ async function urlEncodedPlugin(fastify) {
 // src/routes.ts
 async function routesSubsystem(fastify) {
   await urlEncodedPlugin(fastify);
-  await fastify.register(Promise.resolve().then(() => (init_image3(), image_exports))).register(Promise.resolve().then(() => (init_install(), install_exports))).register(Promise.resolve().then(() => (init_launch(), launch_exports))).register(Promise.resolve().then(() => (init_refresh(), refresh_exports))).register(Promise.resolve().then(() => (init_text(), text_exports))).register(Promise.resolve().then(() => (init_info(), info_exports))).register(Promise.resolve().then(() => (init_power(), power_exports))).register(Promise.resolve().then(() => (init_preset(), preset_exports))).register(Promise.resolve().then(() => (init_state2(), state_exports))).register(Promise.resolve().then(() => (init_device(), device_exports))).register(Promise.resolve().then(() => (init_freebusy(), freebusy_exports))).register(Promise.resolve().then(() => (init_cellwall_version(), cellwall_version_exports))).register(Promise.resolve().then(() => (init_routes(), routes_exports))).register(Promise.resolve().then(() => (init_oauth2callback(), oauth2callback_exports)));
+  await fastify.register(Promise.resolve().then(() => (init_image3(), image_exports))).register(Promise.resolve().then(() => (init_install(), install_exports))).register(Promise.resolve().then(() => (init_launch(), launch_exports))).register(Promise.resolve().then(() => (init_refresh(), refresh_exports))).register(Promise.resolve().then(() => (init_text(), text_exports))).register(Promise.resolve().then(() => (init_info(), info_exports))).register(Promise.resolve().then(() => (init_power(), power_exports))).register(Promise.resolve().then(() => (init_preset(), preset_exports))).register(Promise.resolve().then(() => (init_state2(), state_exports))).register(Promise.resolve().then(() => (init_device(), device_exports))).register(Promise.resolve().then(() => (init_freebusy(), freebusy_exports))).register(Promise.resolve().then(() => (init_third_party(), third_party_exports))).register(Promise.resolve().then(() => (init_cellwall_version(), cellwall_version_exports))).register(Promise.resolve().then(() => (init_routes(), routes_exports))).register(Promise.resolve().then(() => (init_oauth2callback(), oauth2callback_exports)));
 }
 
 // src/websocket.ts
@@ -1988,38 +2014,6 @@ init_cells();
 init_repository2();
 import { blankState as blankState4 } from "@cell-wall/shared";
 import { WebSocketServer } from "ws";
-
-// src/lib/store/third-party.ts
-init_store();
-
-// src/lib/store/promise.ts
-init_store();
-function resolvedPromiseStore(promise) {
-  return readable(void 0, (set) => {
-    promise.then(set);
-  });
-}
-
-// src/lib/store/third-party.ts
-function thirdPartySocketStore(repo2) {
-  const googleAuthUrl = derived(resolvedPromiseStore(repo2.thirdParty.google), (client, set) => {
-    if (client) {
-      return client.authorizeUrl.subscribe((authorizeUrl) => set({ loading: false, authorizeUrl }));
-    } else {
-      set({ loading: true });
-      return void 0;
-    }
-  }, { loading: true });
-  return derived(googleAuthUrl, (googleState) => {
-    const socketState = {
-      google_loading: googleState.loading,
-      google_authorize_url: googleState.authorizeUrl
-    };
-    return socketState;
-  });
-}
-
-// src/websocket.ts
 var CELL_SERIAL = /^\/cells\/(\w+)\/?$/;
 var blankBuffer = new ArrayBuffer(0);
 var cellSocketHandler = {
@@ -2060,14 +2054,6 @@ var remoteSocketHandler = {
     });
   }
 };
-var thirdPartySocketHandler = {
-  path: "/third_party",
-  onConnect(ws) {
-    return thirdPartySocketStore(repo).subscribe((socketState) => {
-      ws.send(JSON.stringify(socketState));
-    });
-  }
-};
 function attachWebsocketHandlers(server, websocketHandlers) {
   const webSocketServers = new WeakMap(websocketHandlers.map((handler2) => {
     const webSocketServer = new WebSocketServer({ noServer: true });
@@ -2100,11 +2086,7 @@ function attachWebsocketHandlers(server, websocketHandlers) {
   });
 }
 async function websocketSubsystem(fastify) {
-  attachWebsocketHandlers(fastify.server, [
-    cellSocketHandler,
-    remoteSocketHandler,
-    thirdPartySocketHandler
-  ]);
+  attachWebsocketHandlers(fastify.server, [cellSocketHandler, remoteSocketHandler]);
 }
 
 // src/server.ts

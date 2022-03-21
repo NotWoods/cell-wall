@@ -1,5 +1,5 @@
 import { c as create_ssr_component, b as add_attribute, v as validate_component } from "./index-4d214b4e.js";
-import { S as SubmitButton } from "./SubmitButton-546a9509.js";
+import { S as SubmitButton } from "./SubmitButton-5e66dc23.js";
 const colors = {
   pending: "bg-slate-700",
   success: "bg-slate-700 hover:bg-slate-800"

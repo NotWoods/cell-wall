@@ -1,6 +1,6 @@
 {
   ".svelte-kit/runtime/client/start.js": {
-    "file": "start-c7f759e3.js",
+    "file": "start-d46820f2.js",
     "src": ".svelte-kit/runtime/client/start.js",
     "isEntry": true,
     "imports": [
@@ -11,7 +11,7 @@
       ".svelte-kit/runtime/components/layout.svelte",
       "src/routes/__error.svelte",
       "src/routes/index.svelte",
-      "___layout-d4660940.js",
+      "___layout-11d08886.js",
       "src/routes/remote/__error.svelte",
       "src/routes/remote/index.svelte",
       "src/routes/remote/third_party.svelte",
@@ -73,45 +73,40 @@
     ]
   },
   "src/routes/remote/index.svelte": {
-    "file": "pages/remote/index.svelte-b87c0ef6.js",
+    "file": "pages/remote/index.svelte-03049fd7.js",
     "src": "src/routes/remote/index.svelte",
     "isEntry": true,
     "isDynamicEntry": true,
     "imports": [
       "_vendor-92048905.js",
-      "_SubmitButton-e9d712ee.js",
-      "_VerticalField-3fc71dc9.js",
+      "_SubmitButton-cbc9b99d.js",
+      "_VerticalField-982e779c.js",
       "__form-52443b97.js",
       "_snackbar-host-0696384f.js",
       "_cell-state-schema-a24ecc56.js",
-      "_LoadingSpinner-d8b77dcc.js"
+      "_Label-cb141bcc.js"
     ]
   },
   "src/routes/remote/third_party.svelte": {
-    "file": "pages/remote/third_party.svelte-bdbdc13d.js",
+    "file": "pages/remote/third_party.svelte-7dc344c5.js",
     "src": "src/routes/remote/third_party.svelte",
     "isEntry": true,
     "isDynamicEntry": true,
     "imports": [
       "_vendor-92048905.js",
-      "_HorizontalField-6331c5bf.js",
-      "_LoadingSpinner-d8b77dcc.js",
-      "___layout-d4660940.js",
-      "_stores-666d7af9.js",
-      "_TopBar-adf9860c.js",
-      "_snackbar-host-0696384f.js",
-      "_cell-state-schema-a24ecc56.js"
+      "_HorizontalField-cd7e5313.js",
+      "_Label-cb141bcc.js"
     ]
   },
   "src/routes/remote/canvas.svelte": {
-    "file": "pages/remote/canvas.svelte-55580b56.js",
+    "file": "pages/remote/canvas.svelte-3ca4a17c.js",
     "src": "src/routes/remote/canvas.svelte",
     "isEntry": true,
     "isDynamicEntry": true,
     "imports": [
       "_vendor-92048905.js",
       "_cell-state-schema-a24ecc56.js",
-      "___layout-d4660940.js",
+      "___layout-11d08886.js",
       "_stores-666d7af9.js",
       "_TopBar-adf9860c.js",
       "_snackbar-host-0696384f.js"
@@ -121,37 +116,37 @@
     ]
   },
   "src/routes/remote/custom.svelte": {
-    "file": "pages/remote/custom.svelte-e75f6342.js",
+    "file": "pages/remote/custom.svelte-5cfad421.js",
     "src": "src/routes/remote/custom.svelte",
     "isEntry": true,
     "isDynamicEntry": true,
     "imports": [
       "_vendor-92048905.js",
-      "_DeviceOptions-75d7ee13.js",
-      "_HorizontalField-6331c5bf.js",
-      "_SubmitButton-e9d712ee.js",
-      "___layout-d4660940.js",
+      "_DeviceOptions-67d9f907.js",
+      "_HorizontalField-cd7e5313.js",
+      "_SubmitButton-cbc9b99d.js",
+      "___layout-11d08886.js",
       "_cell-state-schema-a24ecc56.js",
-      "__PowerButtons-29f42cf5.js",
+      "__PowerButtons-97eb6820.js",
       "__form-52443b97.js",
-      "_LoadingSpinner-d8b77dcc.js",
+      "_Label-cb141bcc.js",
       "_snackbar-host-0696384f.js",
       "_stores-666d7af9.js",
       "_TopBar-adf9860c.js"
     ]
   },
   "src/routes/remote/image.svelte": {
-    "file": "pages/remote/image.svelte-7c5323eb.js",
+    "file": "pages/remote/image.svelte-00521ba1.js",
     "src": "src/routes/remote/image.svelte",
     "isEntry": true,
     "isDynamicEntry": true,
     "imports": [
       "_vendor-92048905.js",
-      "_DeviceOptions-75d7ee13.js",
-      "_HorizontalField-6331c5bf.js",
-      "_SubmitButton-e9d712ee.js",
-      "___layout-d4660940.js",
-      "_LoadingSpinner-d8b77dcc.js",
+      "_DeviceOptions-67d9f907.js",
+      "_HorizontalField-cd7e5313.js",
+      "_SubmitButton-cbc9b99d.js",
+      "___layout-11d08886.js",
+      "_Label-cb141bcc.js",
       "_snackbar-host-0696384f.js",
       "_cell-state-schema-a24ecc56.js",
       "_stores-666d7af9.js",
@@ -159,19 +154,19 @@
     ]
   },
   "src/routes/remote/edit.svelte": {
-    "file": "pages/remote/edit.svelte-459c0f39.js",
+    "file": "pages/remote/edit.svelte-27a0f636.js",
     "src": "src/routes/remote/edit.svelte",
     "isEntry": true,
     "isDynamicEntry": true,
     "imports": [
       "_vendor-92048905.js",
-      "_DeviceOptions-75d7ee13.js",
-      "_HorizontalField-6331c5bf.js",
-      "_SubmitButton-e9d712ee.js",
-      "___layout-d4660940.js",
-      "__PowerButtons-29f42cf5.js",
+      "_DeviceOptions-67d9f907.js",
+      "_HorizontalField-cd7e5313.js",
+      "_SubmitButton-cbc9b99d.js",
+      "___layout-11d08886.js",
+      "__PowerButtons-97eb6820.js",
       "__form-52443b97.js",
-      "_LoadingSpinner-d8b77dcc.js",
+      "_Label-cb141bcc.js",
       "_snackbar-host-0696384f.js",
       "_cell-state-schema-a24ecc56.js",
       "_stores-666d7af9.js",
@@ -179,18 +174,18 @@
     ]
   },
   "src/routes/remote/text.svelte": {
-    "file": "pages/remote/text.svelte-91367d91.js",
+    "file": "pages/remote/text.svelte-d6a8defb.js",
     "src": "src/routes/remote/text.svelte",
     "isEntry": true,
     "isDynamicEntry": true,
     "imports": [
       "_vendor-92048905.js",
-      "_DeviceOptions-75d7ee13.js",
-      "_HorizontalField-6331c5bf.js",
-      "_VerticalField-3fc71dc9.js",
-      "_SubmitButton-e9d712ee.js",
-      "___layout-d4660940.js",
-      "_LoadingSpinner-d8b77dcc.js",
+      "_DeviceOptions-67d9f907.js",
+      "_HorizontalField-cd7e5313.js",
+      "_VerticalField-982e779c.js",
+      "_SubmitButton-cbc9b99d.js",
+      "___layout-11d08886.js",
+      "_Label-cb141bcc.js",
       "_snackbar-host-0696384f.js",
       "_cell-state-schema-a24ecc56.js",
       "_stores-666d7af9.js",
@@ -322,12 +317,12 @@
     ]
   },
   "src/routes/remote/__layout.svelte": {
-    "file": "pages/remote/__layout.svelte-6671a5fd.js",
+    "file": "pages/remote/__layout.svelte-e339f899.js",
     "src": "src/routes/remote/__layout.svelte",
     "isEntry": true,
     "imports": [
       "_vendor-92048905.js",
-      "___layout-d4660940.js",
+      "___layout-11d08886.js",
       "_TopBar-adf9860c.js",
       "_snackbar-host-0696384f.js",
       "_stores-666d7af9.js",
@@ -340,8 +335,8 @@
   "_singletons-d1fb5791.js": {
     "file": "chunks/singletons-d1fb5791.js"
   },
-  "___layout-d4660940.js": {
-    "file": "chunks/__layout-d4660940.js",
+  "___layout-11d08886.js": {
+    "file": "chunks/__layout-11d08886.js",
     "isDynamicEntry": true,
     "imports": [
       "_vendor-92048905.js",
@@ -379,49 +374,48 @@
   "_cell-state-schema-a24ecc56.js": {
     "file": "chunks/cell-state-schema-a24ecc56.js"
   },
-  "_SubmitButton-e9d712ee.js": {
-    "file": "chunks/SubmitButton-e9d712ee.js",
+  "_SubmitButton-cbc9b99d.js": {
+    "file": "chunks/SubmitButton-cbc9b99d.js",
     "imports": [
       "_vendor-92048905.js",
-      "_snackbar-host-0696384f.js",
-      "_LoadingSpinner-d8b77dcc.js"
+      "_snackbar-host-0696384f.js"
     ]
   },
-  "_VerticalField-3fc71dc9.js": {
-    "file": "chunks/VerticalField-3fc71dc9.js",
+  "_VerticalField-982e779c.js": {
+    "file": "chunks/VerticalField-982e779c.js",
     "imports": [
       "_vendor-92048905.js",
-      "_LoadingSpinner-d8b77dcc.js"
+      "_Label-cb141bcc.js"
     ]
   },
   "__form-52443b97.js": {
     "file": "chunks/_form-52443b97.js"
   },
-  "_LoadingSpinner-d8b77dcc.js": {
-    "file": "chunks/LoadingSpinner-d8b77dcc.js",
+  "_Label-cb141bcc.js": {
+    "file": "chunks/Label-cb141bcc.js",
     "imports": [
       "_vendor-92048905.js"
     ]
   },
-  "_HorizontalField-6331c5bf.js": {
-    "file": "chunks/HorizontalField-6331c5bf.js",
+  "_HorizontalField-cd7e5313.js": {
+    "file": "chunks/HorizontalField-cd7e5313.js",
     "imports": [
       "_vendor-92048905.js",
-      "_LoadingSpinner-d8b77dcc.js"
+      "_Label-cb141bcc.js"
     ]
   },
-  "_DeviceOptions-75d7ee13.js": {
-    "file": "chunks/DeviceOptions-75d7ee13.js",
+  "_DeviceOptions-67d9f907.js": {
+    "file": "chunks/DeviceOptions-67d9f907.js",
     "imports": [
       "_vendor-92048905.js",
-      "_SubmitButton-e9d712ee.js"
+      "_SubmitButton-cbc9b99d.js"
     ]
   },
-  "__PowerButtons-29f42cf5.js": {
-    "file": "chunks/_PowerButtons-29f42cf5.js",
+  "__PowerButtons-97eb6820.js": {
+    "file": "chunks/_PowerButtons-97eb6820.js",
     "imports": [
       "_vendor-92048905.js",
-      "_SubmitButton-e9d712ee.js",
+      "_SubmitButton-cbc9b99d.js",
       "__form-52443b97.js"
     ]
   },

@@ -81,4 +81,4 @@ ${validate_component(RemoteFrame, "RemoteFrame").$$render($$result, {}, {}, {
 
 ${validate_component(Snackbar, "Snackbar").$$render($$result, { data: $currentSnackbarData }, {}, {})}`;
 });
-export { _layout as _, getRemoteContext as a, storeKeys as b, getSnackbarHostContext as g, storeEntries as s };
+export { _layout as _, storeKeys as a, getSnackbarHostContext as b, getRemoteContext as g, storeEntries as s };

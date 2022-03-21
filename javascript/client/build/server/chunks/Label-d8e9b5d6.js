@@ -15,11 +15,4 @@ const Label = create_ssr_component(($$result, $$props, $$bindings, slots) => {
     }
   ], {})}>${slots.default ? slots.default({}) : ``}</label>`;
 });
-const LoadingSpinner = create_ssr_component(($$result, $$props, $$bindings, slots) => {
-  let { class: className = "h-4 w-4" } = $$props;
-  if ($$props.class === void 0 && $$bindings.class && className !== void 0)
-    $$bindings.class(className);
-  return `<span class="${"sr-only"}">Loading</span>
-<span class="${escape(className) + " block border-2 rounded-full border-r-transparent border-t-transparent animate-spin"}"></span>`;
-});
-export { LoadingSpinner as L, Label as a };
+export { Label as L };

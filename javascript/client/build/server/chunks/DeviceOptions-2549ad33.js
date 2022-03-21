@@ -1,5 +1,5 @@
 import { c as create_ssr_component, v as validate_component, b as add_attribute, e as escape, p as each } from "./index-4d214b4e.js";
-import { B as Button, S as SubmitButton } from "./SubmitButton-546a9509.js";
+import { B as Button, S as SubmitButton } from "./SubmitButton-5e66dc23.js";
 const ResetSubmit = create_ssr_component(($$result, $$props, $$bindings, slots) => {
   let { loading } = $$props;
   if ($$props.loading === void 0 && $$bindings.loading && loading !== void 0)

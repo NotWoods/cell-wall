@@ -53,13 +53,13 @@
     "isEntry": true,
     "imports": [
       "_index-4d214b4e.js",
-      "_SubmitButton-546a9509.js",
-      "_VerticalField-55978348.js",
+      "_SubmitButton-5e66dc23.js",
+      "_VerticalField-c42616cb.js",
       "__form-52443b97.js",
       "_snackbar-host-a60c3b5b.js",
       "_cell-state-schema-a24ecc56.js",
       "_index-23b4b723.js",
-      "_LoadingSpinner-97b51d95.js"
+      "_Label-d8e9b5d6.js"
     ]
   },
   "src/routes/remote/third_party.svelte": {
@@ -68,14 +68,8 @@
     "isEntry": true,
     "imports": [
       "_index-4d214b4e.js",
-      "_HorizontalField-12292c4d.js",
-      "_LoadingSpinner-97b51d95.js",
-      "_index-23b4b723.js",
-      "___layout-9d80af09.js",
-      "_stores-6d7f4c16.js",
-      "_TopBar-cc586f2b.js",
-      "_snackbar-host-a60c3b5b.js",
-      "_cell-state-schema-a24ecc56.js"
+      "_HorizontalField-e36d4d95.js",
+      "_Label-d8e9b5d6.js"
     ]
   },
   "src/routes/remote/canvas.svelte": {
@@ -85,7 +79,7 @@
     "imports": [
       "_index-4d214b4e.js",
       "_cell-state-schema-a24ecc56.js",
-      "___layout-9d80af09.js",
+      "___layout-b36beadf.js",
       "_stores-6d7f4c16.js",
       "_TopBar-cc586f2b.js",
       "_index-23b4b723.js",
@@ -101,14 +95,14 @@
     "isEntry": true,
     "imports": [
       "_index-4d214b4e.js",
-      "_DeviceOptions-e57b9002.js",
-      "_HorizontalField-12292c4d.js",
-      "_SubmitButton-546a9509.js",
-      "___layout-9d80af09.js",
+      "_DeviceOptions-2549ad33.js",
+      "_HorizontalField-e36d4d95.js",
+      "_SubmitButton-5e66dc23.js",
+      "___layout-b36beadf.js",
       "_cell-state-schema-a24ecc56.js",
-      "__PowerButtons-c80aeacf.js",
+      "__PowerButtons-979fd526.js",
       "__form-52443b97.js",
-      "_LoadingSpinner-97b51d95.js",
+      "_Label-d8e9b5d6.js",
       "_snackbar-host-a60c3b5b.js",
       "_index-23b4b723.js",
       "_stores-6d7f4c16.js",
@@ -121,11 +115,11 @@
     "isEntry": true,
     "imports": [
       "_index-4d214b4e.js",
-      "_DeviceOptions-e57b9002.js",
-      "_HorizontalField-12292c4d.js",
-      "_SubmitButton-546a9509.js",
-      "___layout-9d80af09.js",
-      "_LoadingSpinner-97b51d95.js",
+      "_DeviceOptions-2549ad33.js",
+      "_HorizontalField-e36d4d95.js",
+      "_SubmitButton-5e66dc23.js",
+      "___layout-b36beadf.js",
+      "_Label-d8e9b5d6.js",
       "_snackbar-host-a60c3b5b.js",
       "_cell-state-schema-a24ecc56.js",
       "_index-23b4b723.js",
@@ -139,13 +133,13 @@
     "isEntry": true,
     "imports": [
       "_index-4d214b4e.js",
-      "_DeviceOptions-e57b9002.js",
-      "_HorizontalField-12292c4d.js",
-      "_SubmitButton-546a9509.js",
-      "___layout-9d80af09.js",
-      "__PowerButtons-c80aeacf.js",
+      "_DeviceOptions-2549ad33.js",
+      "_HorizontalField-e36d4d95.js",
+      "_SubmitButton-5e66dc23.js",
+      "___layout-b36beadf.js",
+      "__PowerButtons-979fd526.js",
       "__form-52443b97.js",
-      "_LoadingSpinner-97b51d95.js",
+      "_Label-d8e9b5d6.js",
       "_snackbar-host-a60c3b5b.js",
       "_cell-state-schema-a24ecc56.js",
       "_index-23b4b723.js",
@@ -159,12 +153,12 @@
     "isEntry": true,
     "imports": [
       "_index-4d214b4e.js",
-      "_DeviceOptions-e57b9002.js",
-      "_HorizontalField-12292c4d.js",
-      "_VerticalField-55978348.js",
-      "_SubmitButton-546a9509.js",
-      "___layout-9d80af09.js",
-      "_LoadingSpinner-97b51d95.js",
+      "_DeviceOptions-2549ad33.js",
+      "_HorizontalField-e36d4d95.js",
+      "_VerticalField-c42616cb.js",
+      "_SubmitButton-5e66dc23.js",
+      "___layout-b36beadf.js",
+      "_Label-d8e9b5d6.js",
       "_snackbar-host-a60c3b5b.js",
       "_cell-state-schema-a24ecc56.js",
       "_index-23b4b723.js",
@@ -294,7 +288,7 @@
     "isEntry": true,
     "imports": [
       "_index-4d214b4e.js",
-      "___layout-9d80af09.js",
+      "___layout-b36beadf.js",
       "_TopBar-cc586f2b.js",
       "_snackbar-host-a60c3b5b.js",
       "_stores-6d7f4c16.js",
@@ -305,8 +299,8 @@
   "_index-4d214b4e.js": {
     "file": "chunks/index-4d214b4e.js"
   },
-  "___layout-9d80af09.js": {
-    "file": "chunks/__layout-9d80af09.js",
+  "___layout-b36beadf.js": {
+    "file": "chunks/__layout-b36beadf.js",
     "imports": [
       "_index-4d214b4e.js",
       "_stores-6d7f4c16.js",
@@ -350,49 +344,48 @@
   "_cell-state-schema-a24ecc56.js": {
     "file": "chunks/cell-state-schema-a24ecc56.js"
   },
-  "_SubmitButton-546a9509.js": {
-    "file": "chunks/SubmitButton-546a9509.js",
+  "_SubmitButton-5e66dc23.js": {
+    "file": "chunks/SubmitButton-5e66dc23.js",
     "imports": [
       "_index-4d214b4e.js",
-      "_snackbar-host-a60c3b5b.js",
-      "_LoadingSpinner-97b51d95.js"
+      "_snackbar-host-a60c3b5b.js"
     ]
   },
-  "_VerticalField-55978348.js": {
-    "file": "chunks/VerticalField-55978348.js",
+  "_VerticalField-c42616cb.js": {
+    "file": "chunks/VerticalField-c42616cb.js",
     "imports": [
       "_index-4d214b4e.js",
-      "_LoadingSpinner-97b51d95.js"
+      "_Label-d8e9b5d6.js"
     ]
   },
   "__form-52443b97.js": {
     "file": "chunks/_form-52443b97.js"
   },
-  "_LoadingSpinner-97b51d95.js": {
-    "file": "chunks/LoadingSpinner-97b51d95.js",
+  "_Label-d8e9b5d6.js": {
+    "file": "chunks/Label-d8e9b5d6.js",
     "imports": [
       "_index-4d214b4e.js"
     ]
   },
-  "_HorizontalField-12292c4d.js": {
-    "file": "chunks/HorizontalField-12292c4d.js",
+  "_HorizontalField-e36d4d95.js": {
+    "file": "chunks/HorizontalField-e36d4d95.js",
     "imports": [
       "_index-4d214b4e.js",
-      "_LoadingSpinner-97b51d95.js"
+      "_Label-d8e9b5d6.js"
     ]
   },
-  "_DeviceOptions-e57b9002.js": {
-    "file": "chunks/DeviceOptions-e57b9002.js",
+  "_DeviceOptions-2549ad33.js": {
+    "file": "chunks/DeviceOptions-2549ad33.js",
     "imports": [
       "_index-4d214b4e.js",
-      "_SubmitButton-546a9509.js"
+      "_SubmitButton-5e66dc23.js"
     ]
   },
-  "__PowerButtons-c80aeacf.js": {
-    "file": "chunks/_PowerButtons-c80aeacf.js",
+  "__PowerButtons-979fd526.js": {
+    "file": "chunks/_PowerButtons-979fd526.js",
     "imports": [
       "_index-4d214b4e.js",
-      "_SubmitButton-546a9509.js"
+      "_SubmitButton-5e66dc23.js"
     ]
   },
   "_state-socket-c1d8cd72.js": {

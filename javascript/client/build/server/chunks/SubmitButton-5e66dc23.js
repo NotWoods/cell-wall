@@ -1,6 +1,5 @@
 import { c as create_ssr_component, h as compute_rest_props, g as getContext, j as spread, k as escape_object, l as escape_attribute_value, b as add_attribute, e as escape, o as is_promise, n as noop, v as validate_component } from "./index-4d214b4e.js";
 import { S as SnackbarHostState } from "./snackbar-host-a60c3b5b.js";
-import { L as LoadingSpinner } from "./LoadingSpinner-97b51d95.js";
 const Form = create_ssr_component(($$result, $$props, $$bindings, slots) => {
   let $$restProps = compute_rest_props($$props, ["action", "onSubmit"]);
   getContext(SnackbarHostState);
@@ -21,6 +20,13 @@ const Form = create_ssr_component(($$result, $$props, $$bindings, slots) => {
     escape_object($$restProps),
     { action: escape_attribute_value(action) }
   ], {})}${add_attribute("this", form, 0)}>${slots.default ? slots.default({ status, loading: status.loading }) : ``}</form>`;
+});
+const LoadingSpinner = create_ssr_component(($$result, $$props, $$bindings, slots) => {
+  let { class: className = "h-4 w-4" } = $$props;
+  if ($$props.class === void 0 && $$bindings.class && className !== void 0)
+    $$bindings.class(className);
+  return `<span class="${"sr-only"}">Loading</span>
+<span class="${escape(className) + " block border-2 rounded-full border-r-transparent border-t-transparent animate-spin"}"></span>`;
 });
 const Button = create_ssr_component(($$result, $$props, $$bindings, slots) => {
   let $$restProps = compute_rest_props($$props, ["class"]);

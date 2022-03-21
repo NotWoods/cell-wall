@@ -1,5 +1,5 @@
 import "../../../chunks/index-4d214b4e.js";
-export { _ as default, a as getRemoteContext, g as getSnackbarHostContext } from "../../../chunks/__layout-9d80af09.js";
+export { _ as default, g as getRemoteContext, b as getSnackbarHostContext } from "../../../chunks/__layout-b36beadf.js";
 import "../../../chunks/TopBar-cc586f2b.js";
 import "../../../chunks/snackbar-host-a60c3b5b.js";
 import "../../../chunks/stores-6d7f4c16.js";

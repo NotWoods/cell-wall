@@ -1,6 +1,6 @@
 import { c as create_ssr_component, b as add_attribute, a as subscribe, v as validate_component, p as each, e as escape } from "../../../chunks/index-4d214b4e.js";
 import { c as cellCanvas } from "../../../chunks/cell-state-schema-a24ecc56.js";
-import { a as getRemoteContext } from "../../../chunks/__layout-9d80af09.js";
+import { g as getRemoteContext } from "../../../chunks/__layout-b36beadf.js";
 import "../../../chunks/stores-6d7f4c16.js";
 import "../../../chunks/TopBar-cc586f2b.js";
 import "../../../chunks/index-23b4b723.js";

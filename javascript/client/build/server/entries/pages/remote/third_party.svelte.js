@@ -1,50 +1,32 @@
-import { c as create_ssr_component, a as subscribe, v as validate_component, b as add_attribute } from "../../../chunks/index-4d214b4e.js";
-import { H as HorizontalField } from "../../../chunks/HorizontalField-12292c4d.js";
-import { L as LoadingSpinner } from "../../../chunks/LoadingSpinner-97b51d95.js";
-import { r as readable } from "../../../chunks/index-23b4b723.js";
-import { g as getSnackbarHostContext } from "../../../chunks/__layout-9d80af09.js";
-import "../../../chunks/stores-6d7f4c16.js";
-import "../../../chunks/TopBar-cc586f2b.js";
-import "../../../chunks/snackbar-host-a60c3b5b.js";
-import "../../../chunks/cell-state-schema-a24ecc56.js";
-function connectThirdParty() {
-  {
-    return void 0;
+import { c as create_ssr_component, v as validate_component, b as add_attribute } from "../../../chunks/index-4d214b4e.js";
+import { H as HorizontalField } from "../../../chunks/HorizontalField-e36d4d95.js";
+import "../../../chunks/Label-d8e9b5d6.js";
+const load = async () => {
+  const response = await fetch("/api/third_party/");
+  if (!response.ok) {
+    return {
+      status: response.status,
+      error: new Error(`Could not load, ${response.statusText}`)
+    };
   }
-}
-function thirdPartyState(socket) {
-  return readable({ google_loading: true }, (set) => {
-    const controller = new AbortController();
-    function handleMessage({ data }) {
-      const state = JSON.parse(data);
-      set(state);
-    }
-    socket?.addEventListener("message", handleMessage, controller);
-    return () => controller.abort();
-  });
-}
+  const body = await response.json();
+  return {
+    props: { googleAuthUrl: body.google_authorize_url }
+  };
+};
 const buttonClassNames = "px-4 py-2 rounded-md shadow-sm text-sm font-medium text-white transition-colors bg-slate-700 hover:bg-slate-800 disabled:bg-slate-600 disabled:opacity-50";
 const Third_party = create_ssr_component(($$result, $$props, $$bindings, slots) => {
-  let $state, $$unsubscribe_state;
-  const socket = connectThirdParty();
-  const state = thirdPartyState(socket);
-  $$unsubscribe_state = subscribe(state, (value) => $state = value);
-  const snackbarHostState = getSnackbarHostContext();
-  socket?.addEventListener("error", (event) => {
-    console.error("ThirdPartySocket error", event);
-    snackbarHostState.showSnackbar("Third party socket error");
-  });
-  socket?.addEventListener("open", (event) => console.info("ThirdPartySocket open", event));
-  socket?.addEventListener("close", (event) => console.info("ThirdPartySocket close", event));
-  $$unsubscribe_state();
+  let { googleAuthUrl } = $$props;
+  if ($$props.googleAuthUrl === void 0 && $$bindings.googleAuthUrl && googleAuthUrl !== void 0)
+    $$bindings.googleAuthUrl(googleAuthUrl);
   return `${$$result.head += `${$$result.title = `<title>SDK Login | CellWall</title>`, ""}`, ""}
 
 <p class="${"mb-6"}">Connect to third party APIs to use in CellWall.</p>
 
 ${validate_component(HorizontalField, "HorizontalField").$$render($$result, { label: "Google" }, {}, {
     default: () => {
-      return `${$state.google_loading ? `${validate_component(LoadingSpinner, "LoadingSpinner").$$render($$result, {}, {}, {})}` : `${$state.google_authorize_url ? `<a${add_attribute("class", buttonClassNames, 0)}${add_attribute("href", $state.google_authorize_url, 0)}>Sign in to Google</a>` : `<button${add_attribute("class", buttonClassNames, 0)} type="${"button"}" disabled>Logged in to Google</button>`}`}`;
+      return `${googleAuthUrl ? `<a${add_attribute("class", buttonClassNames, 0)}${add_attribute("href", googleAuthUrl, 0)}>Sign in to Google</a>` : `<button${add_attribute("class", buttonClassNames, 0)} type="${"button"}" disabled>Logged in to Google</button>`}`;
     }
   })}`;
 });
-export { Third_party as default };
+export { Third_party as default, load };
