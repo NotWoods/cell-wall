@@ -16,6 +16,7 @@ async function submit(data, action) {
   if (backgroundColor !== "#ffffff") {
     action.searchParams.set("backgroundColor", backgroundColor);
   }
+  action.searchParams.set("rest", data.get("rest"));
   try {
     const res = await fetch(action.toString(), {
       method: "post",
@@ -64,6 +65,15 @@ const Text = create_ssr_component(($$result, $$props, $$bindings, slots) => {
 	${validate_component(HorizontalField, "HorizontalField").$$render($$result, { for: "control-serial", label: "Devices" }, {}, {
         default: ({ inputClassName }) => {
           return `<select multiple name="${"device"}" id="${"control-serial"}"${add_attribute("class", inputClassName, 0)}${add_attribute("value", $deviceIds, 0)}>${validate_component(DeviceOptions, "DeviceOptions").$$render($$result, { devices: $devices }, {}, {})}</select>`;
+        }
+      })}
+
+	${validate_component(HorizontalField, "HorizontalField").$$render($$result, {
+        for: "control-rest",
+        label: "Remaining Cells"
+      }, {}, {
+        default: ({ inputClassName }) => {
+          return `<select id="${"control-rest"}" name="${"rest"}"${add_attribute("class", inputClassName, 0)}><option value="${"ignore"}">Ignore</option><option value="${"blank"}">Blank</option><option value="${"off"}">Off</option></select>`;
         }
       })}
 

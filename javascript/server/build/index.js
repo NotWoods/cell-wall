@@ -254,6 +254,143 @@ var init_store = __esm({
   }
 });
 
+// src/lib/map/transform.ts
+function transformMap(map, transform) {
+  return new Map(Array.from(map.entries(), ([key, value]) => {
+    return [key, transform(value, key)];
+  }));
+}
+function filterMap(map, predicate) {
+  return new Map(Array.from(map.entries()).filter(([key, value]) => predicate(value, key)));
+}
+async function transformMapAsync(map, transform) {
+  return new Map(await Promise.all(Array.from(map.entries(), async ([key, value]) => {
+    return [key, await transform(value, key)];
+  })));
+}
+async function allSettledMap(map, transform) {
+  const newValues = await Promise.allSettled(Array.from(map.entries(), async ([key, value]) => transform(value, key)));
+  const result = /* @__PURE__ */ new Map();
+  for (const [i, key] of Array.from(map.keys()).entries()) {
+    const value = newValues[i];
+    result.set(key, value);
+  }
+  return result;
+}
+var init_transform = __esm({
+  "src/lib/map/transform.ts"() {
+  }
+});
+
+// src/lib/image/manipulate.ts
+import Jimp from "jimp";
+import { setHas } from "ts-extras";
+function parseResizeOptions(query = {}) {
+  const horizontalFlag = ALIGN_QUERY[query.horizontalAlign] || 0;
+  const verticalFlag = ALIGN_QUERY[query.verticalAlign] || 0;
+  const resize2 = setHas(RESIZE, query.resize) ? query.resize : void 0;
+  return {
+    alignBits: horizontalFlag | verticalFlag,
+    resizeMode: resize2
+  };
+}
+function resize(image, { width, height }, query = {}) {
+  const { alignBits, resizeMode } = parseResizeOptions(query);
+  return new Promise((resolve, reject) => image.cover(width, height, alignBits, resizeMode, (err, value) => {
+    if (err)
+      reject(err);
+    else
+      resolve(value);
+  }));
+}
+function crop(image, cell) {
+  return new Promise((resolve, reject) => image.crop(cell.x, cell.y, cell.width, cell.height, (err, value) => {
+    if (err)
+      reject(err);
+    else
+      resolve(value);
+  }));
+}
+var ALIGN_QUERY, RESIZE;
+var init_manipulate = __esm({
+  "src/lib/image/manipulate.ts"() {
+    ALIGN_QUERY = {
+      left: Jimp.HORIZONTAL_ALIGN_LEFT,
+      right: Jimp.HORIZONTAL_ALIGN_RIGHT,
+      center: Jimp.HORIZONTAL_ALIGN_CENTER,
+      top: Jimp.VERTICAL_ALIGN_TOP,
+      bottom: Jimp.VERTICAL_ALIGN_BOTTOM,
+      middle: Jimp.VERTICAL_ALIGN_MIDDLE
+    };
+    RESIZE = /* @__PURE__ */ new Set([
+      Jimp.RESIZE_NEAREST_NEIGHBOR,
+      Jimp.RESIZE_BILINEAR,
+      Jimp.RESIZE_BICUBIC,
+      Jimp.RESIZE_HERMITE,
+      Jimp.RESIZE_BEZIER
+    ]);
+  }
+});
+
+// src/lib/image/split.ts
+import { cellCanvas, shiftCell } from "@cell-wall/shared";
+import Jimp2 from "jimp";
+async function splitImage(image, cells, options = {}) {
+  const canvas = cellCanvas(cells.values());
+  await resize(image, canvas, options);
+  return await transformMapAsync(cells, async (info) => {
+    const copy = await Jimp2.create(image);
+    const shifted = shiftCell(canvas, info);
+    return {
+      info: shifted,
+      img: await crop(copy, shifted)
+    };
+  });
+}
+var init_split = __esm({
+  "src/lib/image/split.ts"() {
+    init_transform();
+    init_manipulate();
+  }
+});
+
+// src/lib/image/cache.ts
+var SplitImageCache;
+var init_cache = __esm({
+  "src/lib/image/cache.ts"() {
+    init_transform();
+    init_split();
+    SplitImageCache = class {
+      constructor() {
+        this.cache = /* @__PURE__ */ new Map();
+      }
+      get(serial) {
+        return this.cache.get(serial);
+      }
+      clear() {
+        this.cache.clear();
+      }
+      async insert(image, rects, options) {
+        const cropped = await splitImage(image, rects, options);
+        this.clear();
+        return transformMap(cropped, ({ info, img }, serial) => {
+          this.cache.set(serial, img);
+          return info;
+        });
+      }
+    };
+  }
+});
+
+// src/lib/image/index.ts
+var init_image = __esm({
+  "src/lib/image/index.ts"() {
+    init_cache();
+    init_manipulate();
+    init_split();
+  }
+});
+
 // src/lib/cells/state.ts
 function cellStateStore() {
   const store = writable(/* @__PURE__ */ new Map());
@@ -293,34 +430,6 @@ var init_state = __esm({
   "src/lib/cells/state.ts"() {
     init_store();
     init_env();
-  }
-});
-
-// src/lib/map/transform.ts
-function transformMap(map, transform) {
-  return new Map(Array.from(map.entries(), ([key, value]) => {
-    return [key, transform(value, key)];
-  }));
-}
-function filterMap(map, predicate) {
-  return new Map(Array.from(map.entries()).filter(([key, value]) => predicate(value, key)));
-}
-async function transformMapAsync(map, transform) {
-  return new Map(await Promise.all(Array.from(map.entries(), async ([key, value]) => {
-    return [key, await transform(value, key)];
-  })));
-}
-async function allSettledMap(map, transform) {
-  const newValues = await Promise.allSettled(Array.from(map.entries(), async ([key, value]) => transform(value, key)));
-  const result = /* @__PURE__ */ new Map();
-  for (const [i, key] of Array.from(map.keys()).entries()) {
-    const value = newValues[i];
-    result.set(key, value);
-  }
-  return result;
-}
-var init_transform = __esm({
-  "src/lib/map/transform.ts"() {
   }
 });
 
@@ -668,106 +777,6 @@ var init_cells = __esm({
   "src/lib/cells/index.ts"() {
     init_manager();
     init_state();
-  }
-});
-
-// src/lib/image/manipulate.ts
-import Jimp from "jimp";
-import { setHas } from "ts-extras";
-function parseResizeOptions(query = {}) {
-  const horizontalFlag = ALIGN_QUERY[query.horizontalAlign] || 0;
-  const verticalFlag = ALIGN_QUERY[query.verticalAlign] || 0;
-  const resize2 = setHas(RESIZE, query.resize) ? query.resize : void 0;
-  return {
-    alignBits: horizontalFlag | verticalFlag,
-    resizeMode: resize2
-  };
-}
-function resize(image, { width, height }, query = {}) {
-  const { alignBits, resizeMode } = parseResizeOptions(query);
-  return new Promise((resolve, reject) => image.cover(width, height, alignBits, resizeMode, (err, value) => {
-    if (err)
-      reject(err);
-    else
-      resolve(value);
-  }));
-}
-function crop(image, cell) {
-  return new Promise((resolve, reject) => image.crop(cell.x, cell.y, cell.width, cell.height, (err, value) => {
-    if (err)
-      reject(err);
-    else
-      resolve(value);
-  }));
-}
-var ALIGN_QUERY, RESIZE;
-var init_manipulate = __esm({
-  "src/lib/image/manipulate.ts"() {
-    ALIGN_QUERY = {
-      left: Jimp.HORIZONTAL_ALIGN_LEFT,
-      right: Jimp.HORIZONTAL_ALIGN_RIGHT,
-      center: Jimp.HORIZONTAL_ALIGN_CENTER,
-      top: Jimp.VERTICAL_ALIGN_TOP,
-      bottom: Jimp.VERTICAL_ALIGN_BOTTOM,
-      middle: Jimp.VERTICAL_ALIGN_MIDDLE
-    };
-    RESIZE = /* @__PURE__ */ new Set([
-      Jimp.RESIZE_NEAREST_NEIGHBOR,
-      Jimp.RESIZE_BILINEAR,
-      Jimp.RESIZE_BICUBIC,
-      Jimp.RESIZE_HERMITE,
-      Jimp.RESIZE_BEZIER
-    ]);
-  }
-});
-
-// src/lib/image/split.ts
-import { cellCanvas, shiftCell } from "@cell-wall/shared";
-import Jimp2 from "jimp";
-async function splitImage(image, cells, options = {}) {
-  const canvas = cellCanvas(cells.values());
-  await resize(image, canvas, options);
-  return await transformMapAsync(cells, async (info) => {
-    const copy = await Jimp2.create(image);
-    const shifted = shiftCell(canvas, info);
-    return {
-      info: shifted,
-      img: await crop(copy, shifted)
-    };
-  });
-}
-var init_split = __esm({
-  "src/lib/image/split.ts"() {
-    init_transform();
-    init_manipulate();
-  }
-});
-
-// src/lib/image/cache.ts
-var SplitImageCache;
-var init_cache = __esm({
-  "src/lib/image/cache.ts"() {
-    init_transform();
-    init_split();
-    SplitImageCache = class {
-      constructor() {
-        this.cache = /* @__PURE__ */ new Map();
-      }
-      get(serial) {
-        return this.cache.get(serial);
-      }
-      clear() {
-        this.cache.clear();
-      }
-      async insert(image, rects, options) {
-        const cropped = await splitImage(image, rects, options);
-        this.clear();
-        return transformMap(cropped, ({ info, img }, serial) => {
-          this.cache.set(serial, img);
-          return info;
-        });
-      }
-    };
   }
 });
 
@@ -1131,20 +1140,23 @@ var init_third_party_connect = __esm({
 });
 
 // src/lib/repository/repository.ts
-function sendIntentOnStateChange(cellData, deviceManager) {
-  const connectionInfoStore = derived(cellData, (data) => transformMap(data, (cellData2) => {
+function androidConnections(data) {
+  const connectionInfo = transformMap(data, (cellData) => {
     var _a;
     return {
-      server: (_a = cellData2.info) == null ? void 0 : _a.server,
-      connection: new Set(cellData2.connection)
+      server: (_a = cellData.info) == null ? void 0 : _a.server,
+      connection: new Set(cellData.connection)
     };
-  }));
-  const cellStates = onlyNewEntries(derived(cellData, (data) => transformMap(data, (cellData2) => cellData2.state)));
+  });
+  return filterMap(connectionInfo, ({ connection }) => connection.has("android") && !connection.has("web"));
+}
+function sendIntentOnStateChange(cellStateStore2, androidConnections2, deviceManager) {
+  const cellStates = onlyNewEntries(cellStateStore2);
   return cellStates.subscribe((stateChanges) => {
-    const connectionInfo = get_store_value(connectionInfoStore);
+    const connectionInfo = get_store_value(androidConnections2);
     Promise.all(Array.from(stateChanges).map(async ([serial, state]) => {
-      const { server = SERVER_ADDRESS, connection = /* @__PURE__ */ new Set() } = connectionInfo.get(serial) ?? {};
-      if (state && connection.has("android") && !connection.has("web")) {
+      if (state && connectionInfo.has(serial)) {
+        const { server = SERVER_ADDRESS } = connectionInfo.get(serial) ?? {};
         await deviceManager.launchClient(serial, server, state);
       }
     }));
@@ -1164,13 +1176,15 @@ function repository() {
     androidProperties: deviceManager.properties,
     webSockets
   });
-  sendIntentOnStateChange(cellData, deviceManager);
+  const android = derived(cellData, androidConnections);
+  sendIntentOnStateChange(cellState, android, deviceManager);
   cellData.subscribe((state) => console.info("CellData", state));
   const thirdParty = thirdPartyConnectRepository(dbPromise);
   return {
     cellData,
     cellState,
-    images: new SplitImageCache(),
+    androidConnections: android,
+    powered: deviceManager.powered,
     webSockets,
     thirdParty,
     refreshDevices() {
@@ -1193,13 +1207,6 @@ function repository() {
       cellManager2.registerServer(serial, `http://localhost:${port}`);
       const db = await dbPromise;
       await cellManager2.writeInfo(db);
-    },
-    async getPower(serial, refresh) {
-      const deviceManager2 = await deviceManagerPromise;
-      if (refresh) {
-        await deviceManager2.powered.refresh();
-      }
-      return get_store_value(deviceManager2.powered).has(serial);
     },
     async setPower(serials, on) {
       const deviceManager2 = await deviceManagerPromise;
@@ -1233,7 +1240,6 @@ var init_repository = __esm({
     init_android_device_manager();
     init_cells();
     init_env();
-    init_cache();
     init_transform();
     init_changes();
     init_combine_cell();
@@ -1259,43 +1265,6 @@ var init_repository2 = __esm({
   }
 });
 
-// src/routes/api/action/image/[serial].ts
-var serial_exports = {};
-__export(serial_exports, {
-  default: () => serial_default
-});
-async function serial_default(fastify) {
-  fastify.route({
-    method: "GET",
-    url: "/api/action/image/:serial",
-    async handler(request, reply) {
-      const { serial } = request.params;
-      const cached = repo.images.get(serial);
-      if (!cached) {
-        reply.status(404);
-        return;
-      }
-      const mime = cached.getMIME();
-      const buffer = await cached.getBufferAsync(mime);
-      reply.status(200).header("content-type", mime).send(buffer);
-    }
-  });
-}
-var init_serial = __esm({
-  "src/routes/api/action/image/[serial].ts"() {
-    init_repository2();
-  }
-});
-
-// src/lib/image/index.ts
-var init_image = __esm({
-  "src/lib/image/index.ts"() {
-    init_cache();
-    init_manipulate();
-    init_split();
-  }
-});
-
 // src/parser/image.ts
 async function defaultJimp() {
   const module = await import("jimp");
@@ -1317,12 +1286,8 @@ var init_image2 = __esm({
   }
 });
 
-// src/routes/api/action/image/index.ts
-var image_exports = {};
-__export(image_exports, {
-  default: () => image_default
-});
-import { blankState as blankState2, validRectWithPos } from "@cell-wall/shared";
+// src/routes/api/action/_remaining.ts
+import { blankState as blankState2 } from "@cell-wall/shared";
 async function updateRemainingCells(remaining, behaviour) {
   switch (behaviour) {
     case "blank":
@@ -1335,8 +1300,23 @@ async function updateRemainingCells(remaining, behaviour) {
       break;
   }
 }
+var init_remaining = __esm({
+  "src/routes/api/action/_remaining.ts"() {
+    init_repository2();
+  }
+});
+
+// src/routes/api/action/image.ts
+var image_exports = {};
+__export(image_exports, {
+  default: () => image_default
+});
+import {
+  validRectWithPos
+} from "@cell-wall/shared";
 async function image_default(fastify) {
   await imagePlugin(fastify);
+  const images = new SplitImageCache();
   fastify.route({
     method: "POST",
     url: "/api/action/image/",
@@ -1383,40 +1363,56 @@ async function image_default(fastify) {
         verticalAlign: request.query.verticalAlign,
         resize: request.query.resize
       };
-      repo.images.clear();
-      await repo.images.insert(image, rects, options);
-      repo.cellState.setStates(await transformMapAsync(rects, async (_, serial) => {
-        const buffer = await repo.images.get(serial).getBufferAsync(image.getMIME());
+      images.clear();
+      await images.insert(image, rects, options);
+      const imageStates = await transformMapAsync(rects, async (_, serial) => {
+        const buffer = await images.get(serial).getBufferAsync(image.getMIME());
         const arrayBuffer = buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength);
         return {
           type: "IMAGE",
           payload: arrayBuffer
         };
-      }));
+      });
+      repo.cellState.setStates(imageStates);
       if (request.query.rest) {
         const remaining = Array.from(cellData.keys()).filter((serial) => !rects.has(serial));
-        const rest = request.query.rest;
-        await updateRemainingCells(remaining, rest ?? "ignore");
+        await updateRemainingCells(remaining, request.query.rest || "ignore");
       }
-      reply.send(Array.from(rects.keys()));
+      reply.send(Object.fromEntries(imageStates));
     }
   });
   fastify.route({
     method: "DELETE",
     url: "/api/action/image/",
     async handler(_request, reply) {
-      repo.images.clear();
+      images.clear();
       reply.status(201).send();
+    }
+  });
+  fastify.route({
+    method: "GET",
+    url: "/api/action/image/:serial",
+    async handler(request, reply) {
+      const { serial } = request.params;
+      const cached = images.get(serial);
+      if (!cached) {
+        reply.status(404);
+        return;
+      }
+      const mime = cached.getMIME();
+      const buffer = await cached.getBufferAsync(mime);
+      reply.status(200).header("content-type", mime).send(buffer);
     }
   });
 }
 var init_image3 = __esm({
-  "src/routes/api/action/image/index.ts"() {
+  "src/routes/api/action/image.ts"() {
     init_store();
     init_image();
     init_transform();
     init_repository2();
     init_image2();
+    init_remaining();
   }
 });
 
@@ -1465,24 +1461,16 @@ async function launch_default(fastify) {
     method: ["GET", "POST"],
     url: "/api/action/launch",
     async handler(request, reply) {
-      const devices = get_store_value(repo.cellData);
-      const promises = Array.from(devices).map(([serial, data]) => {
-        return {
-          serial,
-          connection: new Set(data.connection)
-        };
-      }).filter(({ connection }) => connection.has("android") && !connection.has("web")).map(async ({ serial }) => {
-        await repo.openClientOnDevice(serial);
-        return serial;
-      });
-      const results = await Promise.allSettled(promises);
-      reply.send(results.filter((result) => result.status === "fulfilled").map((result) => result.value));
+      const devices = get_store_value(repo.androidConnections);
+      const results = await allSettledMap(devices, (_, serial) => repo.openClientOnDevice(serial));
+      reply.send(Object.fromEntries(results));
     }
   });
 }
 var init_launch = __esm({
   "src/routes/api/action/launch.ts"() {
     init_store();
+    init_transform();
     init_repository2();
   }
 });
@@ -1537,16 +1525,22 @@ async function text_default(fastify) {
     async handler(request, reply) {
       const lines = parseLines(request.body);
       const deviceIds = get_store_value(sortedDeviceIds);
-      const deviceToText = new Map(deviceIds.map((serial) => [serial, []]));
+      const deviceToText = /* @__PURE__ */ new Map();
       for (const [i, line] of lines.entries()) {
         const index = i % deviceIds.length;
         const deviceId = deviceIds[index];
-        deviceToText.get(deviceId).push(line);
+        const textArray = deviceToText.get(deviceId) ?? [];
+        textArray.push(line);
+        deviceToText.set(deviceId, textArray);
       }
       const colors = new RandomColor();
-      const states = transformMap(deviceToText, (lines2) => textState(lines2.join(", "), request.query.backgroundColor ?? colors.next()));
-      repo.cellState.setStates(states);
-      reply.send(Object.fromEntries(states));
+      const textStates = transformMap(deviceToText, (lines2) => textState(lines2.join(", "), request.query.backgroundColor ?? colors.next()));
+      repo.cellState.setStates(textStates);
+      if (request.query.rest) {
+        const remaining = Array.from(deviceIds).filter((serial) => !deviceToText.has(serial));
+        await updateRemainingCells(remaining, request.query.rest || "ignore");
+      }
+      reply.send(Object.fromEntries(textStates));
     }
   });
 }
@@ -1556,6 +1550,7 @@ var init_text = __esm({
     init_store();
     init_transform();
     init_repository2();
+    init_remaining();
     sortedDeviceIds = derived(repo.cellData, (devices) => {
       return Array.from(devices).sort(([, a], [, b]) => {
         var _a, _b;
@@ -1565,7 +1560,70 @@ var init_text = __esm({
   }
 });
 
-// src/routes/api/device/power/_body.ts
+// src/routes/api/device/info.ts
+var info_exports = {};
+__export(info_exports, {
+  default: () => info_default
+});
+import { cellInfoSchema } from "@cell-wall/shared";
+async function info_default(fastify) {
+  const cellInfo = derived(repo.cellData, ($cellData) => transformMap($cellData, (cellInfo2) => cellInfo2.info ?? null));
+  fastify.route({
+    method: "GET",
+    url: "/api/device/info/",
+    async handler(request, reply) {
+      reply.send(Object.fromEntries(get_store_value(cellInfo)));
+    }
+  });
+  fastify.route({
+    method: "GET",
+    url: "/api/device/info/:serial",
+    schema: {
+      response: {
+        200: __spreadProps(__spreadValues({}, cellInfoSchema), {
+          nullable: true
+        })
+      }
+    },
+    async handler(request, reply) {
+      const { serial } = request.params;
+      reply.send(get_store_value(cellInfo).get(serial) ?? null);
+    }
+  });
+  fastify.route({
+    method: "POST",
+    url: "/api/device/info/:serial",
+    async handler(request, reply) {
+      const {
+        body,
+        params: { serial }
+      } = request;
+      await repo.registerCell({
+        serial: body.serial || serial,
+        server: body.server || `${request.protocol}://${request.hostname}`,
+        deviceName: body.deviceName,
+        width: body.width,
+        height: body.height,
+        x: body.x,
+        y: body.y
+      });
+      reply.send([serial]);
+    }
+  });
+}
+var init_info = __esm({
+  "src/routes/api/device/info.ts"() {
+    init_store();
+    init_transform();
+    init_repository2();
+  }
+});
+
+// src/routes/api/device/power.ts
+var power_exports = {};
+__export(power_exports, {
+  default: () => power_default
+});
 function asPower(primitive) {
   switch (primitive) {
     case true:
@@ -1594,24 +1652,45 @@ function parsePowerBody(body) {
   }
   return void 0;
 }
-var init_body = __esm({
-  "src/routes/api/device/power/_body.ts"() {
-  }
-});
-
-// src/routes/api/device/power/[serial].ts
-var serial_exports2 = {};
-__export(serial_exports2, {
-  default: () => serial_default2
-});
-async function serial_default2(fastify) {
+async function power_default(fastify) {
+  const serials = derived(repo.cellData, ($cellData) => Array.from($cellData.keys()));
+  fastify.route({
+    method: "GET",
+    url: "/api/device/power/",
+    async handler(request, reply) {
+      await repo.powered.refresh();
+      const powered = get_store_value(repo.powered);
+      const $serials = get_store_value(serials);
+      reply.send(Object.fromEntries($serials.map((serial) => [serial, powered.has(serial)])));
+    }
+  });
+  fastify.route({
+    method: "POST",
+    url: "/api/device/power/",
+    async handler(request, reply) {
+      const power = parsePowerBody(request.body);
+      if (power === void 0) {
+        reply.status(400).send(new Error(`Invalid body ${request.body}`));
+        return;
+      }
+      const $serials = get_store_value(serials);
+      const settled = Array.from((await repo.setPower($serials, power)).values());
+      if (settled.every(({ status }) => status === "fulfilled")) {
+        reply.status(200).send(power);
+      } else {
+        reply.status(500).send(new AggregateError(settled.filter((result) => result.status === "rejected").map(({ reason }) => reason)));
+      }
+    }
+  });
   fastify.route({
     method: "GET",
     url: "/api/device/power/:serial",
     async handler(request, reply) {
       const { serial } = request.params;
+      await repo.powered.refresh();
+      const powered = get_store_value(repo.powered);
       reply.send({
-        [serial]: await repo.getPower(serial)
+        [serial]: powered.has(serial)
       });
     }
   });
@@ -1640,150 +1719,10 @@ async function serial_default2(fastify) {
     }
   });
 }
-var init_serial2 = __esm({
-  "src/routes/api/device/power/[serial].ts"() {
-    init_repository2();
-    init_body();
-  }
-});
-
-// src/routes/api/device/power/index.ts
-var power_exports = {};
-__export(power_exports, {
-  default: () => power_default
-});
-async function power_default(fastify) {
-  fastify.route({
-    method: "GET",
-    url: "/api/device/power/",
-    async handler(request, reply) {
-      reply.send(Object.fromEntries(await transformMapAsync(get_store_value(repo.cellData), (_data, serial) => repo.getPower(serial))));
-    }
-  });
-  fastify.route({
-    method: "POST",
-    url: "/api/device/power/",
-    async handler(request, reply) {
-      const power = parsePowerBody(request.body);
-      if (power === void 0) {
-        reply.status(400).send(new Error(`Invalid body ${request.body}`));
-        return;
-      }
-      const serials = Array.from(get_store_value(repo.cellData).keys());
-      const settled = await repo.setPower(serials, power);
-      if (Array.from(settled.values()).every(({ status }) => status === "fulfilled")) {
-        reply.status(200).send(power);
-      } else {
-        reply.status(500).send(new Error("Some error occured"));
-      }
-    }
-  });
-}
 var init_power = __esm({
-  "src/routes/api/device/power/index.ts"() {
-    init_store();
-    init_transform();
-    init_repository2();
-    init_body();
-  }
-});
-
-// src/routes/api/device/state/_body.ts
-import { cellStateTypes } from "@cell-wall/shared";
-import { setHas as setHas2 } from "ts-extras";
-function isObject(maybe) {
-  return typeof maybe === "object" && maybe !== null;
-}
-function asCellState(maybeState) {
-  if (isObject(maybeState)) {
-    const state = maybeState;
-    if (setHas2(cellStateTypes, state.type)) {
-      return state;
-    }
-  }
-  return void 0;
-}
-var init_body2 = __esm({
-  "src/routes/api/device/state/_body.ts"() {
-  }
-});
-
-// src/routes/api/device/state/[serial].ts
-var serial_exports3 = {};
-__export(serial_exports3, {
-  default: () => serial_default3
-});
-import { blankState as blankState3 } from "@cell-wall/shared";
-async function serial_default3(fastify) {
-  fastify.route({
-    method: "GET",
-    url: "/api/device/state/:serial",
-    async handler(request, reply) {
-      var _a;
-      const { serial } = request.params;
-      reply.send({
-        [serial]: ((_a = get_store_value(repo.cellData).get(serial)) == null ? void 0 : _a.state) ?? blankState3
-      });
-    }
-  });
-  fastify.route({
-    method: "POST",
-    url: "/api/device/state/:serial",
-    async handler(request, reply) {
-      const { serial } = request.params;
-      const state = asCellState(request.body instanceof URLSearchParams ? Object.fromEntries(request.body) : request.body);
-      if (!state) {
-        reply.status(400).send(new Error(`Invalid body ${request.body}`));
-        return;
-      }
-      repo.cellState.setStates((/* @__PURE__ */ new Map()).set(serial, state));
-      reply.send([serial]);
-    }
-  });
-}
-var init_serial3 = __esm({
-  "src/routes/api/device/state/[serial].ts"() {
+  "src/routes/api/device/power.ts"() {
     init_store();
     init_repository2();
-    init_body2();
-  }
-});
-
-// src/routes/api/device/state/index.ts
-var state_exports = {};
-__export(state_exports, {
-  default: () => state_default
-});
-async function state_default(fastify) {
-  fastify.route({
-    method: "GET",
-    url: "/api/device/state/",
-    async handler(request, reply) {
-      reply.send(Object.fromEntries(transformMap(get_store_value(repo.cellData), (data) => data.state)));
-    }
-  });
-  fastify.route({
-    method: "POST",
-    url: "/api/device/state/",
-    async handler(request, reply) {
-      const singleState = asCellState(request.body);
-      let states;
-      if (singleState) {
-        states = transformMap(get_store_value(repo.cellData), () => singleState);
-      } else {
-        states = request.body;
-      }
-      repo.cellState.setStates(states);
-      reply.send(Object.keys(request.body));
-    }
-  });
-}
-var init_state2 = __esm({
-  "src/routes/api/device/state/index.ts"() {
-    init_store();
-    init_transform();
-    init_repository2();
-    init_body2();
   }
 });
 
@@ -1812,74 +1751,76 @@ var init_preset = __esm({
   }
 });
 
-// src/routes/api/device/[serial].ts
-var serial_exports4 = {};
-__export(serial_exports4, {
-  default: () => serial_default4
+// src/routes/api/device/state.ts
+var state_exports = {};
+__export(state_exports, {
+  default: () => state_default
 });
-import { cellInfoSchema } from "@cell-wall/shared";
-function parseAccept(headers) {
-  var _a;
-  const acceptValues = ((_a = headers["accept"]) == null ? void 0 : _a.split(",")) ?? [];
-  return acceptValues.map((value) => {
-    const [type, weight] = value.split(";");
-    if (weight == null ? void 0 : weight.startsWith("q=")) {
-      const q = parseFloat(weight.substring(2));
-      return { type, q };
-    } else {
-      return { type, q: 1 };
-    }
-  }).sort((a, b) => b.q - a.q);
+import { blankState as blankState3, cellStateTypes } from "@cell-wall/shared";
+import { setHas as setHas2 } from "ts-extras";
+function isObject(maybe) {
+  return typeof maybe === "object" && maybe !== null;
 }
-async function serial_default4(fastify) {
+function asCellState(maybeState) {
+  if (isObject(maybeState)) {
+    const state = maybeState;
+    if (setHas2(cellStateTypes, state.type)) {
+      return state;
+    }
+  }
+  return void 0;
+}
+async function state_default(fastify) {
   fastify.route({
     method: "GET",
-    url: "/api/device/:serial",
-    schema: {
-      response: {
-        200: __spreadProps(__spreadValues({}, cellInfoSchema), {
-          nullable: true
-        })
-      }
-    },
+    url: "/api/device/state/",
     async handler(request, reply) {
-      var _a;
-      const { serial } = request.params;
-      reply.send(((_a = get_store_value(repo.cellData).get(serial)) == null ? void 0 : _a.info) ?? null);
+      reply.send(Object.fromEntries(get_store_value(repo.cellState)));
     }
   });
   fastify.route({
     method: "POST",
-    url: "/api/device/:serial",
+    url: "/api/device/state/",
     async handler(request, reply) {
-      const {
-        body,
-        params: { serial }
-      } = request;
-      await repo.registerCell({
-        serial: body.serial || serial,
-        server: body.server || `${request.protocol}://${request.hostname}`,
-        deviceName: body.deviceName,
-        width: body.width,
-        height: body.height,
-        x: body.x,
-        y: body.y
-      });
-      const accepts = parseAccept(request.headers);
-      const acceptsHtml = accepts.find((accept) => accept.type === "text/html");
-      if (acceptsHtml) {
-        const acceptsJson = accepts.find((accept) => accept.type === "application/json");
-        if (!acceptsJson || acceptsJson.q < acceptsHtml.q) {
-          reply.redirect(`/cell/frame/blank?id=${serial}`);
-        }
+      const singleState = asCellState(request.body);
+      let states;
+      if (singleState) {
+        states = transformMap(get_store_value(repo.cellState), () => singleState);
+      } else {
+        states = request.body;
       }
-      reply.send([serial]);
+      repo.cellState.setStates(states);
+      reply.send(Object.fromEntries(get_store_value(repo.cellState)));
+    }
+  });
+  fastify.route({
+    method: "GET",
+    url: "/api/device/state/:serial",
+    async handler(request, reply) {
+      const { serial } = request.params;
+      const state = get_store_value(repo.cellState).get(serial) ?? blankState3;
+      reply.send({ [serial]: state });
+    }
+  });
+  fastify.route({
+    method: "POST",
+    url: "/api/device/state/:serial",
+    async handler(request, reply) {
+      const { serial } = request.params;
+      const state = asCellState(request.body instanceof URLSearchParams ? Object.fromEntries(request.body) : request.body);
+      if (!state) {
+        reply.status(400).send(new Error(`Invalid body ${request.body}`));
+        return;
+      }
+      repo.cellState.setStates((/* @__PURE__ */ new Map()).set(serial, state));
+      reply.send({ [serial]: state });
     }
   });
 }
-var init_serial4 = __esm({
-  "src/routes/api/device/[serial].ts"() {
+var init_state2 = __esm({
+  "src/routes/api/device/state.ts"() {
     init_store();
+    init_transform();
     init_repository2();
   }
 });
@@ -2039,7 +1980,7 @@ async function urlEncodedPlugin(fastify) {
 // src/routes.ts
 async function routesSubsystem(fastify) {
   await urlEncodedPlugin(fastify);
-  await fastify.register(Promise.resolve().then(() => (init_serial(), serial_exports))).register(Promise.resolve().then(() => (init_image3(), image_exports))).register(Promise.resolve().then(() => (init_install(), install_exports))).register(Promise.resolve().then(() => (init_launch(), launch_exports))).register(Promise.resolve().then(() => (init_refresh(), refresh_exports))).register(Promise.resolve().then(() => (init_text(), text_exports))).register(Promise.resolve().then(() => (init_serial2(), serial_exports2))).register(Promise.resolve().then(() => (init_power(), power_exports))).register(Promise.resolve().then(() => (init_serial3(), serial_exports3))).register(Promise.resolve().then(() => (init_state2(), state_exports))).register(Promise.resolve().then(() => (init_preset(), preset_exports))).register(Promise.resolve().then(() => (init_serial4(), serial_exports4))).register(Promise.resolve().then(() => (init_device(), device_exports))).register(Promise.resolve().then(() => (init_freebusy(), freebusy_exports))).register(Promise.resolve().then(() => (init_cellwall_version(), cellwall_version_exports))).register(Promise.resolve().then(() => (init_routes(), routes_exports))).register(Promise.resolve().then(() => (init_oauth2callback(), oauth2callback_exports)));
+  await fastify.register(Promise.resolve().then(() => (init_image3(), image_exports))).register(Promise.resolve().then(() => (init_install(), install_exports))).register(Promise.resolve().then(() => (init_launch(), launch_exports))).register(Promise.resolve().then(() => (init_refresh(), refresh_exports))).register(Promise.resolve().then(() => (init_text(), text_exports))).register(Promise.resolve().then(() => (init_info(), info_exports))).register(Promise.resolve().then(() => (init_power(), power_exports))).register(Promise.resolve().then(() => (init_preset(), preset_exports))).register(Promise.resolve().then(() => (init_state2(), state_exports))).register(Promise.resolve().then(() => (init_device(), device_exports))).register(Promise.resolve().then(() => (init_freebusy(), freebusy_exports))).register(Promise.resolve().then(() => (init_cellwall_version(), cellwall_version_exports))).register(Promise.resolve().then(() => (init_routes(), routes_exports))).register(Promise.resolve().then(() => (init_oauth2callback(), oauth2callback_exports)));
 }
 
 // src/websocket.ts
