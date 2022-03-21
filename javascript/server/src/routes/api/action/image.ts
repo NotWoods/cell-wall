@@ -2,10 +2,10 @@ import { blankState, validRectWithPos, type RectangleWithPosition } from '@cell-
 import type { FastifyInstance } from 'fastify';
 import type Jimp from 'jimp';
 import { get as getState } from 'svelte/store';
-import { RESIZE, type ResizeOptions } from '../../../../lib/image';
-import { filterMap, transformMap, transformMapAsync } from '../../../../lib/map/transform';
-import { repo } from '../../../../lib/repository';
-import { imagePlugin } from '../../../../parser/image';
+import { RESIZE, type ResizeOptions } from '../../../lib/image';
+import { filterMap, transformMap, transformMapAsync } from '../../../lib/map/transform';
+import { repo } from '../../../lib/repository';
+import { imagePlugin } from '../../../parser/image';
 
 type RemainingBehaviour = 'blank' | 'off' | 'ignore';
 
@@ -121,6 +121,26 @@ export default async function (fastify: FastifyInstance): Promise<void> {
 		async handler(_request, reply) {
 			repo.images.clear();
 			reply.status(201).send();
+		}
+	});
+
+	fastify.route<{
+		Params: { serial: string };
+	}>({
+		method: 'GET',
+		url: '/api/action/image/:serial',
+		async handler(request, reply) {
+			const { serial } = request.params;
+
+			const cached = repo.images.get(serial);
+			if (!cached) {
+				reply.status(404);
+				return;
+			}
+
+			const mime = cached.getMIME();
+			const buffer = await cached.getBufferAsync(mime);
+			reply.status(200).header('content-type', mime).send(buffer);
 		}
 	});
 }
