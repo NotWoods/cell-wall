@@ -69,21 +69,18 @@ export default async function (fastify: FastifyInstance): Promise<void> {
 				return;
 			}
 
+			await repo.powered.refresh();
 			const $serials = getState(serials);
 
 			const settled = Array.from((await repo.setPower($serials, power)).values());
 			if (settled.every(({ status }) => status === 'fulfilled')) {
 				reply.status(200).send(power);
 			} else {
-				reply
-					.status(500)
-					.send(
-						new AggregateError(
-							settled
-								.filter((result): result is PromiseRejectedResult => result.status === 'rejected')
-								.map(({ reason }) => reason)
-						)
-					);
+				const errors = settled
+					.filter((result): result is PromiseRejectedResult => result.status === 'rejected')
+					.map(({ reason }) => reason);
+				console.error(errors);
+				reply.status(500).send(new AggregateError(errors));
 			}
 		}
 	});
@@ -128,6 +125,7 @@ export default async function (fastify: FastifyInstance): Promise<void> {
 				return;
 			}
 
+			await repo.powered.refresh();
 			const settled = await repo.setPower([serial], power);
 			const serialSettled = settled.get(serial);
 			switch (serialSettled?.status) {
