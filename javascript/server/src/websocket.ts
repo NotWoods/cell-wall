@@ -4,7 +4,6 @@ import type { IncomingMessage, Server } from 'http';
 import { WebSocket, WebSocketServer } from 'ws';
 import { cellStateFor } from './lib/cells';
 import { repo } from './lib/repository';
-import { thirdPartySocketStore } from './lib/store/third-party';
 
 const CELL_SERIAL = /^\/cells\/(\w+)\/?$/;
 const blankBuffer = new ArrayBuffer(0);
@@ -65,15 +64,6 @@ const remoteSocketHandler: WebSocketHandler = {
 	}
 };
 
-const thirdPartySocketHandler: WebSocketHandler = {
-	path: '/third_party',
-	onConnect(ws) {
-		return thirdPartySocketStore(repo).subscribe((socketState) => {
-			ws.send(JSON.stringify(socketState));
-		});
-	}
-};
-
 function attachWebsocketHandlers(server: Server, websocketHandlers: readonly WebSocketHandler[]) {
 	const webSocketServers = new WeakMap(
 		websocketHandlers.map((handler) => {
@@ -118,9 +108,5 @@ function attachWebsocketHandlers(server: Server, websocketHandlers: readonly Web
 }
 
 export async function websocketSubsystem(fastify: FastifyInstance): Promise<void> {
-	attachWebsocketHandlers(fastify.server, [
-		cellSocketHandler,
-		remoteSocketHandler,
-		thirdPartySocketHandler
-	]);
+	attachWebsocketHandlers(fastify.server, [cellSocketHandler, remoteSocketHandler]);
 }
