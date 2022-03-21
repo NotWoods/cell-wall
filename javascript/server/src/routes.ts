@@ -15,6 +15,7 @@ export async function routesSubsystem(fastify: FastifyInstance): Promise<void> {
 		.register(import('./routes/api/device/state'))
 		.register(import('./routes/api/device/index'))
 		.register(import('./routes/api/third_party/freebusy'))
+		.register(import('./routes/api/third_party/index'))
 		.register(import('./routes/api/cellwall-version'))
 		.register(import('./routes/index'))
 		.register(import('./routes/oauth2callback'));
