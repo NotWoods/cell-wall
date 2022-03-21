@@ -13,9 +13,11 @@
 
 <script lang="ts">
 	import { browser } from '$app/env';
-	import { goto } from '$app/navigation';
+	import { goto, prefetchRoutes } from '$app/navigation';
+	import { frameUrl } from '$lib/connection/state-socket';
 	import { requestFullScreen, requestWakeLock } from '$lib/wakelock';
 	import { onMount } from 'svelte';
+	import { cellStateTypes } from '@cell-wall/shared';
 
 	export let id = '';
 	export let autoJoin = false;
@@ -36,7 +38,12 @@
 		requestFullScreen();
 		requestWakeLock();
 
-		await goto(`/cell/frame/blank?id=${id}`, { replaceState: false });
+		const routePrefetchJob = prefetchRoutes(
+			Array.from(cellStateTypes, (type) => frameUrl(type, id))
+		);
+
+		await goto(frameUrl('BLANK', id), { replaceState: false });
+		await routePrefetchJob;
 	}
 
 	function reset() {
@@ -55,7 +62,7 @@
 </svelte:head>
 
 <div class="wrapper">
-	<form action="/cell/frame/blank" method="get">
+	<form action="/cell/frame/blank" method="get" on:submit|preventDefault={submit}>
 		<img src="/logo.png" alt="" width="48" height="48" />
 
 		<label for="control-id">Cell ID</label>

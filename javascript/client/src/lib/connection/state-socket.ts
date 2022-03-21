@@ -88,3 +88,10 @@ export function sendResizeEvents(
 		}
 	}
 }
+
+/**
+ * Get the URL of the cell frame page corresponding to the given type.
+ */
+export function frameUrl(type: CellState['type'], serial: string) {
+	return `/cell/frame/${type.toLowerCase()}?id=${serial}`;
+}

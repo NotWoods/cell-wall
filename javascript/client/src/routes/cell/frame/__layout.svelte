@@ -28,7 +28,7 @@
 <script lang="ts">
 	import { browser } from '$app/env';
 	import { goto } from '$app/navigation';
-	import { cellState, connect, sendResizeEvents } from '$lib/connection/state-socket';
+	import { cellState, connect, frameUrl, sendResizeEvents } from '$lib/connection/state-socket';
 	import { onMount } from 'svelte';
 
 	export let serial: string;
@@ -46,10 +46,10 @@
 	socket?.addEventListener('open', (event) => console.info('Socket open', event));
 	socket?.addEventListener('close', (event) => console.info('Socket close', event));
 
-	$: url = `/cell/frame/${$state.type.toLowerCase()}`;
+	$: url = frameUrl($state.type, serial);
 	$: {
 		if (browser) {
-			goto(`${url}?id=${serial}`, { replaceState: true });
+			goto(url, { replaceState: true });
 		}
 	}
 </script>
