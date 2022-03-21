@@ -3,7 +3,6 @@ import { derived, get, type Readable, type Unsubscriber } from 'svelte/store';
 import { AndroidDeviceManager } from '../android/android-device-manager';
 import { CellManager, cellStateStore } from '../cells';
 import { DATABASE_FILENAME, SERVER_ADDRESS } from '../env';
-import { SplitImageCache } from '../image/cache';
 import { filterMap, transformMap } from '../map/transform';
 import { onlyNewEntries } from '../store/changes';
 import { deriveCellData } from './combine-cell';
@@ -83,7 +82,6 @@ export function repository(): Repository {
 		cellState,
 		androidConnections: android,
 		powered: deviceManager.powered,
-		images: new SplitImageCache(),
 		webSockets,
 		thirdParty,
 		refreshDevices() {

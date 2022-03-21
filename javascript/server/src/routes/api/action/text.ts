@@ -1,8 +1,9 @@
-import { RandomColor, textState, type CellState } from '@cell-wall/shared';
+import { RandomColor, textState, type CellStateText } from '@cell-wall/shared';
 import type { FastifyInstance } from 'fastify';
 import { derived, get as getState } from 'svelte/store';
 import { transformMap } from '../../../lib/map/transform';
 import { repo } from '../../../lib/repository';
+import { updateRemainingCells, type RemainingBehaviour } from './_remaining';
 
 const sortedDeviceIds = derived(repo.cellData, (devices) => {
 	return (
@@ -38,8 +39,8 @@ function parseLines(
 export default async function (fastify: FastifyInstance): Promise<void> {
 	fastify.route<{
 		Body: string | string[] | { text?: string; lines?: string[] };
-		Querystring: { backgroundColor?: string };
-		Reply: Record<string, CellState>;
+		Querystring: { backgroundColor?: string; rest?: RemainingBehaviour };
+		Reply: Record<string, CellStateText>;
 	}>({
 		method: 'POST',
 		url: '/api/action/text',
@@ -50,21 +51,29 @@ export default async function (fastify: FastifyInstance): Promise<void> {
 			const deviceIds = getState(sortedDeviceIds);
 
 			// Put text into buckets for each device
-			const deviceToText = new Map<string, string[]>(deviceIds.map((serial) => [serial, []]));
+			const deviceToText = new Map<string, string[]>();
 			for (const [i, line] of lines.entries()) {
 				const index = i % deviceIds.length;
 				const deviceId = deviceIds[index];
-				deviceToText.get(deviceId)!.push(line);
+
+				const textArray = deviceToText.get(deviceId) ?? [];
+				textArray.push(line);
+				deviceToText.set(deviceId, textArray);
 			}
 
 			const colors = new RandomColor();
-			const states = transformMap(deviceToText, (lines) =>
+			const textStates = transformMap(deviceToText, (lines) =>
 				textState(lines.join(', '), request.query.backgroundColor ?? colors.next())
 			);
 
-			repo.cellState.setStates(states);
+			repo.cellState.setStates(textStates);
 
-			reply.send(Object.fromEntries(states));
+			if (request.query.rest) {
+				const remaining = Array.from(deviceIds).filter((serial) => !deviceToText.has(serial));
+				await updateRemainingCells(remaining, request.query.rest || 'ignore');
+			}
+
+			reply.send(Object.fromEntries(textStates));
 		}
 	});
 }

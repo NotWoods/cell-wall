@@ -1,29 +1,16 @@
-import { blankState, validRectWithPos, type RectangleWithPosition } from '@cell-wall/shared';
+import {
+	validRectWithPos,
+	type CellStateImage,
+	type RectangleWithPosition
+} from '@cell-wall/shared';
 import type { FastifyInstance } from 'fastify';
 import type Jimp from 'jimp';
 import { get as getState } from 'svelte/store';
-import { RESIZE, type ResizeOptions } from '../../../lib/image';
+import { RESIZE, SplitImageCache, type ResizeOptions } from '../../../lib/image';
 import { filterMap, transformMap, transformMapAsync } from '../../../lib/map/transform';
 import { repo } from '../../../lib/repository';
 import { imagePlugin } from '../../../parser/image';
-
-type RemainingBehaviour = 'blank' | 'off' | 'ignore';
-
-async function updateRemainingCells(
-	remaining: readonly string[],
-	behaviour: RemainingBehaviour
-): Promise<void> {
-	switch (behaviour) {
-		case 'blank':
-			repo.cellState.setStates(new Map(remaining.map((serial) => [serial, blankState])));
-			break;
-		case 'off':
-			await repo.setPower(remaining, false);
-			break;
-		case 'ignore':
-			break;
-	}
-}
+import { updateRemainingCells, type RemainingBehaviour } from './_remaining';
 
 interface ImageQuerystring extends ResizeOptions {
 	rest?: RemainingBehaviour;
@@ -32,10 +19,12 @@ interface ImageQuerystring extends ResizeOptions {
 
 export default async function (fastify: FastifyInstance): Promise<void> {
 	await imagePlugin(fastify);
+	const images = new SplitImageCache();
 
 	fastify.route<{
 		Body: Jimp;
 		Querystring: ImageQuerystring;
+		Reply: Record<string, CellStateImage>;
 	}>({
 		method: 'POST',
 		url: '/api/action/image/',
@@ -87,12 +76,13 @@ export default async function (fastify: FastifyInstance): Promise<void> {
 				resize: request.query.resize
 			};
 
-			repo.images.clear();
-			await repo.images.insert(image, rects, options);
+			images.clear();
+			await images.insert(image, rects, options);
 
-			repo.cellState.setStates(
-				await transformMapAsync(rects, async (_, serial) => {
-					const buffer = await repo.images.get(serial)!.getBufferAsync(image.getMIME());
+			const imageStates = await transformMapAsync(
+				rects,
+				async (_, serial): Promise<CellStateImage> => {
+					const buffer = await images.get(serial)!.getBufferAsync(image.getMIME());
 					const arrayBuffer = buffer.buffer.slice(
 						buffer.byteOffset,
 						buffer.byteOffset + buffer.byteLength
@@ -102,16 +92,17 @@ export default async function (fastify: FastifyInstance): Promise<void> {
 						type: 'IMAGE',
 						payload: arrayBuffer
 					};
-				})
+				}
 			);
+
+			repo.cellState.setStates(imageStates);
 
 			if (request.query.rest) {
 				const remaining = Array.from(cellData.keys()).filter((serial) => !rects.has(serial));
-				const rest = request.query.rest;
-				await updateRemainingCells(remaining, rest ?? 'ignore');
+				await updateRemainingCells(remaining, request.query.rest || 'ignore');
 			}
 
-			reply.send(Array.from(rects.keys()));
+			reply.send(Object.fromEntries(imageStates));
 		}
 	});
 
@@ -119,7 +110,7 @@ export default async function (fastify: FastifyInstance): Promise<void> {
 		method: 'DELETE',
 		url: '/api/action/image/',
 		async handler(_request, reply) {
-			repo.images.clear();
+			images.clear();
 			reply.status(201).send();
 		}
 	});
@@ -132,7 +123,7 @@ export default async function (fastify: FastifyInstance): Promise<void> {
 		async handler(request, reply) {
 			const { serial } = request.params;
 
-			const cached = repo.images.get(serial);
+			const cached = images.get(serial);
 			if (!cached) {
 				reply.status(404);
 				return;

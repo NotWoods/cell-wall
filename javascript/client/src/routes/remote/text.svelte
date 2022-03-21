@@ -20,6 +20,7 @@
 		if (backgroundColor !== '#ffffff') {
 			action.searchParams.set('backgroundColor', backgroundColor);
 		}
+		action.searchParams.set('rest', data.get('rest') as string);
 
 		try {
 			const res = await fetch(action.toString(), {
@@ -59,6 +60,14 @@
 	<HorizontalField for="control-serial" label="Devices" let:inputClassName>
 		<select multiple name="device" id="control-serial" class={inputClassName} value={$deviceIds}>
 			<DeviceOptions devices={$devices} />
+		</select>
+	</HorizontalField>
+
+	<HorizontalField for="control-rest" label="Remaining Cells" let:inputClassName>
+		<select id="control-rest" name="rest" class={inputClassName}>
+			<option value="ignore">Ignore</option>
+			<option value="blank">Blank</option>
+			<option value="off">Off</option>
 		</select>
 	</HorizontalField>
 
