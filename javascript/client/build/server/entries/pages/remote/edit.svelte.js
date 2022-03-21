@@ -52,7 +52,7 @@ const Edit = create_ssr_component(($$result, $$props, $$bindings, slots) => {
   $$unsubscribe_devices();
   return `${validate_component(Form, "Form").$$render($$result, {
     class: "flex flex-col gap-y-4",
-    action: "/api/device/" + selectedDeviceSerial,
+    action: "/api/device/info/" + selectedDeviceSerial,
     onSubmit: submit
   }, {}, {
     default: ({ loading }) => {

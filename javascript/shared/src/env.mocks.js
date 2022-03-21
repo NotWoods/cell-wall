@@ -1,4 +1,4 @@
-export const VERSION = '4.0.0';
+export const VERSION = '5.0.0';
 export function env() {
     return {
         SERVER_ADDRESS: new URL('http://192.168.0.1'),

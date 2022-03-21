@@ -18,18 +18,6 @@ var __spreadValues = (a, b) => {
   return a;
 };
 var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
-var __objRest = (source, exclude) => {
-  var target = {};
-  for (var prop in source)
-    if (__hasOwnProp.call(source, prop) && exclude.indexOf(prop) < 0)
-      target[prop] = source[prop];
-  if (source != null && __getOwnPropSymbols)
-    for (var prop of __getOwnPropSymbols(source)) {
-      if (exclude.indexOf(prop) < 0 && __propIsEnum.call(source, prop))
-        target[prop] = source[prop];
-    }
-  return target;
-};
 var __esm = (fn, res) => function __init() {
   return fn && (res = (0, fn[__getOwnPropNames(fn)[0]])(fn = 0)), res;
 };
@@ -59,7 +47,7 @@ function lookupLocalIp() {
 var SERVER_ADDRESS, PORT, PACKAGE_NAME, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GITHUB_TOKEN, DATABASE_FILENAME;
 var init_env = __esm({
   "src/lib/env.ts"() {
-    config({ path: "../../.env" });
+    config({ path: "../../../.env" });
     ({
       SERVER_ADDRESS,
       PORT,
@@ -391,48 +379,6 @@ var init_image = __esm({
   }
 });
 
-// src/lib/cells/state.ts
-function cellStateStore() {
-  const store = writable(/* @__PURE__ */ new Map());
-  return __spreadProps(__spreadValues({}, store), {
-    setStates(states) {
-      const entries = typeof states.entries === "function" ? states.entries() : Object.entries(states);
-      store.update((map) => new Map([...map, ...entries]));
-    }
-  });
-}
-function cellStateFor(store, serial) {
-  return derived(store, (map) => map.get(serial));
-}
-function toUri(state, base = SERVER_ADDRESS) {
-  const _a = state, { type } = _a, props = __objRest(_a, ["type"]);
-  switch (type.toUpperCase()) {
-    case "WEB": {
-      const web = props;
-      return new URL(web.payload, base);
-    }
-    case "IMAGE": {
-      const imgProps = props;
-      if (typeof imgProps.payload === "string") {
-        imgProps.payload = new URL(imgProps.payload, base).toString();
-      }
-    }
-    default: {
-      const url = new URL(`cellwall://${type}`);
-      for (const [key, value] of Object.entries(props)) {
-        url.searchParams.append(key, value);
-      }
-      return url;
-    }
-  }
-}
-var init_state = __esm({
-  "src/lib/cells/state.ts"() {
-    init_store();
-    init_env();
-  }
-});
-
 // src/lib/android/adb-actions.ts
 import { escapeShellArg } from "appium-adb/build/lib/helpers.js";
 async function getWakefulness(adb) {
@@ -678,7 +624,6 @@ var AndroidDeviceManager;
 var init_android_device_manager = __esm({
   "src/lib/android/android-device-manager.ts"() {
     init_store();
-    init_state();
     init_env();
     init_transform();
     init_adb_actions();
@@ -691,19 +636,13 @@ var init_android_device_manager = __esm({
         this.properties = androidProperties(this.devices);
         this.powered = androidPowered(this.devices);
       }
-      async launchClient(serial, host, state) {
+      async launchClient(serial, host) {
         const adb = get_store_value(this.devices).get(serial);
         if (!adb)
           return;
-        let dataUri;
-        if (state) {
-          dataUri = toUri(state, host);
-        } else {
-          dataUri = new URL(`/cell?id=${serial}&autojoin`, host);
-        }
         await startIntent(adb, {
           action: `${PACKAGE_NAME}.DISPLAY`,
-          dataUri,
+          dataUri: new URL(`/cell?id=${serial}&autojoin`, host),
           waitForLaunch: true
         });
       }
@@ -772,6 +711,25 @@ var init_manager = __esm({
   }
 });
 
+// src/lib/cells/state.ts
+function cellStateStore() {
+  const store = writable(/* @__PURE__ */ new Map());
+  return __spreadProps(__spreadValues({}, store), {
+    setStates(states) {
+      const entries = typeof states.entries === "function" ? states.entries() : Object.entries(states);
+      store.update((map) => new Map([...map, ...entries]));
+    }
+  });
+}
+function cellStateFor(store, serial) {
+  return derived(store, (map) => map.get(serial));
+}
+var init_state = __esm({
+  "src/lib/cells/state.ts"() {
+    init_store();
+  }
+});
+
 // src/lib/cells/index.ts
 var init_cells = __esm({
   "src/lib/cells/index.ts"() {
@@ -787,19 +745,6 @@ function withLastState(store) {
     const result = [newState, oldState];
     oldState = newState;
     return result;
-  });
-}
-function onlyNewEntries(store) {
-  return derived(withLastState(store), ([newMap, oldMap]) => {
-    const changes = new Map(newMap);
-    if (oldMap) {
-      for (const [serial, state] of oldMap) {
-        if (changes.get(serial) === state) {
-          changes.delete(serial);
-        }
-      }
-    }
-    return changes;
   });
 }
 var init_changes = __esm({
@@ -1150,18 +1095,6 @@ function androidConnections(data) {
   });
   return filterMap(connectionInfo, ({ connection }) => connection.has("android") && !connection.has("web"));
 }
-function sendIntentOnStateChange(cellStateStore2, androidConnections2, deviceManager) {
-  const cellStates = onlyNewEntries(cellStateStore2);
-  return cellStates.subscribe((stateChanges) => {
-    const connectionInfo = get_store_value(androidConnections2);
-    Promise.all(Array.from(stateChanges).map(async ([serial, state]) => {
-      if (state && connectionInfo.has(serial)) {
-        const { server = SERVER_ADDRESS } = connectionInfo.get(serial) ?? {};
-        await deviceManager.launchClient(serial, server, state);
-      }
-    }));
-  });
-}
 function repository() {
   const dbPromise = database(DATABASE_FILENAME);
   const cellState = cellStateStore();
@@ -1177,7 +1110,6 @@ function repository() {
     webSockets
   });
   const android = derived(cellData, androidConnections);
-  sendIntentOnStateChange(cellState, android, deviceManager);
   cellData.subscribe((state) => console.info("CellData", state));
   const thirdParty = thirdPartyConnectRepository(dbPromise);
   return {
@@ -1241,7 +1173,6 @@ var init_repository = __esm({
     init_cells();
     init_env();
     init_transform();
-    init_changes();
     init_combine_cell();
     init_database();
     init_socket_store();
