@@ -61,7 +61,7 @@
 	<title>New Cell | CellWall</title>
 </svelte:head>
 
-<div class="wrapper">
+<div class="fill center wrapper">
 	<form action="/cell/frame/blank" method="get" on:submit|preventDefault={submit}>
 		<img src="/logo.png" alt="" width="48" height="48" />
 
@@ -76,20 +76,12 @@
 </div>
 
 <style>
-	.wrapper {
-		height: 100dvh;
-		height: 100vh;
-		background: #429a46;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		font-size: 1.5rem;
-	}
 	form {
 		display: flex;
 		flex-direction: column;
 		row-gap: 1em;
 		max-width: 100vw;
+		font-size: 1.5rem;
 	}
 	input,
 	button {
@@ -105,7 +97,7 @@
 	}
 
 	@media (max-width: 21rem) {
-		.wrapper {
+		form {
 			font-size: 1rem;
 		}
 		label {

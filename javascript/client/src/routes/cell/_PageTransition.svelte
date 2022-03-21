@@ -1,5 +1,5 @@
 <script>
-	import { fade } from 'svelte/transition';
+	import { blur } from 'svelte/transition';
 	import { quintOut } from 'svelte/easing';
 
 	export let key = '';
@@ -8,7 +8,7 @@
 </script>
 
 {#key key}
-	<div class="layout" transition:fade={{ duration: pageTransitionDuration, easing: quintOut }}>
+	<div class="layout" in:blur={{ duration: pageTransitionDuration, easing: quintOut }}>
 		<slot />
 	</div>
 {/key}
@@ -18,5 +18,6 @@
 		height: 100vh;
 		height: 100dvh;
 		width: 100vw;
+		background: #429a46;
 	}
 </style>

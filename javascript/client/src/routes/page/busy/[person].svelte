@@ -89,7 +89,7 @@
 
 		return {
 			props: {
-				name: person,
+				person: people[person],
 				busyRanges: busy
 			}
 		};
@@ -98,8 +98,7 @@
 
 <script lang="ts">
 	export let busyRanges: readonly TimePeriod[];
-	export let name: keyof People;
-	$: person = people[name];
+	export let person: People[keyof People];
 
 	const isBusy = isBusyInterval(busyRanges);
 	$: state = states[$isBusy ? 'busy' : 'free'];
