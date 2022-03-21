@@ -1,7 +1,7 @@
 import { auth, calendar, type calendar_v3 } from '@googleapis/calendar';
-import { Readable, Writable, writable } from 'svelte/store';
+import { writable, type Readable, type Writable } from 'svelte/store';
 import { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET } from '../../env';
-import type { Database } from '../database';
+import type { DatabaseStore } from '../database';
 
 type OAuth2Client = InstanceType<typeof auth.OAuth2>;
 export type Credentials = OAuth2Client['credentials'];
@@ -14,7 +14,7 @@ export class GoogleClient {
 	 * Set up Google API client
 	 * @param credentials Saved Google credentials, if any
 	 */
-	private constructor(private readonly db: Database, credentials: Credentials | undefined) {
+	private constructor(private readonly db: DatabaseStore, credentials: Credentials | undefined) {
 		this.client = new auth.OAuth2(
 			GOOGLE_CLIENT_ID,
 			GOOGLE_CLIENT_SECRET,
@@ -34,13 +34,13 @@ export class GoogleClient {
 		}
 	}
 
-	static async create(dbPromise: Promise<Database> | Database) {
+	static async create(db: DatabaseStore) {
 		if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET) {
 			throw new Error(`Missing Google API keys`);
 		}
 
-		const db = await dbPromise;
-		const credentials = await db.getGoogleCredentials();
+		const data = await db.get();
+		const credentials = data.googleCredentials;
 
 		return new GoogleClient(db, credentials);
 	}
@@ -62,7 +62,10 @@ export class GoogleClient {
 		this.client.setCredentials(res.tokens);
 
 		try {
-			await this.db.setGoogleCredentials(res.tokens);
+			await this.db.update((data) => ({
+				...data,
+				googleCredentials: res.tokens
+			}));
 		} catch {
 			// swallow errors
 		}

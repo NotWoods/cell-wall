@@ -1,11 +1,11 @@
 import type { CellData } from '@cell-wall/shared';
 import { derived, get } from 'svelte/store';
 import { AndroidDeviceManager } from '../android/android-device-manager';
-import { CellManager, cellStateStore } from '../cells';
+import { cellStateStore } from '../cells/state';
 import { DATABASE_FILENAME, SERVER_ADDRESS } from '../env';
 import { filterMap, transformMap } from '../map/transform';
 import { deriveCellData } from './combine-cell';
-import { database } from './database';
+import { addCellInfo, database } from './database';
 import type { Repository } from './interface';
 import { webSocketStore } from './socket-store';
 import { thirdPartyConnectRepository } from './third-party-connect';
@@ -28,19 +28,16 @@ export function androidConnections(
 }
 
 export function repository(): Repository {
-	const dbPromise = database(DATABASE_FILENAME);
+	const db = database(DATABASE_FILENAME);
 	const cellState = cellStateStore();
 	const webSockets = webSocketStore();
 
 	const deviceManager = new AndroidDeviceManager();
 	let deviceManagerPromise = deviceManager.devices.refresh().then(() => deviceManager);
 
-	const cellManager = new CellManager();
-	const cellManagerPromise = dbPromise.then((db) => cellManager.loadInfo(db));
-
 	// Send intents whenever cell state changes
 	const cellData = deriveCellData({
-		info: cellManager,
+		info: derived(db, (data) => new Map(Object.entries(data.cells))),
 		state: cellState,
 		androidProperties: deviceManager.properties,
 		webSockets
@@ -48,7 +45,7 @@ export function repository(): Repository {
 	const android = derived(cellData, androidConnections);
 	cellData.subscribe((state) => console.info('CellData', state));
 
-	const thirdParty = thirdPartyConnectRepository(dbPromise);
+	const thirdParty = thirdPartyConnectRepository(db);
 
 	return {
 		cellData,
@@ -74,11 +71,7 @@ export function repository(): Repository {
 			const deviceManager = await deviceManagerPromise;
 			await deviceManager.connectOverUsb(serial, port);
 
-			const cellManager = await cellManagerPromise;
-			cellManager.registerServer(serial, `http://localhost:${port}`);
-
-			const db = await dbPromise;
-			await cellManager.writeInfo(db);
+			await db.update(addCellInfo(serial, { server: `http://localhost:${port}` }));
 		},
 		async setPower(serials, on) {
 			const deviceManager = await deviceManagerPromise;
@@ -93,11 +86,7 @@ export function repository(): Repository {
 			});
 		},
 		async registerCell(info) {
-			const cellManager = await cellManagerPromise;
-			cellManager.register(info.serial, info);
-
-			const db = await dbPromise;
-			await cellManager.writeInfo(db);
+			await db.update(addCellInfo(info.serial, info));
 		},
 		async openClientOnDevice(serial) {
 			const deviceManager = await deviceManagerPromise;

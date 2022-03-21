@@ -1,5 +1,5 @@
 import type ADB from 'appium-adb';
-import { type Readable, writable, Writable, Updater, get } from 'svelte/store';
+import { type Readable, writable, type Writable, type Updater, get } from 'svelte/store';
 import { allSettledMap } from '../map/transform';
 import { getWakefulness } from './adb-actions';
 

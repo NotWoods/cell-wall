@@ -1,8 +1,8 @@
-import type { Database } from '../database';
+import type { DatabaseStore } from '../database';
 import { GithubClient } from './github';
 import { GoogleClient } from './google';
 
-export function thirdPartyConnectRepository(dbPromise: Promise<Database> | Database) {
+export function thirdPartyConnectRepository(db: DatabaseStore) {
 	let github: GithubClient | undefined;
 	let google: Promise<GoogleClient> | undefined;
 
@@ -15,7 +15,7 @@ export function thirdPartyConnectRepository(dbPromise: Promise<Database> | Datab
 		},
 		get google() {
 			if (!google) {
-				google = GoogleClient.create(dbPromise);
+				google = GoogleClient.create(db);
 			}
 			return google;
 		}

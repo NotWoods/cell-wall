@@ -2,7 +2,7 @@ import { blankState, type CellInfo, type CellState } from '@cell-wall/shared';
 import type { FastifyInstance } from 'fastify';
 import type { IncomingMessage, Server } from 'http';
 import { WebSocket, WebSocketServer } from 'ws';
-import { cellStateFor } from './lib/cells';
+import { cellStateFor } from './lib/cells/state';
 import { repo } from './lib/repository';
 
 const CELL_SERIAL = /^\/cells\/(\w+)\/?$/;
