@@ -8,4 +8,3 @@ export * from './env.js';
 export * from './helpers/color.js';
 export * from './helpers/memo.js';
 export * from './helpers/timer.js';
-export * from './third-party.js';
