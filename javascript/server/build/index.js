@@ -48,7 +48,7 @@ function lookupLocalIp() {
 var SERVER_ADDRESS, PORT, PACKAGE_NAME, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GITHUB_TOKEN, DATABASE_FILENAME;
 var init_env = __esm({
   "src/lib/env.ts"() {
-    config({ path: resolve(process.cwd(), "../../../.env") });
+    config({ path: resolve(__dirname, "../../../.env") });
     ({
       SERVER_ADDRESS,
       PORT,
