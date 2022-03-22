@@ -30,7 +30,7 @@ var __export = (target, all) => {
 import { env, VERSION } from "@cell-wall/shared/src/env";
 import { config } from "dotenv";
 import { networkInterfaces } from "os";
-import { resolve } from "path";
+import { fileURLToPath } from "url";
 function lookupLocalIp() {
   var _a, _b;
   const interfaces = networkInterfaces();
@@ -48,7 +48,7 @@ function lookupLocalIp() {
 var SERVER_ADDRESS, PORT, PACKAGE_NAME, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GITHUB_TOKEN, DATABASE_FILENAME;
 var init_env = __esm({
   "src/lib/env.ts"() {
-    config({ path: resolve(__dirname, "../../../.env") });
+    config({ path: fileURLToPath(new URL("../../../.env", import.meta.url)) });
     ({
       SERVER_ADDRESS,
       PORT,
@@ -285,19 +285,19 @@ function parseResizeOptions(query = {}) {
 }
 function resize(image, { width, height }, query = {}) {
   const { alignBits, resizeMode } = parseResizeOptions(query);
-  return new Promise((resolve2, reject) => image.cover(width, height, alignBits, resizeMode, (err, value) => {
+  return new Promise((resolve, reject) => image.cover(width, height, alignBits, resizeMode, (err, value) => {
     if (err)
       reject(err);
     else
-      resolve2(value);
+      resolve(value);
   }));
 }
 function crop(image, cell) {
-  return new Promise((resolve2, reject) => image.crop(cell.x, cell.y, cell.width, cell.height, (err, value) => {
+  return new Promise((resolve, reject) => image.crop(cell.x, cell.y, cell.width, cell.height, (err, value) => {
     if (err)
       reject(err);
     else
-      resolve2(value);
+      resolve(value);
   }));
 }
 var ALIGN_QUERY, RESIZE;
