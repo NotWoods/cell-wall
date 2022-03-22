@@ -202,6 +202,9 @@
       "_state-socket-c1d8cd72.js",
       "_cell-state-schema-a24ecc56.js",
       "_index-23b4b723.js"
+    ],
+    "css": [
+      "assets/entries/pages/cell/frame/__layout.svelte-cfac74c0.css"
     ]
   },
   "src/routes/cell/frame/blank.svelte": {
