@@ -3,12 +3,14 @@ import { database } from '../database';
 
 describe('database', () => {
 	it('gets and sets google credentials', async () => {
-		const db = await database();
+		const db = database();
+		let data = await db.get();
 
-		expect(await db.getGoogleCredentials()).toBeUndefined();
+		expect(data.googleCredentials).toBeUndefined();
 
-		await db.setGoogleCredentials({ access_token: 'ABC' });
+		await db.update((data) => ({ ...data, googleCredentials: { access_token: 'ABC' } }));
 
-		expect(await db.getGoogleCredentials()).toEqual({ access_token: 'ABC' });
+		data = await db.get();
+		expect(data.googleCredentials).toEqual({ access_token: 'ABC' });
 	});
 });
