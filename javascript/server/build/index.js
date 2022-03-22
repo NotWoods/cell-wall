@@ -596,16 +596,16 @@ var init_android_powered = __esm({
 function androidProperties(devices) {
   return derived(devices, ($devices, set) => {
     let invalidated = false;
-    Promise.all(Array.from($devices).map(async ([udid, adb]) => {
+    transformMapAsync($devices, async (adb) => {
       const [model, manufacturer] = await Promise.all([adb.getModel(), adb.getManufacturer()]);
       const properties = {
         model,
         manufacturer
       };
-      return [udid, properties];
-    })).then((entries) => {
+      return properties;
+    }).then((map) => {
       if (!invalidated) {
-        set(new Map(entries));
+        set(map);
       }
     });
     return () => {
@@ -616,6 +616,7 @@ function androidProperties(devices) {
 var init_android_properties = __esm({
   "src/lib/android/android-properties.ts"() {
     init_store();
+    init_transform();
   }
 });
 
@@ -648,7 +649,7 @@ var init_android_device_manager = __esm({
       }
       async updateClient(apkPath, targetDevices) {
         const $devices = get_store_value(this.devices);
-        const devicesToUpdate = targetDevices ? new Map(Array.from($devices).filter(([serial]) => targetDevices.has(serial))) : $devices;
+        const devicesToUpdate = targetDevices ? filterMap($devices, (_, serial) => targetDevices.has(serial)) : $devices;
         return transformMapAsync(devicesToUpdate, (adb) => adb.installOrUpgrade(apkPath, PACKAGE_NAME, { enforceCurrentBuild: true }));
       }
       async connectOverUsb(serial, devicePort = PORT) {
@@ -758,7 +759,7 @@ function equalConnectionArrays(a, b) {
 }
 function deriveCellInfo(stores) {
   let lastResult = /* @__PURE__ */ new Map();
-  return derived([stores.info, stores.androidProperties, stores.webSockets], ([infoMap, devices, webSockets]) => {
+  return derived([stores.database, stores.androidProperties, stores.webSockets], ([$database, $androidProps, $webSocketInfo]) => {
     const cellInfoMap = /* @__PURE__ */ new Map();
     function mergeFrom(otherMap, getCellInfo) {
       for (const [serial, otherData] of otherMap) {
@@ -769,13 +770,13 @@ function deriveCellInfo(stores) {
         cellInfoMap.set(serial, newData);
       }
     }
-    mergeFrom(infoMap, (info) => info);
-    mergeFrom(webSockets, (socketInfo) => ({
+    mergeFrom($webSocketInfo, (socketInfo) => ({
       width: socketInfo.width,
       height: socketInfo.height,
       server: socketInfo.url.origin
     }));
-    mergeFrom(devices, ({ model, manufacturer }) => computeInfo(model, manufacturer));
+    mergeFrom($androidProps, ({ model, manufacturer }) => computeInfo(model, manufacturer));
+    mergeFrom($database, (info) => info);
     for (const [serial, newInfo] of cellInfoMap) {
       const lastInfo = lastResult.get(serial);
       if (lastInfo && lastInfo.deviceName === newInfo.deviceName && lastInfo.width === newInfo.width && lastInfo.height === newInfo.height && lastInfo.x === newInfo.x && lastInfo.y === newInfo.y && lastInfo.server === newInfo.server) {
@@ -787,12 +788,12 @@ function deriveCellInfo(stores) {
   });
 }
 function deriveConnection(stores) {
-  return derived([stores.androidProperties, stores.webSockets], ([devices, webSockets]) => {
+  return derived([stores.androidProperties, stores.webSockets], ([$androidProps, $webSocketInfo]) => {
     const connections = /* @__PURE__ */ new Map();
-    for (const id of webSockets.keys()) {
+    for (const id of $webSocketInfo.keys()) {
       connections.set(id, ["web"]);
     }
-    for (const serial of devices.keys()) {
+    for (const serial of $androidProps.keys()) {
       const array = connections.get(serial) ?? [];
       array.push("android");
       connections.set(serial, array);
@@ -803,31 +804,32 @@ function deriveConnection(stores) {
 function deriveCellData(stores) {
   const cellInfo = deriveCellInfo(stores);
   const connections = deriveConnection(stores);
-  const cellDataMap = derived([stores.state, cellInfo, connections], ([stateMap, infoMap, connectionMap]) => {
-    const keys = /* @__PURE__ */ new Set([...stateMap.keys(), ...infoMap.keys(), ...connectionMap.keys()]);
+  const cellDataMap = derived([stores.state, cellInfo, connections], ([$states, $infos, $connections]) => {
+    const keys = /* @__PURE__ */ new Set([...$states.keys(), ...$infos.keys(), ...$connections.keys()]);
     return new Map(Array.from(keys).map((serial) => {
       const newData = {
-        info: infoMap.get(serial),
-        state: stateMap.get(serial) ?? blankState,
-        connection: connectionMap.get(serial) ?? []
+        info: $infos.get(serial),
+        state: $states.get(serial) ?? blankState,
+        connection: $connections.get(serial) ?? []
       };
       return [serial, newData];
     }));
   });
   return derived(withLastState(cellDataMap), ([result, lastResult]) => {
-    return new Map(Array.from(result.entries()).map(([serial, newData]) => {
+    return transformMap(result, (newData, serial) => {
       const oldData = lastResult == null ? void 0 : lastResult.get(serial);
       if (oldData && newData.info === oldData.info && newData.state === oldData.state && equalConnectionArrays(newData.connection, oldData.connection)) {
-        return [serial, oldData];
+        return oldData;
       } else {
-        return [serial, newData];
+        return newData;
       }
-    }));
+    });
   });
 }
 var init_combine_cell = __esm({
   "src/lib/repository/combine-cell.ts"() {
     init_store();
+    init_transform();
     init_changes();
     init_known();
   }
@@ -1050,7 +1052,7 @@ function repository() {
   const deviceManager = new AndroidDeviceManager();
   let deviceManagerPromise = deviceManager.devices.refresh().then(() => deviceManager);
   const cellData = deriveCellData({
-    info: derived(db, (data) => new Map(Object.entries(data.cells))),
+    database: derived(db, (data) => new Map(Object.entries(data.cells))),
     state: cellState,
     androidProperties: deviceManager.properties,
     webSockets
