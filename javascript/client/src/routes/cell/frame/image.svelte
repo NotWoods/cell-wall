@@ -24,3 +24,9 @@
 </script>
 
 <img class="fill" {src} alt="" style={`object-fit: ${fit}`} />
+
+<style>
+	img {
+		background: black;
+	}
+</style>

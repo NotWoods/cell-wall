@@ -21,5 +21,6 @@
 <style>
 	iframe {
 		border: 0;
+		background: white;
 	}
 </style>
