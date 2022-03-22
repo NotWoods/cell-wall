@@ -3,7 +3,7 @@ import { config } from 'dotenv';
 import { networkInterfaces } from 'os';
 import { resolve } from 'path';
 
-config({ path: resolve(process.cwd(), '../../../.env') });
+config({ path: resolve(__dirname, '../../../.env') });
 
 /**
  * Lookup the IP address of the device in the local network
