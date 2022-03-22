@@ -661,56 +661,6 @@ var init_android_device_manager = __esm({
   }
 });
 
-// src/lib/cells/manager.ts
-var CellManager;
-var init_manager = __esm({
-  "src/lib/cells/manager.ts"() {
-    init_store();
-    CellManager = class {
-      constructor() {
-        this._info = writable(/* @__PURE__ */ new Map());
-      }
-      get info() {
-        return this._info;
-      }
-      subscribe(run2, invalidate) {
-        return this._info.subscribe(run2, invalidate);
-      }
-      async loadInfo(db) {
-        try {
-          const cells = await db.getCells();
-          this._info.update((map) => {
-            const newMap = new Map(map);
-            for (const cell of cells) {
-              newMap.set(cell.serial, cell);
-            }
-            return newMap;
-          });
-        } catch (err) {
-          console.error("Could not load CellManager data", err);
-        }
-        return this;
-      }
-      async writeInfo(db) {
-        await db.insertCells(Array.from(get_store_value(this._info).values()));
-      }
-      register(serial, info) {
-        this._info.update((map) => new Map(map).set(serial, info));
-      }
-      registerServer(serial, server) {
-        this._info.update((map) => {
-          const info = map.get(serial);
-          if (info) {
-            return new Map(map).set(serial, __spreadProps(__spreadValues({}, info), { server }));
-          } else {
-            return map;
-          }
-        });
-      }
-    };
-  }
-});
-
 // src/lib/cells/state.ts
 function cellStateStore() {
   const store = writable(/* @__PURE__ */ new Map());
@@ -727,14 +677,6 @@ function cellStateFor(store, serial) {
 var init_state = __esm({
   "src/lib/cells/state.ts"() {
     init_store();
-  }
-});
-
-// src/lib/cells/index.ts
-var init_cells = __esm({
-  "src/lib/cells/index.ts"() {
-    init_manager();
-    init_state();
   }
 });
 
@@ -893,44 +835,48 @@ var init_combine_cell = __esm({
 
 // src/lib/repository/database.ts
 import { JSONFile, Low, Memory } from "lowdb";
-async function database(filename) {
+function database(filename) {
   const adapter = filename ? new JSONFile(filename) : new Memory();
   const db = new Low(adapter);
-  await db.read();
-  function initData() {
-    return db.data ||= { cells: {} };
+  const store = writable({ cells: {} });
+  const init = db.read().then(() => {
+    db.data ||= { cells: {} };
+    store.set(db.data);
+  });
+  async function update(updater) {
+    await init;
+    store.update((oldData) => {
+      const newData = updater(oldData);
+      db.data = newData;
+      return newData;
+    });
+    await db.write();
   }
   return {
-    async getGoogleCredentials() {
-      var _a;
-      return (_a = db.data) == null ? void 0 : _a.googleCredentials;
+    subscribe: store.subscribe,
+    update,
+    async get() {
+      await init;
+      return get_store_value(store);
     },
-    async setGoogleCredentials(credentials) {
-      initData().googleCredentials = credentials;
-      await db.write();
-    },
-    async getCell(name) {
-      var _a, _b;
-      return (_b = (_a = db.data) == null ? void 0 : _a.cells) == null ? void 0 : _b[name];
-    },
-    async getCells() {
-      return Object.values(initData().cells);
-    },
-    async insertCell(cell) {
-      initData().cells[cell.serial] = cell;
-      await db.write();
-    },
-    async insertCells(cells) {
-      const data = initData();
-      for (const cell of cells) {
-        data.cells[cell.serial] = cell;
-      }
-      await db.write();
+    set(value) {
+      return update(() => value);
     }
+  };
+}
+function addCellInfo(serial, newInfo) {
+  return (data) => {
+    const info = data.cells[serial] ?? { serial };
+    return __spreadProps(__spreadValues({}, data), {
+      cells: __spreadProps(__spreadValues({}, data.cells), {
+        [serial]: __spreadValues(__spreadValues({}, info), newInfo)
+      })
+    });
   };
 }
 var init_database = __esm({
   "src/lib/repository/database.ts"() {
+    init_store();
   }
 });
 
@@ -1030,12 +976,12 @@ var init_google = __esm({
           this.authUrl = writable(authorizeUrl);
         }
       }
-      static async create(dbPromise) {
+      static async create(db) {
         if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET) {
           throw new Error(`Missing Google API keys`);
         }
-        const db = await dbPromise;
-        const credentials = await db.getGoogleCredentials();
+        const data = await db.get();
+        const credentials = data.googleCredentials;
         return new GoogleClient(db, credentials);
       }
       get authorizeUrl() {
@@ -1046,7 +992,9 @@ var init_google = __esm({
         this.authUrl.set(void 0);
         this.client.setCredentials(res.tokens);
         try {
-          await this.db.setGoogleCredentials(res.tokens);
+          await this.db.update((data) => __spreadProps(__spreadValues({}, data), {
+            googleCredentials: res.tokens
+          }));
         } catch {
         }
       }
@@ -1059,7 +1007,7 @@ var init_google = __esm({
 });
 
 // src/lib/repository/third-party-connect/index.ts
-function thirdPartyConnectRepository(dbPromise) {
+function thirdPartyConnectRepository(db) {
   let github;
   let google;
   return {
@@ -1071,7 +1019,7 @@ function thirdPartyConnectRepository(dbPromise) {
     },
     get google() {
       if (!google) {
-        google = GoogleClient.create(dbPromise);
+        google = GoogleClient.create(db);
       }
       return google;
     }
@@ -1096,22 +1044,20 @@ function androidConnections(data) {
   return filterMap(connectionInfo, ({ connection }) => connection.has("android") && !connection.has("web"));
 }
 function repository() {
-  const dbPromise = database(DATABASE_FILENAME);
+  const db = database(DATABASE_FILENAME);
   const cellState = cellStateStore();
   const webSockets = webSocketStore();
   const deviceManager = new AndroidDeviceManager();
   let deviceManagerPromise = deviceManager.devices.refresh().then(() => deviceManager);
-  const cellManager = new CellManager();
-  const cellManagerPromise = dbPromise.then((db) => cellManager.loadInfo(db));
   const cellData = deriveCellData({
-    info: cellManager,
+    info: derived(db, (data) => new Map(Object.entries(data.cells))),
     state: cellState,
     androidProperties: deviceManager.properties,
     webSockets
   });
   const android = derived(cellData, androidConnections);
   cellData.subscribe((state) => console.info("CellData", state));
-  const thirdParty = thirdPartyConnectRepository(dbPromise);
+  const thirdParty = thirdPartyConnectRepository(db);
   return {
     cellData,
     cellState,
@@ -1135,10 +1081,7 @@ function repository() {
     async connectDevicePort(serial, port) {
       const deviceManager2 = await deviceManagerPromise;
       await deviceManager2.connectOverUsb(serial, port);
-      const cellManager2 = await cellManagerPromise;
-      cellManager2.registerServer(serial, `http://localhost:${port}`);
-      const db = await dbPromise;
-      await cellManager2.writeInfo(db);
+      await db.update(addCellInfo(serial, { server: `http://localhost:${port}` }));
     },
     async setPower(serials, on) {
       const deviceManager2 = await deviceManagerPromise;
@@ -1153,10 +1096,7 @@ function repository() {
       });
     },
     async registerCell(info) {
-      const cellManager2 = await cellManagerPromise;
-      cellManager2.register(info.serial, info);
-      const db = await dbPromise;
-      await cellManager2.writeInfo(db);
+      await db.update(addCellInfo(info.serial, info));
     },
     async openClientOnDevice(serial) {
       var _a;
@@ -1170,7 +1110,7 @@ var init_repository = __esm({
   "src/lib/repository/repository.ts"() {
     init_store();
     init_android_device_manager();
-    init_cells();
+    init_state();
     init_env();
     init_transform();
     init_combine_cell();
@@ -1941,7 +1881,7 @@ async function routesSubsystem(fastify) {
 }
 
 // src/websocket.ts
-init_cells();
+init_state();
 init_repository2();
 import { blankState as blankState4 } from "@cell-wall/shared";
 import { WebSocketServer } from "ws";
