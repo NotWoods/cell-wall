@@ -9,7 +9,6 @@ import type { ThirdPartyConnect } from './third-party-connect';
 export interface Repository {
 	cellData: Readable<ReadonlyMap<string, CellData>>;
 	cellState: CellStateStore;
-	androidConnections: Readable<ReadonlyMap<string, { server: string | undefined }>>;
 	powered: AndroidPoweredStore;
 	webSockets: WebSocketStore;
 	thirdParty: ThirdPartyConnect;
@@ -21,5 +20,5 @@ export interface Repository {
 		on: boolean
 	): Promise<ReadonlyMap<string, PromiseSettledResult<void>>>;
 	registerCell(info: CellInfo): Promise<void>;
-	openClientOnDevice(serial: string): Promise<void>;
+	openClientOnDevice(serial?: string): Promise<ReadonlyMap<string, PromiseSettledResult<void>>>;
 }

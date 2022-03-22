@@ -3,28 +3,16 @@ import { derived, get } from 'svelte/store';
 import { AndroidDeviceManager } from '../android/android-device-manager';
 import { cellStateStore } from '../cells/state';
 import { DATABASE_FILENAME, SERVER_ADDRESS } from '../env';
-import { filterMap, transformMap } from '../map/transform';
+import { allSettledMap, filterMap } from '../map/transform';
 import { deriveCellData } from './combine-cell';
 import { addCellInfo, database } from './database';
 import type { Repository } from './interface';
 import { webSocketStore } from './socket-store';
+import { logState } from './state-log';
 import { thirdPartyConnectRepository } from './third-party-connect';
 
-/**
- * Returns server info for only Android cells.
- */
-export function androidConnections(
-	data: ReadonlyMap<string, CellData>
-): ReadonlyMap<string, { server: string | undefined }> {
-	const connectionInfo = transformMap(data, (cellData) => ({
-		server: cellData.info?.server,
-		connection: new Set(cellData.connection)
-	}));
-
-	return filterMap(
-		connectionInfo,
-		({ connection }) => connection.has('android') && !connection.has('web')
-	);
+function isAndroidOnlyConnection(cell: CellData) {
+	return cell.connection.includes('android') && !cell.connection.includes('web');
 }
 
 export function repository(): Repository {
@@ -33,7 +21,6 @@ export function repository(): Repository {
 	const webSockets = webSocketStore();
 
 	const deviceManager = new AndroidDeviceManager();
-	let deviceManagerPromise = deviceManager.devices.refresh().then(() => deviceManager);
 
 	// Send intents whenever cell state changes
 	const cellData = deriveCellData({
@@ -42,23 +29,39 @@ export function repository(): Repository {
 		androidProperties: deviceManager.properties,
 		webSockets
 	});
-	const android = derived(cellData, androidConnections);
-	cellData.subscribe((state) => console.info('CellData', state));
 
 	const thirdParty = thirdPartyConnectRepository(db);
+
+	async function openClientOnDevice(serial?: string) {
+		await deviceManager.refreshed;
+		const $cellData = get(cellData);
+
+		function openOnSingleDevice(cell: CellData, serial: string) {
+			const { server = SERVER_ADDRESS } = cell.info ?? {};
+			return deviceManager.launchClient(serial, server);
+		}
+
+		if (serial) {
+			// Launch client for specific device
+			const singleItem = filterMap($cellData, (_, key) => key === serial);
+			return allSettledMap(singleItem, openOnSingleDevice);
+		} else {
+			// Launch client on Android devices without the web client open
+			const androidOnly = filterMap($cellData, isAndroidOnlyConnection);
+			return allSettledMap(androidOnly, openOnSingleDevice);
+		}
+	}
+
+	logState(cellData, deviceManager);
+	openClientOnDevice();
 
 	return {
 		cellData,
 		cellState,
-		androidConnections: android,
 		powered: deviceManager.powered,
 		webSockets,
 		thirdParty,
-		refreshDevices() {
-			const refreshPromise = deviceManager.devices.refresh();
-			deviceManagerPromise = refreshPromise.then(() => deviceManager);
-			return refreshPromise;
-		},
+		refreshDevices: deviceManager.refreshDevices,
 		async installApk(tag) {
 			const apkPath = await thirdParty.github.downloadApk(tag);
 			if (apkPath) {
@@ -68,13 +71,13 @@ export function repository(): Repository {
 			}
 		},
 		async connectDevicePort(serial, port) {
-			const deviceManager = await deviceManagerPromise;
+			await deviceManager.refreshed;
 			await deviceManager.connectOverUsb(serial, port);
 
 			await db.update(addCellInfo(serial, { server: `http://localhost:${port}` }));
 		},
 		async setPower(serials, on) {
-			const deviceManager = await deviceManagerPromise;
+			await deviceManager.refreshed;
 			return deviceManager.powered.update((oldSet) => {
 				const newSet = new Set(oldSet);
 				if (on) {
@@ -88,11 +91,6 @@ export function repository(): Repository {
 		async registerCell(info) {
 			await db.update(addCellInfo(info.serial, info));
 		},
-		async openClientOnDevice(serial) {
-			const deviceManager = await deviceManagerPromise;
-			const { server = SERVER_ADDRESS } = get(cellData).get(serial)?.info ?? {};
-
-			await deviceManager.launchClient(serial, server);
-		}
+		openClientOnDevice
 	};
 }
