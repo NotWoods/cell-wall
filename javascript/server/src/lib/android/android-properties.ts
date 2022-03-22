@@ -1,5 +1,6 @@
 import type { ADB } from 'appium-adb';
 import { derived, type Readable } from 'svelte/store';
+import { transformMapAsync } from '../map/transform';
 
 export interface AndroidProperties {
 	model: string;
@@ -17,20 +18,17 @@ export function androidProperties(
 		($devices, set) => {
 			let invalidated = false;
 
-			Promise.all(
-				Array.from($devices).map(async ([udid, adb]) => {
-					const [model, manufacturer] = await Promise.all([adb.getModel(), adb.getManufacturer()]);
+			transformMapAsync($devices, async (adb) => {
+				const [model, manufacturer] = await Promise.all([adb.getModel(), adb.getManufacturer()]);
 
-					const properties: AndroidProperties = {
-						model,
-						manufacturer
-					};
-
-					return [udid, properties] as const;
-				})
-			).then((entries) => {
+				const properties: AndroidProperties = {
+					model,
+					manufacturer
+				};
+				return properties;
+			}).then((map) => {
 				if (!invalidated) {
-					set(new Map(entries));
+					set(map);
 				}
 			});
 

@@ -2,6 +2,7 @@ import { blankState, CellData, CellInfo, CellState, ConnectionType } from '@cell
 import type { Readable } from 'svelte/store';
 import { derived } from 'svelte/store';
 import type { AndroidProperties } from '../android/android-properties';
+import { transformMap } from '../map/transform';
 import { withLastState } from '../store/changes';
 import { computeInfo } from './known';
 import type { WebSocketInfo } from './socket-store';
@@ -19,14 +20,14 @@ function equalConnectionArrays(
 }
 
 function deriveCellInfo(stores: {
-	info: Readable<ReadonlyMap<string, CellInfo>>;
+	database: Readable<ReadonlyMap<string, CellInfo>>;
 	androidProperties: Readable<ReadonlyMap<string, AndroidProperties>>;
 	webSockets: Readable<ReadonlyMap<string, WebSocketInfo>>;
 }): Readable<ReadonlyMap<string, CellInfo>> {
 	let lastResult: ReadonlyMap<string, CellInfo> = new Map();
 	return derived(
-		[stores.info, stores.androidProperties, stores.webSockets],
-		([infoMap, devices, webSockets]) => {
+		[stores.database, stores.androidProperties, stores.webSockets],
+		([$database, $androidProps, $webSocketInfo]) => {
 			const cellInfoMap = new Map<string, CellInfo>();
 
 			function mergeFrom<T>(
@@ -44,13 +45,13 @@ function deriveCellInfo(stores: {
 				}
 			}
 
-			mergeFrom(infoMap, (info) => info);
-			mergeFrom(webSockets, (socketInfo) => ({
+			mergeFrom($webSocketInfo, (socketInfo) => ({
 				width: socketInfo.width,
 				height: socketInfo.height,
 				server: socketInfo.url.origin
 			}));
-			mergeFrom(devices, ({ model, manufacturer }) => computeInfo(model, manufacturer));
+			mergeFrom($androidProps, ({ model, manufacturer }) => computeInfo(model, manufacturer));
+			mergeFrom($database, (info) => info);
 
 			// Revert instance changes if new info is same as old info
 			for (const [serial, newInfo] of cellInfoMap) {
@@ -78,24 +79,27 @@ function deriveConnection(stores: {
 	androidProperties: Readable<ReadonlyMap<string, unknown>>;
 	webSockets: Readable<ReadonlyMap<string, WebSocketInfo>>;
 }): Readable<ReadonlyMap<string, readonly ConnectionType[]>> {
-	return derived([stores.androidProperties, stores.webSockets], ([devices, webSockets]) => {
-		const connections = new Map<string, ConnectionType[]>();
+	return derived(
+		[stores.androidProperties, stores.webSockets],
+		([$androidProps, $webSocketInfo]) => {
+			const connections = new Map<string, ConnectionType[]>();
 
-		for (const id of webSockets.keys()) {
-			connections.set(id, ['web']);
-		}
-		for (const serial of devices.keys()) {
-			const array = connections.get(serial) ?? [];
-			array.push('android');
-			connections.set(serial, array);
-		}
+			for (const id of $webSocketInfo.keys()) {
+				connections.set(id, ['web']);
+			}
+			for (const serial of $androidProps.keys()) {
+				const array = connections.get(serial) ?? [];
+				array.push('android');
+				connections.set(serial, array);
+			}
 
-		return connections;
-	});
+			return connections;
+		}
+	);
 }
 
 export function deriveCellData(stores: {
-	info: Readable<ReadonlyMap<string, CellInfo>>;
+	database: Readable<ReadonlyMap<string, CellInfo>>;
 	state: Readable<ReadonlyMap<string, CellState>>;
 	androidProperties: Readable<ReadonlyMap<string, AndroidProperties>>;
 	webSockets: Readable<ReadonlyMap<string, WebSocketInfo>>;
@@ -105,15 +109,15 @@ export function deriveCellData(stores: {
 
 	const cellDataMap = derived(
 		[stores.state, cellInfo, connections],
-		([stateMap, infoMap, connectionMap]) => {
-			const keys = new Set([...stateMap.keys(), ...infoMap.keys(), ...connectionMap.keys()]);
+		([$states, $infos, $connections]) => {
+			const keys = new Set([...$states.keys(), ...$infos.keys(), ...$connections.keys()]);
 
 			return new Map<string, CellData>(
 				Array.from(keys).map((serial) => {
 					const newData: CellData = {
-						info: infoMap.get(serial),
-						state: stateMap.get(serial) ?? blankState,
-						connection: connectionMap.get(serial) ?? []
+						info: $infos.get(serial),
+						state: $states.get(serial) ?? blankState,
+						connection: $connections.get(serial) ?? []
 					};
 
 					return [serial, newData];
@@ -123,22 +127,20 @@ export function deriveCellData(stores: {
 	);
 
 	return derived(withLastState(cellDataMap), ([result, lastResult]) => {
-		return new Map(
-			Array.from(result.entries()).map(([serial, newData]) => {
-				const oldData = lastResult?.get(serial);
+		return transformMap(result, (newData, serial) => {
+			const oldData = lastResult?.get(serial);
 
-				// Don't change the object instance if data is the same
-				if (
-					oldData &&
-					newData.info === oldData.info &&
-					newData.state === oldData.state &&
-					equalConnectionArrays(newData.connection, oldData.connection)
-				) {
-					return [serial, oldData];
-				} else {
-					return [serial, newData];
-				}
-			})
-		);
+			// Don't change the object instance if data is the same
+			if (
+				oldData &&
+				newData.info === oldData.info &&
+				newData.state === oldData.state &&
+				equalConnectionArrays(newData.connection, oldData.connection)
+			) {
+				return oldData;
+			} else {
+				return newData;
+			}
+		});
 	});
 }

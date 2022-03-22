@@ -6,11 +6,11 @@ import { deriveCellData } from '../combine-cell';
 import type { WebSocketInfo } from '../socket-store';
 
 function createStores() {
-	const info = writable(new Map<string, CellInfo>());
+	const database = writable(new Map<string, CellInfo>());
 	const state = writable(new Map<string, CellState>());
 	const androidProperties = writable(new Map<string, AndroidProperties>());
 	const webSockets = writable(new Map<string, WebSocketInfo>());
-	return { info, state, androidProperties, webSockets };
+	return { database, state, androidProperties, webSockets };
 }
 
 function mockDevice(model: string, manufacturer: string) {

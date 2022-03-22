@@ -37,7 +37,7 @@ export function repository(): Repository {
 
 	// Send intents whenever cell state changes
 	const cellData = deriveCellData({
-		info: derived(db, (data) => new Map(Object.entries(data.cells))),
+		database: derived(db, (data) => new Map(Object.entries(data.cells))),
 		state: cellState,
 		androidProperties: deviceManager.properties,
 		webSockets

@@ -1,6 +1,6 @@
 import { get } from 'svelte/store';
 import { PACKAGE_NAME, PORT } from '../env';
-import { transformMapAsync } from '../map/transform';
+import { filterMap, transformMapAsync } from '../map/transform';
 import { startIntent } from './adb-actions';
 import { adbDevicesStore } from './adb-devices';
 import { androidPowered } from './android-powered';
@@ -38,7 +38,7 @@ export class AndroidDeviceManager {
 	async updateClient(apkPath: string, targetDevices?: ReadonlySet<string>) {
 		const $devices = get(this.devices);
 		const devicesToUpdate = targetDevices
-			? new Map(Array.from($devices).filter(([serial]) => targetDevices.has(serial)))
+			? filterMap($devices, (_, serial) => targetDevices.has(serial))
 			: $devices;
 
 		return transformMapAsync(devicesToUpdate, (adb) =>
