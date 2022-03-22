@@ -32,6 +32,7 @@
 	import { onMount } from 'svelte';
 
 	export let serial: string;
+	let socketState: 'open' | 'error' | 'close' = 'open';
 
 	const socket = connect(serial);
 	const state = cellState(socket);
@@ -42,9 +43,12 @@
 
 	setContext('frame', { socket, state });
 
-	socket?.addEventListener('error', (event) => console.error('Socket error', event));
-	socket?.addEventListener('open', (event) => console.info('Socket open', event));
-	socket?.addEventListener('close', (event) => console.info('Socket close', event));
+	socket?.addEventListener('error', () => {
+		socketState = 'error';
+	});
+	socket?.addEventListener('close', () => {
+		socketState = 'close';
+	});
 
 	$: url = frameUrl($state.type, serial);
 	$: {
@@ -59,3 +63,26 @@
 </svelte:head>
 
 <slot />
+
+{#if socketState !== 'open'}
+	<svg
+		class="socket-error"
+		xmlns="http://www.w3.org/2000/svg"
+		viewBox="0 0 24 24"
+		height="24px"
+		width="24px"
+		fill={socketState === 'error' ? '#DC2626' : '#EA580C'}
+		stroke="#fff"
+	>
+		<path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z" />
+	</svg>
+{/if}
+
+<style>
+	.socket-error {
+		position: absolute;
+		top: 0;
+		right: 0;
+		z-index: 1;
+	}
+</style>
