@@ -1,9 +1,9 @@
 import { env, VERSION } from '@cell-wall/shared/src/env';
 import { config } from 'dotenv';
 import { networkInterfaces } from 'os';
-import { resolve } from 'path';
+import { fileURLToPath } from 'url';
 
-config({ path: resolve(__dirname, '../../../.env') });
+config({ path: fileURLToPath(new URL('../../../.env', import.meta.url)) });
 
 /**
  * Lookup the IP address of the device in the local network
