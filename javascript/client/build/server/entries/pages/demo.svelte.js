@@ -1,6 +1,5 @@
 import { c as create_ssr_component, v as validate_component, p as each, e as escape, b as add_attribute } from "../../chunks/index-4d214b4e.js";
-import { T as TopBar, R as RemoteFrame } from "../../chunks/TopBar-cc586f2b.js";
-import "../../chunks/stores-6d7f4c16.js";
+import { T as TopBar, R as RemoteFrame } from "../../chunks/TopBar-fb618005.js";
 var demo_svelte_svelte_type_style_lang = "";
 const css = {
   code: ".demo-wall.svelte-e6vggo{display:grid;height:50rem;width:60rem;gap:1rem;grid-template:'demo1 demo2' 2fr\n			'demo1 demo3' 2fr\n			'demo4 demo4' 3fr\n			/ 1fr 2fr}",

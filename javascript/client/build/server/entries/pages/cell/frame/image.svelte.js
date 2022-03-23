@@ -21,6 +21,11 @@ function createBlobUrlFactory() {
     return lastUrl;
   };
 }
+var image_svelte_svelte_type_style_lang = "";
+const css = {
+  code: "img.svelte-6u50n6{background:black}",
+  map: null
+};
 const Image = create_ssr_component(($$result, $$props, $$bindings, slots) => {
   let imageState;
   let src;
@@ -40,10 +45,11 @@ const Image = create_ssr_component(($$result, $$props, $$bindings, slots) => {
   }
   const { state } = getFrameContext();
   $$unsubscribe_state = subscribe(state, (value) => $state = value);
+  $$result.css.add(css);
   imageState = filterState("IMAGE", $state);
   src = imageState ? createBlobUrl(imageState.payload) : void 0;
   fit = objectFit(imageState?.scaleType);
   $$unsubscribe_state();
-  return `<img class="${"fill"}"${add_attribute("src", src, 0)} alt="${""}"${add_attribute("style", `object-fit: ${fit}`, 0)}>`;
+  return `<img class="${"fill svelte-6u50n6"}"${add_attribute("src", src, 0)} alt="${""}"${add_attribute("style", `object-fit: ${fit}`, 0)}>`;
 });
 export { Image as default };

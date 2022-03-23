@@ -6,7 +6,7 @@ import "../../../../chunks/state-socket-c1d8cd72.js";
 import "../../../../chunks/index-23b4b723.js";
 var web_svelte_svelte_type_style_lang = "";
 const css = {
-  code: "iframe.svelte-znqehi{border:0}",
+  code: "iframe.svelte-8wym80{border:0;background:white}",
   map: null
 };
 const Web = create_ssr_component(($$result, $$props, $$bindings, slots) => {
@@ -20,6 +20,6 @@ const Web = create_ssr_component(($$result, $$props, $$bindings, slots) => {
   webState = filterState("WEB", $state);
   url = webState?.payload || "about:blank";
   $$unsubscribe_state();
-  return `<iframe class="${"fill svelte-znqehi"}"${add_attribute("src", url, 0)} title="${"Cell content"}"${add_attribute("this", frame, 0)}></iframe>`;
+  return `<iframe class="${"fill svelte-8wym80"}"${add_attribute("src", url, 0)} title="${"Cell content"}"${add_attribute("this", frame, 0)}></iframe>`;
 });
 export { Web as default };

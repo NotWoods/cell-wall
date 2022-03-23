@@ -637,6 +637,11 @@ var init_android_device_manager = __esm({
         this.devices = adbDevicesStore();
         this.properties = androidProperties(this.devices);
         this.powered = androidPowered(this.devices);
+        this.refreshDevices = () => {
+          this.refreshed = this.devices.refresh();
+          return this.refreshed;
+        };
+        this.refreshDevices();
       }
       async launchClient(serial, host) {
         const adb = get_store_value(this.devices).get(serial);
@@ -905,6 +910,20 @@ var init_socket_store = __esm({
   }
 });
 
+// src/lib/repository/state-log.ts
+function logState(cellData, deviceManager) {
+  cellData.subscribe(($cellData) => console.info("CellData", $cellData));
+  derived([deviceManager.properties, deviceManager.powered], ([$properties, $powered]) => transformMap($properties, (properties, serial) => __spreadProps(__spreadValues({}, properties), {
+    power: $powered.has(serial)
+  }))).subscribe(($properties) => console.info("AndroidProperties", $properties));
+}
+var init_state_log = __esm({
+  "src/lib/repository/state-log.ts"() {
+    init_store();
+    init_transform();
+  }
+});
+
 // src/lib/repository/third-party-connect/github.ts
 import { memo } from "@cell-wall/shared";
 import { Octokit } from "@octokit/core";
@@ -1036,43 +1055,45 @@ var init_third_party_connect = __esm({
 });
 
 // src/lib/repository/repository.ts
-function androidConnections(data) {
-  const connectionInfo = transformMap(data, (cellData) => {
-    var _a;
-    return {
-      server: (_a = cellData.info) == null ? void 0 : _a.server,
-      connection: new Set(cellData.connection)
-    };
-  });
-  return filterMap(connectionInfo, ({ connection }) => connection.has("android") && !connection.has("web"));
+function isAndroidOnlyConnection(cell) {
+  return cell.connection.includes("android") && !cell.connection.includes("web");
 }
 function repository() {
   const db = database(DATABASE_FILENAME);
   const cellState = cellStateStore();
   const webSockets = webSocketStore();
   const deviceManager = new AndroidDeviceManager();
-  let deviceManagerPromise = deviceManager.devices.refresh().then(() => deviceManager);
   const cellData = deriveCellData({
     database: derived(db, (data) => new Map(Object.entries(data.cells))),
     state: cellState,
     androidProperties: deviceManager.properties,
     webSockets
   });
-  const android = derived(cellData, androidConnections);
-  cellData.subscribe((state) => console.info("CellData", state));
   const thirdParty = thirdPartyConnectRepository(db);
+  async function openClientOnDevice(serial) {
+    await deviceManager.refreshed;
+    const $cellData = get_store_value(cellData);
+    function openOnSingleDevice(cell, serial2) {
+      const { server = SERVER_ADDRESS } = cell.info ?? {};
+      return deviceManager.launchClient(serial2, server);
+    }
+    if (serial) {
+      const singleItem = filterMap($cellData, (_, key) => key === serial);
+      return allSettledMap(singleItem, openOnSingleDevice);
+    } else {
+      const androidOnly = filterMap($cellData, isAndroidOnlyConnection);
+      return allSettledMap(androidOnly, openOnSingleDevice);
+    }
+  }
+  logState(cellData, deviceManager);
+  openClientOnDevice();
   return {
     cellData,
     cellState,
-    androidConnections: android,
     powered: deviceManager.powered,
     webSockets,
     thirdParty,
-    refreshDevices() {
-      const refreshPromise = deviceManager.devices.refresh();
-      deviceManagerPromise = refreshPromise.then(() => deviceManager);
-      return refreshPromise;
-    },
+    refreshDevices: deviceManager.refreshDevices,
     async installApk(tag) {
       const apkPath = await thirdParty.github.downloadApk(tag);
       if (apkPath) {
@@ -1082,13 +1103,13 @@ function repository() {
       }
     },
     async connectDevicePort(serial, port) {
-      const deviceManager2 = await deviceManagerPromise;
-      await deviceManager2.connectOverUsb(serial, port);
+      await deviceManager.refreshed;
+      await deviceManager.connectOverUsb(serial, port);
       await db.update(addCellInfo(serial, { server: `http://localhost:${port}` }));
     },
     async setPower(serials, on) {
-      const deviceManager2 = await deviceManagerPromise;
-      return deviceManager2.powered.update((oldSet) => {
+      await deviceManager.refreshed;
+      return deviceManager.powered.update((oldSet) => {
         const newSet = new Set(oldSet);
         if (on) {
           serials.forEach((serial) => newSet.add(serial));
@@ -1101,12 +1122,7 @@ function repository() {
     async registerCell(info) {
       await db.update(addCellInfo(info.serial, info));
     },
-    async openClientOnDevice(serial) {
-      var _a;
-      const deviceManager2 = await deviceManagerPromise;
-      const { server = SERVER_ADDRESS } = ((_a = get_store_value(cellData).get(serial)) == null ? void 0 : _a.info) ?? {};
-      await deviceManager2.launchClient(serial, server);
-    }
+    openClientOnDevice
   };
 }
 var init_repository = __esm({
@@ -1119,6 +1135,7 @@ var init_repository = __esm({
     init_combine_cell();
     init_database();
     init_socket_store();
+    init_state_log();
     init_third_party_connect();
   }
 });
@@ -1335,16 +1352,13 @@ async function launch_default(fastify) {
     method: ["GET", "POST"],
     url: "/api/action/launch",
     async handler(request, reply) {
-      const devices = get_store_value(repo.androidConnections);
-      const results = await allSettledMap(devices, (_, serial) => repo.openClientOnDevice(serial));
+      const results = await repo.openClientOnDevice();
       reply.send(Object.fromEntries(results));
     }
   });
 }
 var init_launch = __esm({
   "src/routes/api/action/launch.ts"() {
-    init_store();
-    init_transform();
     init_repository2();
   }
 });

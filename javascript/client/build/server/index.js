@@ -1725,7 +1725,7 @@ async function respond(request, options, state) {
     return new Response(void 0, {
       status: 301,
       headers: {
-        location: normalized + (url.search === "?" ? "" : url.search)
+        location: (normalized.startsWith("//") ? url.origin + normalized : normalized) + (url.search === "?" ? "" : url.search)
       }
     });
   }
