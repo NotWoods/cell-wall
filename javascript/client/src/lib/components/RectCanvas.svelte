@@ -1,19 +1,5 @@
 <script lang="ts" context="module">
-	import { cellCanvas, CellInfo, RectangleWithPosition } from '@cell-wall/shared';
-
-	function getScale(
-		canvas: HTMLCanvasElement | undefined,
-		rects: readonly RectangleWithPosition[]
-	) {
-		if (!canvas) {
-			return 1;
-		}
-
-		const { width, height } = cellCanvas(rects);
-		const widthScale = canvas.width / width;
-		const heightScale = canvas.height / height;
-		return Math.min(widthScale, heightScale);
-	}
+	import type { CellInfo, RectangleWithPosition } from '@cell-wall/shared';
 
 	function drawCanvas(
 		ctx: CanvasRenderingContext2D | undefined,
@@ -25,28 +11,27 @@
 		ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 		ctx.font = '20px sans-serif';
 		for (const info of rects) {
-			const { x, y, width, height } = info;
+			const { x, y, width, height } = applyScale(info, scale);
 			ctx.fillStyle = '#EFEFEF';
-			ctx.fillRect(x * scale, y * scale, width * scale, height * scale);
+			ctx.fillRect(x, y, width, height);
 
 			ctx.fillStyle = '#1b5e20';
-			ctx.fillText(
-				info.deviceName || info.serial,
-				x * scale + 10,
-				y * scale + 30,
-				width * scale - 20
-			);
+			ctx.fillText(info.deviceName || info.serial, x + 10, y + 30, width - 20);
 		}
 	}
 </script>
 
 <script lang="ts">
+	import { applyScale, fitScale } from '$lib/canvas/fit-scale';
+	import { cellCanvas } from '@cell-wall/shared';
+
 	export let rects: readonly (CellInfo & RectangleWithPosition)[] = [];
 
 	let canvas: HTMLCanvasElement;
 	$: ctx = canvas?.getContext('2d') ?? undefined;
 
-	$: scale = getScale(canvas, rects);
+	$: cellCanvasRect = cellCanvas(rects);
+	$: scale = canvas ? fitScale(canvas, cellCanvasRect) : 1;
 
 	$: {
 		drawCanvas(ctx, scale, rects);

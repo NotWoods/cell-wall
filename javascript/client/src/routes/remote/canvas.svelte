@@ -1,42 +1,5 @@
-<script lang="ts" context="module">
-	import {
-		CellData,
-		CellInfo,
-		Rectangle,
-		RectangleWithPosition,
-		validRect,
-		validRectWithPos
-	} from '@cell-wall/shared';
-
-	function splitToBuckets(devices: ReadonlyMap<string, CellData>): {
-		rectWithPos: readonly (CellInfo & RectangleWithPosition)[];
-		rect: readonly (CellInfo & Rectangle)[];
-		rest: readonly CellInfo[];
-	} {
-		const rectWithPos: (CellInfo & RectangleWithPosition)[] = [];
-		const rect: (CellInfo & Rectangle)[] = [];
-		const rest: CellInfo[] = [];
-
-		for (const [serial, { info }] of devices) {
-			if (!info) {
-				rest.push({ serial });
-				continue;
-			}
-
-			if (validRectWithPos(info)) {
-				rectWithPos.push(info);
-			} else if (validRect(info)) {
-				rect.push(info);
-			} else {
-				rest.push(info);
-			}
-		}
-
-		return { rectWithPos, rect, rest };
-	}
-</script>
-
 <script lang="ts">
+	import { splitToBuckets } from '$lib/canvas/buckets';
 	import LinkButton from '$lib/components/Button/LinkButton.svelte';
 	import RectCanvas from '$lib/components/RectCanvas.svelte';
 	import { getRemoteContext } from './__layout.svelte';
