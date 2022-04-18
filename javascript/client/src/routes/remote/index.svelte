@@ -20,6 +20,6 @@
 
 <section bind:this={container} class="relative" style="height: {cellCanvasRect.height * scale}px">
 	{#each buckets.rectWithPos as info (info.serial)}
-		<SelectAppCard {info} {scale} />
+		<SelectAppCard {info} {scale} app={undefined} />
 	{/each}
 </section>
