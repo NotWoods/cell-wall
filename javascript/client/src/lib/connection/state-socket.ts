@@ -1,6 +1,10 @@
 import { browser } from '$app/env';
-import { blankState, type Mutable, type CellInfo, type CellState } from '@cell-wall/shared';
+import { blankState, type CellInfo, type CellState } from '@cell-wall/shared';
 import { readable, type Readable } from 'svelte/store';
+
+type Mutable<T> = {
+	-readonly [P in keyof T]: T[P];
+};
 
 export function connect(serial: string): WebSocket | undefined {
 	if (browser) {
