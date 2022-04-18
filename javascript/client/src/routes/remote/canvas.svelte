@@ -37,6 +37,7 @@
 </script>
 
 <script lang="ts">
+	import LinkButton from '$lib/components/Button/LinkButton.svelte';
 	import RectCanvas from '$lib/components/RectCanvas.svelte';
 	import { getRemoteContext } from './__layout.svelte';
 
@@ -51,6 +52,9 @@
 
 <section class="fill">
 	<RectCanvas rects={buckets.rectWithPos} />
+	<div>
+		<LinkButton href="/remote/edit">Edit Cells</LinkButton>
+	</div>
 	<aside class="mt-4">
 		<div>
 			<h2 class="font-bold">No X/Y</h2>

@@ -9,6 +9,7 @@
 	import { formDataAsSearchParams } from './_form';
 	import PresetCard from './_PresetCard.svelte';
 	import SubmitButton from '$lib/components/Button/SubmitButton.svelte';
+	import LinkButton from '$lib/components/Button/LinkButton.svelte';
 
 	async function submit(data: FormData, action: URL) {
 		const res = await fetch(action.toString(), {
@@ -51,12 +52,7 @@
 	</PresetCard>
 	<PresetCard title="Tea list" preset="tea" large {status}>What's avaliable to drink?</PresetCard>
 	<PresetCard title="Actions" button="Launch on devices" formAction="/api/action/launch" {status}>
-		<a
-			class="px-4 py-2 rounded-md shadow-sm text-sm font-medium text-white transition-colors bg-slate-700 hover:bg-slate-800"
-			href="/remote/third_party"
-		>
-			SDK Login
-		</a>
+		<LinkButton href="/remote/third_party">SDK Login</LinkButton>
 		<SubmitButton
 			name="action"
 			value="install"
