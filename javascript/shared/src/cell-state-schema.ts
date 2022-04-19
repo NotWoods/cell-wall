@@ -4,20 +4,18 @@ import {
 	cellStateImageSchema,
 	cellStateTextSchema,
 	cellStateWebSchema,
-	type CellState
+	type CellStateType
 } from './cell-state-interface';
-import type { JsonSchemaProperty } from './cell-state-interface/_schema';
+import type { JsonSchemaProperty, ObjectJsonSchemaProperty } from './cell-state-interface/_schema';
 
-export interface CellStateJsonSchema {
-	type: 'object';
+export interface CellStateJsonSchema extends ObjectJsonSchemaProperty {
 	properties: {
-		type: {
+		type: JsonSchemaProperty & {
 			type: 'string';
-			enum: readonly [CellState['type']];
+			const: CellStateType;
 		};
 		[prop: string]: JsonSchemaProperty;
 	};
-	required: readonly string[];
 }
 
 export const allCellStateSchemas = [
@@ -27,7 +25,3 @@ export const allCellStateSchemas = [
 	cellStateTextSchema,
 	cellStateWebSchema
 ] as const;
-
-export function getTypeFromSchema(schema: CellStateJsonSchema): string {
-	return schema.properties.type.enum[0];
-}

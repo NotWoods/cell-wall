@@ -5,7 +5,7 @@
 	import Form from '$lib/components/Form.svelte';
 	import Tabs from '$lib/components/Tabs/Tabs.svelte';
 	import { storeEntries } from '$lib/connection/remote-socket';
-	import { allCellStateSchemas, getTypeFromSchema } from '@cell-wall/shared';
+	import { allCellStateSchemas } from '@cell-wall/shared';
 	import ControllerFields from './custom/_ControllerFields.svelte';
 	import PowerButtons from './custom/_PowerButtons.svelte';
 	import TypeTab from './custom/_TypeTab.svelte';
@@ -22,7 +22,7 @@
 
 	$: selectedDevice = $remoteState.get(selectedDeviceSerial);
 	$: activeSchema = allCellStateSchemas.find(
-		(schema) => getTypeFromSchema(schema) === selectedType
+		(schema) => schema.properties.type.const === selectedType
 	);
 
 	async function submit(formData: FormData, action: URL) {
@@ -37,7 +37,7 @@
 
 <nav class="mb-6">
 	<Tabs>
-		{#each allCellStateSchemas as schema (getTypeFromSchema(schema))}
+		{#each allCellStateSchemas as schema (schema.properties.type.const)}
 			<TypeTab bind:selectedType {schema} />
 		{/each}
 	</Tabs>

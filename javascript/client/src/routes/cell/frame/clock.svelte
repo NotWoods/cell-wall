@@ -1,4 +1,6 @@
 <script context="module" lang="ts">
+	import { readable } from 'svelte/store';
+
 	function intervalClock() {
 		return readable(new Date(), (set) => {
 			let timeout: ReturnType<typeof setTimeout> | undefined;
@@ -24,7 +26,6 @@
 
 <script lang="ts">
 	import { filterState } from '@cell-wall/shared';
-	import { readable } from 'svelte/store';
 	import { getFrameContext } from './__layout.svelte';
 
 	const { state } = getFrameContext();

@@ -13,8 +13,8 @@ interface CellStateMap {
 	CLOCK: CellStateClock;
 }
 
-export type CellState = CellStateMap[keyof CellStateMap];
-export type CellStateType = CellState['type'];
+export type CellStateType = keyof CellStateMap;
+export type CellState = CellStateMap[CellStateType];
 
 const types: readonly CellStateType[] = ['BLANK', 'TEXT', 'IMAGE', 'WEB', 'CLOCK'];
 export const cellStateTypes: ReadonlySet<CellStateType> = new Set(types);
@@ -35,20 +35,4 @@ export function filterState<Type extends CellStateType>(
 	} else {
 		return undefined;
 	}
-}
-
-export interface CellStateJsonSchema {
-	type: 'object';
-	properties: {
-		type: JsonSchemaProperty & {
-			type: 'string';
-			const: CellState['type'];
-		};
-		[prop: string]: JsonSchemaProperty;
-	};
-	required: readonly string[];
-}
-
-export function getTypeFromSchema(schema: CellStateJsonSchema): CellStateType {
-	return schema.properties.type.const;
 }

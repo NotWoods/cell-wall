@@ -15,13 +15,19 @@ interface BaseJsonSchemaProperty<Type extends string | number | boolean | object
 	const?: Type;
 }
 
+export interface ObjectJsonSchemaProperty extends BaseJsonSchemaProperty<object> {
+	properties: { [key: string]: JsonSchemaProperty };
+	required?: readonly string[];
+}
+
 interface StringJsonSchemaProperty extends BaseJsonSchemaProperty<string> {
 	format?: string;
 }
 
 export type JsonSchemaProperty =
-	| BaseJsonSchemaProperty<number | boolean | object>
-	| StringJsonSchemaProperty;
+	| BaseJsonSchemaProperty<number | boolean>
+	| StringJsonSchemaProperty
+	| ObjectJsonSchemaProperty;
 
 /**
  * Helper to build a JSON schema object for a cell state.
@@ -37,7 +43,6 @@ export function buildSchema<CellState extends { type: string }>(options: {
 		properties: {
 			type: {
 				type: 'string',
-				enum: [type],
 				const: type
 			},
 			...properties
