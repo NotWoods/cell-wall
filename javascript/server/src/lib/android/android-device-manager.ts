@@ -5,6 +5,7 @@ import { startIntent } from './adb-actions';
 import { adbDevicesStore } from './adb-devices';
 import { androidPowered } from './android-powered';
 import { androidProperties } from './android-properties';
+import type { Serial } from './opaque';
 
 export class AndroidDeviceManager {
 	readonly devices = adbDevicesStore();
@@ -36,7 +37,7 @@ export class AndroidDeviceManager {
 	 * @param host URL of the host server, as far as the target device is aware.
 	 * Useful if the target device is running a different network.
 	 */
-	async launchClient(serial: string, host: URL | string) {
+	async launchClient(serial: Serial, host: URL | string) {
 		const adb = get(this.devices).get(serial);
 		if (!adb) return;
 
@@ -70,7 +71,7 @@ export class AndroidDeviceManager {
 	 * @param serial ID of the device to modify.
 	 * @param devicePort Port on the device to forward to. Defaults to server port.
 	 */
-	async connectOverUsb(serial: string, devicePort: number = PORT) {
+	async connectOverUsb(serial: Serial, devicePort: number = PORT) {
 		const adb = get(this.devices).get(serial);
 		if (!adb) return;
 

@@ -1,6 +1,7 @@
 import type { CellData } from '@cell-wall/shared';
 import { derived, get } from 'svelte/store';
 import { AndroidDeviceManager } from '../android/android-device-manager';
+import type { Serial } from '../android/opaque';
 import { cellStateStore } from '../cells/state';
 import { DATABASE_FILENAME, SERVER_ADDRESS } from '../env';
 import { allSettledMap, filterMap } from '../map/transform';
@@ -38,7 +39,7 @@ export function repository(): Repository {
 
 		function openOnSingleDevice(cell: CellData, serial: string) {
 			const { server = SERVER_ADDRESS } = cell.info ?? {};
-			return deviceManager.launchClient(serial, server);
+			return deviceManager.launchClient(serial as Serial, server);
 		}
 
 		if (serial) {
@@ -81,9 +82,9 @@ export function repository(): Repository {
 			return deviceManager.powered.update((oldSet) => {
 				const newSet = new Set(oldSet);
 				if (on) {
-					serials.forEach((serial) => newSet.add(serial));
+					serials.forEach((serial) => newSet.add(serial as Serial));
 				} else {
-					serials.forEach((serial) => newSet.delete(serial));
+					serials.forEach((serial) => newSet.delete(serial as Serial));
 				}
 				return newSet;
 			});

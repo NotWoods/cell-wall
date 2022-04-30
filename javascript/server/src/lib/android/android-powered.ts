@@ -3,11 +3,12 @@ import { get, writable, type Readable, type Updater, type Writable } from 'svelt
 import { allSettledMap } from '../map/transform';
 import { setWhenDone } from '../store/promise';
 import { getWakefulness } from './adb-actions';
+import type { Serial } from './opaque';
 
 const KEYCODE_UNKNOWN = 0;
 const KEYCODE_POWER = 26;
 
-export interface AndroidPoweredStore extends Writable<ReadonlySet<string>> {
+export interface AndroidPoweredStore extends Writable<ReadonlySet<Serial>> {
 	/**
 	 * Set new powered devices and inform subscribers.
 	 * @param value to set
@@ -15,8 +16,8 @@ export interface AndroidPoweredStore extends Writable<ReadonlySet<string>> {
 	 */
 	set(
 		this: void,
-		value: ReadonlySet<string>
-	): Promise<ReadonlyMap<string, PromiseSettledResult<void>>>;
+		value: ReadonlySet<Serial>
+	): Promise<ReadonlyMap<Serial, PromiseSettledResult<void>>>;
 	/**
 	 * Update new powered devices using callback and inform subscribers.
 	 * @param updater callback
@@ -24,8 +25,8 @@ export interface AndroidPoweredStore extends Writable<ReadonlySet<string>> {
 	 */
 	update(
 		this: void,
-		updater: Updater<ReadonlySet<string>>
-	): Promise<ReadonlyMap<string, PromiseSettledResult<void>>>;
+		updater: Updater<ReadonlySet<Serial>>
+	): Promise<ReadonlyMap<Serial, PromiseSettledResult<void>>>;
 	/**
 	 * Poll for the current power states of connected ADB devices.
 	 */
@@ -36,9 +37,9 @@ export interface AndroidPoweredStore extends Writable<ReadonlySet<string>> {
  * Helper class to manage power state of ADB-connected devices.
  * Power isn't reported by events so we need to poll and track the last set value.
  */
-export function androidPowered(devices: Readable<ReadonlyMap<string, ADB>>): AndroidPoweredStore {
-	async function refreshDevicePowerStates($devices: ReadonlyMap<string, ADB>) {
-		const powered = new Set<string>();
+export function androidPowered(devices: Readable<ReadonlyMap<Serial, ADB>>): AndroidPoweredStore {
+	async function refreshDevicePowerStates($devices: ReadonlyMap<Serial, ADB>) {
+		const powered = new Set<Serial>();
 
 		await Promise.all(
 			Array.from($devices).map(async ([udid, adb]) => {
@@ -53,7 +54,7 @@ export function androidPowered(devices: Readable<ReadonlyMap<string, ADB>>): And
 	}
 
 	// Set of powered on devices (by udid).
-	const poweredOn = writable<ReadonlySet<string>>(new Set(), (set) => {
+	const poweredOn = writable<ReadonlySet<Serial>>(new Set(), (set) => {
 		// Update the power state when the devices change.
 		return devices.subscribe(($devices) => setWhenDone(refreshDevicePowerStates($devices), set));
 	});
@@ -87,16 +88,16 @@ export function androidPowered(devices: Readable<ReadonlyMap<string, ADB>>): And
 	 * Update the power state of devices based on new values being set into the store.
 	 */
 	async function updateStore(
-		updater: Updater<ReadonlySet<string>>
-	): Promise<ReadonlyMap<string, PromiseSettledResult<void>>> {
-		const promises = new Map<string, Promise<void>>();
+		updater: Updater<ReadonlySet<Serial>>
+	): Promise<ReadonlyMap<Serial, PromiseSettledResult<void>>> {
+		const promises = new Map<Serial, Promise<void>>();
 		poweredOn.update((oldSet) => {
 			const newSet = updater(oldSet);
 			const $devices = get(devices);
 			const added = Array.from(newSet).filter((udid) => !oldSet.has(udid));
 			const removed = Array.from(oldSet).filter((udid) => !newSet.has(udid));
 
-			function updatePower(udid: string, on: boolean) {
+			function updatePower(udid: Serial, on: boolean) {
 				const device = $devices.get(udid);
 				if (device) {
 					promises.set(udid, setPowerForDevice(device, on));

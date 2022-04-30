@@ -1,5 +1,7 @@
 import type { FastifyInstance } from 'fastify';
 import { derived, get as getState } from 'svelte/store';
+import { setHas } from 'ts-extras';
+import type { Serial } from '../../../lib/android/opaque';
 import { repo } from '../../../lib/repository';
 
 function asPower(primitive: unknown): boolean | undefined {
@@ -48,7 +50,7 @@ export default async function (fastify: FastifyInstance): Promise<void> {
 			const powered = getState(repo.powered);
 			const $serials = getState(serials);
 
-			reply.send(Object.fromEntries($serials.map((serial) => [serial, powered.has(serial)])));
+			reply.send(Object.fromEntries($serials.map((serial) => [serial, setHas(powered, serial)])));
 		}
 	});
 
@@ -101,7 +103,7 @@ export default async function (fastify: FastifyInstance): Promise<void> {
 			const powered = getState(repo.powered);
 
 			reply.send({
-				[serial]: powered.has(serial)
+				[serial]: setHas(powered, serial)
 			});
 		}
 	});
@@ -127,7 +129,7 @@ export default async function (fastify: FastifyInstance): Promise<void> {
 
 			await repo.powered.refresh();
 			const settled = await repo.setPower([serial], power);
-			const serialSettled = settled.get(serial);
+			const serialSettled = settled.get(serial as Serial);
 			switch (serialSettled?.status) {
 				case 'fulfilled':
 					reply.status(200).send(power);

@@ -1,8 +1,9 @@
 import type { Device } from 'appium-adb';
 import { ADB } from 'appium-adb';
 import { writable, type Readable } from 'svelte/store';
+import type { Serial } from './opaque';
 
-export interface DevicesStore extends Readable<ReadonlyMap<string, ADB>> {
+export interface DevicesStore extends Readable<ReadonlyMap<Serial, ADB>> {
 	/**
 	 * Poll for the current list of connected ADB devices.
 	 */
@@ -34,7 +35,7 @@ function cloneADB(parent: ADB, device: Device) {
  * ADB doesn't notify us when devices change, so the list needs to be manually refreshed.
  */
 export function adbDevicesStore(): DevicesStore {
-	const devicesStore = writable<ReadonlyMap<string, ADB>>(new Map());
+	const devicesStore = writable<ReadonlyMap<Serial, ADB>>(new Map());
 	// appium-adb interface that's not attached to a specific device
 	const adbGlobalReady = ADB.createADB();
 
@@ -54,7 +55,9 @@ export function adbDevicesStore(): DevicesStore {
 				}
 			}
 
-			const adbDevices = new Map(devices.map((device) => [device.udid, cloneADB(adb, device)]));
+			const adbDevices = new Map(
+				devices.map((device) => [device.udid as Serial, cloneADB(adb, device)])
+			);
 			devicesStore.set(adbDevices);
 		}
 	};
