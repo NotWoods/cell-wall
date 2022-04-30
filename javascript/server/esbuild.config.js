@@ -12,5 +12,5 @@ build({
 	platform: 'node',
 	target: 'node16',
 	format: 'esm',
-	external: [...Object.keys(pkg.dependencies), 'fastify-reply-from']
+	external: [...Object.keys(pkg.dependencies), '@fastify/reply-from']
 }).catch(() => process.exit(1));

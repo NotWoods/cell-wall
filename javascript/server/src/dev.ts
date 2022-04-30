@@ -1,5 +1,5 @@
 import type { FastifyReply, FastifyRequest } from 'fastify';
-import fastifyReplyFrom from 'fastify-reply-from';
+import fastifyReplyFrom from '@fastify/reply-from';
 import { PORT, SERVER_ADDRESS } from './lib/env';
 import { createServer } from './server';
 
