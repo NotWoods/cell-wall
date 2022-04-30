@@ -17,13 +17,16 @@ function noDeviceError(err: unknown): err is Error {
  * Synchronous alternative to `ADB.createADB` that copies properties from another ADB object
  * to avoid the asynchronous initialization work.
  */
-function createChildAdb(parent: ADB) {
-	const adbChild = new ADB();
+function cloneADB(parent: ADB, device: Device) {
+	const adb = new ADB();
 	// Set sdkRoot https://github.com/appium/appium-adb/blob/master/lib/adb.js#L57
-	adbChild.sdkRoot = parent.sdkRoot;
+	adb.sdkRoot = parent.sdkRoot;
 	// Set executable https://github.com/appium/appium-adb/blob/master/lib/adb.js#L58
-	adbChild.executable.path = parent.executable.path;
-	return adbChild;
+	adb.executable.path = parent.executable.path;
+
+	adb.setDevice(device);
+
+	return adb;
 }
 
 /**
@@ -38,11 +41,11 @@ export function adbDevicesStore(): DevicesStore {
 	return {
 		subscribe: devicesStore.subscribe,
 		async refresh() {
-			const adbGlobal = await adbGlobalReady;
+			const adb = await adbGlobalReady;
 
 			let devices: readonly Device[];
 			try {
-				devices = await adbGlobal.getDevicesWithRetry();
+				devices = await adb.getDevicesWithRetry();
 			} catch (err) {
 				if (noDeviceError(err)) {
 					devices = [];
@@ -51,15 +54,7 @@ export function adbDevicesStore(): DevicesStore {
 				}
 			}
 
-			const adbDevices = new Map(
-				devices.map((device) => {
-					// Copy initialized properties from the parent ADB object
-					const adbChild = createChildAdb(adbGlobal);
-					adbChild.setDevice(device);
-
-					return [device.udid, adbChild];
-				})
-			);
+			const adbDevices = new Map(devices.map((device) => [device.udid, cloneADB(adb, device)]));
 			devicesStore.set(adbDevices);
 		}
 	};

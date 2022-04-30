@@ -1,6 +1,7 @@
 import type { ADB } from 'appium-adb';
 import { derived, type Readable } from 'svelte/store';
 import { transformMapAsync } from '../map/transform';
+import { setWhenDone } from '../store/promise';
 
 export interface AndroidProperties {
 	model: string;
@@ -15,27 +16,14 @@ export function androidProperties(
 ): Readable<ReadonlyMap<string, AndroidProperties>> {
 	return derived(
 		devices,
-		($devices, set) => {
-			let invalidated = false;
-
-			transformMapAsync($devices, async (adb) => {
-				const [model, manufacturer] = await Promise.all([adb.getModel(), adb.getManufacturer()]);
-
-				const properties: AndroidProperties = {
-					model,
-					manufacturer
-				};
-				return properties;
-			}).then((map) => {
-				if (!invalidated) {
-					set(map);
-				}
-			});
-
-			return () => {
-				invalidated = true;
-			};
-		},
+		($devices, set) =>
+			setWhenDone(
+				transformMapAsync($devices, async (adb): Promise<AndroidProperties> => {
+					const [model, manufacturer] = await Promise.all([adb.getModel(), adb.getManufacturer()]);
+					return { model, manufacturer };
+				}),
+				set
+			),
 		new Map()
 	);
 }

@@ -1,6 +1,7 @@
 import type ADB from 'appium-adb';
-import { type Readable, writable, type Writable, type Updater, get } from 'svelte/store';
+import { get, writable, type Readable, type Updater, type Writable } from 'svelte/store';
 import { allSettledMap } from '../map/transform';
+import { setWhenDone } from '../store/promise';
 import { getWakefulness } from './adb-actions';
 
 const KEYCODE_UNKNOWN = 0;
@@ -54,19 +55,7 @@ export function androidPowered(devices: Readable<ReadonlyMap<string, ADB>>): And
 	// Set of powered on devices (by udid).
 	const poweredOn = writable<ReadonlySet<string>>(new Set(), (set) => {
 		// Update the power state when the devices change.
-		return devices.subscribe(($devices) => {
-			let invalidated = false;
-
-			refreshDevicePowerStates($devices).then((powered) => {
-				if (!invalidated) {
-					set(powered);
-				}
-			});
-
-			return () => {
-				invalidated = true;
-			};
-		});
+		return devices.subscribe(($devices) => setWhenDone(refreshDevicePowerStates($devices), set));
 	});
 
 	/**
