@@ -11,15 +11,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-java@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
           java-version: '11'
       - run: ./gradlew lintDebug
         name: lint
         working-directory: ./android
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: lint-results
           path: android/app/build/reports/lint-results-debug.html
@@ -31,13 +31,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: pnpm/action-setup@v2
         with:
           version: 6.x.x
 
       # Install dependencies
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         with:
           node-version: '16'
           cache: pnpm
@@ -52,7 +52,7 @@ jobs:
       # Build production code
       - run: pnpm run build -r
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: javascript-build
           if-no-files-found: error
@@ -73,21 +73,19 @@ jobs:
     needs: javascript
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           ref: pi-deploy
 
       # Update files to latest build
       - run: rm -rf javascript
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: javascript-build
       - run: mv deploy.gitignore .gitignore
 
       # Deploy to pi-deploy branch
-      - uses: EndBug/add-and-commit@v7
+      - uses: EndBug/add-and-commit@v9
         with:
-          branch: pi-deploy
-          message: '${{ github.event.head_commit.message }}'
-          pull: NO-PULL
+          message: '[Deploy] ${{ github.event.head_commit.message }}'
           push: true
