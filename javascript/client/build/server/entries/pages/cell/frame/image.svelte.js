@@ -1,9 +1,9 @@
-import { c as create_ssr_component, a as subscribe, b as add_attribute } from "../../../../chunks/index-4d214b4e.js";
-import "../../../../chunks/cell-state-schema-a24ecc56.js";
-import { f as filterState } from "../../../../chunks/index-60355bff.js";
+import { c as create_ssr_component, a as subscribe, b as add_attribute } from "../../../../chunks/index-0b76d127.js";
+import "../../../../chunks/web-9961d8d9.js";
+import { f as filterState } from "../../../../chunks/index-cc0f756b.js";
 import { getFrameContext } from "./__layout.svelte.js";
-import "../../../../chunks/state-socket-c1d8cd72.js";
-import "../../../../chunks/index-23b4b723.js";
+import "../../../../chunks/state-socket-81af6fa4.js";
+import "../../../../chunks/index-441a7cba.js";
 function createBlobUrlFactory() {
   let lastUrl = "";
   return function createBlobUrl(blob) {
@@ -48,7 +48,7 @@ const Image = create_ssr_component(($$result, $$props, $$bindings, slots) => {
   $$result.css.add(css);
   imageState = filterState("IMAGE", $state);
   src = imageState ? createBlobUrl(imageState.payload) : void 0;
-  fit = objectFit(imageState?.scaleType);
+  fit = objectFit(imageState == null ? void 0 : imageState.scaleType);
   $$unsubscribe_state();
   return `<img class="${"fill svelte-6u50n6"}"${add_attribute("src", src, 0)} alt="${""}"${add_attribute("style", `object-fit: ${fit}`, 0)}>`;
 });

@@ -1,8 +1,39 @@
-import { c as create_ssr_component, b as add_attribute } from "../../../chunks/index-4d214b4e.js";
-import { f as frameUrl } from "../../../chunks/state-socket-c1d8cd72.js";
-import { d as derived, w as writable } from "../../../chunks/index-23b4b723.js";
-import "../../../chunks/cell-state-schema-a24ecc56.js";
-import { c as cellStateTypes } from "../../../chunks/index-60355bff.js";
+var __defProp = Object.defineProperty;
+var __defProps = Object.defineProperties;
+var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
+var __getOwnPropSymbols = Object.getOwnPropertySymbols;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __propIsEnum = Object.prototype.propertyIsEnumerable;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues = (a, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp.call(b, prop))
+      __defNormalProp(a, prop, b[prop]);
+  if (__getOwnPropSymbols)
+    for (var prop of __getOwnPropSymbols(b)) {
+      if (__propIsEnum.call(b, prop))
+        __defNormalProp(a, prop, b[prop]);
+    }
+  return a;
+};
+var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
+var __objRest = (source, exclude) => {
+  var target = {};
+  for (var prop in source)
+    if (__hasOwnProp.call(source, prop) && exclude.indexOf(prop) < 0)
+      target[prop] = source[prop];
+  if (source != null && __getOwnPropSymbols)
+    for (var prop of __getOwnPropSymbols(source)) {
+      if (exclude.indexOf(prop) < 0 && __propIsEnum.call(source, prop))
+        target[prop] = source[prop];
+    }
+  return target;
+};
+import { c as create_ssr_component, b as add_attribute } from "../../../chunks/index-0b76d127.js";
+import { f as frameUrl } from "../../../chunks/state-socket-81af6fa4.js";
+import { d as derived, w as writable } from "../../../chunks/index-441a7cba.js";
+import "../../../chunks/web-9961d8d9.js";
+import { c as cellStateTypes } from "../../../chunks/index-cc0f756b.js";
 const browser = false;
 function guard(name) {
   return () => {
@@ -23,7 +54,7 @@ function lockState() {
 }
 function requestFullScreen() {
   const controller = new AbortController();
-  const { state, ...stores } = lockState();
+  const _a = lockState(), { state } = _a, stores = __objRest(_a, ["state"]);
   async function enterFullScreen() {
     try {
       await document.documentElement.requestFullscreen().then(() => state.set({ active: true }), (error) => state.set({ active: false, error }));
@@ -40,13 +71,12 @@ function requestFullScreen() {
   document.addEventListener("fullscreenchange", () => {
     state.set({ active: Boolean(document.fullscreenElement) });
   }, controller);
-  return {
-    ...stores,
+  return __spreadProps(__spreadValues({}, stores), {
     async release() {
       controller.abort();
       await document.exitFullscreen();
     }
-  };
+  });
 }
 function requestWakeLock() {
   if ("wakeLock" in navigator) {
@@ -57,7 +87,7 @@ function requestWakeLock() {
     };
     const controller = new AbortController();
     let wakeLock;
-    const { state, ...stores } = lockState();
+    const _a = lockState(), { state } = _a, stores = __objRest(_a, ["state"]);
     async function requestNewLock() {
       try {
         wakeLock = await navigator.wakeLock.request("screen");
@@ -76,13 +106,12 @@ function requestWakeLock() {
     requestNewLock();
     document.addEventListener("visibilitychange", handleVisiblityChange, controller);
     document.addEventListener("fullscreenchange", handleVisiblityChange, controller);
-    return {
-      ...stores,
+    return __spreadProps(__spreadValues({}, stores), {
       async release() {
         controller.abort();
-        await wakeLock?.release();
+        await (wakeLock == null ? void 0 : wakeLock.release());
       }
-    };
+    });
   } else {
     return void 0;
   }

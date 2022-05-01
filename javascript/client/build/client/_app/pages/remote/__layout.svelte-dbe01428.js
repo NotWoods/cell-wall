@@ -1,0 +1,1 @@
+import"../../chunks/index-36754a35.js";import{_ as i,g as s,b as g}from"../../chunks/__layout-fb12489c.js";import"../../chunks/TopBar-b37596c0.js";import"../../chunks/snackbar-host-48cbce91.js";import"../../chunks/index-2d3b577e.js";import"../../chunks/web-9961d8d9.js";export{i as default,s as getRemoteContext,g as getSnackbarHostContext};

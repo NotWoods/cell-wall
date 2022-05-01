@@ -1,133 +1,85 @@
-import { c as create_ssr_component, e as escape, v as validate_component, f as add_classes } from "../../../chunks/index-4d214b4e.js";
-import { S as SubmitButton, F as Form } from "../../../chunks/SubmitButton-5e66dc23.js";
-import { V as VerticalField } from "../../../chunks/VerticalField-c42616cb.js";
-import { f as formDataAsSearchParams } from "../../../chunks/_form-52443b97.js";
-import "../../../chunks/snackbar-host-a60c3b5b.js";
-import "../../../chunks/cell-state-schema-a24ecc56.js";
-import "../../../chunks/index-23b4b723.js";
-import "../../../chunks/Label-d8e9b5d6.js";
-const Card = create_ssr_component(($$result, $$props, $$bindings, slots) => {
-  let { class: className = "" } = $$props;
-  if ($$props.class === void 0 && $$bindings.class && className !== void 0)
-    $$bindings.class(className);
-  return `<article class="${"bg-slate-800 p-4 border rounded border-slate-700 " + escape(className)}">${slots.default ? slots.default({}) : ``}</article>`;
-});
-const PresetCard = create_ssr_component(($$result, $$props, $$bindings, slots) => {
-  let selfStatus;
-  let { title } = $$props;
-  let { preset = void 0 } = $$props;
-  let { formAction = void 0 } = $$props;
-  let { large = false } = $$props;
-  let { button = "Activate" } = $$props;
-  let { status } = $$props;
-  if ($$props.title === void 0 && $$bindings.title && title !== void 0)
-    $$bindings.title(title);
-  if ($$props.preset === void 0 && $$bindings.preset && preset !== void 0)
-    $$bindings.preset(preset);
-  if ($$props.formAction === void 0 && $$bindings.formAction && formAction !== void 0)
-    $$bindings.formAction(formAction);
-  if ($$props.large === void 0 && $$bindings.large && large !== void 0)
-    $$bindings.large(large);
-  if ($$props.button === void 0 && $$bindings.button && button !== void 0)
-    $$bindings.button(button);
-  if ($$props.status === void 0 && $$bindings.status && status !== void 0)
-    $$bindings.status(status);
-  selfStatus = status.submitterName === "preset" && status.submitterValue === preset ? status.loading : Promise.resolve();
-  return `${validate_component(Card, "Card").$$render($$result, { class: "flex flex-col gap-y-4" }, {}, {
-    default: () => {
-      return `<h3${add_classes(((large ? "text-2xl" : "") + " " + (!large ? "text-xl" : "")).trim())}>${escape(title)}</h3>
-	<div class="${""}">${slots.default ? slots.default({}) : ``}</div>
-	${validate_component(SubmitButton, "SubmitButton").$$render($$result, {
-        class: "mt-auto self-end",
-        loading: selfStatus,
-        name: "preset",
-        value: preset,
-        formaction: formAction
-      }, {}, {
-        default: () => {
-          return `${escape(button)}`;
-        }
-      })}`;
-    }
-  })}`;
-});
-const prerender = true;
-const Remote = create_ssr_component(($$result, $$props, $$bindings, slots) => {
-  async function submit(data, action) {
-    const res = await fetch(action.toString(), {
-      method: "post",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded"
-      },
-      body: formDataAsSearchParams(data)
+import { c as create_ssr_component, e as escape, p as add_classes, a as subscribe, b as add_attribute, f as each, n as noop, v as validate_component } from "../../../chunks/index-0b76d127.js";
+import { a as applyScale, s as splitToBuckets, f as fitScale } from "../../../chunks/fit-scale-8174d2ad.js";
+import { d as derived, r as readable } from "../../../chunks/index-441a7cba.js";
+import { c as cellCanvas } from "../../../chunks/web-9961d8d9.js";
+import { g as getRemoteContext } from "../../../chunks/__layout-8f35b6a8.js";
+import "../../../chunks/TopBar-a3c8c5c4.js";
+import "../../../chunks/snackbar-host-fe054673.js";
+function resizeObserverStore(element) {
+  if (element) {
+    return readable(void 0, (set) => {
+      const resizeObserver = new ResizeObserver((entries) => set(entries[0]));
+      resizeObserver.observe(element);
+      return () => resizeObserver.unobserve(element);
     });
-    const result = await res.json();
-    console.log(result);
+  } else {
+    return readable(void 0);
   }
-  return `${validate_component(Form, "Form").$$render($$result, {
-    class: "grid sm:grid-cols-2 lg:grid-cols-3 gap-6",
-    action: "/api/device/preset",
-    onSubmit: submit
-  }, {}, {
-    default: ({ status }) => {
-      return `${validate_component(Card, "Card").$$render($$result, { class: "row-span-2" }, {}, {
-        default: () => {
-          return `<h2 class="${"text-3xl mb-4"}">Presets</h2>
-		${validate_component(VerticalField, "VerticalField").$$render($$result, {
-            label: "Remaining cells",
-            for: "control-rest"
-          }, {}, {
-            default: ({ inputClassName }) => {
-              return `<select id="${"control-rest"}" name="${"rest"}" class="${escape(inputClassName) + " cursor-pointer"}"><option value="${"ignore"}">Ignore</option><option value="${"blank"}">Blank</option><option value="${"off"}">Off</option></select>`;
-            }
-          })}
-		<img class="${"block mt-4 shadow-inner rounded"}" alt="${""}" src="${"https://raw.githubusercontent.com/NotWoods/cell-wall/main/images/finished.jpg"}">`;
-        }
-      })}
-
-	${validate_component(PresetCard, "PresetCard").$$render($$result, {
-        title: "Info",
-        preset: "info",
-        large: true,
-        status
-      }, {}, {
-        default: () => {
-          return `Calendar indicators and the week&#39;s weather.
-	`;
-        }
-      })}
-	${validate_component(PresetCard, "PresetCard").$$render($$result, {
-        title: "Tea list",
-        preset: "tea",
-        large: true,
-        status
-      }, {}, {
-        default: () => {
-          return `What&#39;s avaliable to drink?`;
-        }
-      })}
-	${validate_component(PresetCard, "PresetCard").$$render($$result, {
-        title: "Actions",
-        button: "Launch on devices",
-        formAction: "/api/action/launch",
-        status
-      }, {}, {
-        default: () => {
-          return `<a class="${"px-4 py-2 rounded-md shadow-sm text-sm font-medium text-white transition-colors bg-slate-700 hover:bg-slate-800"}" href="${"/remote/third_party"}">SDK Login
-		</a>
-		${validate_component(SubmitButton, "SubmitButton").$$render($$result, {
-            name: "action",
-            value: "install",
-            loading: status.submitterName === "action" && status.submitterValue === "install" ? status.loading : Promise.resolve(),
-            formaction: "/api/action/install"
-          }, {}, {
-            default: () => {
-              return `Install`;
-            }
-          })}`;
-        }
-      })}`;
+}
+function elementSizeStore(element) {
+  return derived(resizeObserverStore(element), ($resizeObserver) => {
+    if ($resizeObserver) {
+      if ($resizeObserver.contentBoxSize) {
+        const boxSize = $resizeObserver.contentBoxSize[0];
+        return {
+          width: boxSize.inlineSize,
+          height: boxSize.blockSize
+        };
+      } else {
+        const rect = $resizeObserver.contentRect;
+        return {
+          width: rect.width,
+          height: rect.height
+        };
+      }
+    } else {
+      return void 0;
     }
-  })}`;
+  });
+}
+const SelectAppCard = create_ssr_component(($$result, $$props, $$bindings, slots) => {
+  let rect;
+  let small;
+  let { info } = $$props;
+  let { scale } = $$props;
+  let { app } = $$props;
+  if ($$props.info === void 0 && $$bindings.info && info !== void 0)
+    $$bindings.info(info);
+  if ($$props.scale === void 0 && $$bindings.scale && scale !== void 0)
+    $$bindings.scale(scale);
+  if ($$props.app === void 0 && $$bindings.app && app !== void 0)
+    $$bindings.app(app);
+  rect = applyScale(info, scale);
+  small = rect.height < 150;
+  return `<article class="${"bg-slate-800 p-2 border rounded border-slate-700 flex flex-col absolute box-border overflow-hidden"}" href="${"/remote/select-app/" + escape(info.serial)}" style="${"left: " + escape(rect.x) + "px; top: " + escape(rect.y) + "px; width: " + escape(rect.width) + "px; height: " + escape(rect.height) + "px;"}"><h3 class="${"text-md"}">${escape(info.deviceName || info.serial)}</h3>
+	${app ? `TODO` : `<a href="${"/remote/apps/select/" + escape(info.serial)}" class="${[
+    "m-auto flex items-center text-center gap-1 rounded-lg transition-colors hover:bg-slate-900",
+    (!small ? "flex-col" : "") + " " + (!small ? "p-4" : "") + " " + (small ? "p-2" : "") + " " + (small ? "text-sm" : "")
+  ].join(" ").trim()}"><svg viewBox="${"0 0 24 24"}" fill="${"currentColor"}"${add_classes(((!small ? "w-12" : "") + " " + (!small ? "h-12" : "") + " " + (small ? "w-6" : "") + " " + (small ? "h-6" : "")).trim())}><path d="${"M2,2H11V11H2V2M17.5,2C20,2 22,4 22,6.5C22,9 20,11 17.5,11C15,11 13,9 13,6.5C13,4 15,2 17.5,2M6.5,14L11,22H2L6.5,14M19,17H22V19H19V22H17V19H14V17H17V14H19V17Z"}"></path></svg>
+			Select App
+		</a>`}</article>`;
 });
-export { Remote as default, prerender };
+const Remote = create_ssr_component(($$result, $$props, $$bindings, slots) => {
+  let elementSize;
+  let buckets;
+  let cellCanvasRect;
+  let scale;
+  let $elementSize, $$unsubscribe_elementSize = noop, $$subscribe_elementSize = () => ($$unsubscribe_elementSize(), $$unsubscribe_elementSize = subscribe(elementSize, ($$value) => $elementSize = $$value), elementSize);
+  let $remoteState, $$unsubscribe_remoteState;
+  const { state: remoteState } = getRemoteContext();
+  $$unsubscribe_remoteState = subscribe(remoteState, (value) => $remoteState = value);
+  let container;
+  $$subscribe_elementSize(elementSize = elementSizeStore(container));
+  buckets = splitToBuckets($remoteState);
+  cellCanvasRect = cellCanvas(buckets.rectWithPos);
+  scale = $elementSize ? fitScale({
+    width: $elementSize.width,
+    height: Infinity
+  }, cellCanvasRect) : 1;
+  $$unsubscribe_elementSize();
+  $$unsubscribe_remoteState();
+  return `<section class="${"relative"}" style="${"height: " + escape(cellCanvasRect.height * scale) + "px"}"${add_attribute("this", container, 0)}>${each(buckets.rectWithPos, (info) => {
+    return `${validate_component(SelectAppCard, "SelectAppCard").$$render($$result, { info, scale, app: void 0 }, {}, {})}`;
+  })}</section>`;
+});
+export { Remote as default };

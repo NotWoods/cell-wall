@@ -1,6 +1,6 @@
-import * as module from '../entries/pages/remote/text.svelte.js';
+import * as module from '../entries/pages/cell/index.svelte.js';
 
 export { module };
-export const entry = 'pages/remote/text.svelte-e4ee046a.js';
-export const js = ["pages/remote/text.svelte-e4ee046a.js","chunks/vendor-7aa287fa.js","chunks/DeviceOptions-d107f641.js","chunks/SubmitButton-b03b502f.js","chunks/snackbar-host-1fb77ef0.js","chunks/cell-state-schema-a24ecc56.js","chunks/HorizontalField-11f2c1ba.js","chunks/Label-9e86d546.js","chunks/VerticalField-2f9f8962.js","chunks/__layout-119dff57.js","chunks/TopBar-99b02e54.js"];
-export const css = ["assets/__layout-f9525609.css","assets/TopBar-2ac4512a.css"];
+export const entry = 'pages/cell/index.svelte-1d6abc5e.js';
+export const js = ["pages/cell/index.svelte-1d6abc5e.js","chunks/index-36754a35.js","chunks/state-socket-790a3ce2.js","chunks/singletons-d1fb5791.js","chunks/web-9961d8d9.js","chunks/index-2d3b577e.js","chunks/index-cc0f756b.js"];
+export const css = ["assets/pages/cell/index.svelte-3a0ad9a0.css"];

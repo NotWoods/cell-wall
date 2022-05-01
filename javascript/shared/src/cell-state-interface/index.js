@@ -1,10 +1,7 @@
-export const cellStateTypes = new Set([
-    'BLANK',
-    'TEXT',
-    'IMAGE',
-    'WEB'
-]);
+const types = ['BLANK', 'TEXT', 'IMAGE', 'WEB', 'CLOCK'];
+export const cellStateTypes = new Set(types);
 export * from './blank.js';
+export * from './clock.js';
 export * from './image.js';
 export * from './text.js';
 export * from './web.js';

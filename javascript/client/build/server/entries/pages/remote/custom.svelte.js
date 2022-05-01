@@ -1,16 +1,42 @@
-import { c as create_ssr_component, p as each, v as validate_component, e as escape, b as add_attribute, a as subscribe } from "../../../chunks/index-4d214b4e.js";
-import { D as DeviceOptions, R as ResetSubmit } from "../../../chunks/DeviceOptions-2549ad33.js";
-import { H as HorizontalField } from "../../../chunks/HorizontalField-e36d4d95.js";
-import { F as Form } from "../../../chunks/SubmitButton-5e66dc23.js";
-import { g as getRemoteContext, s as storeEntries } from "../../../chunks/__layout-e1b2aa40.js";
-import { g as getTypeFromSchema, a as allCellStateSchemas } from "../../../chunks/cell-state-schema-a24ecc56.js";
+var __defProp = Object.defineProperty;
+var __defProps = Object.defineProperties;
+var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
+var __getOwnPropSymbols = Object.getOwnPropertySymbols;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __propIsEnum = Object.prototype.propertyIsEnumerable;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues = (a, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp.call(b, prop))
+      __defNormalProp(a, prop, b[prop]);
+  if (__getOwnPropSymbols)
+    for (var prop of __getOwnPropSymbols(b)) {
+      if (__propIsEnum.call(b, prop))
+        __defNormalProp(a, prop, b[prop]);
+    }
+  return a;
+};
+var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
+import { c as create_ssr_component, f as each, v as validate_component, e as escape, b as add_attribute, a as subscribe } from "../../../chunks/index-0b76d127.js";
+import { D as DeviceOptions, R as ResetSubmit } from "../../../chunks/DeviceOptions-e9c692cd.js";
+import { H as HorizontalField } from "../../../chunks/HorizontalField-43bf7a7b.js";
+import { F as Form } from "../../../chunks/Form-8ab490a9.js";
+import { g as getRemoteContext, s as storeEntries } from "../../../chunks/__layout-8f35b6a8.js";
+import { a as cellStateBlankSchema, d as cellStateClockSchema, e as cellStateImageSchema, f as cellStateTextSchema, g as cellStateWebSchema } from "../../../chunks/web-9961d8d9.js";
 import startCase from "lodash.startcase";
-import { P as PowerButtons } from "../../../chunks/_PowerButtons-979fd526.js";
+import { P as PowerButtons } from "../../../chunks/_PowerButtons-2d0d6690.js";
 import { p as post } from "../../../chunks/_form-52443b97.js";
-import "../../../chunks/Label-d8e9b5d6.js";
-import "../../../chunks/snackbar-host-a60c3b5b.js";
-import "../../../chunks/index-23b4b723.js";
-import "../../../chunks/TopBar-fb618005.js";
+import "../../../chunks/Label-a17ce47a.js";
+import "../../../chunks/snackbar-host-fe054673.js";
+import "../../../chunks/index-441a7cba.js";
+import "../../../chunks/TopBar-a3c8c5c4.js";
+const allCellStateSchemas = [
+  cellStateBlankSchema,
+  cellStateClockSchema,
+  cellStateImageSchema,
+  cellStateTextSchema,
+  cellStateWebSchema
+];
 const RAINBOW_COLORS = [
   "#0F172A",
   "#7F1D1D",
@@ -62,17 +88,17 @@ function getInputType(name, property) {
     return "select";
   if (name.endsWith("Color"))
     return "color";
-  if (property.format === "uri")
-    return "url";
   switch (property.type) {
     case "number":
       return "number";
+    case "string":
+      if (property.format === "uri")
+        return "url";
     default:
       return "text";
   }
 }
 const ControllerFields = create_ssr_component(($$result, $$props, $$bindings, slots) => {
-  let getInputName;
   let required;
   let properties;
   const randomColor = new RandomColor();
@@ -82,41 +108,23 @@ const ControllerFields = create_ssr_component(($$result, $$props, $$bindings, sl
     $$bindings.schema(schema);
   if ($$props.state === void 0 && $$bindings.state && state !== void 0)
     $$bindings.state(state);
-  getInputName = (name) => {
-    if (name === "payload") {
-      const type = schema?.properties?.type?.enum?.[0];
-      switch (type) {
-        case "WEB":
-          return "URL";
-        case "IMAGE":
-          return "Source";
-        case "TEXT":
-          return "Text";
-        default:
-          return startCase(name);
-      }
-    }
-    return startCase(name);
-  };
-  required = new Set(schema?.required || []);
-  properties = Object.entries(schema?.properties || {}).filter(([name]) => name !== "type").map(([name, property]) => {
+  required = new Set((schema == null ? void 0 : schema.required) || []);
+  properties = Object.entries((schema == null ? void 0 : schema.properties) || {}).filter(([name]) => name !== "type").map(([name, property]) => {
     const type = getInputType(name, property);
     return {
       name,
+      label: property.title ?? startCase(name),
       property,
       type,
       fallback: type === "color" ? randomColor.next() : ""
     };
   });
-  return `${each(properties, ({ name, type, property, fallback }) => {
-    return `${validate_component(HorizontalField, "HorizontalField").$$render($$result, {
-      for: "control-" + name,
-      label: getInputName(name)
-    }, {}, {
+  return `${each(properties, ({ name, label, type, property, fallback }) => {
+    return `${validate_component(HorizontalField, "HorizontalField").$$render($$result, { for: "control-" + name, label }, {}, {
       default: ({ inputClassName }) => {
         return `${Array.isArray(property.enum) ? `<select id="${"control-" + escape(name)}"${add_attribute("name", name, 0)}${add_attribute("class", inputClassName, 0)}>${each(property.enum, (option) => {
           return `<option${add_attribute("value", option, 0)}>${escape(option)}</option>`;
-        })}</select>` : `<input id="${"control-" + escape(name)}"${add_attribute("class", type === "color" ? "" : inputClassName, 0)}${add_attribute("name", name, 0)}${add_attribute("type", type, 0)} ${required.has(name) ? "required" : ""}${add_attribute("value", state?.[name] ?? fallback, 0)}>`}
+        })}</select>` : `<input id="${"control-" + escape(name)}"${add_attribute("class", type === "color" ? "" : inputClassName, 0)}${add_attribute("name", name, 0)}${add_attribute("type", type, 0)} ${required.has(name) ? "required" : ""}${add_attribute("value", (state == null ? void 0 : state[name]) ?? fallback, 0)}>`}
 	`;
       }
     })}`;
@@ -143,7 +151,7 @@ const TypeTab = create_ssr_component(($$result, $$props, $$bindings, slots) => {
     $$bindings.selectedType(selectedType);
   if ($$props.schema === void 0 && $$bindings.schema && schema !== void 0)
     $$bindings.schema(schema);
-  type = getTypeFromSchema(schema);
+  type = schema.properties.type.const;
   typeName = startCase(type.toLocaleLowerCase());
   return `${validate_component(Tab, "Tab").$$render($$result, {
     selected: type === selectedType,
@@ -167,14 +175,14 @@ const Custom = create_ssr_component(($$result, $$props, $$bindings, slots) => {
   let selectedDeviceSerial = "";
   async function submit(formData, action) {
     const data = Object.fromEntries(formData);
-    await post(action.toString(), { ...data, type: selectedType });
+    await post(action.toString(), __spreadProps(__spreadValues({}, data), { type: selectedType }));
   }
   let $$settled;
   let $$rendered;
   do {
     $$settled = true;
     selectedDevice = $remoteState.get(selectedDeviceSerial);
-    activeSchema = allCellStateSchemas.find((schema) => getTypeFromSchema(schema) === selectedType);
+    activeSchema = allCellStateSchemas.find((schema) => schema.properties.type.const === selectedType);
     $$rendered = `<nav class="${"mb-6"}">${validate_component(Tabs, "Tabs").$$render($$result, {}, {}, {
       default: () => {
         return `${each(allCellStateSchemas, (schema) => {
@@ -196,13 +204,14 @@ ${validate_component(Form, "Form").$$render($$result, {
       onSubmit: submit
     }, {}, {
       default: ({ loading }) => {
+        var _a;
         return `${validate_component(HorizontalField, "HorizontalField").$$render($$result, { for: "control-serial", label: "Device" }, {}, {
           default: ({ inputClassName }) => {
             return `<select class="${escape(inputClassName) + " cursor-pointer"}" id="${"control-serial"}"><option value="${""}">All devices</option>${validate_component(DeviceOptions, "DeviceOptions").$$render($$result, { devices: $devices }, {}, {})}</select>`;
           }
         })}
 
-	${!selectedDevice || selectedDevice?.connection?.includes("android") ? `${validate_component(HorizontalField, "HorizontalField").$$render($$result, { label: "Power" }, {}, {
+	${!selectedDevice || ((_a = selectedDevice == null ? void 0 : selectedDevice.connection) == null ? void 0 : _a.includes("android")) ? `${validate_component(HorizontalField, "HorizontalField").$$render($$result, { label: "Power" }, {}, {
           default: () => {
             return `${validate_component(PowerButtons, "PowerButtons").$$render($$result, { serial: selectedDeviceSerial }, {}, {})}`;
           }
@@ -210,7 +219,7 @@ ${validate_component(Form, "Form").$$render($$result, {
 
 	${validate_component(ControllerFields, "ControllerFields").$$render($$result, {
           schema: activeSchema,
-          state: selectedDevice?.state
+          state: selectedDevice == null ? void 0 : selectedDevice.state
         }, {}, {})}
 
 	${validate_component(ResetSubmit, "ResetSubmit").$$render($$result, { loading }, {}, {})}`;

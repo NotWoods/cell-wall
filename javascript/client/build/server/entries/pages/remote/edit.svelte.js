@@ -1,15 +1,15 @@
-import { c as create_ssr_component, a as subscribe, v as validate_component, b as add_attribute, e as escape } from "../../../chunks/index-4d214b4e.js";
-import { c as connectionToString, D as DeviceOptions, R as ResetSubmit } from "../../../chunks/DeviceOptions-2549ad33.js";
-import { H as HorizontalField } from "../../../chunks/HorizontalField-e36d4d95.js";
-import { F as Form } from "../../../chunks/SubmitButton-5e66dc23.js";
-import { g as getRemoteContext, s as storeEntries, a as storeKeys } from "../../../chunks/__layout-e1b2aa40.js";
-import { P as PowerButtons } from "../../../chunks/_PowerButtons-979fd526.js";
+import { c as create_ssr_component, a as subscribe, v as validate_component, b as add_attribute, e as escape } from "../../../chunks/index-0b76d127.js";
+import { c as connectionToString, D as DeviceOptions, R as ResetSubmit } from "../../../chunks/DeviceOptions-e9c692cd.js";
+import { H as HorizontalField } from "../../../chunks/HorizontalField-43bf7a7b.js";
+import { F as Form } from "../../../chunks/Form-8ab490a9.js";
+import { g as getRemoteContext, s as storeEntries, a as storeKeys } from "../../../chunks/__layout-8f35b6a8.js";
+import { P as PowerButtons } from "../../../chunks/_PowerButtons-2d0d6690.js";
 import { p as post } from "../../../chunks/_form-52443b97.js";
-import "../../../chunks/Label-d8e9b5d6.js";
-import "../../../chunks/snackbar-host-a60c3b5b.js";
-import "../../../chunks/cell-state-schema-a24ecc56.js";
-import "../../../chunks/index-23b4b723.js";
-import "../../../chunks/TopBar-fb618005.js";
+import "../../../chunks/Label-a17ce47a.js";
+import "../../../chunks/snackbar-host-fe054673.js";
+import "../../../chunks/web-9961d8d9.js";
+import "../../../chunks/index-441a7cba.js";
+import "../../../chunks/TopBar-a3c8c5c4.js";
 const Edit = create_ssr_component(($$result, $$props, $$bindings, slots) => {
   let firstDevice;
   let selectedCell;
@@ -45,7 +45,7 @@ const Edit = create_ssr_component(($$result, $$props, $$bindings, slots) => {
   }
   firstDevice = $devicesIds[0];
   selectedCell = $remoteState.get(firstDevice);
-  connection = connectionToString(selectedCell?.connection);
+  connection = connectionToString(selectedCell == null ? void 0 : selectedCell.connection);
   $$unsubscribe_remoteState();
   $$unsubscribe_devicesIds();
   $$unsubscribe_devices();
@@ -55,6 +55,7 @@ const Edit = create_ssr_component(($$result, $$props, $$bindings, slots) => {
     onSubmit: submit
   }, {}, {
     default: ({ loading }) => {
+      var _a;
       return `${validate_component(HorizontalField, "HorizontalField").$$render($$result, { for: "control-serial", label: "Device" }, {}, {
         default: ({ inputClassName }) => {
           return `<select${add_attribute("class", inputClassName, 0)} name="${"serial"}" id="${"control-serial"}">${validate_component(DeviceOptions, "DeviceOptions").$$render($$result, { devices: $devices }, {}, {})}</select>`;
@@ -70,7 +71,7 @@ const Edit = create_ssr_component(($$result, $$props, $$bindings, slots) => {
         }
       })}
 
-	${selectedCell?.connection?.includes("android") ? `${validate_component(HorizontalField, "HorizontalField").$$render($$result, { label: "Power" }, {}, {
+	${((_a = selectedCell == null ? void 0 : selectedCell.connection) == null ? void 0 : _a.includes("android")) ? `${validate_component(HorizontalField, "HorizontalField").$$render($$result, { label: "Power" }, {}, {
         default: () => {
           return `${validate_component(PowerButtons, "PowerButtons").$$render($$result, { serial: selectedDeviceSerial }, {}, {})}`;
         }
@@ -81,29 +82,34 @@ const Edit = create_ssr_component(($$result, $$props, $$bindings, slots) => {
         label: "Device Name"
       }, {}, {
         default: ({ inputClassName }) => {
-          return `<input id="${"control-deviceName"}"${add_attribute("class", inputClassName, 0)} name="${"deviceName"}" type="${"text"}"${add_attribute("value", selectedCell?.info?.deviceName ?? "", 0)} placeholder="${"Pixel 10"}">`;
+          var _a2;
+          return `<input id="${"control-deviceName"}"${add_attribute("class", inputClassName, 0)} name="${"deviceName"}" type="${"text"}"${add_attribute("value", ((_a2 = selectedCell == null ? void 0 : selectedCell.info) == null ? void 0 : _a2.deviceName) ?? "", 0)} placeholder="${"Pixel 10"}">`;
         }
       })}
 
 	${validate_component(HorizontalField, "HorizontalField").$$render($$result, { for: "control-width", label: "Width" }, {}, {
         default: ({ inputClassName }) => {
-          return `<input id="${"control-width"}"${add_attribute("class", inputClassName, 0)} name="${"width"}" type="${"number"}"${add_attribute("min", 0, 0)}${add_attribute("value", selectedCell?.info?.width ?? "", 0)} placeholder="${"900"}">`;
+          var _a2;
+          return `<input id="${"control-width"}"${add_attribute("class", inputClassName, 0)} name="${"width"}" type="${"number"}"${add_attribute("min", 0, 0)}${add_attribute("value", ((_a2 = selectedCell == null ? void 0 : selectedCell.info) == null ? void 0 : _a2.width) ?? "", 0)} placeholder="${"900"}">`;
         }
       })}
 	${validate_component(HorizontalField, "HorizontalField").$$render($$result, { for: "control-height", label: "Height" }, {}, {
         default: ({ inputClassName }) => {
-          return `<input id="${"control-height"}"${add_attribute("class", inputClassName, 0)} name="${"height"}" type="${"number"}"${add_attribute("min", 0, 0)}${add_attribute("value", selectedCell?.info?.height ?? "", 0)} placeholder="${"2100"}">`;
+          var _a2;
+          return `<input id="${"control-height"}"${add_attribute("class", inputClassName, 0)} name="${"height"}" type="${"number"}"${add_attribute("min", 0, 0)}${add_attribute("value", ((_a2 = selectedCell == null ? void 0 : selectedCell.info) == null ? void 0 : _a2.height) ?? "", 0)} placeholder="${"2100"}">`;
         }
       })}
 
 	${validate_component(HorizontalField, "HorizontalField").$$render($$result, { for: "control-x", label: "X Position" }, {}, {
         default: ({ inputClassName }) => {
-          return `<input id="${"control-x"}"${add_attribute("class", inputClassName, 0)} name="${"x"}" type="${"number"}"${add_attribute("value", selectedCell?.info?.x ?? "", 0)} placeholder="${"10"}">`;
+          var _a2;
+          return `<input id="${"control-x"}"${add_attribute("class", inputClassName, 0)} name="${"x"}" type="${"number"}"${add_attribute("value", ((_a2 = selectedCell == null ? void 0 : selectedCell.info) == null ? void 0 : _a2.x) ?? "", 0)} placeholder="${"10"}">`;
         }
       })}
 	${validate_component(HorizontalField, "HorizontalField").$$render($$result, { for: "control-y", label: "Y Position" }, {}, {
         default: ({ inputClassName }) => {
-          return `<input id="${"control-y"}"${add_attribute("class", inputClassName, 0)} name="${"y"}" type="${"number"}"${add_attribute("value", selectedCell?.info?.y ?? "", 0)} placeholder="${"0"}">`;
+          var _a2;
+          return `<input id="${"control-y"}"${add_attribute("class", inputClassName, 0)} name="${"y"}" type="${"number"}"${add_attribute("value", ((_a2 = selectedCell == null ? void 0 : selectedCell.info) == null ? void 0 : _a2.y) ?? "", 0)} placeholder="${"0"}">`;
         }
       })}
 
@@ -112,7 +118,8 @@ const Edit = create_ssr_component(($$result, $$props, $$bindings, slots) => {
         label: "Asset Server"
       }, {}, {
         default: ({ inputClassName }) => {
-          return `<input id="${"control-server"}"${add_attribute("class", inputClassName, 0)} name="${"server"}" type="${"url"}"${add_attribute("value", selectedCell?.info?.server ?? "", 0)} placeholder="${"http://192.168.0.1"}">`;
+          var _a2;
+          return `<input id="${"control-server"}"${add_attribute("class", inputClassName, 0)} name="${"server"}" type="${"url"}"${add_attribute("value", ((_a2 = selectedCell == null ? void 0 : selectedCell.info) == null ? void 0 : _a2.server) ?? "", 0)} placeholder="${"http://192.168.0.1"}">`;
         }
       })}
 

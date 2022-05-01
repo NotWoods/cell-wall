@@ -1,4 +1,4 @@
-import { c as create_ssr_component } from "../../chunks/index-4d214b4e.js";
+import { c as create_ssr_component } from "../../chunks/index-0b76d127.js";
 const load = async () => {
   return { status: 301, redirect: "/remote/" };
 };

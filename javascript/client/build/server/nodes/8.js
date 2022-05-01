@@ -1,6 +1,6 @@
-import * as module from '../entries/pages/remote/custom.svelte.js';
+import * as module from '../entries/pages/cell/frame/image.svelte.js';
 
 export { module };
-export const entry = 'pages/remote/custom.svelte-20e101a2.js';
-export const js = ["pages/remote/custom.svelte-20e101a2.js","chunks/vendor-7aa287fa.js","chunks/DeviceOptions-d107f641.js","chunks/SubmitButton-b03b502f.js","chunks/snackbar-host-1fb77ef0.js","chunks/cell-state-schema-a24ecc56.js","chunks/HorizontalField-11f2c1ba.js","chunks/Label-9e86d546.js","chunks/__layout-119dff57.js","chunks/TopBar-99b02e54.js","chunks/_PowerButtons-d3798ec7.js","chunks/_form-52443b97.js"];
-export const css = ["assets/__layout-f9525609.css","assets/TopBar-2ac4512a.css"];
+export const entry = 'pages/cell/frame/image.svelte-69186983.js';
+export const js = ["pages/cell/frame/image.svelte-69186983.js","chunks/index-36754a35.js","chunks/web-9961d8d9.js","chunks/index-cc0f756b.js","pages/cell/frame/__layout.svelte-5d127ae6.js","chunks/state-socket-790a3ce2.js","chunks/singletons-d1fb5791.js","chunks/index-2d3b577e.js"];
+export const css = ["assets/pages/cell/frame/image.svelte-d45dbb43.css","assets/pages/cell/frame/__layout.svelte-48218eda.css"];

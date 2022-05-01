@@ -1,6 +1,6 @@
-import * as module from '../entries/pages/remote/canvas.svelte.js';
+import * as module from '../entries/pages/cell/frame/clock.svelte.js';
 
 export { module };
-export const entry = 'pages/remote/canvas.svelte-26717c17.js';
-export const js = ["pages/remote/canvas.svelte-26717c17.js","chunks/vendor-7aa287fa.js","chunks/cell-state-schema-a24ecc56.js","chunks/__layout-119dff57.js","chunks/TopBar-99b02e54.js","chunks/snackbar-host-1fb77ef0.js"];
-export const css = ["assets/pages/remote/canvas.svelte-29be17ee.css","assets/__layout-f9525609.css","assets/TopBar-2ac4512a.css"];
+export const entry = 'pages/cell/frame/clock.svelte-591245d9.js';
+export const js = ["pages/cell/frame/clock.svelte-591245d9.js","chunks/index-36754a35.js","chunks/index-2d3b577e.js","chunks/web-9961d8d9.js","chunks/index-cc0f756b.js","pages/cell/frame/__layout.svelte-5d127ae6.js","chunks/state-socket-790a3ce2.js","chunks/singletons-d1fb5791.js"];
+export const css = ["assets/pages/cell/frame/clock.svelte-6ed8561b.css","assets/pages/cell/frame/__layout.svelte-48218eda.css"];

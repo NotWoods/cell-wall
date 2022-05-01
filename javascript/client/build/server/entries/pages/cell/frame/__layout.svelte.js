@@ -1,7 +1,7 @@
-import { g as getContext, c as create_ssr_component, a as subscribe, s as setContext, b as add_attribute } from "../../../../chunks/index-4d214b4e.js";
-import { c as cellState, f as frameUrl, a as connect } from "../../../../chunks/state-socket-c1d8cd72.js";
-import "../../../../chunks/cell-state-schema-a24ecc56.js";
-import "../../../../chunks/index-23b4b723.js";
+import { g as getContext, c as create_ssr_component, a as subscribe, s as setContext, b as add_attribute } from "../../../../chunks/index-0b76d127.js";
+import { f as frameUrl, c as connect, a as cellState } from "../../../../chunks/state-socket-81af6fa4.js";
+import "../../../../chunks/web-9961d8d9.js";
+import "../../../../chunks/index-441a7cba.js";
 var __layout_svelte_svelte_type_style_lang = "";
 const css = {
   code: ".socket-error.svelte-oss7oo{position:absolute;top:0;right:0;z-index:1}",
@@ -28,10 +28,10 @@ const _layout = create_ssr_component(($$result, $$props, $$bindings, slots) => {
   const state = cellState(socket);
   $$unsubscribe_state = subscribe(state, (value) => $state = value);
   setContext("frame", { socket, state });
-  socket?.addEventListener("error", () => {
+  socket == null ? void 0 : socket.addEventListener("error", () => {
     socketState = "error";
   });
-  socket?.addEventListener("close", () => {
+  socket == null ? void 0 : socket.addEventListener("close", () => {
     socketState = "close";
   });
   if ($$props.serial === void 0 && $$bindings.serial && serial !== void 0)

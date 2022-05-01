@@ -61,7 +61,7 @@ var init_env = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/svelte@3.46.4/node_modules/svelte/internal/index.mjs
+// ../../node_modules/.pnpm/svelte@3.48.0/node_modules/svelte/internal/index.mjs
 function noop() {
 }
 function run(fn) {
@@ -102,7 +102,7 @@ function destroy_component(component, detaching) {
 }
 var resolved_promise, globals, SvelteElement;
 var init_internal = __esm({
-  "../../node_modules/.pnpm/svelte@3.46.4/node_modules/svelte/internal/index.mjs"() {
+  "../../node_modules/.pnpm/svelte@3.48.0/node_modules/svelte/internal/index.mjs"() {
     resolved_promise = Promise.resolve();
     globals = typeof window !== "undefined" ? window : typeof globalThis !== "undefined" ? globalThis : global;
     if (typeof HTMLElement === "function") {
@@ -149,7 +149,7 @@ var init_internal = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/svelte@3.46.4/node_modules/svelte/store/index.mjs
+// ../../node_modules/.pnpm/svelte@3.48.0/node_modules/svelte/store/index.mjs
 function readable(value, start) {
   return {
     subscribe: writable(value, start).subscribe
@@ -236,7 +236,7 @@ function derived(stores, fn, initial_value) {
 }
 var subscriber_queue;
 var init_store = __esm({
-  "../../node_modules/.pnpm/svelte@3.46.4/node_modules/svelte/store/index.mjs"() {
+  "../../node_modules/.pnpm/svelte@3.48.0/node_modules/svelte/store/index.mjs"() {
     init_internal();
     init_internal();
     subscriber_queue = [];
@@ -472,11 +472,12 @@ import { ADB } from "appium-adb";
 function noDeviceError(err) {
   return err instanceof Error && err.message.includes("Could not find a connected Android device");
 }
-function createChildAdb(parent) {
-  const adbChild = new ADB();
-  adbChild.sdkRoot = parent.sdkRoot;
-  adbChild.executable.path = parent.executable.path;
-  return adbChild;
+function cloneADB(parent, device) {
+  const adb = new ADB();
+  adb.sdkRoot = parent.sdkRoot;
+  adb.executable.path = parent.executable.path;
+  adb.setDevice(device);
+  return adb;
 }
 function adbDevicesStore() {
   const devicesStore = writable(/* @__PURE__ */ new Map());
@@ -484,10 +485,10 @@ function adbDevicesStore() {
   return {
     subscribe: devicesStore.subscribe,
     async refresh() {
-      const adbGlobal = await adbGlobalReady;
+      const adb = await adbGlobalReady;
       let devices;
       try {
-        devices = await adbGlobal.getDevicesWithRetry();
+        devices = await adb.getDevicesWithRetry();
       } catch (err) {
         if (noDeviceError(err)) {
           devices = [];
@@ -495,17 +496,31 @@ function adbDevicesStore() {
           throw err;
         }
       }
-      const adbDevices = new Map(devices.map((device) => {
-        const adbChild = createChildAdb(adbGlobal);
-        adbChild.setDevice(device);
-        return [device.udid, adbChild];
-      }));
+      const adbDevices = new Map(devices.map((device) => [device.udid, cloneADB(adb, device)]));
       devicesStore.set(adbDevices);
     }
   };
 }
 var init_adb_devices = __esm({
   "src/lib/android/adb-devices.ts"() {
+    init_store();
+  }
+});
+
+// src/lib/store/promise.ts
+function setWhenDone(promise, set) {
+  let invalidated = false;
+  promise.then((powered) => {
+    if (!invalidated) {
+      set(powered);
+    }
+  });
+  return () => {
+    invalidated = true;
+  };
+}
+var init_promise = __esm({
+  "src/lib/store/promise.ts"() {
     init_store();
   }
 });
@@ -523,17 +538,7 @@ function androidPowered(devices) {
     return powered;
   }
   const poweredOn = writable(/* @__PURE__ */ new Set(), (set) => {
-    return devices.subscribe(($devices) => {
-      let invalidated = false;
-      refreshDevicePowerStates($devices).then((powered) => {
-        if (!invalidated) {
-          set(powered);
-        }
-      });
-      return () => {
-        invalidated = true;
-      };
-    });
+    return devices.subscribe(($devices) => setWhenDone(refreshDevicePowerStates($devices), set));
   });
   async function setPowerForDevice(adb, on) {
     if (!adb)
@@ -587,6 +592,7 @@ var init_android_powered = __esm({
   "src/lib/android/android-powered.ts"() {
     init_store();
     init_transform();
+    init_promise();
     init_adb_actions();
     KEYCODE_UNKNOWN = 0;
     KEYCODE_POWER = 26;
@@ -595,29 +601,16 @@ var init_android_powered = __esm({
 
 // src/lib/android/android-properties.ts
 function androidProperties(devices) {
-  return derived(devices, ($devices, set) => {
-    let invalidated = false;
-    transformMapAsync($devices, async (adb) => {
-      const [model, manufacturer] = await Promise.all([adb.getModel(), adb.getManufacturer()]);
-      const properties = {
-        model,
-        manufacturer
-      };
-      return properties;
-    }).then((map) => {
-      if (!invalidated) {
-        set(map);
-      }
-    });
-    return () => {
-      invalidated = true;
-    };
-  }, /* @__PURE__ */ new Map());
+  return derived(devices, ($devices, set) => setWhenDone(transformMapAsync($devices, async (adb) => {
+    const [model, manufacturer] = await Promise.all([adb.getModel(), adb.getManufacturer()]);
+    return { model, manufacturer };
+  }), set), /* @__PURE__ */ new Map());
 }
 var init_android_properties = __esm({
   "src/lib/android/android-properties.ts"() {
     init_store();
     init_transform();
+    init_promise();
   }
 });
 
@@ -1512,6 +1505,7 @@ var power_exports = {};
 __export(power_exports, {
   default: () => power_default
 });
+import { setHas as setHas2 } from "ts-extras";
 function asPower(primitive) {
   switch (primitive) {
     case true:
@@ -1549,7 +1543,7 @@ async function power_default(fastify) {
       await repo.powered.refresh();
       const powered = get_store_value(repo.powered);
       const $serials = get_store_value(serials);
-      reply.send(Object.fromEntries($serials.map((serial) => [serial, powered.has(serial)])));
+      reply.send(Object.fromEntries($serials.map((serial) => [serial, setHas2(powered, serial)])));
     }
   });
   fastify.route({
@@ -1581,7 +1575,7 @@ async function power_default(fastify) {
       await repo.powered.refresh();
       const powered = get_store_value(repo.powered);
       reply.send({
-        [serial]: powered.has(serial)
+        [serial]: setHas2(powered, serial)
       });
     }
   });
@@ -1649,14 +1643,14 @@ __export(state_exports, {
   default: () => state_default
 });
 import { blankState as blankState3, cellStateTypes } from "@cell-wall/shared";
-import { setHas as setHas2 } from "ts-extras";
+import { setHas as setHas3 } from "ts-extras";
 function isObject(maybe) {
   return typeof maybe === "object" && maybe !== null;
 }
 function asCellState(maybeState) {
   if (isObject(maybeState)) {
     const state = maybeState;
-    if (setHas2(cellStateTypes, state.type)) {
+    if (setHas3(cellStateTypes, state.type)) {
       return state;
     }
   }

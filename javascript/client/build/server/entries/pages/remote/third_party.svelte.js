@@ -1,6 +1,6 @@
-import { c as create_ssr_component, v as validate_component, b as add_attribute } from "../../../chunks/index-4d214b4e.js";
-import { H as HorizontalField } from "../../../chunks/HorizontalField-e36d4d95.js";
-import "../../../chunks/Label-d8e9b5d6.js";
+import { c as create_ssr_component, v as validate_component, b as add_attribute } from "../../../chunks/index-0b76d127.js";
+import { H as HorizontalField } from "../../../chunks/HorizontalField-43bf7a7b.js";
+import "../../../chunks/Label-a17ce47a.js";
 const load = async () => {
   const response = await fetch("/api/third_party/");
   if (!response.ok) {
