@@ -1,17 +1,17 @@
 <script>
-	import { blur } from 'svelte/transition';
-	import { quintOut } from 'svelte/easing';
-
-	export let key = '';
+	import { fade, slide } from 'svelte/transition';
+	import { quintIn } from 'svelte/easing';
 
 	const pageTransitionDuration = 300;
 </script>
 
-{#key key}
-	<div class="layout" in:blur={{ duration: pageTransitionDuration, easing: quintOut }}>
-		<slot />
-	</div>
-{/key}
+<div
+	class="layout"
+	in:slide={{ duration: pageTransitionDuration, easing: quintIn }}
+	out:fade={{ delay: pageTransitionDuration, duration: 50 }}
+>
+	<slot />
+</div>
 
 <style>
 	.layout {

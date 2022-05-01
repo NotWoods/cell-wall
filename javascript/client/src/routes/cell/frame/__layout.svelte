@@ -4,7 +4,7 @@
 	import { getContext, setContext } from 'svelte';
 	import type { Readable } from 'svelte/store';
 
-	export function getFrameContext(): { socket: WebSocket; state: Readable<CellState> } {
+	export function getFrameContext() {
 		return getContext('frame') as { socket: WebSocket; state: Readable<CellState> };
 	}
 
@@ -28,11 +28,12 @@
 <script lang="ts">
 	import { browser } from '$app/env';
 	import { goto } from '$app/navigation';
+	import SocketIndicator from '$lib/components/SocketIndicator.svelte';
 	import { cellState, connect, frameUrl, sendResizeEvents } from '$lib/connection/state-socket';
 	import { onMount } from 'svelte';
+	import PageTransition from '../_PageTransition.svelte';
 
 	export let serial: string;
-	let socketState: 'open' | 'error' | 'close' = 'open';
 
 	const socket = connect(serial);
 	const state = cellState(socket);
@@ -42,13 +43,6 @@
 	});
 
 	setContext('frame', { socket, state });
-
-	socket?.addEventListener('error', () => {
-		socketState = 'error';
-	});
-	socket?.addEventListener('close', () => {
-		socketState = 'close';
-	});
 
 	$: url = frameUrl($state.type, serial);
 	$: {
@@ -62,27 +56,10 @@
 	<title>Cell</title>
 </svelte:head>
 
-<slot />
+<PageTransition>
+	<slot />
+</PageTransition>
 
-{#if socketState !== 'open'}
-	<svg
-		class="socket-error"
-		xmlns="http://www.w3.org/2000/svg"
-		viewBox="0 0 24 24"
-		height="24px"
-		width="24px"
-		fill={socketState === 'error' ? '#DC2626' : '#EA580C'}
-		stroke="#fff"
-	>
-		<path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z" />
-	</svg>
+{#if socket}
+	<SocketIndicator {socket} />
 {/if}
-
-<style>
-	.socket-error {
-		position: absolute;
-		top: 0;
-		right: 0;
-		z-index: 1;
-	}
-</style>
