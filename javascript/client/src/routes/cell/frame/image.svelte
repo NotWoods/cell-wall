@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { createBlobUrlFactory } from '$lib/blob';
-	import { type CellStateImage, filterState } from '@cell-wall/shared';
+	import { filterState } from '$lib/filter-state';
+	import type { CellStateImage } from '@cell-wall/shared';
 	import { getFrameContext } from './__layout.svelte';
 
 	const createBlobUrl = createBlobUrlFactory();
@@ -17,10 +18,10 @@
 	}
 
 	const { state } = getFrameContext();
-	$: imageState = filterState('IMAGE', $state);
+	$: imageState = filterState('IMAGE', state);
 
-	$: src = imageState ? createBlobUrl(imageState.payload) : undefined;
-	$: fit = objectFit(imageState?.scaleType);
+	$: src = $imageState ? createBlobUrl($imageState.payload) : undefined;
+	$: fit = objectFit($imageState?.scaleType);
 </script>
 
 <img class="fill" {src} alt="" style={`object-fit: ${fit}`} />

@@ -25,12 +25,12 @@
 </script>
 
 <script lang="ts">
-	import { filterState } from '@cell-wall/shared';
+	import { filterState } from '$lib/filter-state';
 	import { getFrameContext } from './__layout.svelte';
 
 	const { state } = getFrameContext();
-	$: clockState = filterState('CLOCK', $state);
-	$: timeZone = clockState?.payload || undefined;
+	$: clockState = filterState('CLOCK', state);
+	$: timeZone = $clockState?.payload || undefined;
 	$: formatter = new Intl.DateTimeFormat(undefined, {
 		timeStyle: 'short',
 		timeZone

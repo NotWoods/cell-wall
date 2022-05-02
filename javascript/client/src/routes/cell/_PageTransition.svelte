@@ -4,7 +4,7 @@
 
 	function fly(
 		node: Element,
-		{ duration = 400, x = 0, y = 0 }: { duration?: number; x?: number; y?: number } = {}
+		{ duration, x = 0, y = 0 }: { duration: number; x?: number; y?: number }
 	): TransitionConfig {
 		const style = getComputedStyle(node);
 		const transform = style.transform === 'none' ? '' : style.transform;
@@ -30,7 +30,7 @@
 	import { randomItem } from '@cell-wall/shared';
 	import { fade } from 'svelte/transition';
 
-	const pageTransitionDuration = 2000;
+	const pageTransitionDuration = 500;
 	const direction = directions[randomItem(directionKeys)];
 </script>
 

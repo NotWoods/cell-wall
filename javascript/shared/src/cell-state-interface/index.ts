@@ -5,7 +5,7 @@ import type { CellStateText } from './text.js';
 import type { CellStateWeb } from './web.js';
 import type { JsonSchemaProperty } from './_schema.js';
 
-interface CellStateMap {
+export interface CellStateMap {
 	BLANK: CellStateBlank;
 	TEXT: CellStateText;
 	IMAGE: CellStateImage;
@@ -25,14 +25,3 @@ export * from './image.js';
 export * from './text.js';
 export * from './web.js';
 export type { JsonSchemaProperty };
-
-export function filterState<Type extends CellStateType>(
-	type: Type,
-	state: CellState
-): CellStateMap[Type] | undefined {
-	if (state.type === type) {
-		return state as CellStateMap[Type];
-	} else {
-		return undefined;
-	}
-}

@@ -1,14 +1,14 @@
 <script lang="ts">
-	import { filterState } from '@cell-wall/shared';
+	import { filterState } from '$lib/filter-state';
 	import { getFrameContext } from './__layout.svelte';
 
 	const { state } = getFrameContext();
 
 	let frame: HTMLIFrameElement | undefined;
 
-	$: webState = filterState('WEB', $state);
+	$: webState = filterState('WEB', state);
 
-	$: url = webState?.payload || 'about:blank';
+	$: url = $webState?.payload || 'about:blank';
 	$: {
 		if (frame) {
 			frame.src = url;
