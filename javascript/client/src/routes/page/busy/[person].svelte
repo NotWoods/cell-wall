@@ -1,29 +1,8 @@
 <script lang="ts" context="module">
+	import { freeBusy } from '$lib/third_party/freebusy';
 	import { Temporal } from '@js-temporal/polyfill';
 	import type { Load } from '@sveltejs/kit';
-	import { isBusyInterval, TimePeriod } from './_range';
-
-	interface FreeBusyRequest {
-		/** List of calendars and/or groups to query. */
-		items?: readonly {
-			/** The identifier of a calendar or a group. */
-			id?: string | null;
-		}[];
-		/** The end of the interval for the query formatted as per RFC3339. */
-		timeMax?: string | null;
-		/** The start of the interval for the query formatted as per RFC3339. */
-		timeMin?: string | null;
-	}
-
-	async function freebusy(request: FreeBusyRequest) {
-		return await fetch('/api/third_party/freebusy', {
-			method: 'post',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify(request)
-		});
-	}
+	import { isBusyInterval } from './_range';
 
 	const people = {
 		tiger: {
@@ -66,15 +45,9 @@
 		}
 
 		const today = Temporal.Now.zonedDateTimeISO('UTC').startOfDay();
-		const nextWeek = today.add({ days: 5 });
-		const toStringOptions = {
-			timeZoneName: 'never',
-			smallestUnit: 'second'
-		} as const;
-
-		const response = await freebusy({
-			timeMin: today.toString(toStringOptions),
-			timeMax: nextWeek.toString(toStringOptions),
+		const response = await freeBusy({
+			timeMin: today,
+			timeMax: today.add({ days: 5 }),
 			items: [{ id: people[person].calendar }]
 		});
 
@@ -85,7 +58,7 @@
 			};
 		}
 
-		const busy = (await response.json()) as TimePeriod[];
+		const busy = await response.json();
 
 		return {
 			props: {
@@ -97,6 +70,8 @@
 </script>
 
 <script lang="ts">
+	import type { TimePeriod } from '$lib/third_party/freebusy';
+
 	export let busyRanges: readonly TimePeriod[];
 	export let person: People[keyof People];
 
