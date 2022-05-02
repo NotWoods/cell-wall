@@ -1,4 +1,5 @@
 import type { CellStateBlank } from './blank.js';
+import type { CellStateBusy } from './busy.js';
 import type { CellStateClock } from './clock.js';
 import type { CellStateImage } from './image.js';
 import type { CellStateText } from './text.js';
@@ -11,15 +12,23 @@ export interface CellStateMap {
 	IMAGE: CellStateImage;
 	WEB: CellStateWeb;
 	CLOCK: CellStateClock;
+	BUSY: CellStateBusy;
 }
 
 export type CellStateType = keyof CellStateMap;
 export type CellState = CellStateMap[CellStateType];
 
-const types: readonly CellStateType[] = ['BLANK', 'TEXT', 'IMAGE', 'WEB', 'CLOCK'];
-export const cellStateTypes: ReadonlySet<CellStateType> = new Set(types);
+export const cellStateTypes: ReadonlySet<CellStateType> = new Set([
+	'BLANK',
+	'TEXT',
+	'IMAGE',
+	'WEB',
+	'CLOCK',
+	'BUSY'
+]);
 
 export * from './blank.js';
+export * from './busy.js';
 export * from './clock.js';
 export * from './image.js';
 export * from './text.js';

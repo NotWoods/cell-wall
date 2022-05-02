@@ -1,5 +1,6 @@
 import {
 	cellStateBlankSchema,
+	cellStateBusySchema,
 	cellStateClockSchema,
 	cellStateImageSchema,
 	cellStateTextSchema,
@@ -24,6 +25,7 @@ export interface CellStateJsonSchema extends ObjectJsonSchemaProperty {
 export const allCellStateSchemas = [
 	cellStateBlankSchema,
 	cellStateClockSchema,
+	cellStateBusySchema,
 	cellStateImageSchema,
 	cellStateTextSchema,
 	cellStateWebSchema
