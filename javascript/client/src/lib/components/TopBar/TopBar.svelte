@@ -15,7 +15,7 @@
 			<h1 class="sr-only md:not-sr-only text-xl">CellWall Remote</h1>
 		</a>
 
-		<TopBarItem href="/remote">Presets</TopBarItem>
+		<TopBarItem href="/remote/presets">Presets</TopBarItem>
 		<TopBarItem href="/remote/text">Text</TopBarItem>
 		<TopBarItem href="/remote/image">Image</TopBarItem>
 		<div class="ml-auto flex flex-wrap gap-2 items-center">

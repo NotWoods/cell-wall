@@ -1,4 +1,4 @@
-import { randomIndex } from './random';
+import { randomIndex } from './random.js';
 
 // Corresponds to 900 level colors from Tailwind
 const RAINBOW_COLORS = [

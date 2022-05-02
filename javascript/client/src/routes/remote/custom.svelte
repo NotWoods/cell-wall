@@ -1,3 +1,15 @@
+<script context="module" lang="ts">
+	import type { Load } from '@sveltejs/kit';
+
+	export const load: Load = async ({ url }) => {
+		return {
+			props: {
+				defaultSerial: url.searchParams.get('id') || ''
+			}
+		};
+	};
+</script>
+
 <script lang="ts">
 	import ResetSubmit from '$lib/components/Button/ResetSubmit.svelte';
 	import DeviceOptions from '$lib/components/Field/DeviceOptions.svelte';
@@ -12,13 +24,19 @@
 	import { post } from './_form';
 	import { getRemoteContext } from './__layout.svelte';
 
+	export let defaultSerial: string;
+
 	const { state: remoteState } = getRemoteContext();
 	const devices = storeEntries(remoteState);
 
 	// Selected schema type
 	let selectedType = 'BLANK';
 	// serial from selected device
-	let selectedDeviceSerial = '';
+	let selectedDeviceSerial = defaultSerial || '';
+
+	$: {
+		selectedDeviceSerial = defaultSerial;
+	}
 
 	$: selectedDevice = $remoteState.get(selectedDeviceSerial);
 	$: activeSchema = allCellStateSchemas.find(
