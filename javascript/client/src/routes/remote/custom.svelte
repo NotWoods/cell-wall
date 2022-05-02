@@ -35,6 +35,26 @@
 	}
 </script>
 
+<div class="flex flex-col gap-y-4 px-2 mb-4">
+	<HorizontalField for="control-serial" label="Device" let:inputClassName>
+		<select
+			class="{inputClassName} cursor-pointer"
+			bind:value={selectedDeviceSerial}
+			id="control-serial"
+			form="custom-form"
+		>
+			<option value="">All devices</option>
+			<DeviceOptions devices={$devices} />
+		</select>
+	</HorizontalField>
+
+	{#if !selectedDevice || selectedDevice?.connection?.includes('android')}
+		<HorizontalField label="Power">
+			<PowerButtons serial={selectedDeviceSerial} />
+		</HorizontalField>
+	{/if}
+</div>
+
 <nav class="mb-6">
 	<Tabs>
 		{#each allCellStateSchemas as schema (schema.properties.type.const)}
@@ -51,23 +71,6 @@
 	onSubmit={submit}
 	let:loading
 >
-	<HorizontalField for="control-serial" label="Device" let:inputClassName>
-		<select
-			class="{inputClassName} cursor-pointer"
-			bind:value={selectedDeviceSerial}
-			id="control-serial"
-		>
-			<option value="">All devices</option>
-			<DeviceOptions devices={$devices} />
-		</select>
-	</HorizontalField>
-
-	{#if !selectedDevice || selectedDevice?.connection?.includes('android')}
-		<HorizontalField label="Power">
-			<PowerButtons serial={selectedDeviceSerial} />
-		</HorizontalField>
-	{/if}
-
 	{#key selectedType}
 		<ControllerFields schema={activeSchema} state={selectedDevice?.state} />
 	{/key}

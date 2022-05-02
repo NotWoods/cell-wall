@@ -57,7 +57,7 @@
 </svelte:head>
 
 <div class="layout">
-	{#key url}
+	{#key $state.type}
 		<PageTransition>
 			<slot />
 		</PageTransition>

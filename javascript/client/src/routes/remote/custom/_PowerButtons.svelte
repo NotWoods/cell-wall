@@ -7,52 +7,54 @@
 
 <script lang="ts">
 	import SubmitButton from '$lib/components/Button/SubmitButton.svelte';
+	import Form from '$lib/components/Form.svelte';
 	import { post } from '../_form';
 
-	const name = 'on';
 	const notLoading: Promise<void> = Promise.resolve();
 
 	export let serial: string | undefined;
 
-	let loading: Promise<void> = Promise.resolve();
-	let submitter = '';
+	async function submit(formData: FormData, action: URL) {
+		const data = Object.fromEntries(formData);
 
-	$: formAction = `/api/device/power/${serial}`;
-
-	async function handlePowerClick(event: Event) {
-		const target = event.target as HTMLButtonElement;
-		await post(formAction, {
-			on: target.value
-		});
+		await post(action.toString(), data);
 	}
 </script>
 
-<fieldset class="flex" {name}>
+<Form class="flex" method="post" action="" onSubmit={submit} let:status>
 	<legend class="sr-only">Power</legend>
 	<SubmitButton
-		loading={submitter === 'false' ? loading : notLoading}
+		loading={!status.submitterName ? status.loading : notLoading}
 		{colors}
-		{name}
+		disabled={serial === undefined}
+		class="rounded-r-none"
+		formaction="/api/action/launch/{serial}"
+		aria-label="Launch client app"
+	>
+		Launch
+	</SubmitButton>
+	<SubmitButton
+		loading={status.submitterValue === 'false' ? status.loading : notLoading}
+		{colors}
+		name="on"
 		value="false"
 		disabled={serial === undefined}
-		class="rounded-r-none border-r border-slate-500"
-		formaction={formAction}
-		on:click={handlePowerClick}
+		class="rounded-r-none rounded-l-none border-l border-r border-slate-500"
+		formaction="/api/device/power/{serial}"
 		aria-label="Power off"
 	>
 		Off
 	</SubmitButton>
 	<SubmitButton
-		loading={submitter === 'true' ? loading : notLoading}
+		loading={status.submitterValue === 'true' ? status.loading : notLoading}
 		{colors}
-		{name}
+		name="on"
 		value="true"
 		disabled={serial === undefined}
 		class="rounded-l-none"
-		formaction={formAction}
-		on:click={handlePowerClick}
+		formaction="/api/device/power/{serial}"
 		aria-label="Power on"
 	>
 		On
 	</SubmitButton>
-</fieldset>
+</Form>
