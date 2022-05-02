@@ -3,19 +3,12 @@ import type { FastifyInstance } from 'fastify';
 import { derived, get as getState } from 'svelte/store';
 import { transformMap } from '../../../lib/map/transform';
 import { repo } from '../../../lib/repository';
+import { distributeText } from '../../../lib/text/distribute';
 import { updateRemainingCells, type RemainingBehaviour } from './_remaining';
 
-const sortedDeviceIds = derived(repo.cellData, (devices) => {
-	return (
-		Array.from(devices)
-			// Sort devices by screen width
-			.sort(([, a], [, b]) => {
-				return (b.info?.width ?? 0) - (a.info?.width ?? 0);
-			})
-			// Only return keys
-			.map(([id]) => id)
-	);
-});
+const cellInfo = derived(repo.cellData, (devices) =>
+	transformMap(devices, (device) => device.info)
+);
 
 function parseLines(
 	body: string | string[] | { text?: string; lines?: string[] }
@@ -46,20 +39,10 @@ export default async function (fastify: FastifyInstance): Promise<void> {
 		url: '/api/action/text',
 		async handler(request, reply) {
 			const lines = parseLines(request.body);
-
-			// Sort devices by screen width
-			const deviceIds = getState(sortedDeviceIds);
+			const devices = getState(cellInfo);
 
 			// Put text into buckets for each device
-			const deviceToText = new Map<string, string[]>();
-			for (const [i, line] of lines.entries()) {
-				const index = i % deviceIds.length;
-				const deviceId = deviceIds[index];
-
-				const textArray = deviceToText.get(deviceId) ?? [];
-				textArray.push(line);
-				deviceToText.set(deviceId, textArray);
-			}
+			const deviceToText = distributeText(devices, lines);
 
 			const colors = new RandomColor();
 			const textStates = transformMap(deviceToText, (lines) =>
@@ -69,7 +52,7 @@ export default async function (fastify: FastifyInstance): Promise<void> {
 			repo.cellState.setStates(textStates);
 
 			if (request.query.rest) {
-				const remaining = Array.from(deviceIds).filter((serial) => !deviceToText.has(serial));
+				const remaining = Array.from(devices.keys()).filter((serial) => !deviceToText.has(serial));
 				await updateRemainingCells(remaining, request.query.rest || 'ignore');
 			}
 
