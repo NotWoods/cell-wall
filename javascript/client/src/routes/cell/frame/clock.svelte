@@ -25,26 +25,19 @@
 </script>
 
 <script lang="ts">
+	import FormattedTime from '$lib/components/Frame/FormattedTime.svelte';
 	import { filterState } from '$lib/filter-state';
 	import { getFrameContext } from './__layout.svelte';
 
 	const { state } = getFrameContext();
 	$: clockState = filterState('CLOCK', state);
-	$: timeZone = $clockState?.payload || undefined;
-	$: formatter = new Intl.DateTimeFormat(undefined, {
-		timeStyle: 'short',
-		timeZone
-	});
 
 	$: time = intervalClock();
-	$: timeParts = formatter.formatToParts($time);
 </script>
 
 <main class="fill center">
 	<h1 class="clock">
-		{#each timeParts as part}
-			<span class={part.type}>{part.value}</span>
-		{/each}
+		<FormattedTime time={$time} timeZone={$clockState?.payload || undefined} />
 	</h1>
 </main>
 
@@ -57,8 +50,5 @@
 		text-align: center;
 		font-size: 72px;
 		margin: 8px;
-	}
-	.dayPeriod {
-		font-size: 32px;
 	}
 </style>

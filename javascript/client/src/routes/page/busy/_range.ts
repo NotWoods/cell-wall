@@ -8,11 +8,6 @@ export interface TimePeriod {
 	end?: string | null;
 }
 
-export interface DateTimeRange {
-	start: Temporal.ZonedDateTime | undefined;
-	end: Temporal.ZonedDateTime | undefined;
-}
-
 export interface BusyState {
 	busy: boolean;
 	next?: Temporal.ZonedDateTime;
@@ -23,7 +18,7 @@ export interface BusyState {
  * @return Store that is true when the current time is in the busy range
  */
 export function isBusyInterval(ranges: readonly TimePeriod[]) {
-	function convert(range: TimePeriod): DateTimeRange {
+	const dateTimeRanges = ranges.map(function convert(range: TimePeriod) {
 		function fromTimeStamp(timestamp: string | Temporal.Instant | null | undefined) {
 			if (timestamp) {
 				return Temporal.Instant.from(timestamp).toZonedDateTimeISO('UTC');
@@ -36,15 +31,14 @@ export function isBusyInterval(ranges: readonly TimePeriod[]) {
 			start: fromTimeStamp(range.start),
 			end: fromTimeStamp(range.end)
 		};
-	}
+	});
 
 	/**
 	 * Check if the given time is within a time range
 	 * @param time Date time stamp to check
-	 * @param ranges List of time ranges
 	 */
-	function isBusy(time: Temporal.ZonedDateTime, ranges: readonly DateTimeRange[]): BusyState {
-		for (const range of ranges) {
+	function isBusy(time: Temporal.ZonedDateTime) {
+		for (const range of dateTimeRanges) {
 			const { start, end } = range;
 
 			if (start && Temporal.ZonedDateTime.compare(time, start) < 0) {
@@ -61,14 +55,12 @@ export function isBusyInterval(ranges: readonly TimePeriod[]) {
 		return { busy: false, next: undefined };
 	}
 
-	const dateTimeRanges = ranges.map(convert);
-
-	return readable<BusyState>({ busy: false }, (set) => {
+	return readable<ReturnType<typeof isBusy>>({ busy: false, next: undefined }, (set) => {
 		let timeoutId: ReturnType<typeof setTimeout> | undefined;
 
 		function checkBusy() {
 			const now = Temporal.Now.zonedDateTimeISO('UTC');
-			const { busy, next } = isBusy(now, dateTimeRanges);
+			const { busy, next } = isBusy(now);
 			set({ busy, next });
 
 			if (next) {

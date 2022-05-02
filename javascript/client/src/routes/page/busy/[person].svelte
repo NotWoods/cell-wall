@@ -70,13 +70,14 @@
 </script>
 
 <script lang="ts">
+	import FormattedTime from '$lib/components/Frame/FormattedTime.svelte';
 	import type { TimePeriod } from '$lib/third_party/freebusy';
 
 	export let busyRanges: readonly TimePeriod[];
 	export let person: People[keyof People];
 
 	const isBusy = isBusyInterval(busyRanges);
-	$: state = states[$isBusy ? 'busy' : 'free'];
+	$: state = states[$isBusy.busy ? 'busy' : 'free'];
 </script>
 
 <body style="background: {state.background}">
@@ -88,6 +89,9 @@
 		height="150"
 	/>
 	<h1 class="headline-1">{state.text}</h1>
+	{#if $isBusy.next}
+		until <FormattedTime time={$isBusy.next} />
+	{/if}
 </body>
 
 <style>
