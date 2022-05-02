@@ -56,10 +56,25 @@
 	<title>Cell</title>
 </svelte:head>
 
-<PageTransition>
-	<slot />
-</PageTransition>
+<div class="layout">
+	{#key url}
+		<PageTransition>
+			<slot />
+		</PageTransition>
+	{/key}
+</div>
 
 {#if socket}
 	<SocketIndicator {socket} />
 {/if}
+
+<style>
+	.layout {
+		position: relative;
+		height: 100vh;
+		height: 100dvh;
+		width: 100vw;
+		background: #429a46;
+		overflow: hidden;
+	}
+</style>
