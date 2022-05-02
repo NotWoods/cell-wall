@@ -5,8 +5,11 @@ import {
 	cellStateTextSchema,
 	cellStateWebSchema,
 	type CellStateType
-} from './cell-state-interface';
-import type { JsonSchemaProperty, ObjectJsonSchemaProperty } from './cell-state-interface/_schema';
+} from './cell-state-interface/index.js';
+import type {
+	JsonSchemaProperty,
+	ObjectJsonSchemaProperty
+} from './cell-state-interface/_schema.js';
 
 export interface CellStateJsonSchema extends ObjectJsonSchemaProperty {
 	properties: {

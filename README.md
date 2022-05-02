@@ -46,7 +46,7 @@ local machine for development and testing purposes.
 ### Prerequisites
 
 - Node.js 16 or greater
-- PnpM
+- pnpm
 - Android Studio 4.1 or greater
 - Android Debug Bridge
 

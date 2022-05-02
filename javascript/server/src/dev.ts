@@ -20,7 +20,6 @@ const CLIENT_ROUTES = [
 ];
 
 function proxy(request: FastifyRequest, reply: FastifyReply) {
-	console.log(request.url);
 	reply.from(request.url);
 }
 
@@ -29,7 +28,7 @@ async function main() {
 
 	// proxy to svelte-kit dev server
 	await fastify.register(fastifyReplyFrom, {
-		base: 'http://localhost:3001'
+		base: 'http://127.0.0.1:3001/'
 	});
 
 	CLIENT_ROUTES.forEach((path) => fastify.get(path, proxy));

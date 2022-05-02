@@ -17,6 +17,7 @@
 				class="demo-cell shadow-lg bg-zinc-900 h-full w-full"
 				src="/cell?id={id}&autojoin"
 				title={id}
+				allow="fullscreen 'none'"
 				style="grid-area: {id}"
 			/>
 		{/each}

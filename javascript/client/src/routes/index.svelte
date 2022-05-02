@@ -4,7 +4,7 @@
 	export const load: Load = async () => {
 		return {
 			status: 301,
-			redirect: '/remote/'
+			redirect: '/remote'
 		};
 	};
 </script>
