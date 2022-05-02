@@ -1,12 +1,13 @@
-import { c as create_ssr_component, a as subscribe, e as escape, n as noop } from "../../../../chunks/index-0b76d127.js";
-import { r as readable } from "../../../../chunks/index-441a7cba.js";
-import "../../../../chunks/web-9961d8d9.js";
-import { f as filterState } from "../../../../chunks/index-cc0f756b.js";
+import { c as create_ssr_component, a as subscribe, v as validate_component, n as noop } from "../../../../chunks/index-07af9b00.js";
+import { r as readable } from "../../../../chunks/web-c1f4ba88.js";
+import { F as FormattedTime } from "../../../../chunks/FormattedTime-1368929d.js";
+import { f as filterState } from "../../../../chunks/filter-state-644ea021.js";
 import { getFrameContext } from "./__layout.svelte.js";
-import "../../../../chunks/state-socket-81af6fa4.js";
+import "../../../../chunks/state-socket-9cad1e3b.js";
+import "../../../../chunks/random-ca7fbb84.js";
 var clock_svelte_svelte_type_style_lang = "";
 const css = {
-  code: "main.svelte-1nhto80{background:#1f1f1f;color:#c5eed0}h1.svelte-1nhto80{margin:8px}",
+  code: "main.svelte-5srqaf{background:#1f1f1f;color:#c5eed0}.clock.svelte-5srqaf{text-align:center;font-size:72px;margin:8px}",
   map: null
 };
 function intervalClock() {
@@ -28,21 +29,19 @@ function intervalClock() {
 }
 const Clock = create_ssr_component(($$result, $$props, $$bindings, slots) => {
   let clockState;
-  let timeZone;
-  let formatter;
   let time;
-  let $state, $$unsubscribe_state;
   let $time, $$unsubscribe_time = noop, $$subscribe_time = () => ($$unsubscribe_time(), $$unsubscribe_time = subscribe(time, ($$value) => $time = $$value), time);
+  let $clockState, $$unsubscribe_clockState = noop, $$subscribe_clockState = () => ($$unsubscribe_clockState(), $$unsubscribe_clockState = subscribe(clockState, ($$value) => $clockState = $$value), clockState);
   const { state } = getFrameContext();
-  $$unsubscribe_state = subscribe(state, (value) => $state = value);
   $$result.css.add(css);
-  clockState = filterState("CLOCK", $state);
-  timeZone = clockState == null ? void 0 : clockState.payload;
-  formatter = new Intl.DateTimeFormat(void 0, { timeStyle: "short", timeZone });
+  $$subscribe_clockState(clockState = filterState("CLOCK", state));
   $$subscribe_time(time = intervalClock());
-  $$unsubscribe_state();
   $$unsubscribe_time();
-  return `<main class="${"fill center svelte-1nhto80"}"><h1 class="${"headline-1 svelte-1nhto80"}">${escape(formatter.format($time))}</h1>
+  $$unsubscribe_clockState();
+  return `<main class="${"fill center svelte-5srqaf"}"><h1 class="${"clock svelte-5srqaf"}">${validate_component(FormattedTime, "FormattedTime").$$render($$result, {
+    time: $time,
+    timeZone: ($clockState == null ? void 0 : $clockState.payload) || void 0
+  }, {}, {})}</h1>
 </main>`;
 });
 export { Clock as default };

@@ -17,22 +17,23 @@ var __spreadValues = (a, b) => {
   return a;
 };
 var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
-import { c as create_ssr_component, f as each, v as validate_component, e as escape, b as add_attribute, a as subscribe } from "../../../chunks/index-0b76d127.js";
-import { D as DeviceOptions, R as ResetSubmit } from "../../../chunks/DeviceOptions-e9c692cd.js";
-import { H as HorizontalField } from "../../../chunks/HorizontalField-43bf7a7b.js";
-import { F as Form } from "../../../chunks/Form-8ab490a9.js";
-import { g as getRemoteContext, s as storeEntries } from "../../../chunks/__layout-8f35b6a8.js";
-import { a as cellStateBlankSchema, d as cellStateClockSchema, e as cellStateImageSchema, f as cellStateTextSchema, g as cellStateWebSchema } from "../../../chunks/web-9961d8d9.js";
+import { c as create_ssr_component, f as each, v as validate_component, e as escape, b as add_attribute, a as subscribe } from "../../../chunks/index-07af9b00.js";
+import { D as DeviceOptions, R as ResetSubmit } from "../../../chunks/DeviceOptions-a04f6a77.js";
+import { H as HorizontalField } from "../../../chunks/HorizontalField-06a204be.js";
+import { F as Form } from "../../../chunks/Form-902cd05f.js";
+import { g as getRemoteContext, s as storeEntries } from "../../../chunks/__layout-6f794c2d.js";
+import { a as cellStateBlankSchema, e as cellStateClockSchema, f as cellStateBusySchema, g as cellStateImageSchema, h as cellStateTextSchema, i as cellStateWebSchema } from "../../../chunks/web-c1f4ba88.js";
+import { a as randomIndex } from "../../../chunks/random-ca7fbb84.js";
 import startCase from "lodash.startcase";
-import { P as PowerButtons } from "../../../chunks/_PowerButtons-2d0d6690.js";
+import { P as PowerButtons } from "../../../chunks/_PowerButtons-e7bcebe9.js";
 import { p as post } from "../../../chunks/_form-52443b97.js";
-import "../../../chunks/Label-a17ce47a.js";
-import "../../../chunks/snackbar-host-fe054673.js";
-import "../../../chunks/index-441a7cba.js";
-import "../../../chunks/TopBar-a3c8c5c4.js";
+import "../../../chunks/Label-f2ecd148.js";
+import "../../../chunks/snackbar-host-4e5f0dd7.js";
+import "../../../chunks/TopBar-63a4c84b.js";
 const allCellStateSchemas = [
   cellStateBlankSchema,
   cellStateClockSchema,
+  cellStateBusySchema,
   cellStateImageSchema,
   cellStateTextSchema,
   cellStateWebSchema
@@ -74,9 +75,9 @@ class RandomColor {
       this.reset();
       return color2;
     }
-    const randomIndex = Math.floor(Math.random() * this.unusedColors.length);
-    const color = this.unusedColors[randomIndex];
-    this.unusedColors.splice(randomIndex, 1);
+    const index = randomIndex(this.unusedColors);
+    const color = this.unusedColors[index];
+    this.unusedColors.splice(index, 1);
     return color;
   }
 }
@@ -162,28 +163,56 @@ const TypeTab = create_ssr_component(($$result, $$props, $$bindings, slots) => {
     }
   })}`;
 });
+const load = async ({ url }) => {
+  return {
+    props: {
+      defaultSerial: url.searchParams.get("id") || ""
+    }
+  };
+};
 const Custom = create_ssr_component(($$result, $$props, $$bindings, slots) => {
+  var _a;
   let selectedDevice;
   let activeSchema;
   let $remoteState, $$unsubscribe_remoteState;
   let $devices, $$unsubscribe_devices;
+  let { defaultSerial } = $$props;
   const { state: remoteState } = getRemoteContext();
   $$unsubscribe_remoteState = subscribe(remoteState, (value) => $remoteState = value);
   const devices = storeEntries(remoteState);
   $$unsubscribe_devices = subscribe(devices, (value) => $devices = value);
   let selectedType = "BLANK";
-  let selectedDeviceSerial = "";
+  let selectedDeviceSerial = defaultSerial || "";
   async function submit(formData, action) {
     const data = Object.fromEntries(formData);
     await post(action.toString(), __spreadProps(__spreadValues({}, data), { type: selectedType }));
   }
+  if ($$props.defaultSerial === void 0 && $$bindings.defaultSerial && defaultSerial !== void 0)
+    $$bindings.defaultSerial(defaultSerial);
   let $$settled;
   let $$rendered;
   do {
     $$settled = true;
+    {
+      {
+        selectedDeviceSerial = defaultSerial;
+      }
+    }
     selectedDevice = $remoteState.get(selectedDeviceSerial);
     activeSchema = allCellStateSchemas.find((schema) => schema.properties.type.const === selectedType);
-    $$rendered = `<nav class="${"mb-6"}">${validate_component(Tabs, "Tabs").$$render($$result, {}, {}, {
+    $$rendered = `<div class="${"flex flex-col gap-y-4 px-2 mb-4"}">${validate_component(HorizontalField, "HorizontalField").$$render($$result, { for: "control-serial", label: "Device" }, {}, {
+      default: ({ inputClassName }) => {
+        return `<select class="${escape(inputClassName) + " cursor-pointer"}" id="${"control-serial"}" form="${"custom-form"}"><option value="${""}">All devices</option>${validate_component(DeviceOptions, "DeviceOptions").$$render($$result, { devices: $devices }, {}, {})}</select>`;
+      }
+    })}
+
+	${!selectedDevice || ((_a = selectedDevice == null ? void 0 : selectedDevice.connection) == null ? void 0 : _a.includes("android")) ? `${validate_component(HorizontalField, "HorizontalField").$$render($$result, { label: "Power" }, {}, {
+      default: () => {
+        return `${validate_component(PowerButtons, "PowerButtons").$$render($$result, { serial: selectedDeviceSerial }, {}, {})}`;
+      }
+    })}` : ``}</div>
+
+<nav class="${"mb-6"}">${validate_component(Tabs, "Tabs").$$render($$result, {}, {}, {
       default: () => {
         return `${each(allCellStateSchemas, (schema) => {
           return `${validate_component(TypeTab, "TypeTab").$$render($$result, { schema, selectedType }, {
@@ -204,20 +233,7 @@ ${validate_component(Form, "Form").$$render($$result, {
       onSubmit: submit
     }, {}, {
       default: ({ loading }) => {
-        var _a;
-        return `${validate_component(HorizontalField, "HorizontalField").$$render($$result, { for: "control-serial", label: "Device" }, {}, {
-          default: ({ inputClassName }) => {
-            return `<select class="${escape(inputClassName) + " cursor-pointer"}" id="${"control-serial"}"><option value="${""}">All devices</option>${validate_component(DeviceOptions, "DeviceOptions").$$render($$result, { devices: $devices }, {}, {})}</select>`;
-          }
-        })}
-
-	${!selectedDevice || ((_a = selectedDevice == null ? void 0 : selectedDevice.connection) == null ? void 0 : _a.includes("android")) ? `${validate_component(HorizontalField, "HorizontalField").$$render($$result, { label: "Power" }, {}, {
-          default: () => {
-            return `${validate_component(PowerButtons, "PowerButtons").$$render($$result, { serial: selectedDeviceSerial }, {}, {})}`;
-          }
-        })}` : ``}
-
-	${validate_component(ControllerFields, "ControllerFields").$$render($$result, {
+        return `${validate_component(ControllerFields, "ControllerFields").$$render($$result, {
           schema: activeSchema,
           state: selectedDevice == null ? void 0 : selectedDevice.state
         }, {}, {})}
@@ -230,4 +246,4 @@ ${validate_component(Form, "Form").$$render($$result, {
   $$unsubscribe_devices();
   return $$rendered;
 });
-export { Custom as default };
+export { Custom as default, load };

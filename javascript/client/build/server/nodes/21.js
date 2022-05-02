@@ -1,6 +1,6 @@
 import * as module from '../entries/pages/remote/text.svelte.js';
 
 export { module };
-export const entry = 'pages/remote/text.svelte-6c0fe56c.js';
-export const js = ["pages/remote/text.svelte-6c0fe56c.js","chunks/index-36754a35.js","chunks/DeviceOptions-0a96ff24.js","chunks/Form-7b6d1322.js","chunks/snackbar-host-48cbce91.js","chunks/web-9961d8d9.js","chunks/index-2d3b577e.js","chunks/HorizontalField-ace97908.js","chunks/Label-a93f63a8.js","chunks/VerticalField-905a4fdf.js","chunks/__layout-fb12489c.js","chunks/TopBar-b37596c0.js"];
-export const css = ["assets/__layout-f9525609.css","assets/TopBar-0c95aad6.css"];
+export const entry = 'pages/remote/text.svelte-3c65fa5c.js';
+export const js = ["pages/remote/text.svelte-3c65fa5c.js","chunks/index-6bece970.js","chunks/DeviceOptions-da53de79.js","chunks/Form-1a153f1b.js","chunks/snackbar-host-69394265.js","chunks/web-1a0de502.js","chunks/index-2a0b6ee6.js","chunks/HorizontalField-10ed728a.js","chunks/Label-f27fee94.js","chunks/VerticalField-ddc7385f.js","chunks/__layout-00171295.js","chunks/TopBar-cf6a6994.js","chunks/index-82b3cc87.js"];
+export const css = ["assets/__layout-f9525609.css","assets/TopBar-104d1feb.css"];

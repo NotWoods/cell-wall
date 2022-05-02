@@ -1,9 +1,9 @@
-import { c as create_ssr_component, a as subscribe, b as add_attribute } from "../../../../chunks/index-0b76d127.js";
-import "../../../../chunks/web-9961d8d9.js";
-import { f as filterState } from "../../../../chunks/index-cc0f756b.js";
+import { c as create_ssr_component, a as subscribe, b as add_attribute, n as noop } from "../../../../chunks/index-07af9b00.js";
+import { f as filterState } from "../../../../chunks/filter-state-644ea021.js";
 import { getFrameContext } from "./__layout.svelte.js";
-import "../../../../chunks/state-socket-81af6fa4.js";
-import "../../../../chunks/index-441a7cba.js";
+import "../../../../chunks/web-c1f4ba88.js";
+import "../../../../chunks/state-socket-9cad1e3b.js";
+import "../../../../chunks/random-ca7fbb84.js";
 function createBlobUrlFactory() {
   let lastUrl = "";
   return function createBlobUrl(blob) {
@@ -30,7 +30,7 @@ const Image = create_ssr_component(($$result, $$props, $$bindings, slots) => {
   let imageState;
   let src;
   let fit;
-  let $state, $$unsubscribe_state;
+  let $imageState, $$unsubscribe_imageState = noop, $$subscribe_imageState = () => ($$unsubscribe_imageState(), $$unsubscribe_imageState = subscribe(imageState, ($$value) => $imageState = $$value), imageState);
   const createBlobUrl = createBlobUrlFactory();
   function objectFit(fit2) {
     switch (fit2) {
@@ -44,12 +44,11 @@ const Image = create_ssr_component(($$result, $$props, $$bindings, slots) => {
     }
   }
   const { state } = getFrameContext();
-  $$unsubscribe_state = subscribe(state, (value) => $state = value);
   $$result.css.add(css);
-  imageState = filterState("IMAGE", $state);
-  src = imageState ? createBlobUrl(imageState.payload) : void 0;
-  fit = objectFit(imageState == null ? void 0 : imageState.scaleType);
-  $$unsubscribe_state();
+  $$subscribe_imageState(imageState = filterState("IMAGE", state));
+  src = $imageState ? createBlobUrl($imageState.payload) : void 0;
+  fit = objectFit($imageState == null ? void 0 : $imageState.scaleType);
+  $$unsubscribe_imageState();
   return `<img class="${"fill svelte-6u50n6"}"${add_attribute("src", src, 0)} alt="${""}"${add_attribute("style", `object-fit: ${fit}`, 0)}>`;
 });
 export { Image as default };

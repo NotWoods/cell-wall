@@ -7,5 +7,6 @@ export * from './cell-state-schema.js';
 export * from './env.js';
 export * from './helpers/color.js';
 export * from './helpers/memo.js';
+export * from './helpers/random.js';
 export * from './helpers/timer.js';
 //# sourceMappingURL=index.js.map

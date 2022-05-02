@@ -1,4 +1,4 @@
-import { buildSchema } from './_schema';
+import { buildSchema } from './_schema.js';
 export function webState(url) {
     return { type: 'WEB', payload: url };
 }

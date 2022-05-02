@@ -1,4 +1,4 @@
-import { buildSchema } from './_schema';
+import { buildSchema } from './_schema.js';
 export const cellStateImageSchema = buildSchema({
     type: 'IMAGE',
     properties: {

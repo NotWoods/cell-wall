@@ -801,9 +801,9 @@ function deriveConnection(stores) {
   });
 }
 function deriveCellData(stores) {
-  const cellInfo = deriveCellInfo(stores);
+  const cellInfo2 = deriveCellInfo(stores);
   const connections = deriveConnection(stores);
-  const cellDataMap = derived([stores.state, cellInfo, connections], ([$states, $infos, $connections]) => {
+  const cellDataMap = derived([stores.state, cellInfo2, connections], ([$states, $infos, $connections]) => {
     const keys = /* @__PURE__ */ new Set([...$states.keys(), ...$infos.keys(), ...$connections.keys()]);
     return new Map(Array.from(keys).map((serial) => {
       const newData = {
@@ -1349,6 +1349,15 @@ async function launch_default(fastify) {
       reply.send(Object.fromEntries(results));
     }
   });
+  fastify.route({
+    method: ["GET", "POST"],
+    url: "/api/action/launch/:serial",
+    async handler(request, reply) {
+      const { serial } = request.params;
+      const results = await repo.openClientOnDevice(serial);
+      reply.send(Object.fromEntries(results));
+    }
+  });
 }
 var init_launch = __esm({
   "src/routes/api/action/launch.ts"() {
@@ -1380,6 +1389,73 @@ var init_refresh = __esm({
   }
 });
 
+// src/lib/text/distribute.ts
+function hasKeys(obj, keys) {
+  if (obj == void 0)
+    return false;
+  return keys.every((key) => obj[key] !== void 0);
+}
+function scorePosition(info) {
+  return info.x * -1 + info.y * -500;
+}
+function scoreSize(info) {
+  return info.width * 100 + info.height * 1;
+}
+function asPosition(info) {
+  return hasKeys(info, ["x", "y"]) ? info : void 0;
+}
+function asRectangle(info) {
+  return hasKeys(info, ["width", "height"]) ? info : void 0;
+}
+function compareValues(asValue, compareFn) {
+  return ([, aInfo], [, bInfo]) => {
+    const a = asValue(aInfo);
+    const b = asValue(bInfo);
+    if (a != void 0 && b != void 0) {
+      return compareFn(b) - compareFn(a);
+    } else if (a) {
+      return -1;
+    } else if (b) {
+      return 1;
+    } else {
+      return 0;
+    }
+  };
+}
+function sortDevicesByPosition(devices) {
+  return Array.from(devices).sort(compareValues(asPosition, scorePosition)).map(([id]) => id);
+}
+function sortDevicesBySize(devices) {
+  return Array.from(devices).sort(compareValues(asRectangle, scoreSize)).map(([id]) => id);
+}
+function distributeText(devices, lines) {
+  const deviceIds = sortDevicesByPosition(devices);
+  const biggestToSmallest = sortDevicesBySize(devices);
+  const smallestBucketSize = Math.floor(lines.length / deviceIds.length);
+  let remainderBucketSize = lines.length % deviceIds.length;
+  const bucketSizes = new Map(biggestToSmallest.map((id) => [id, smallestBucketSize]));
+  for (const [id, size] of bucketSizes.entries()) {
+    bucketSizes.set(id, size + 1);
+    remainderBucketSize--;
+    if (remainderBucketSize <= 0) {
+      break;
+    }
+  }
+  const deviceToText = /* @__PURE__ */ new Map();
+  let i = 0;
+  for (const id of deviceIds) {
+    const bucketSize = bucketSizes.get(id) ?? 0;
+    const text = lines.slice(i, i + bucketSize);
+    i += bucketSize;
+    deviceToText.set(id, text);
+  }
+  return deviceToText;
+}
+var init_distribute = __esm({
+  "src/lib/text/distribute.ts"() {
+  }
+});
+
 // src/routes/api/action/text.ts
 var text_exports = {};
 __export(text_exports, {
@@ -1405,39 +1481,28 @@ async function text_default(fastify) {
     url: "/api/action/text",
     async handler(request, reply) {
       const lines = parseLines(request.body);
-      const deviceIds = get_store_value(sortedDeviceIds);
-      const deviceToText = /* @__PURE__ */ new Map();
-      for (const [i, line] of lines.entries()) {
-        const index = i % deviceIds.length;
-        const deviceId = deviceIds[index];
-        const textArray = deviceToText.get(deviceId) ?? [];
-        textArray.push(line);
-        deviceToText.set(deviceId, textArray);
-      }
+      const devices = get_store_value(cellInfo);
+      const deviceToText = distributeText(devices, lines);
       const colors = new RandomColor();
       const textStates = transformMap(deviceToText, (lines2) => textState(lines2.join(", "), request.query.backgroundColor ?? colors.next()));
       repo.cellState.setStates(textStates);
       if (request.query.rest) {
-        const remaining = Array.from(deviceIds).filter((serial) => !deviceToText.has(serial));
+        const remaining = Array.from(devices.keys()).filter((serial) => !deviceToText.has(serial));
         await updateRemainingCells(remaining, request.query.rest || "ignore");
       }
       reply.send(Object.fromEntries(textStates));
     }
   });
 }
-var sortedDeviceIds;
+var cellInfo;
 var init_text = __esm({
   "src/routes/api/action/text.ts"() {
     init_store();
     init_transform();
     init_repository2();
+    init_distribute();
     init_remaining();
-    sortedDeviceIds = derived(repo.cellData, (devices) => {
-      return Array.from(devices).sort(([, a], [, b]) => {
-        var _a, _b;
-        return (((_a = b.info) == null ? void 0 : _a.width) ?? 0) - (((_b = a.info) == null ? void 0 : _b.width) ?? 0);
-      }).map(([id]) => id);
-    });
+    cellInfo = derived(repo.cellData, (devices) => transformMap(devices, (device) => device.info));
   }
 });
 
@@ -1448,12 +1513,12 @@ __export(info_exports, {
 });
 import { cellInfoSchema } from "@cell-wall/shared";
 async function info_default(fastify) {
-  const cellInfo = derived(repo.cellData, ($cellData) => transformMap($cellData, (cellInfo2) => cellInfo2.info ?? null));
+  const cellInfo2 = derived(repo.cellData, ($cellData) => transformMap($cellData, (cellInfo3) => cellInfo3.info ?? null));
   fastify.route({
     method: "GET",
     url: "/api/device/info/",
     async handler(request, reply) {
-      reply.send(Object.fromEntries(get_store_value(cellInfo)));
+      reply.send(Object.fromEntries(get_store_value(cellInfo2)));
     }
   });
   fastify.route({
@@ -1468,7 +1533,7 @@ async function info_default(fastify) {
     },
     async handler(request, reply) {
       const { serial } = request.params;
-      reply.send(get_store_value(cellInfo).get(serial) ?? null);
+      reply.send(get_store_value(cellInfo2).get(serial) ?? null);
     }
   });
   fastify.route({

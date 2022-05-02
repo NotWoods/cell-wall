@@ -3,14 +3,14 @@ export const manifest = {
 	assets: new Set(["css/base.css","img/daphne.jpg","img/tiger.jpg","logo.png","manifest.webmanifest","maskable_icon.png","preset/info.json","preset/tea.json"]),
 	mimeTypes: {".css":"text/css",".jpg":"image/jpeg",".png":"image/png",".webmanifest":"application/manifest+json",".json":"application/json"},
 	_: {
-		entry: {"file":"start-e1829491.js","js":["start-e1829491.js","chunks/index-36754a35.js","chunks/index-2d3b577e.js","chunks/singletons-d1fb5791.js"],"css":[]},
+		entry: {"file":"start-3186cfe7.js","js":["start-3186cfe7.js","chunks/index-6bece970.js","chunks/index-2a0b6ee6.js","chunks/singletons-d1fb5791.js"],"css":[]},
 		nodes: [
 			() => import('./server/nodes/0.js'),
 			() => import('./server/nodes/1.js'),
-			() => import('./server/nodes/13.js'),
+			() => import('./server/nodes/14.js'),
 			() => import('./server/nodes/2.js'),
-			() => import('./server/nodes/11.js'),
 			() => import('./server/nodes/12.js'),
+			() => import('./server/nodes/13.js'),
 			() => import('./server/nodes/4.js'),
 			() => import('./server/nodes/19.js'),
 			() => import('./server/nodes/5.js'),
@@ -25,7 +25,7 @@ export const manifest = {
 			() => import('./server/nodes/8.js'),
 			() => import('./server/nodes/9.js'),
 			() => import('./server/nodes/10.js'),
-			() => import('./server/nodes/14.js')
+			() => import('./server/nodes/11.js')
 		],
 		routes: [
 			{
@@ -140,13 +140,24 @@ export const manifest = {
 			},
 			{
 				type: 'page',
+				id: "cell/frame/busy",
+				pattern: /^\/cell\/frame\/busy\/?$/,
+				names: [],
+				types: [],
+				path: "/cell/frame/busy",
+				shadow: null,
+				a: [0,3,14,16],
+				b: [1]
+			},
+			{
+				type: 'page',
 				id: "cell/frame/clock",
 				pattern: /^\/cell\/frame\/clock\/?$/,
 				names: [],
 				types: [],
 				path: "/cell/frame/clock",
 				shadow: null,
-				a: [0,3,14,16],
+				a: [0,3,14,17],
 				b: [1]
 			},
 			{
@@ -157,7 +168,7 @@ export const manifest = {
 				types: [],
 				path: "/cell/frame/image",
 				shadow: null,
-				a: [0,3,14,17],
+				a: [0,3,14,18],
 				b: [1]
 			},
 			{
@@ -168,7 +179,7 @@ export const manifest = {
 				types: [],
 				path: "/cell/frame/text",
 				shadow: null,
-				a: [0,3,14,18],
+				a: [0,3,14,19],
 				b: [1]
 			},
 			{
@@ -179,18 +190,7 @@ export const manifest = {
 				types: [],
 				path: "/cell/frame/web",
 				shadow: null,
-				a: [0,3,14,19],
-				b: [1]
-			},
-			{
-				type: 'page',
-				id: "page/busy/[person]",
-				pattern: /^\/page\/busy\/([^/]+?)\/?$/,
-				names: ["person"],
-				types: [null],
-				path: null,
-				shadow: null,
-				a: [0,20],
+				a: [0,3,14,20],
 				b: [1]
 			}
 		],

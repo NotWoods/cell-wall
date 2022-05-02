@@ -1,9 +1,8 @@
-import { buildSchema } from './_schema';
+import { buildSchema } from './_schema.js';
 export const cellStateClockSchema = buildSchema({
     type: 'CLOCK',
     properties: {
         payload: { type: 'string', title: 'Time Zone' }
-    },
-    required: ['payload']
+    }
 });
 //# sourceMappingURL=clock.js.map

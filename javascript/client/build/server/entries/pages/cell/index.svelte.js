@@ -29,11 +29,9 @@ var __objRest = (source, exclude) => {
     }
   return target;
 };
-import { c as create_ssr_component, b as add_attribute } from "../../../chunks/index-0b76d127.js";
-import { f as frameUrl } from "../../../chunks/state-socket-81af6fa4.js";
-import { d as derived, w as writable } from "../../../chunks/index-441a7cba.js";
-import "../../../chunks/web-9961d8d9.js";
-import { c as cellStateTypes } from "../../../chunks/index-cc0f756b.js";
+import { c as create_ssr_component, b as add_attribute } from "../../../chunks/index-07af9b00.js";
+import { f as frameUrl } from "../../../chunks/state-socket-9cad1e3b.js";
+import { d as derived, w as writable } from "../../../chunks/web-c1f4ba88.js";
 const browser = false;
 function guard(name) {
   return () => {
@@ -42,6 +40,14 @@ function guard(name) {
 }
 const goto = guard("goto");
 const prefetchRoutes = guard("prefetchRoutes");
+const cellStateTypes = /* @__PURE__ */ new Set([
+  "BLANK",
+  "TEXT",
+  "IMAGE",
+  "WEB",
+  "CLOCK",
+  "BUSY"
+]);
 function lockState() {
   const state = writable({
     active: false

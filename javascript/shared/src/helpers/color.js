@@ -1,3 +1,4 @@
+import { randomIndex } from './random.js';
 // Corresponds to 900 level colors from Tailwind
 const RAINBOW_COLORS = [
     '#0F172A',
@@ -37,10 +38,10 @@ export class RandomColor {
             this.reset();
             return color;
         }
-        const randomIndex = Math.floor(Math.random() * this.unusedColors.length);
-        const color = this.unusedColors[randomIndex];
+        const index = randomIndex(this.unusedColors);
+        const color = this.unusedColors[index];
         // Remove the color from the list of unused colors
-        this.unusedColors.splice(randomIndex, 1);
+        this.unusedColors.splice(index, 1);
         return color;
     }
 }

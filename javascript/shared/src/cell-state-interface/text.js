@@ -1,4 +1,4 @@
-import { buildSchema } from './_schema';
+import { buildSchema } from './_schema.js';
 export function textState(text, backgroundColor) {
     return { type: 'TEXT', payload: text, backgroundColor };
 }
