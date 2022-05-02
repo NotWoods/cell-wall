@@ -111,7 +111,7 @@
 	$: calendarId = $busyState?.payload;
 
 	let freeBusyRanges: readonly TimePeriod[] = [];
-	let error: string = '';
+	let error = '';
 
 	$: knownPerson = calendarId ? knownPeople.get(calendarId) : undefined;
 

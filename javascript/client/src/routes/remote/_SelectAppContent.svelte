@@ -4,7 +4,7 @@
 
 	export let info: CellInfo;
 	export let state: CellState | undefined;
-	export let small: boolean = false;
+	export let small = false;
 
 	$: app = state ?? blankState;
 	$: typeName = app.type === 'BLANK' ? 'Select App' : startCase(app.type.toLocaleLowerCase());
