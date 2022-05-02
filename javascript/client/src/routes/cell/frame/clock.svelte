@@ -30,17 +30,22 @@
 
 	const { state } = getFrameContext();
 	$: clockState = filterState('CLOCK', $state);
-	$: timeZone = clockState?.payload;
+	$: timeZone = clockState?.payload || undefined;
 	$: formatter = new Intl.DateTimeFormat(undefined, {
 		timeStyle: 'short',
 		timeZone
 	});
 
 	$: time = intervalClock();
+	$: timeParts = formatter.formatToParts($time);
 </script>
 
 <main class="fill center">
-	<h1 class="headline-1">{formatter.format($time)}</h1>
+	<h1 class="clock">
+		{#each timeParts as part}
+			<span class={part.type}>{part.value}</span>
+		{/each}
+	</h1>
 </main>
 
 <style>
@@ -48,7 +53,12 @@
 		background: #1f1f1f;
 		color: #c5eed0;
 	}
-	h1 {
+	.clock {
+		text-align: center;
+		font-size: 72px;
 		margin: 8px;
+	}
+	.dayPeriod {
+		font-size: 32px;
 	}
 </style>

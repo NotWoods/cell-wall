@@ -27,6 +27,17 @@ function emptyData(data: ArrayBuffer | Blob | string) {
 	return false;
 }
 
+function jsonParse(data: string): unknown {
+	try {
+		return JSON.parse(data);
+	} catch (error) {
+		if (error instanceof SyntaxError) {
+			return undefined;
+		}
+		throw error;
+	}
+}
+
 /**
  * Listen to socket events from the server containing the current cell state.
  *
@@ -42,7 +53,7 @@ export function cellState(socket: WebSocket | undefined): Readable<CellState> {
 		function handleMessage({ data }: MessageEvent) {
 			// Messages are expected to be sent as pairs of JSON state to associated data
 			if (typeof data === 'string') {
-				const maybeJson: unknown = JSON.parse(data);
+				const maybeJson = jsonParse(data);
 				if (isCellState(maybeJson)) {
 					receivedState = maybeJson;
 					return;
