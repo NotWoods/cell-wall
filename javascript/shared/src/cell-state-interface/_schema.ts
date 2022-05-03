@@ -13,6 +13,7 @@ interface BaseJsonSchemaProperty<Type extends string | number | boolean | object
 	title?: string;
 	enum?: readonly Type[];
 	const?: Type;
+	examples?: readonly Type[];
 }
 
 export interface ObjectJsonSchemaProperty extends BaseJsonSchemaProperty<object> {

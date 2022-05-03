@@ -11,6 +11,7 @@ const CLIENT_ROUTES = [
 	'/demo',
 	'/third_party',
 	'/css/*',
+	'/img/*',
 	'/logo.png',
 	'/src/*',
 	'/@fs/*',

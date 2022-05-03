@@ -32,12 +32,13 @@
 				label: property.title ?? startCase(name),
 				property,
 				type,
-				fallback: type === 'color' ? randomColor.next() : ''
+				fallback: type === 'color' ? randomColor.next() : '',
+				examples: property.examples ?? []
 			};
 		});
 </script>
 
-{#each properties as { name, label, type, property, fallback } (name)}
+{#each properties as { name, label, type, property, fallback, examples } (name)}
 	<HorizontalField for="control-{name}" {label} let:inputClassName>
 		{#if Array.isArray(property.enum)}
 			<select id="control-{name}" {name} class={inputClassName}>
@@ -48,12 +49,20 @@
 		{:else}
 			<input
 				id="control-{name}"
+				list={examples.length > 0 ? `list-${name}` : undefined}
 				class={type === 'color' ? '' : inputClassName}
 				{name}
 				{type}
 				required={required.has(name)}
 				value={state?.[name] ?? fallback}
 			/>
+			{#if examples.length > 0}
+				<datalist id="list-{name}">
+					{#each examples as example}
+						<option value={example} />
+					{/each}
+				</datalist>
+			{/if}
 		{/if}
 	</HorizontalField>
 {/each}

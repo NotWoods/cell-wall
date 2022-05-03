@@ -3,11 +3,11 @@
 		Object.entries({
 			'tigeroakes@gmail.com': {
 				name: 'Tiger',
-				image: '/assets/img/tiger.jpg'
+				image: '/img/tiger.jpg'
 			},
 			'daphne.liu97@gmail.com': {
 				name: 'Daphne',
-				image: '/assets/img/daphne.jpg'
+				image: '/img/daphne.jpg'
 			}
 		})
 	);
@@ -16,18 +16,24 @@
 <script lang="ts">
 	import FormattedTime from '$lib/components/Frame/FormattedTime.svelte';
 	import { filterState } from '$lib/filter-state';
-	import type { BusyState } from '../../../workers/busy';
+	import { onMount } from 'svelte';
+	import BusyWorker from '../../../workers/busy-worker?worker';
+	import type { BusyState } from '../../../workers/busy-worker';
 	import { messages } from '../../../workers/store';
 	import { getFrameContext } from './__layout.svelte';
-
-	const worker = new Worker(new URL('../../../workers/busy.js', import.meta.url));
 
 	const { state } = getFrameContext();
 	$: busyState = filterState('BUSY', state);
 	$: calendarId = $busyState?.payload;
 
+	let worker: Worker | undefined;
+
+	onMount(() => {
+		worker = new BusyWorker();
+	});
+
 	$: {
-		worker.postMessage(calendarId);
+		worker?.postMessage(calendarId);
 	}
 	$: workerState = messages<{ error: string; isBusy?: BusyState }>(worker, { error: '' });
 

@@ -6,7 +6,7 @@ export default async function (fastify: FastifyInstance): Promise<void> {
 	fastify.route<{
 		Reply: readonly calendar_v3.Schema$TimePeriod[] | Error;
 	}>({
-		method: 'GET',
+		method: 'POST',
 		url: '/api/third_party/freebusy',
 		/**
 		 * Query the Google Calendar Free/Busy API

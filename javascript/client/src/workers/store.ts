@@ -13,12 +13,17 @@ interface MessageSource extends EventTarget {
 	): void;
 }
 
-export function messages<T = any>(messageSource: MessageSource): Readable<T | undefined>;
-export function messages<T = any>(messageSource: MessageSource, initialState: T): Readable<T>;
-export function messages<T = any>(messageSource: MessageSource, initialState?: T) {
+export function messages<T = any>(
+	messageSource: MessageSource | undefined
+): Readable<T | undefined>;
+export function messages<T = any>(
+	messageSource: MessageSource | undefined,
+	initialState: T
+): Readable<T>;
+export function messages<T = any>(messageSource: MessageSource | undefined, initialState?: T) {
 	return readable<T>(initialState, (set) => {
 		const controller = new AbortController();
-		messageSource.addEventListener(
+		messageSource?.addEventListener(
 			'message',
 			(event: MessageEvent<T>) => set(event.data),
 			controller

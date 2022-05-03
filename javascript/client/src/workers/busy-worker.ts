@@ -102,6 +102,7 @@ self.addEventListener('message', async (event: MessageEvent<string | undefined>)
 				self.postMessage({ isBusy: $isBusy, error: '' });
 			});
 		} catch (error) {
+			console.error(error);
 			const errorMessage = error instanceof Error ? error.message : '';
 			self.postMessage({ error: errorMessage });
 		}

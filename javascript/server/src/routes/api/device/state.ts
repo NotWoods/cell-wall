@@ -91,7 +91,7 @@ export default async function (fastify: FastifyInstance): Promise<void> {
 			);
 
 			if (!state) {
-				reply.status(400).send(new Error(`Invalid body ${request.body}`));
+				reply.status(400).send(new Error(`Invalid body ${JSON.stringify(request.body)}`));
 				return;
 			}
 
