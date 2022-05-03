@@ -25,6 +25,7 @@ export async function freeBusy(options: {
 	timeMin: Temporal.ZonedDateTime;
 	timeMax: Temporal.ZonedDateTime;
 	items: FreeBusyRequest['items'];
+	signal?: AbortSignal;
 }): Promise<Omit<Response, 'json'> & { json(): Promise<FreeBusyResponse> }> {
 	const toStringOptions = {
 		timeZoneName: 'never',
@@ -42,6 +43,7 @@ export async function freeBusy(options: {
 		headers: {
 			'Content-Type': 'application/json'
 		},
-		body: JSON.stringify(request)
+		body: JSON.stringify(request),
+		signal: options.signal
 	});
 }
