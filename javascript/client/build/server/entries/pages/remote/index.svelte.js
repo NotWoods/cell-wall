@@ -1,10 +1,10 @@
 import { c as create_ssr_component, e as escape, q as add_classes, v as validate_component, a as subscribe, b as add_attribute, f as each, n as noop } from "../../../chunks/index-07af9b00.js";
-import { a as applyScale, s as splitToBuckets, f as fitScale } from "../../../chunks/fit-scale-21ce524a.js";
-import { d as derived, r as readable, b as blankState, c as cellCanvas } from "../../../chunks/web-c1f4ba88.js";
+import { a as applyScale, s as splitToBuckets, f as fitScale } from "../../../chunks/fit-scale-9ea13e5e.js";
+import { d as derived, r as readable, b as blankState, c as cellCanvas } from "../../../chunks/web-9fac8a47.js";
 import startCase from "lodash.startcase";
-import { g as getRemoteContext } from "../../../chunks/__layout-6f794c2d.js";
+import { g as getRemoteContext } from "../../../chunks/__layout-1916a0e9.js";
 import "../../../chunks/TopBar-63a4c84b.js";
-import "../../../chunks/snackbar-host-4e5f0dd7.js";
+import "../../../chunks/snackbar-host-2ba8754b.js";
 function resizeObserverStore(element) {
   if (element) {
     return readable(void 0, (set) => {

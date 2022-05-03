@@ -1760,7 +1760,7 @@ async function state_default(fastify) {
       const { serial } = request.params;
       const state = asCellState(request.body instanceof URLSearchParams ? Object.fromEntries(request.body) : request.body);
       if (!state) {
-        reply.status(400).send(new Error(`Invalid body ${request.body}`));
+        reply.status(400).send(new Error(`Invalid body ${JSON.stringify(request.body)}`));
         return;
       }
       repo.cellState.setStates((/* @__PURE__ */ new Map()).set(serial, state));
@@ -1804,7 +1804,7 @@ __export(freebusy_exports, {
 });
 async function freebusy_default(fastify) {
   fastify.route({
-    method: "GET",
+    method: "POST",
     url: "/api/third_party/freebusy",
     async handler(request, reply) {
       const googleClient = await repo.thirdParty.google;

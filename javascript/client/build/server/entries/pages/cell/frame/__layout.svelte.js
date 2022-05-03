@@ -1,6 +1,6 @@
 import { c as create_ssr_component, a as subscribe, b as add_attribute, n as noop, g as getContext, s as setContext, v as validate_component } from "../../../../chunks/index-07af9b00.js";
-import { r as readable } from "../../../../chunks/web-c1f4ba88.js";
-import { f as frameUrl, c as connect, a as cellState } from "../../../../chunks/state-socket-9cad1e3b.js";
+import { r as readable } from "../../../../chunks/web-9fac8a47.js";
+import { f as frameUrl, c as connect, a as cellState } from "../../../../chunks/state-socket-c39d2efa.js";
 import { r as randomItem } from "../../../../chunks/random-ca7fbb84.js";
 var SocketIndicator_svelte_svelte_type_style_lang = "";
 const css$2 = {

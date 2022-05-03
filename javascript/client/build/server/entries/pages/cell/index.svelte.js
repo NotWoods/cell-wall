@@ -30,8 +30,8 @@ var __objRest = (source, exclude) => {
   return target;
 };
 import { c as create_ssr_component, b as add_attribute } from "../../../chunks/index-07af9b00.js";
-import { f as frameUrl } from "../../../chunks/state-socket-9cad1e3b.js";
-import { d as derived, w as writable } from "../../../chunks/web-c1f4ba88.js";
+import { f as frameUrl } from "../../../chunks/state-socket-c39d2efa.js";
+import { d as derived, w as writable } from "../../../chunks/web-9fac8a47.js";
 const browser = false;
 function guard(name) {
   return () => {
