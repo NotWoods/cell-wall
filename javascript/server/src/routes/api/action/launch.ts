@@ -9,7 +9,7 @@ export default async function (fastify: FastifyInstance): Promise<void> {
 		Reply: Record<string, PromiseSettledResult<void>>;
 	}>({
 		method: ['GET', 'POST'],
-		url: '/api/action/launch',
+		url: '/api/action/launch/',
 		async handler(request, reply) {
 			const results = await repo.openClientOnDevice();
 			reply.send(Object.fromEntries(results));
