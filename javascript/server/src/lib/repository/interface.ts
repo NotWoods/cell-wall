@@ -12,6 +12,9 @@ export interface Repository {
 	cellState: CellStateStore;
 	powered: AndroidPoweredStore;
 	webSockets: WebSocketStore;
+	/**
+	 * Interface for third-party API libraries.
+	 */
 	thirdParty: ThirdPartyConnect;
 	refreshDevices(): Promise<void>;
 	installApk(tag?: string): Promise<Map<Serial, InstallOrUpgradeResult>>;

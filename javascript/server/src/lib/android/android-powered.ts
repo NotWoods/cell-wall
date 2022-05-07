@@ -1,5 +1,6 @@
 import type ADB from 'appium-adb';
 import { get, writable, type Readable, type Updater, type Writable } from 'svelte/store';
+import { findChangeSet } from '../map/changes';
 import { allSettledMap } from '../map/transform';
 import { setWhenDone } from '../store/promise';
 import { getWakefulness } from './adb-actions';
@@ -94,8 +95,7 @@ export function androidPowered(devices: Readable<ReadonlyMap<Serial, ADB>>): And
 		poweredOn.update((oldSet) => {
 			const newSet = updater(oldSet);
 			const $devices = get(devices);
-			const added = Array.from(newSet).filter((udid) => !oldSet.has(udid));
-			const removed = Array.from(oldSet).filter((udid) => !newSet.has(udid));
+			const { added, removed, same } = findChangeSet(oldSet, newSet);
 
 			function updatePower(udid: Serial, on: boolean) {
 				const device = $devices.get(udid);
@@ -105,6 +105,7 @@ export function androidPowered(devices: Readable<ReadonlyMap<Serial, ADB>>): And
 			}
 
 			added.forEach((udid) => updatePower(udid, true));
+			same.forEach((udid) => updatePower(udid, true));
 			removed.forEach((udid) => updatePower(udid, false));
 
 			return newSet;
