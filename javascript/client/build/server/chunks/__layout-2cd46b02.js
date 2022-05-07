@@ -1,5 +1,5 @@
 import { c as create_ssr_component, a as subscribe, b as add_attribute, e as escape, g as getContext, s as setContext, v as validate_component } from "./index-07af9b00.js";
-import { n as navigating, T as TopBar, R as RemoteFrame } from "./TopBar-63a4c84b.js";
+import { n as navigating, T as TopBar, R as RemoteFrame } from "./TopBar-adef7ba1.js";
 import { r as readable, d as derived } from "./web-9fac8a47.js";
 import { S as SnackbarHostState } from "./snackbar-host-2ba8754b.js";
 var NavigationProgress_svelte_svelte_type_style_lang = "";

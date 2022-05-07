@@ -109,7 +109,7 @@ const Presets = create_ssr_component(($$result, $$props, $$bindings, slots) => {
 	${validate_component(PresetCard, "PresetCard").$$render($$result, {
         title: "Actions",
         button: "Launch on devices",
-        formAction: "/api/action/launch",
+        formAction: "/api/action/launch/",
         status
       }, {}, {
         default: () => {

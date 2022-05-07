@@ -21,15 +21,16 @@ import { c as create_ssr_component, v as validate_component, e as escape, b as a
 import { D as DeviceOptions, R as ResetSubmit } from "../../../chunks/DeviceOptions-e1dca499.js";
 import { H as HorizontalField } from "../../../chunks/HorizontalField-06a204be.js";
 import { F as Form } from "../../../chunks/Form-4d58a7fa.js";
-import { g as getRemoteContext, s as storeEntries } from "../../../chunks/__layout-1916a0e9.js";
+import { g as getRemoteContext, s as storeEntries } from "../../../chunks/__layout-2cd46b02.js";
 import { a as cellStateBlankSchema, e as cellStateClockSchema, f as cellStateBusySchema, g as cellStateImageSchema, h as cellStateTextSchema, i as cellStateWebSchema } from "../../../chunks/web-9fac8a47.js";
-import { a as randomIndex } from "../../../chunks/random-ca7fbb84.js";
+import { a as RandomColor } from "../../../chunks/color-8cc37c09.js";
 import startCase from "lodash.startcase";
 import { P as PowerButtons } from "../../../chunks/_PowerButtons-f93d2f32.js";
 import { p as post } from "../../../chunks/_form-52443b97.js";
 import "../../../chunks/Label-f2ecd148.js";
 import "../../../chunks/snackbar-host-2ba8754b.js";
-import "../../../chunks/TopBar-63a4c84b.js";
+import "../../../chunks/TopBar-adef7ba1.js";
+import "../../../chunks/random-ca7fbb84.js";
 const allCellStateSchemas = [
   cellStateBlankSchema,
   cellStateClockSchema,
@@ -38,49 +39,6 @@ const allCellStateSchemas = [
   cellStateTextSchema,
   cellStateWebSchema
 ];
-const RAINBOW_COLORS = [
-  "#0F172A",
-  "#7F1D1D",
-  "#7C2D12",
-  "#78350F",
-  "#713F12",
-  "#365314",
-  "#14532D",
-  "#064E3B",
-  "#134E4A",
-  "#164E63",
-  "#0C4A6E",
-  "#1E3A8A",
-  "#312E81",
-  "#4C1D95",
-  "#581C87",
-  "#701A75",
-  "#831843",
-  "#881337"
-];
-class RandomColor {
-  constructor(colors = RAINBOW_COLORS) {
-    this.colors = colors;
-    if (colors.length === 0) {
-      throw new TypeError("No colors provided");
-    }
-    this.reset();
-  }
-  reset() {
-    this.unusedColors = this.colors.slice();
-  }
-  next() {
-    if (this.unusedColors.length <= 1) {
-      const color2 = this.unusedColors[0];
-      this.reset();
-      return color2;
-    }
-    const index = randomIndex(this.unusedColors);
-    const color = this.unusedColors[index];
-    this.unusedColors.splice(index, 1);
-    return color;
-  }
-}
 const Tabs = create_ssr_component(($$result, $$props, $$bindings, slots) => {
   return `<ul class="${"flex flex-wrap border-b-2 border-slate-700"}" role="${"tablist"}">${slots.default ? slots.default({}) : ``}</ul>`;
 });

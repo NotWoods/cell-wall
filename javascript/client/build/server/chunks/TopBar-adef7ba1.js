@@ -77,12 +77,12 @@ const TopBar = create_ssr_component(($$result, $$props, $$bindings, slots) => {
       return `Image`;
     }
   })}
-		<div class="${"ml-auto flex flex-wrap gap-2 items-center"}">${validate_component(TopBarItem, "TopBarItem").$$render($$result, { href: "/remote/custom" }, {}, {
+		${validate_component(TopBarItem, "TopBarItem").$$render($$result, { href: "/remote/canvas" }, {}, {
     default: () => {
-      return `Custom`;
+      return `Canvas`;
     }
   })}
-			${validate_component(TopBarItem, "TopBarItem").$$render($$result, { href: "/remote/edit" }, {}, {
+		<div class="${"ml-auto flex flex-wrap gap-2 items-center"}">${validate_component(TopBarItem, "TopBarItem").$$render($$result, { href: "/remote/edit" }, {}, {
     default: () => {
       return `Edit`;
     }

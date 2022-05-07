@@ -1,6 +1,6 @@
 import { randomIndex } from './random.js';
 // Corresponds to 900 level colors from Tailwind
-const RAINBOW_COLORS = [
+export const RAINBOW_COLORS = [
     '#0F172A',
     '#7F1D1D',
     '#7C2D12',

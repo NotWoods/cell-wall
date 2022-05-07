@@ -3,7 +3,7 @@ export const manifest = {
 	assets: new Set(["css/base.css","img/daphne.jpg","img/tiger.jpg","logo.png","manifest.webmanifest","maskable_icon.png","preset/info.json","preset/tea.json"]),
 	mimeTypes: {".css":"text/css",".jpg":"image/jpeg",".png":"image/png",".webmanifest":"application/manifest+json",".json":"application/json"},
 	_: {
-		entry: {"file":"start-16b7e301.js","js":["start-16b7e301.js","chunks/index-6bece970.js","chunks/index-2a0b6ee6.js","chunks/singletons-d1fb5791.js"],"css":[]},
+		entry: {"file":"start-0c922cda.js","js":["start-0c922cda.js","chunks/index-6bece970.js","chunks/index-2a0b6ee6.js","chunks/singletons-d1fb5791.js"],"css":[]},
 		nodes: [
 			() => import('./server/nodes/0.js'),
 			() => import('./server/nodes/1.js'),
@@ -18,6 +18,7 @@ export const manifest = {
 			() => import('./server/nodes/16.js'),
 			() => import('./server/nodes/17.js'),
 			() => import('./server/nodes/18.js'),
+			() => import('./server/nodes/21.js'),
 			() => import('./server/nodes/22.js'),
 			() => import('./server/nodes/3.js'),
 			() => import('./server/nodes/6.js'),
@@ -118,13 +119,24 @@ export const manifest = {
 			},
 			{
 				type: 'page',
+				id: "remote/text",
+				pattern: /^\/remote\/text\/?$/,
+				names: [],
+				types: [],
+				path: "/remote/text",
+				shadow: null,
+				a: [0,6,13],
+				b: [1,8]
+			},
+			{
+				type: 'page',
 				id: "remote/third_party",
 				pattern: /^\/remote\/third_party\/?$/,
 				names: [],
 				types: [],
 				path: "/remote/third_party",
 				shadow: null,
-				a: [0,6,13],
+				a: [0,6,14],
 				b: [1,8]
 			},
 			{
@@ -135,7 +147,7 @@ export const manifest = {
 				types: [],
 				path: "/cell/frame/blank",
 				shadow: null,
-				a: [0,3,14,15],
+				a: [0,3,15,16],
 				b: [1]
 			},
 			{
@@ -146,7 +158,7 @@ export const manifest = {
 				types: [],
 				path: "/cell/frame/busy",
 				shadow: null,
-				a: [0,3,14,16],
+				a: [0,3,15,17],
 				b: [1]
 			},
 			{
@@ -157,7 +169,7 @@ export const manifest = {
 				types: [],
 				path: "/cell/frame/clock",
 				shadow: null,
-				a: [0,3,14,17],
+				a: [0,3,15,18],
 				b: [1]
 			},
 			{
@@ -168,7 +180,7 @@ export const manifest = {
 				types: [],
 				path: "/cell/frame/image",
 				shadow: null,
-				a: [0,3,14,18],
+				a: [0,3,15,19],
 				b: [1]
 			},
 			{
@@ -179,7 +191,7 @@ export const manifest = {
 				types: [],
 				path: "/cell/frame/text",
 				shadow: null,
-				a: [0,3,14,19],
+				a: [0,3,15,20],
 				b: [1]
 			},
 			{
@@ -190,7 +202,7 @@ export const manifest = {
 				types: [],
 				path: "/cell/frame/web",
 				shadow: null,
-				a: [0,3,14,20],
+				a: [0,3,15,21],
 				b: [1]
 			}
 		],

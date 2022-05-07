@@ -3,18 +3,18 @@ import { D as DeviceOptions, R as ResetSubmit } from "../../../chunks/DeviceOpti
 import { H as HorizontalField } from "../../../chunks/HorizontalField-06a204be.js";
 import { V as VerticalField } from "../../../chunks/VerticalField-5755d773.js";
 import { F as Form } from "../../../chunks/Form-4d58a7fa.js";
-import { g as getRemoteContext, s as storeEntries, a as storeKeys } from "../../../chunks/__layout-1916a0e9.js";
+import { g as getRemoteContext, s as storeEntries, a as storeKeys } from "../../../chunks/__layout-2cd46b02.js";
 import "../../../chunks/Label-f2ecd148.js";
 import "../../../chunks/snackbar-host-2ba8754b.js";
 import "../../../chunks/web-9fac8a47.js";
-import "../../../chunks/TopBar-63a4c84b.js";
-const prerender = true;
+import "../../../chunks/TopBar-adef7ba1.js";
 async function submit(data, action) {
   const backgroundColor = data.get("backgroundColor");
   if (backgroundColor !== "#ffffff") {
     action.searchParams.set("backgroundColor", backgroundColor);
   }
   action.searchParams.set("rest", data.get("rest"));
+  action.searchParams.set("delay", data.get("delay"));
   try {
     const res = await fetch(action.toString(), {
       method: "post",
@@ -75,8 +75,17 @@ const Text = create_ssr_component(($$result, $$props, $$bindings, slots) => {
         }
       })}
 
+	${validate_component(HorizontalField, "HorizontalField").$$render($$result, {
+        for: "control-delay",
+        label: "Update delay"
+      }, {}, {
+        default: () => {
+          return `<input id="${"control-delay"}" name="${"delay"}" type="${"number"}" value="${"0"}">`;
+        }
+      })}
+
 	${validate_component(ResetSubmit, "ResetSubmit").$$render($$result, { loading }, {}, {})}`;
     }
   })}`;
 });
-export { Text as default, prerender };
+export { Text as default };

@@ -664,10 +664,14 @@ var init_android_device_manager = __esm({
 // src/lib/cells/state.ts
 function cellStateStore() {
   const store = writable(/* @__PURE__ */ new Map());
+  function setStates(states) {
+    const entries = typeof states.entries === "function" ? states.entries() : Object.entries(states);
+    store.update((map) => new Map([...map, ...entries]));
+  }
   return __spreadProps(__spreadValues({}, store), {
-    setStates(states) {
-      const entries = typeof states.entries === "function" ? states.entries() : Object.entries(states);
-      store.update((map) => new Map([...map, ...entries]));
+    setStates,
+    setState(deviceId, state) {
+      setStates((/* @__PURE__ */ new Map()).set(deviceId, state));
     }
   });
 }
@@ -1343,7 +1347,7 @@ __export(launch_exports, {
 async function launch_default(fastify) {
   fastify.route({
     method: ["GET", "POST"],
-    url: "/api/action/launch",
+    url: "/api/action/launch/",
     async handler(request, reply) {
       const results = await repo.openClientOnDevice();
       reply.send(Object.fromEntries(results));
@@ -1389,14 +1393,60 @@ var init_refresh = __esm({
   }
 });
 
-// src/lib/text/distribute.ts
+// src/lib/map/delay.ts
+import { setTimeout } from "timers/promises";
+function asDelay(delay) {
+  delay = delay == null ? void 0 : delay.trim();
+  if (!delay)
+    return void 0;
+  let delayMs;
+  const matchMs = DELAY_MS.exec(delay);
+  if (matchMs) {
+    delayMs = Number(matchMs[1]);
+  } else {
+    const matchSeconds = DELAY_SECONDS.exec(delay);
+    if (matchSeconds) {
+      delayMs = Number(matchSeconds[1]) * 1e3;
+    }
+  }
+  if (typeof delayMs === "number" && !Number.isNaN(delayMs)) {
+    return delayMs;
+  } else {
+    throw new TypeError(`Invalid delay: ${delay}`);
+  }
+}
+async function setStatesWithDelay(store, states, deviceIds, delay) {
+  if (delay > 0) {
+    for (const [i, state] of states.entries()) {
+      const deviceId = deviceIds[i % deviceIds.length];
+      store.setState(deviceId, state);
+      await setTimeout(delay);
+    }
+  } else {
+    const stateMap = /* @__PURE__ */ new Map();
+    for (const [i, state] of states.entries()) {
+      const deviceId = deviceIds[i % deviceIds.length];
+      stateMap.set(deviceId, state);
+    }
+    store.setStates(stateMap);
+  }
+}
+var DELAY_MS, DELAY_SECONDS;
+var init_delay = __esm({
+  "src/lib/map/delay.ts"() {
+    DELAY_MS = /^(\d+)(?:ms)?$/;
+    DELAY_SECONDS = /^(\d+)s?$/;
+  }
+});
+
+// src/lib/text/sort.ts
 function hasKeys(obj, keys) {
   if (obj == void 0)
     return false;
   return keys.every((key) => obj[key] !== void 0);
 }
 function scorePosition(info) {
-  return info.x * -1 + info.y * -500;
+  return info.x * -100 + info.y * -500;
 }
 function scoreSize(info) {
   return info.width * 100 + info.height * 1;
@@ -1428,6 +1478,12 @@ function sortDevicesByPosition(devices) {
 function sortDevicesBySize(devices) {
   return Array.from(devices).sort(compareValues(asRectangle, scoreSize)).map(([id]) => id);
 }
+var init_sort = __esm({
+  "src/lib/text/sort.ts"() {
+  }
+});
+
+// src/lib/text/distribute.ts
 function distributeText(devices, lines) {
   const deviceIds = sortDevicesByPosition(devices);
   const biggestToSmallest = sortDevicesBySize(devices);
@@ -1453,6 +1509,7 @@ function distributeText(devices, lines) {
 }
 var init_distribute = __esm({
   "src/lib/text/distribute.ts"() {
+    init_sort();
   }
 });
 
@@ -1485,10 +1542,22 @@ async function text_default(fastify) {
       const deviceToText = distributeText(devices, lines);
       const colors = new RandomColor();
       const textStates = transformMap(deviceToText, (lines2) => textState(lines2.join(", "), request.query.backgroundColor ?? colors.next()));
+      let delay;
+      try {
+        delay = asDelay(request.query.delay) ?? 0;
+      } catch {
+        reply.status(400).send(new Error(`Invalid delay ${request.query.delay}`));
+        return;
+      }
       repo.cellState.setStates(textStates);
-      if (request.query.rest) {
-        const remaining = Array.from(devices.keys()).filter((serial) => !deviceToText.has(serial));
-        await updateRemainingCells(remaining, request.query.rest || "ignore");
+      const jobDone = setStatesWithDelay(repo.cellState, Array.from(textStates.values()), Array.from(textStates.keys()), delay).then(async () => {
+        if (request.query.rest) {
+          const remaining = Array.from(devices.keys()).filter((serial) => !deviceToText.has(serial));
+          await updateRemainingCells(remaining, request.query.rest || "ignore");
+        }
+      });
+      if (request.query.wait || delay === 0) {
+        await jobDone;
       }
       reply.send(Object.fromEntries(textStates));
     }
@@ -1498,6 +1567,7 @@ var cellInfo;
 var init_text = __esm({
   "src/routes/api/action/text.ts"() {
     init_store();
+    init_delay();
     init_transform();
     init_repository2();
     init_distribute();
@@ -1702,9 +1772,47 @@ var init_preset = __esm({
   }
 });
 
+// src/lib/text/info-store.ts
+import { memo as memo2 } from "@cell-wall/shared";
+function equalMaps(a, b) {
+  if (a.size !== b.size) {
+    return false;
+  }
+  return Array.from(a.entries()).every(([key, aValue]) => aValue === b.get(key));
+}
+function deriveCellInfo2(cellData) {
+  let lastMap = /* @__PURE__ */ new Map();
+  return derived(cellData, (devices) => {
+    const newMap = transformMap(devices, (device) => device.info);
+    if (!equalMaps(newMap, lastMap)) {
+      lastMap = newMap;
+      return newMap;
+    } else {
+      return lastMap;
+    }
+  });
+}
+function _deriveSortedInfo(cellData) {
+  const cellInfo2 = deriveCellInfo2(cellData);
+  return {
+    leftToRight: derived(cellInfo2, sortDevicesByPosition),
+    biggestToSmallest: derived(cellInfo2, sortDevicesBySize)
+  };
+}
+var deriveSortedInfo;
+var init_info_store = __esm({
+  "src/lib/text/info-store.ts"() {
+    init_store();
+    init_transform();
+    init_sort();
+    deriveSortedInfo = memo2(_deriveSortedInfo);
+  }
+});
+
 // src/routes/api/device/state.ts
 var state_exports = {};
 __export(state_exports, {
+  asCellState: () => asCellState,
   default: () => state_default
 });
 import { blankState as blankState3, cellStateTypes } from "@cell-wall/shared";
@@ -1763,7 +1871,7 @@ async function state_default(fastify) {
         reply.status(400).send(new Error(`Invalid body ${JSON.stringify(request.body)}`));
         return;
       }
-      repo.cellState.setStates((/* @__PURE__ */ new Map()).set(serial, state));
+      repo.cellState.setState(serial, state);
       reply.send({ [serial]: state });
     }
   });
@@ -1773,6 +1881,53 @@ var init_state2 = __esm({
     init_store();
     init_transform();
     init_repository2();
+  }
+});
+
+// src/routes/api/device/state-array.ts
+var state_array_exports = {};
+__export(state_array_exports, {
+  default: () => state_array_default
+});
+import { isDefined } from "ts-extras";
+async function state_array_default(fastify) {
+  fastify.route({
+    method: "POST",
+    url: "/api/device/state-array",
+    async handler(request, reply) {
+      if (!Array.isArray(request.body)) {
+        reply.status(400).send(new Error(`Invalid body ${JSON.stringify(request.body)}, must be array`));
+        return;
+      }
+      const statesAndErrors = request.body.map(asCellState);
+      const states = statesAndErrors.filter(isDefined);
+      if (states.length !== statesAndErrors.length) {
+        reply.status(400).send(new Error(`Invalid body ${JSON.stringify(request.body)}`));
+        return;
+      }
+      let delay;
+      try {
+        delay = asDelay(request.query.delay) ?? 0;
+      } catch {
+        reply.status(400).send(new Error(`Invalid delay ${request.query.delay}`));
+        return;
+      }
+      const devicesByPosition = get_store_value(deriveSortedInfo(repo.cellData).leftToRight);
+      const jobDone = setStatesWithDelay(repo.cellState, states, devicesByPosition, delay);
+      if (request.query.wait || delay === 0) {
+        await jobDone;
+      }
+      reply.send(devicesByPosition);
+    }
+  });
+}
+var init_state_array = __esm({
+  "src/routes/api/device/state-array.ts"() {
+    init_store();
+    init_delay();
+    init_repository2();
+    init_info_store();
+    init_state2();
   }
 });
 
@@ -1953,7 +2108,7 @@ async function urlEncodedPlugin(fastify) {
 // src/routes.ts
 async function routesSubsystem(fastify) {
   await urlEncodedPlugin(fastify);
-  await fastify.register(Promise.resolve().then(() => (init_image3(), image_exports))).register(Promise.resolve().then(() => (init_install(), install_exports))).register(Promise.resolve().then(() => (init_launch(), launch_exports))).register(Promise.resolve().then(() => (init_refresh(), refresh_exports))).register(Promise.resolve().then(() => (init_text(), text_exports))).register(Promise.resolve().then(() => (init_info(), info_exports))).register(Promise.resolve().then(() => (init_power(), power_exports))).register(Promise.resolve().then(() => (init_preset(), preset_exports))).register(Promise.resolve().then(() => (init_state2(), state_exports))).register(Promise.resolve().then(() => (init_device(), device_exports))).register(Promise.resolve().then(() => (init_freebusy(), freebusy_exports))).register(Promise.resolve().then(() => (init_third_party(), third_party_exports))).register(Promise.resolve().then(() => (init_cellwall_version(), cellwall_version_exports))).register(Promise.resolve().then(() => (init_routes(), routes_exports))).register(Promise.resolve().then(() => (init_oauth2callback(), oauth2callback_exports)));
+  await fastify.register(Promise.resolve().then(() => (init_image3(), image_exports))).register(Promise.resolve().then(() => (init_install(), install_exports))).register(Promise.resolve().then(() => (init_launch(), launch_exports))).register(Promise.resolve().then(() => (init_refresh(), refresh_exports))).register(Promise.resolve().then(() => (init_text(), text_exports))).register(Promise.resolve().then(() => (init_info(), info_exports))).register(Promise.resolve().then(() => (init_power(), power_exports))).register(Promise.resolve().then(() => (init_preset(), preset_exports))).register(Promise.resolve().then(() => (init_state_array(), state_array_exports))).register(Promise.resolve().then(() => (init_state2(), state_exports))).register(Promise.resolve().then(() => (init_device(), device_exports))).register(Promise.resolve().then(() => (init_freebusy(), freebusy_exports))).register(Promise.resolve().then(() => (init_third_party(), third_party_exports))).register(Promise.resolve().then(() => (init_cellwall_version(), cellwall_version_exports))).register(Promise.resolve().then(() => (init_routes(), routes_exports))).register(Promise.resolve().then(() => (init_oauth2callback(), oauth2callback_exports)));
 }
 
 // src/websocket.ts

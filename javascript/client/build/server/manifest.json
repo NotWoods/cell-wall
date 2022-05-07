@@ -57,7 +57,7 @@
     "isEntry": true,
     "imports": [
       "_index-07af9b00.js",
-      "_TopBar-63a4c84b.js"
+      "_TopBar-adef7ba1.js"
     ]
   },
   "src/routes/cell/frame/blank.svelte": {
@@ -125,10 +125,11 @@
     "imports": [
       "_index-07af9b00.js",
       "_filter-state-522a709a.js",
-      "src/routes/cell/frame/__layout.svelte",
       "_web-9fac8a47.js",
-      "_state-socket-c39d2efa.js",
-      "_random-ca7fbb84.js"
+      "_color-8cc37c09.js",
+      "_random-ca7fbb84.js",
+      "src/routes/cell/frame/__layout.svelte",
+      "_state-socket-c39d2efa.js"
     ],
     "css": [
       "assets/entries/pages/cell/frame/text.svelte-3206ee01.css"
@@ -169,7 +170,7 @@
     "isEntry": true,
     "imports": [
       "_index-07af9b00.js",
-      "_TopBar-63a4c84b.js"
+      "_TopBar-adef7ba1.js"
     ],
     "css": [
       "assets/entries/pages/demo.svelte-d1705dec.css"
@@ -192,8 +193,8 @@
       "_fit-scale-9ea13e5e.js",
       "_LinkButton-5c850a00.js",
       "_web-9fac8a47.js",
-      "___layout-1916a0e9.js",
-      "_TopBar-63a4c84b.js",
+      "___layout-2cd46b02.js",
+      "_TopBar-adef7ba1.js",
       "_snackbar-host-2ba8754b.js"
     ],
     "css": [
@@ -209,14 +210,15 @@
       "_DeviceOptions-e1dca499.js",
       "_HorizontalField-06a204be.js",
       "_Form-4d58a7fa.js",
-      "___layout-1916a0e9.js",
+      "___layout-2cd46b02.js",
       "_web-9fac8a47.js",
-      "_random-ca7fbb84.js",
+      "_color-8cc37c09.js",
       "__PowerButtons-f93d2f32.js",
       "__form-52443b97.js",
       "_Label-f2ecd148.js",
       "_snackbar-host-2ba8754b.js",
-      "_TopBar-63a4c84b.js"
+      "_TopBar-adef7ba1.js",
+      "_random-ca7fbb84.js"
     ]
   },
   "src/routes/remote/edit.svelte": {
@@ -228,13 +230,13 @@
       "_DeviceOptions-e1dca499.js",
       "_HorizontalField-06a204be.js",
       "_Form-4d58a7fa.js",
-      "___layout-1916a0e9.js",
+      "___layout-2cd46b02.js",
       "__PowerButtons-f93d2f32.js",
       "__form-52443b97.js",
       "_Label-f2ecd148.js",
       "_snackbar-host-2ba8754b.js",
       "_web-9fac8a47.js",
-      "_TopBar-63a4c84b.js"
+      "_TopBar-adef7ba1.js"
     ]
   },
   "src/routes/remote/image.svelte": {
@@ -246,11 +248,11 @@
       "_DeviceOptions-e1dca499.js",
       "_HorizontalField-06a204be.js",
       "_Form-4d58a7fa.js",
-      "___layout-1916a0e9.js",
+      "___layout-2cd46b02.js",
       "_Label-f2ecd148.js",
       "_snackbar-host-2ba8754b.js",
       "_web-9fac8a47.js",
-      "_TopBar-63a4c84b.js"
+      "_TopBar-adef7ba1.js"
     ]
   },
   "src/routes/remote/index.svelte": {
@@ -261,8 +263,8 @@
       "_index-07af9b00.js",
       "_fit-scale-9ea13e5e.js",
       "_web-9fac8a47.js",
-      "___layout-1916a0e9.js",
-      "_TopBar-63a4c84b.js",
+      "___layout-2cd46b02.js",
+      "_TopBar-adef7ba1.js",
       "_snackbar-host-2ba8754b.js"
     ],
     "css": [
@@ -294,11 +296,11 @@
       "_HorizontalField-06a204be.js",
       "_VerticalField-5755d773.js",
       "_Form-4d58a7fa.js",
-      "___layout-1916a0e9.js",
+      "___layout-2cd46b02.js",
       "_Label-f2ecd148.js",
       "_snackbar-host-2ba8754b.js",
       "_web-9fac8a47.js",
-      "_TopBar-63a4c84b.js"
+      "_TopBar-adef7ba1.js"
     ]
   },
   "src/routes/remote/third_party.svelte": {
@@ -317,8 +319,8 @@
     "isEntry": true,
     "imports": [
       "_index-07af9b00.js",
-      "___layout-1916a0e9.js",
-      "_TopBar-63a4c84b.js",
+      "___layout-2cd46b02.js",
+      "_TopBar-adef7ba1.js",
       "_snackbar-host-2ba8754b.js",
       "_web-9fac8a47.js"
     ]
@@ -341,11 +343,11 @@
   "_random-ca7fbb84.js": {
     "file": "chunks/random-ca7fbb84.js"
   },
-  "___layout-1916a0e9.js": {
-    "file": "chunks/__layout-1916a0e9.js",
+  "___layout-2cd46b02.js": {
+    "file": "chunks/__layout-2cd46b02.js",
     "imports": [
       "_index-07af9b00.js",
-      "_TopBar-63a4c84b.js",
+      "_TopBar-adef7ba1.js",
       "_web-9fac8a47.js",
       "_snackbar-host-2ba8754b.js"
     ],
@@ -353,13 +355,13 @@
       "assets/__layout-71ab9adf.css"
     ]
   },
-  "_TopBar-63a4c84b.js": {
-    "file": "chunks/TopBar-63a4c84b.js",
+  "_TopBar-adef7ba1.js": {
+    "file": "chunks/TopBar-adef7ba1.js",
     "imports": [
       "_index-07af9b00.js"
     ],
     "css": [
-      "assets/TopBar-38ff352b.css"
+      "assets/TopBar-cbb13d88.css"
     ]
   },
   "_snackbar-host-2ba8754b.js": {
@@ -381,6 +383,12 @@
     "file": "chunks/filter-state-522a709a.js",
     "imports": [
       "_web-9fac8a47.js"
+    ]
+  },
+  "_color-8cc37c09.js": {
+    "file": "chunks/color-8cc37c09.js",
+    "imports": [
+      "_random-ca7fbb84.js"
     ]
   },
   "_fit-scale-9ea13e5e.js": {

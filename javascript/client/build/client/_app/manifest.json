@@ -1,6 +1,6 @@
 {
   ".svelte-kit/runtime/client/start.js": {
-    "file": "start-16b7e301.js",
+    "file": "start-0c922cda.js",
     "src": ".svelte-kit/runtime/client/start.js",
     "isEntry": true,
     "imports": [
@@ -13,7 +13,7 @@
       "src/routes/__error.svelte",
       "src/routes/cell/__layout.svelte",
       "src/routes/cell/frame/__layout.svelte",
-      "___layout-d9d7e29e.js",
+      "___layout-fd782b1f.js",
       "src/routes/remote/__error.svelte",
       "src/routes/cell/frame/blank.svelte",
       "src/routes/cell/frame/busy.svelte",
@@ -83,13 +83,13 @@
     ]
   },
   "src/routes/remote/__error.svelte": {
-    "file": "pages/remote/__error.svelte-869acd1a.js",
+    "file": "pages/remote/__error.svelte-ccfc4f2a.js",
     "src": "src/routes/remote/__error.svelte",
     "isEntry": true,
     "isDynamicEntry": true,
     "imports": [
       "_index-6bece970.js",
-      "_TopBar-cf6a6994.js"
+      "_TopBar-f9ff8a42.js"
     ]
   },
   "src/routes/cell/frame/blank.svelte": {
@@ -167,20 +167,21 @@
     ]
   },
   "src/routes/cell/frame/text.svelte": {
-    "file": "pages/cell/frame/text.svelte-5ab52b52.js",
+    "file": "pages/cell/frame/text.svelte-27fa5b7a.js",
     "src": "src/routes/cell/frame/text.svelte",
     "isEntry": true,
     "isDynamicEntry": true,
     "imports": [
       "_index-6bece970.js",
       "_filter-state-ca8b8a84.js",
+      "_web-75f832b0.js",
+      "_color-8cc37c09.js",
+      "_random-ca7fbb84.js",
       "src/routes/cell/frame/__layout.svelte",
       "_index-2a0b6ee6.js",
       "_state-socket-92adeb5a.js",
       "_singletons-d1fb5791.js",
-      "_web-75f832b0.js",
-      "_index-82b3cc87.js",
-      "_random-ca7fbb84.js"
+      "_index-82b3cc87.js"
     ],
     "css": [
       "assets/pages/cell/frame/text.svelte-732273a9.css"
@@ -223,13 +224,13 @@
     ]
   },
   "src/routes/demo.svelte": {
-    "file": "pages/demo.svelte-aa206def.js",
+    "file": "pages/demo.svelte-29d44786.js",
     "src": "src/routes/demo.svelte",
     "isEntry": true,
     "isDynamicEntry": true,
     "imports": [
       "_index-6bece970.js",
-      "_TopBar-cf6a6994.js"
+      "_TopBar-f9ff8a42.js"
     ],
     "css": [
       "assets/pages/demo.svelte-ec6b760d.css"
@@ -245,7 +246,7 @@
     ]
   },
   "src/routes/remote/canvas.svelte": {
-    "file": "pages/remote/canvas.svelte-b621d0d3.js",
+    "file": "pages/remote/canvas.svelte-15892504.js",
     "src": "src/routes/remote/canvas.svelte",
     "isEntry": true,
     "isDynamicEntry": true,
@@ -254,8 +255,8 @@
       "_fit-scale-61fbb069.js",
       "_LinkButton-ea95f95b.js",
       "_web-75f832b0.js",
-      "___layout-d9d7e29e.js",
-      "_TopBar-cf6a6994.js",
+      "___layout-fd782b1f.js",
+      "_TopBar-f9ff8a42.js",
       "_index-82b3cc87.js",
       "_index-2a0b6ee6.js",
       "_snackbar-host-d8a20024.js"
@@ -265,7 +266,7 @@
     ]
   },
   "src/routes/remote/custom.svelte": {
-    "file": "pages/remote/custom.svelte-ee1942b1.js",
+    "file": "pages/remote/custom.svelte-63770247.js",
     "src": "src/routes/remote/custom.svelte",
     "isEntry": true,
     "isDynamicEntry": true,
@@ -274,21 +275,22 @@
       "_DeviceOptions-0b036147.js",
       "_HorizontalField-10ed728a.js",
       "_Form-ed973cb4.js",
-      "___layout-d9d7e29e.js",
+      "___layout-fd782b1f.js",
       "_web-75f832b0.js",
-      "_random-ca7fbb84.js",
+      "_color-8cc37c09.js",
       "_index-8baee0b1.js",
       "__PowerButtons-82f1a11b.js",
       "__form-52443b97.js",
       "_Label-f27fee94.js",
       "_snackbar-host-d8a20024.js",
       "_index-2a0b6ee6.js",
-      "_TopBar-cf6a6994.js",
-      "_index-82b3cc87.js"
+      "_TopBar-f9ff8a42.js",
+      "_index-82b3cc87.js",
+      "_random-ca7fbb84.js"
     ]
   },
   "src/routes/remote/edit.svelte": {
-    "file": "pages/remote/edit.svelte-cacef587.js",
+    "file": "pages/remote/edit.svelte-279e84b0.js",
     "src": "src/routes/remote/edit.svelte",
     "isEntry": true,
     "isDynamicEntry": true,
@@ -297,19 +299,19 @@
       "_DeviceOptions-0b036147.js",
       "_HorizontalField-10ed728a.js",
       "_Form-ed973cb4.js",
-      "___layout-d9d7e29e.js",
+      "___layout-fd782b1f.js",
       "__PowerButtons-82f1a11b.js",
       "__form-52443b97.js",
       "_Label-f27fee94.js",
       "_snackbar-host-d8a20024.js",
       "_web-75f832b0.js",
       "_index-2a0b6ee6.js",
-      "_TopBar-cf6a6994.js",
+      "_TopBar-f9ff8a42.js",
       "_index-82b3cc87.js"
     ]
   },
   "src/routes/remote/image.svelte": {
-    "file": "pages/remote/image.svelte-1fe9cb66.js",
+    "file": "pages/remote/image.svelte-6b2234c1.js",
     "src": "src/routes/remote/image.svelte",
     "isEntry": true,
     "isDynamicEntry": true,
@@ -318,17 +320,17 @@
       "_DeviceOptions-0b036147.js",
       "_HorizontalField-10ed728a.js",
       "_Form-ed973cb4.js",
-      "___layout-d9d7e29e.js",
+      "___layout-fd782b1f.js",
       "_Label-f27fee94.js",
       "_snackbar-host-d8a20024.js",
       "_web-75f832b0.js",
       "_index-2a0b6ee6.js",
-      "_TopBar-cf6a6994.js",
+      "_TopBar-f9ff8a42.js",
       "_index-82b3cc87.js"
     ]
   },
   "src/routes/remote/index.svelte": {
-    "file": "pages/remote/index.svelte-0e10c963.js",
+    "file": "pages/remote/index.svelte-c16ea653.js",
     "src": "src/routes/remote/index.svelte",
     "isEntry": true,
     "isDynamicEntry": true,
@@ -338,8 +340,8 @@
       "_index-2a0b6ee6.js",
       "_web-75f832b0.js",
       "_index-8baee0b1.js",
-      "___layout-d9d7e29e.js",
-      "_TopBar-cf6a6994.js",
+      "___layout-fd782b1f.js",
+      "_TopBar-f9ff8a42.js",
       "_index-82b3cc87.js",
       "_snackbar-host-d8a20024.js"
     ],
@@ -348,7 +350,7 @@
     ]
   },
   "src/routes/remote/presets.svelte": {
-    "file": "pages/remote/presets.svelte-89478461.js",
+    "file": "pages/remote/presets.svelte-abb53522.js",
     "src": "src/routes/remote/presets.svelte",
     "isEntry": true,
     "isDynamicEntry": true,
@@ -365,7 +367,7 @@
     ]
   },
   "src/routes/remote/text.svelte": {
-    "file": "pages/remote/text.svelte-2c822ce4.js",
+    "file": "pages/remote/text.svelte-31c916f7.js",
     "src": "src/routes/remote/text.svelte",
     "isEntry": true,
     "isDynamicEntry": true,
@@ -375,12 +377,12 @@
       "_HorizontalField-10ed728a.js",
       "_VerticalField-ddc7385f.js",
       "_Form-ed973cb4.js",
-      "___layout-d9d7e29e.js",
+      "___layout-fd782b1f.js",
       "_Label-f27fee94.js",
       "_snackbar-host-d8a20024.js",
       "_web-75f832b0.js",
       "_index-2a0b6ee6.js",
-      "_TopBar-cf6a6994.js",
+      "_TopBar-f9ff8a42.js",
       "_index-82b3cc87.js"
     ]
   },
@@ -396,13 +398,13 @@
     ]
   },
   "src/routes/remote/__layout.svelte": {
-    "file": "pages/remote/__layout.svelte-de270122.js",
+    "file": "pages/remote/__layout.svelte-da4095d0.js",
     "src": "src/routes/remote/__layout.svelte",
     "isEntry": true,
     "imports": [
       "_index-6bece970.js",
-      "___layout-d9d7e29e.js",
-      "_TopBar-cf6a6994.js",
+      "___layout-fd782b1f.js",
+      "_TopBar-f9ff8a42.js",
       "_snackbar-host-d8a20024.js",
       "_index-82b3cc87.js",
       "_index-2a0b6ee6.js",
@@ -441,12 +443,12 @@
   "_random-ca7fbb84.js": {
     "file": "chunks/random-ca7fbb84.js"
   },
-  "___layout-d9d7e29e.js": {
-    "file": "chunks/__layout-d9d7e29e.js",
+  "___layout-fd782b1f.js": {
+    "file": "chunks/__layout-fd782b1f.js",
     "isDynamicEntry": true,
     "imports": [
       "_index-6bece970.js",
-      "_TopBar-cf6a6994.js",
+      "_TopBar-f9ff8a42.js",
       "_index-82b3cc87.js",
       "_index-2a0b6ee6.js",
       "_snackbar-host-d8a20024.js"
@@ -455,13 +457,13 @@
       "assets/__layout-f9525609.css"
     ]
   },
-  "_TopBar-cf6a6994.js": {
-    "file": "chunks/TopBar-cf6a6994.js",
+  "_TopBar-f9ff8a42.js": {
+    "file": "chunks/TopBar-f9ff8a42.js",
     "imports": [
       "_index-6bece970.js"
     ],
     "css": [
-      "assets/TopBar-104d1feb.css"
+      "assets/TopBar-feb2efa9.css"
     ]
   },
   "_snackbar-host-d8a20024.js": {
@@ -484,6 +486,12 @@
     "file": "chunks/filter-state-ca8b8a84.js",
     "imports": [
       "_index-2a0b6ee6.js"
+    ]
+  },
+  "_color-8cc37c09.js": {
+    "file": "chunks/color-8cc37c09.js",
+    "imports": [
+      "_random-ca7fbb84.js"
     ]
   },
   "_fit-scale-61fbb069.js": {
