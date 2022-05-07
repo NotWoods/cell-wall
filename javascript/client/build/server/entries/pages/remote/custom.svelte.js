@@ -25,7 +25,7 @@ import { g as getRemoteContext, s as storeEntries } from "../../../chunks/__layo
 import { a as cellStateBlankSchema, e as cellStateClockSchema, f as cellStateBusySchema, g as cellStateImageSchema, h as cellStateTextSchema, i as cellStateWebSchema } from "../../../chunks/web-9fac8a47.js";
 import { a as RandomColor } from "../../../chunks/color-8cc37c09.js";
 import startCase from "lodash.startcase";
-import { P as PowerButtons } from "../../../chunks/_PowerButtons-f93d2f32.js";
+import { P as PowerButtons } from "../../../chunks/_PowerButtons-3ec33f99.js";
 import { p as post } from "../../../chunks/_form-52443b97.js";
 import "../../../chunks/Label-f2ecd148.js";
 import "../../../chunks/snackbar-host-2ba8754b.js";

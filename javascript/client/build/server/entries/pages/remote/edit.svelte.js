@@ -3,7 +3,7 @@ import { c as connectionToString, D as DeviceOptions, R as ResetSubmit } from ".
 import { H as HorizontalField } from "../../../chunks/HorizontalField-06a204be.js";
 import { F as Form } from "../../../chunks/Form-4d58a7fa.js";
 import { g as getRemoteContext, s as storeEntries, a as storeKeys } from "../../../chunks/__layout-2cd46b02.js";
-import { P as PowerButtons } from "../../../chunks/_PowerButtons-f93d2f32.js";
+import { P as PowerButtons } from "../../../chunks/_PowerButtons-3ec33f99.js";
 import { p as post } from "../../../chunks/_form-52443b97.js";
 import "../../../chunks/Label-f2ecd148.js";
 import "../../../chunks/snackbar-host-2ba8754b.js";

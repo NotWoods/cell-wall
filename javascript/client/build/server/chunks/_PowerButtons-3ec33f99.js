@@ -27,6 +27,7 @@ const PowerButtons = create_ssr_component(($$result, $$props, $$bindings, slots)
         colors,
         disabled: serial === void 0,
         class: "rounded-r-none",
+        name: "launch",
         formaction: "/api/action/launch/" + serial,
         "aria-label": "Launch client app"
       }, {}, {

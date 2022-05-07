@@ -213,7 +213,7 @@
       "___layout-2cd46b02.js",
       "_web-9fac8a47.js",
       "_color-8cc37c09.js",
-      "__PowerButtons-f93d2f32.js",
+      "__PowerButtons-3ec33f99.js",
       "__form-52443b97.js",
       "_Label-f2ecd148.js",
       "_snackbar-host-2ba8754b.js",
@@ -231,7 +231,7 @@
       "_HorizontalField-06a204be.js",
       "_Form-4d58a7fa.js",
       "___layout-2cd46b02.js",
-      "__PowerButtons-f93d2f32.js",
+      "__PowerButtons-3ec33f99.js",
       "__form-52443b97.js",
       "_Label-f2ecd148.js",
       "_snackbar-host-2ba8754b.js",
@@ -424,8 +424,8 @@
       "_snackbar-host-2ba8754b.js"
     ]
   },
-  "__PowerButtons-f93d2f32.js": {
-    "file": "chunks/_PowerButtons-f93d2f32.js",
+  "__PowerButtons-3ec33f99.js": {
+    "file": "chunks/_PowerButtons-3ec33f99.js",
     "imports": [
       "_index-07af9b00.js",
       "_Form-4d58a7fa.js",
