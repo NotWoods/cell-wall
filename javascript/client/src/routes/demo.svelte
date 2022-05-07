@@ -1,8 +1,20 @@
 <script lang="ts">
 	import RemoteFrame from '$lib/components/RemoteFrame.svelte';
 	import TopBar from '$lib/components/TopBar/TopBar.svelte';
+	import { onMount } from 'svelte';
+	import { post } from './remote/_form';
 
-	let demoEntries: readonly string[] = ['demo1', 'demo2', 'demo3', 'demo4'];
+	const demoEntries: readonly string[] = ['demo1', 'demo2', 'demo3', 'demo4'];
+
+	onMount(async () => {
+		const response = await post('/api/device/info/', {
+			demo1: { x: 0, y: 0 },
+			demo2: { x: 332, y: 0 },
+			demo3: { x: 332, y: 236 },
+			demo4: { x: 0, y: 472 }
+		});
+		console.log('Pre-register', response.status);
+	});
 </script>
 
 <svelte:head>

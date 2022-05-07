@@ -8,5 +8,5 @@
 		"types": ["@sveltejs/kit"]
 	},
 	"references": [{ "path": "../shared" }],
-	"include": ["src/**/*.d.ts", "src/**/*.ts", "src/**/*.svelte"]
+	"include": ["src/**/*.d.ts", "src/**/*.ts", "src/**/*.svelte", "jest.setup.ts"]
 }

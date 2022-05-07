@@ -4,5 +4,5 @@
 		"noEmit": true
 	},
 	"references": [{ "path": "../shared" }],
-	"include": ["src/**/*.d.ts", "src/**/*.ts"]
+	"include": ["src/**/*.d.ts", "src/**/*.ts", "jest.setup.ts"]
 }

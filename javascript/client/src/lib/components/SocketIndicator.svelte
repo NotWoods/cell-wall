@@ -13,9 +13,20 @@
 </script>
 
 <script lang="ts">
+	import { onMount } from 'svelte';
+	import { get } from 'svelte/store';
+
 	export let socket: WebSocket;
 
 	$: socketState = socketConnectionState(socket);
+
+	onMount(() => {
+		document.addEventListener('visibilitychange', () => {
+			if (document.visibilityState === 'visible' && get(socketState) !== 'open') {
+				location.reload();
+			}
+		});
+	});
 </script>
 
 {#if $socketState !== 'open'}

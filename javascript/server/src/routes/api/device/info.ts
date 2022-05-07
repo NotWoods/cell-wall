@@ -1,7 +1,7 @@
 import { CellInfo, cellInfoSchema } from '@cell-wall/shared';
 import type { FastifyInstance } from 'fastify';
 import { derived, get as getState } from 'svelte/store';
-import { transformMap } from '../../../lib/map/transform';
+import { transformMap, transformMapAsync } from '../../../lib/map/transform';
 import { repo } from '../../../lib/repository';
 
 export default async function (fastify: FastifyInstance): Promise<void> {
@@ -42,6 +42,32 @@ export default async function (fastify: FastifyInstance): Promise<void> {
 		async handler(request, reply) {
 			const { serial } = request.params;
 			reply.send(getState(cellInfo).get(serial) ?? null);
+		}
+	});
+
+	fastify.route<{
+		Body: Record<string, Partial<CellInfo>>;
+		Reply: Record<string, CellInfo | null>;
+	}>({
+		method: 'POST',
+		url: '/api/device/info/',
+		/**
+		 * Register new cells
+		 */
+		async handler(request, reply) {
+			const { body } = request;
+
+			const newInfo = new Map(
+				Object.entries(body).map(([serial, info]) => {
+					info.serial ||= serial;
+					info.server ||= `${request.protocol}://${request.hostname}`;
+					return [serial, info as CellInfo];
+				})
+			);
+
+			await transformMapAsync(newInfo, (info) => repo.registerCell(info));
+
+			reply.send(Object.fromEntries(getState(cellInfo)));
 		}
 	});
 

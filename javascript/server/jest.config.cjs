@@ -5,7 +5,7 @@ const config = {
 	},
 	// Transform ES modules
 	transformIgnorePatterns: ['\\.pnp\\.[^\\/]+$'],
-	setupFiles: ['./src/jest.setup.ts']
+	setupFiles: ['./jest.setup.ts']
 };
 
 module.exports = config;

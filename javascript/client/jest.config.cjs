@@ -4,7 +4,7 @@ const config = {
 		'^.+\\.(j|t)sx?$': 'esbuild-jest',
 		'^.+\\.svelte$': ['svelte-jester', { preprocess: true }]
 	},
-	setupFiles: ['./src/jest.setup.ts'],
+	setupFiles: ['./jest.setup.ts'],
 	moduleFileExtensions: ['ts', 'js', 'svelte'],
 	testEnvironment: 'jsdom'
 };
