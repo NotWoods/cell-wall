@@ -1,7 +1,3 @@
-<script context="module">
-	export const prerender = true;
-</script>
-
 <script lang="ts">
 	import ResetSubmit from '$lib/components/Button/ResetSubmit.svelte';
 	import DeviceOptions from '$lib/components/Field/DeviceOptions.svelte';
@@ -21,6 +17,7 @@
 			action.searchParams.set('backgroundColor', backgroundColor);
 		}
 		action.searchParams.set('rest', data.get('rest') as string);
+		action.searchParams.set('delay', data.get('delay') as string);
 
 		try {
 			const res = await fetch(action.toString(), {
@@ -69,6 +66,10 @@
 			<option value="blank">Blank</option>
 			<option value="off">Off</option>
 		</select>
+	</HorizontalField>
+
+	<HorizontalField for="control-delay" label="Update delay">
+		<input id="control-delay" name="delay" type="number" value="0" />
 	</HorizontalField>
 
 	<ResetSubmit {loading} />

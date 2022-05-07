@@ -1,34 +1,11 @@
 import type { CellState } from '@cell-wall/shared';
 import type { FastifyInstance } from 'fastify';
 import { get as getState } from 'svelte/store';
-import { setTimeout } from 'timers/promises';
 import { isDefined } from 'ts-extras';
+import { asDelay, setStatesWithDelay } from '../../../lib/map/delay';
 import { repo } from '../../../lib/repository';
 import { deriveSortedInfo } from '../../../lib/text/info-store';
 import { asCellState } from './state';
-
-const DELAY_MS = /^(\d+)(?:ms)?$/;
-const DELAY_SECONDS = /^(\d+)s?$/;
-function asDelay(delay?: string): number | undefined {
-	if (!delay || !delay.trim()) return undefined;
-
-	let delayMs: number | undefined;
-	const matchMs = DELAY_MS.exec(delay);
-	if (matchMs) {
-		delayMs = Number(matchMs[1]);
-	} else {
-		const matchSeconds = DELAY_SECONDS.exec(delay);
-		if (matchSeconds) {
-			delayMs = Number(matchSeconds[1]) * 1000;
-		}
-	}
-
-	if (typeof delayMs === 'number' && !Number.isNaN(delayMs)) {
-		return delayMs;
-	} else {
-		throw new Error(`Invalid delay: ${delay}`);
-	}
-}
 
 export default async function (fastify: FastifyInstance): Promise<void> {
 	fastify.route<{
@@ -65,20 +42,13 @@ export default async function (fastify: FastifyInstance): Promise<void> {
 			}
 
 			const devicesByPosition = getState(deriveSortedInfo(repo.cellData).leftToRight);
-			if (!request.query.wait && delay > 0) {
-				reply.send(devicesByPosition);
-			}
 
-			for (const [i, state] of states.entries()) {
-				// Wrap around if needed
-				const deviceId = devicesByPosition[i % devicesByPosition.length];
-				repo.cellState.setState(deviceId, state);
-				await setTimeout(delay);
-			}
+			const jobDone = setStatesWithDelay(repo.cellState, states, devicesByPosition, delay);
 
-			if (request.query.wait) {
-				reply.send(devicesByPosition);
+			if (request.query.wait || delay === 0) {
+				await jobDone;
 			}
+			reply.send(devicesByPosition);
 		}
 	});
 }
