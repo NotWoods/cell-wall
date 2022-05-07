@@ -1,12 +1,14 @@
 <script lang="ts">
 	import { filterState } from '$lib/filter-state';
+	import { RAINBOW_COLORS, randomItem } from '@cell-wall/shared';
 	import { getFrameContext } from './__layout.svelte';
 
+	const randomDefaultColor = randomItem(RAINBOW_COLORS);
 	const { state } = getFrameContext();
 	$: textState = filterState('TEXT', state);
 
 	$: text = $textState?.payload || 'CellWall';
-	$: backgroundColor = $textState?.backgroundColor || '#429A46';
+	$: backgroundColor = $textState?.backgroundColor || randomDefaultColor;
 </script>
 
 <main class="fill center" style="background: {backgroundColor};">

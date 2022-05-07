@@ -12,6 +12,7 @@ export async function routesSubsystem(fastify: FastifyInstance): Promise<void> {
 		.register(import('./routes/api/device/info'))
 		.register(import('./routes/api/device/power'))
 		.register(import('./routes/api/device/preset'))
+		.register(import('./routes/api/device/state-array'))
 		.register(import('./routes/api/device/state'))
 		.register(import('./routes/api/device/index'))
 		.register(import('./routes/api/third_party/freebusy'))

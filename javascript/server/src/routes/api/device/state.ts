@@ -9,7 +9,7 @@ function isObject(maybe: unknown): maybe is object {
 	return typeof maybe === 'object' && maybe !== null;
 }
 
-function asCellState(maybeState: unknown): CellState | undefined {
+export function asCellState(maybeState: unknown): CellState | undefined {
 	if (isObject(maybeState)) {
 		const state = maybeState as { type: string };
 		if (setHas(cellStateTypes, state.type)) {
@@ -95,7 +95,7 @@ export default async function (fastify: FastifyInstance): Promise<void> {
 				return;
 			}
 
-			repo.cellState.setStates(new Map().set(serial, state));
+			repo.cellState.setState(serial, state);
 
 			reply.send({ [serial]: state });
 		}

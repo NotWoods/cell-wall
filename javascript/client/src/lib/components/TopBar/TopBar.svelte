@@ -18,8 +18,8 @@
 		<TopBarItem href="/remote/presets">Presets</TopBarItem>
 		<TopBarItem href="/remote/text">Text</TopBarItem>
 		<TopBarItem href="/remote/image">Image</TopBarItem>
+		<TopBarItem href="/remote/canvas">Canvas</TopBarItem>
 		<div class="ml-auto flex flex-wrap gap-2 items-center">
-			<TopBarItem href="/remote/custom">Custom</TopBarItem>
 			<TopBarItem href="/remote/edit">Edit</TopBarItem>
 			<TopBarItem href="https://github.com/NotWoods/cell-wall">
 				<svg
