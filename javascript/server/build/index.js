@@ -507,6 +507,29 @@ var init_adb_devices = __esm({
   }
 });
 
+// src/lib/map/changes.ts
+function findChangeSet(oldSet, newSet) {
+  const removed = Array.from(oldSet).filter((key) => !newSet.has(key));
+  const added = [];
+  const same = [];
+  for (const item of newSet) {
+    if (oldSet.has(item)) {
+      added.push(item);
+    } else {
+      same.push(item);
+    }
+  }
+  return {
+    added,
+    removed,
+    same
+  };
+}
+var init_changes = __esm({
+  "src/lib/map/changes.ts"() {
+  }
+});
+
 // src/lib/store/promise.ts
 function setWhenDone(promise, set) {
   let invalidated = false;
@@ -562,8 +585,7 @@ function androidPowered(devices) {
     poweredOn.update((oldSet) => {
       const newSet = updater(oldSet);
       const $devices = get_store_value(devices);
-      const added = Array.from(newSet).filter((udid) => !oldSet.has(udid));
-      const removed = Array.from(oldSet).filter((udid) => !newSet.has(udid));
+      const { added, removed, same } = findChangeSet(oldSet, newSet);
       function updatePower(udid, on) {
         const device = $devices.get(udid);
         if (device) {
@@ -571,6 +593,7 @@ function androidPowered(devices) {
         }
       }
       added.forEach((udid) => updatePower(udid, true));
+      same.forEach((udid) => updatePower(udid, true));
       removed.forEach((udid) => updatePower(udid, false));
       return newSet;
     });
@@ -591,6 +614,7 @@ var KEYCODE_UNKNOWN, KEYCODE_POWER;
 var init_android_powered = __esm({
   "src/lib/android/android-powered.ts"() {
     init_store();
+    init_changes();
     init_transform();
     init_promise();
     init_adb_actions();
@@ -693,7 +717,7 @@ function withLastState(store) {
     return result;
   });
 }
-var init_changes = __esm({
+var init_changes2 = __esm({
   "src/lib/store/changes.ts"() {
     init_store();
   }
@@ -833,7 +857,7 @@ var init_combine_cell = __esm({
   "src/lib/repository/combine-cell.ts"() {
     init_store();
     init_transform();
-    init_changes();
+    init_changes2();
     init_known();
   }
 });
@@ -1604,6 +1628,20 @@ async function info_default(fastify) {
     async handler(request, reply) {
       const { serial } = request.params;
       reply.send(get_store_value(cellInfo2).get(serial) ?? null);
+    }
+  });
+  fastify.route({
+    method: "POST",
+    url: "/api/device/info/",
+    async handler(request, reply) {
+      const { body } = request;
+      const newInfo = new Map(Object.entries(body).map(([serial, info]) => {
+        info.serial ||= serial;
+        info.server ||= `${request.protocol}://${request.hostname}`;
+        return [serial, info];
+      }));
+      await transformMapAsync(newInfo, (info) => repo.registerCell(info));
+      reply.send(Object.fromEntries(get_store_value(cellInfo2)));
     }
   });
   fastify.route({

@@ -6,7 +6,7 @@ const css = {
   map: null
 };
 const Demo = create_ssr_component(($$result, $$props, $$bindings, slots) => {
-  let demoEntries = ["demo1", "demo2", "demo3", "demo4"];
+  const demoEntries = ["demo1", "demo2", "demo3", "demo4"];
   $$result.css.add(css);
   return `${$$result.head += `${$$result.title = `<title>CellWall Demo</title>`, ""}`, ""}
 
