@@ -29,9 +29,7 @@
 		let action = form.action;
 		if (submitter && submitter.name) {
 			formData.set(submitter.name, submitter.value);
-			if (submitter.hasAttribute('formaction')) {
-				action = submitter.formAction;
-			}
+			action = submitter.formAction;
 		}
 
 		status = {
