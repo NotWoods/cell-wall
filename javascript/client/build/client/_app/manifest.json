@@ -1,6 +1,6 @@
 {
   ".svelte-kit/runtime/client/start.js": {
-    "file": "start-0c922cda.js",
+    "file": "start-b3c5b6c1.js",
     "src": ".svelte-kit/runtime/client/start.js",
     "isEntry": true,
     "imports": [
@@ -266,20 +266,20 @@
     ]
   },
   "src/routes/remote/custom.svelte": {
-    "file": "pages/remote/custom.svelte-63770247.js",
+    "file": "pages/remote/custom.svelte-ee162ed3.js",
     "src": "src/routes/remote/custom.svelte",
     "isEntry": true,
     "isDynamicEntry": true,
     "imports": [
       "_index-6bece970.js",
-      "_DeviceOptions-0b036147.js",
+      "_DeviceOptions-dd7641e8.js",
       "_HorizontalField-10ed728a.js",
-      "_Form-ed973cb4.js",
+      "_Form-8928ba22.js",
       "___layout-fd782b1f.js",
       "_web-75f832b0.js",
       "_color-8cc37c09.js",
       "_index-8baee0b1.js",
-      "__PowerButtons-82f1a11b.js",
+      "__PowerButtons-47c150f0.js",
       "__form-52443b97.js",
       "_Label-f27fee94.js",
       "_snackbar-host-d8a20024.js",
@@ -290,17 +290,17 @@
     ]
   },
   "src/routes/remote/edit.svelte": {
-    "file": "pages/remote/edit.svelte-279e84b0.js",
+    "file": "pages/remote/edit.svelte-76ab86c0.js",
     "src": "src/routes/remote/edit.svelte",
     "isEntry": true,
     "isDynamicEntry": true,
     "imports": [
       "_index-6bece970.js",
-      "_DeviceOptions-0b036147.js",
+      "_DeviceOptions-dd7641e8.js",
       "_HorizontalField-10ed728a.js",
-      "_Form-ed973cb4.js",
+      "_Form-8928ba22.js",
       "___layout-fd782b1f.js",
-      "__PowerButtons-82f1a11b.js",
+      "__PowerButtons-47c150f0.js",
       "__form-52443b97.js",
       "_Label-f27fee94.js",
       "_snackbar-host-d8a20024.js",
@@ -311,15 +311,15 @@
     ]
   },
   "src/routes/remote/image.svelte": {
-    "file": "pages/remote/image.svelte-6b2234c1.js",
+    "file": "pages/remote/image.svelte-ee6634b0.js",
     "src": "src/routes/remote/image.svelte",
     "isEntry": true,
     "isDynamicEntry": true,
     "imports": [
       "_index-6bece970.js",
-      "_DeviceOptions-0b036147.js",
+      "_DeviceOptions-dd7641e8.js",
       "_HorizontalField-10ed728a.js",
-      "_Form-ed973cb4.js",
+      "_Form-8928ba22.js",
       "___layout-fd782b1f.js",
       "_Label-f27fee94.js",
       "_snackbar-host-d8a20024.js",
@@ -350,13 +350,13 @@
     ]
   },
   "src/routes/remote/presets.svelte": {
-    "file": "pages/remote/presets.svelte-abb53522.js",
+    "file": "pages/remote/presets.svelte-e05230f9.js",
     "src": "src/routes/remote/presets.svelte",
     "isEntry": true,
     "isDynamicEntry": true,
     "imports": [
       "_index-6bece970.js",
-      "_Form-ed973cb4.js",
+      "_Form-8928ba22.js",
       "_VerticalField-ddc7385f.js",
       "__form-52443b97.js",
       "_LinkButton-ea95f95b.js",
@@ -367,16 +367,16 @@
     ]
   },
   "src/routes/remote/text.svelte": {
-    "file": "pages/remote/text.svelte-31c916f7.js",
+    "file": "pages/remote/text.svelte-dc8f099a.js",
     "src": "src/routes/remote/text.svelte",
     "isEntry": true,
     "isDynamicEntry": true,
     "imports": [
       "_index-6bece970.js",
-      "_DeviceOptions-0b036147.js",
+      "_DeviceOptions-dd7641e8.js",
       "_HorizontalField-10ed728a.js",
       "_VerticalField-ddc7385f.js",
-      "_Form-ed973cb4.js",
+      "_Form-8928ba22.js",
       "___layout-fd782b1f.js",
       "_Label-f27fee94.js",
       "_snackbar-host-d8a20024.js",
@@ -506,11 +506,11 @@
       "_index-6bece970.js"
     ]
   },
-  "_DeviceOptions-0b036147.js": {
-    "file": "chunks/DeviceOptions-0b036147.js",
+  "_DeviceOptions-dd7641e8.js": {
+    "file": "chunks/DeviceOptions-dd7641e8.js",
     "imports": [
       "_index-6bece970.js",
-      "_Form-ed973cb4.js"
+      "_Form-8928ba22.js"
     ]
   },
   "_HorizontalField-10ed728a.js": {
@@ -520,18 +520,18 @@
       "_Label-f27fee94.js"
     ]
   },
-  "_Form-ed973cb4.js": {
-    "file": "chunks/Form-ed973cb4.js",
+  "_Form-8928ba22.js": {
+    "file": "chunks/Form-8928ba22.js",
     "imports": [
       "_index-6bece970.js",
       "_snackbar-host-d8a20024.js"
     ]
   },
-  "__PowerButtons-82f1a11b.js": {
-    "file": "chunks/_PowerButtons-82f1a11b.js",
+  "__PowerButtons-47c150f0.js": {
+    "file": "chunks/_PowerButtons-47c150f0.js",
     "imports": [
       "_index-6bece970.js",
-      "_Form-ed973cb4.js",
+      "_Form-8928ba22.js",
       "__form-52443b97.js"
     ]
   },
