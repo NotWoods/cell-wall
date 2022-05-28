@@ -193,9 +193,9 @@
       "_fit-scale-9ea13e5e.js",
       "_LinkButton-5c850a00.js",
       "_web-9fac8a47.js",
-      "___layout-2cd46b02.js",
+      "___layout-07626631.js",
       "_TopBar-adef7ba1.js",
-      "_snackbar-host-2ba8754b.js"
+      "_snackbar-host-d86d9bd7.js"
     ],
     "css": [
       "assets/entries/pages/remote/canvas.svelte-af38782e.css"
@@ -207,16 +207,16 @@
     "isEntry": true,
     "imports": [
       "_index-07af9b00.js",
-      "_DeviceOptions-e1dca499.js",
+      "_DeviceOptions-853511c6.js",
       "_HorizontalField-06a204be.js",
-      "_Form-4d58a7fa.js",
-      "___layout-2cd46b02.js",
+      "_Form-30d2fdc9.js",
+      "___layout-07626631.js",
       "_web-9fac8a47.js",
       "_color-8cc37c09.js",
-      "__PowerButtons-3ec33f99.js",
+      "__PowerButtons-a47e8539.js",
       "__form-52443b97.js",
       "_Label-f2ecd148.js",
-      "_snackbar-host-2ba8754b.js",
+      "_snackbar-host-d86d9bd7.js",
       "_TopBar-adef7ba1.js",
       "_random-ca7fbb84.js"
     ]
@@ -227,14 +227,14 @@
     "isEntry": true,
     "imports": [
       "_index-07af9b00.js",
-      "_DeviceOptions-e1dca499.js",
+      "_DeviceOptions-853511c6.js",
       "_HorizontalField-06a204be.js",
-      "_Form-4d58a7fa.js",
-      "___layout-2cd46b02.js",
-      "__PowerButtons-3ec33f99.js",
+      "_Form-30d2fdc9.js",
+      "___layout-07626631.js",
+      "__PowerButtons-a47e8539.js",
       "__form-52443b97.js",
       "_Label-f2ecd148.js",
-      "_snackbar-host-2ba8754b.js",
+      "_snackbar-host-d86d9bd7.js",
       "_web-9fac8a47.js",
       "_TopBar-adef7ba1.js"
     ]
@@ -245,12 +245,12 @@
     "isEntry": true,
     "imports": [
       "_index-07af9b00.js",
-      "_DeviceOptions-e1dca499.js",
+      "_DeviceOptions-853511c6.js",
       "_HorizontalField-06a204be.js",
-      "_Form-4d58a7fa.js",
-      "___layout-2cd46b02.js",
+      "_Form-30d2fdc9.js",
+      "___layout-07626631.js",
       "_Label-f2ecd148.js",
-      "_snackbar-host-2ba8754b.js",
+      "_snackbar-host-d86d9bd7.js",
       "_web-9fac8a47.js",
       "_TopBar-adef7ba1.js"
     ]
@@ -263,9 +263,9 @@
       "_index-07af9b00.js",
       "_fit-scale-9ea13e5e.js",
       "_web-9fac8a47.js",
-      "___layout-2cd46b02.js",
+      "___layout-07626631.js",
       "_TopBar-adef7ba1.js",
-      "_snackbar-host-2ba8754b.js"
+      "_snackbar-host-d86d9bd7.js"
     ],
     "css": [
       "assets/entries/pages/remote/index.svelte-021737d9.css"
@@ -277,11 +277,11 @@
     "isEntry": true,
     "imports": [
       "_index-07af9b00.js",
-      "_Form-4d58a7fa.js",
+      "_Form-30d2fdc9.js",
       "_VerticalField-5755d773.js",
       "__form-52443b97.js",
       "_LinkButton-5c850a00.js",
-      "_snackbar-host-2ba8754b.js",
+      "_snackbar-host-d86d9bd7.js",
       "_web-9fac8a47.js",
       "_Label-f2ecd148.js"
     ]
@@ -292,13 +292,13 @@
     "isEntry": true,
     "imports": [
       "_index-07af9b00.js",
-      "_DeviceOptions-e1dca499.js",
+      "_DeviceOptions-853511c6.js",
       "_HorizontalField-06a204be.js",
       "_VerticalField-5755d773.js",
-      "_Form-4d58a7fa.js",
-      "___layout-2cd46b02.js",
+      "_Form-30d2fdc9.js",
+      "___layout-07626631.js",
       "_Label-f2ecd148.js",
-      "_snackbar-host-2ba8754b.js",
+      "_snackbar-host-d86d9bd7.js",
       "_web-9fac8a47.js",
       "_TopBar-adef7ba1.js"
     ]
@@ -319,9 +319,9 @@
     "isEntry": true,
     "imports": [
       "_index-07af9b00.js",
-      "___layout-2cd46b02.js",
+      "___layout-07626631.js",
       "_TopBar-adef7ba1.js",
-      "_snackbar-host-2ba8754b.js",
+      "_snackbar-host-d86d9bd7.js",
       "_web-9fac8a47.js"
     ]
   },
@@ -343,13 +343,13 @@
   "_random-ca7fbb84.js": {
     "file": "chunks/random-ca7fbb84.js"
   },
-  "___layout-2cd46b02.js": {
-    "file": "chunks/__layout-2cd46b02.js",
+  "___layout-07626631.js": {
+    "file": "chunks/__layout-07626631.js",
     "imports": [
       "_index-07af9b00.js",
       "_TopBar-adef7ba1.js",
       "_web-9fac8a47.js",
-      "_snackbar-host-2ba8754b.js"
+      "_snackbar-host-d86d9bd7.js"
     ],
     "css": [
       "assets/__layout-71ab9adf.css"
@@ -364,8 +364,8 @@
       "assets/TopBar-cbb13d88.css"
     ]
   },
-  "_snackbar-host-2ba8754b.js": {
-    "file": "chunks/snackbar-host-2ba8754b.js",
+  "_snackbar-host-d86d9bd7.js": {
+    "file": "chunks/snackbar-host-d86d9bd7.js",
     "imports": [
       "_web-9fac8a47.js"
     ]
@@ -403,11 +403,11 @@
       "_index-07af9b00.js"
     ]
   },
-  "_DeviceOptions-e1dca499.js": {
-    "file": "chunks/DeviceOptions-e1dca499.js",
+  "_DeviceOptions-853511c6.js": {
+    "file": "chunks/DeviceOptions-853511c6.js",
     "imports": [
       "_index-07af9b00.js",
-      "_Form-4d58a7fa.js"
+      "_Form-30d2fdc9.js"
     ]
   },
   "_HorizontalField-06a204be.js": {
@@ -417,18 +417,18 @@
       "_Label-f2ecd148.js"
     ]
   },
-  "_Form-4d58a7fa.js": {
-    "file": "chunks/Form-4d58a7fa.js",
+  "_Form-30d2fdc9.js": {
+    "file": "chunks/Form-30d2fdc9.js",
     "imports": [
       "_index-07af9b00.js",
-      "_snackbar-host-2ba8754b.js"
+      "_snackbar-host-d86d9bd7.js"
     ]
   },
-  "__PowerButtons-3ec33f99.js": {
-    "file": "chunks/_PowerButtons-3ec33f99.js",
+  "__PowerButtons-a47e8539.js": {
+    "file": "chunks/_PowerButtons-a47e8539.js",
     "imports": [
       "_index-07af9b00.js",
-      "_Form-4d58a7fa.js",
+      "_Form-30d2fdc9.js",
       "__form-52443b97.js"
     ]
   },

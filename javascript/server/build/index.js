@@ -472,13 +472,6 @@ import { ADB } from "appium-adb";
 function noDeviceError(err) {
   return err instanceof Error && err.message.includes("Could not find a connected Android device");
 }
-function cloneADB(parent, device) {
-  const adb = new ADB();
-  adb.sdkRoot = parent.sdkRoot;
-  adb.executable.path = parent.executable.path;
-  adb.setDevice(device);
-  return adb;
-}
 function adbDevicesStore() {
   const devicesStore = writable(/* @__PURE__ */ new Map());
   const adbGlobalReady = ADB.createADB();
@@ -496,7 +489,11 @@ function adbDevicesStore() {
           throw err;
         }
       }
-      const adbDevices = new Map(devices.map((device) => [device.udid, cloneADB(adb, device)]));
+      const adbDevices = new Map(devices.map((device) => {
+        const clone = adb.clone();
+        clone.setDevice(device);
+        return [device.udid, clone];
+      }));
       devicesStore.set(adbDevices);
     }
   };

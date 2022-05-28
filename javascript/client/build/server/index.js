@@ -546,9 +546,9 @@ function sha256(data) {
   if (!key[0])
     precompute();
   const out = init.slice(0);
-  const array = encode$1(data);
-  for (let i = 0; i < array.length; i += 16) {
-    const w = array.subarray(i, i + 16);
+  const array2 = encode$1(data);
+  for (let i = 0; i < array2.length; i += 16) {
+    const w = array2.subarray(i, i + 16);
     let tmp;
     let a;
     let b;
@@ -665,25 +665,10 @@ function base64(bytes) {
   return result;
 }
 let csp_ready;
-let generate_nonce;
-let generate_hash;
-if (typeof crypto !== "undefined") {
-  const array = new Uint8Array(16);
-  generate_nonce = () => {
-    crypto.getRandomValues(array);
-    return base64(array);
-  };
-  generate_hash = sha256;
-} else {
-  const name = "crypto";
-  csp_ready = import(name).then((crypto2) => {
-    generate_nonce = () => {
-      return crypto2.randomBytes(16).toString("base64");
-    };
-    generate_hash = (input) => {
-      return crypto2.createHash("sha256").update(input, "utf-8").digest().toString("base64");
-    };
-  });
+const array = new Uint8Array(16);
+function generate_nonce() {
+  crypto.getRandomValues(array);
+  return base64(array);
 }
 const quoted = /* @__PURE__ */ new Set([
   "self",
@@ -729,7 +714,7 @@ class Csp {
   add_script(content) {
     if (this.#script_needs_csp) {
       if (this.#use_hashes) {
-        this.#script_src.push(`sha256-${generate_hash(content)}`);
+        this.#script_src.push(`sha256-${sha256(content)}`);
       } else if (this.#script_src.length === 0) {
         this.#script_src.push(`nonce-${this.nonce}`);
       }
@@ -738,7 +723,7 @@ class Csp {
   add_style(content) {
     if (this.#style_needs_csp) {
       if (this.#use_hashes) {
-        this.#style_src.push(`sha256-${generate_hash(content)}`);
+        this.#style_src.push(`sha256-${sha256(content)}`);
       } else if (this.#style_src.length === 0) {
         this.#style_src.push(`nonce-${this.nonce}`);
       }
@@ -800,12 +785,12 @@ async function render_response({
   resolve_opts,
   stuff
 }) {
-  if (state.prerender) {
+  if (state.prerendering) {
     if (options.csp.mode === "nonce") {
       throw new Error('Cannot use prerendering if config.kit.csp.mode === "nonce"');
     }
     if (options.template_contains_nonce) {
-      throw new Error("Cannot use prerendering if page template contains %svelte.nonce%");
+      throw new Error("Cannot use prerendering if page template contains %sveltekit.nonce%");
     }
   }
   const stylesheets = new Set(options.manifest._.entry.css);
@@ -853,7 +838,7 @@ async function render_response({
         routeId: event.routeId,
         status,
         stuff,
-        url: state.prerender ? create_prerendering_url_proxy(event.url) : event.url
+        url: state.prerendering ? create_prerendering_url_proxy(event.url) : event.url
       },
       components: branch.map(({ node }) => node.module.default)
     };
@@ -879,14 +864,14 @@ async function render_response({
   await csp_ready;
   const csp = new Csp(options.csp, {
     dev: options.dev,
-    prerender: !!state.prerender,
+    prerender: !!state.prerendering,
     needs_nonce: options.template_contains_nonce
   });
   const target = hash(body);
   const init_app = `
 		import { start } from ${s(options.prefix + options.manifest._.entry.file)};
 		start({
-			target: document.querySelector('[data-hydrate="${target}"]').parentNode,
+			target: document.querySelector('[data-sveltekit-hydrate="${target}"]').parentNode,
 			paths: ${s(options.paths)},
 			session: ${try_serialize($session, (error3) => {
     throw new Error(`Failed to serialize session data: ${error3.message}`);
@@ -897,9 +882,7 @@ async function render_response({
 			hydrate: ${resolve_opts.ssr && page_config.hydrate ? `{
 				status: ${status},
 				error: ${serialize_error(error2)},
-				nodes: [
-					${(branch || []).map(({ node }) => `import(${s(options.prefix + node.entry)})`).join(",\n						")}
-				],
+				nodes: [${branch.map(({ node }) => node.index).join(", ")}],
 				params: ${devalue(event.params)},
 				routeId: ${s(event.routeId)}
 			}` : "null"}
@@ -907,69 +890,56 @@ async function render_response({
 	`;
   const init_service_worker = `
 		if ('serviceWorker' in navigator) {
-			navigator.serviceWorker.register('${options.service_worker}');
+			addEventListener('load', () => {
+				navigator.serviceWorker.register('${options.service_worker}');
+			});
 		}
 	`;
-  if (options.amp) {
-    const styles2 = `${inlined_style}
-${rendered.css.code}`;
+  if (inlined_style) {
+    const attributes = [];
+    if (options.dev)
+      attributes.push(" data-sveltekit");
+    if (csp.style_needs_nonce)
+      attributes.push(` nonce="${csp.nonce}"`);
+    csp.add_style(inlined_style);
     head += `
-		<style amp-boilerplate>body{-webkit-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-moz-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-ms-animation:-amp-start 8s steps(1,end) 0s 1 normal both;animation:-amp-start 8s steps(1,end) 0s 1 normal both}@-webkit-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-moz-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-ms-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-o-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}</style>
-		<noscript><style amp-boilerplate>body{-webkit-animation:none;-moz-animation:none;-ms-animation:none;animation:none}</style></noscript>
-		<script async src="https://cdn.ampproject.org/v0.js"><\/script>
-
-		<style amp-custom>${styles2}</style>`;
-    if (options.service_worker) {
-      head += '<script async custom-element="amp-install-serviceworker" src="https://cdn.ampproject.org/v0/amp-install-serviceworker-0.1.js"><\/script>';
-      body += `<amp-install-serviceworker src="${options.service_worker}" layout="nodisplay"></amp-install-serviceworker>`;
-    }
-  } else {
-    if (inlined_style) {
-      const attributes = [];
-      if (options.dev)
-        attributes.push(" data-sveltekit");
-      if (csp.style_needs_nonce)
-        attributes.push(` nonce="${csp.nonce}"`);
-      csp.add_style(inlined_style);
-      head += `
 	<style${attributes.join("")}>${inlined_style}</style>`;
+  }
+  head += Array.from(stylesheets).map((dep) => {
+    const attributes = [
+      'rel="stylesheet"',
+      `href="${options.prefix + dep}"`
+    ];
+    if (csp.style_needs_nonce) {
+      attributes.push(`nonce="${csp.nonce}"`);
     }
-    head += Array.from(stylesheets).map((dep) => {
-      const attributes = [
-        'rel="stylesheet"',
-        `href="${options.prefix + dep}"`
-      ];
-      if (csp.style_needs_nonce) {
-        attributes.push(`nonce="${csp.nonce}"`);
-      }
-      if (styles.has(dep)) {
-        attributes.push("disabled", 'media="(max-width: 0)"');
-      }
-      return `
+    if (styles.has(dep)) {
+      attributes.push("disabled", 'media="(max-width: 0)"');
+    }
+    return `
 	<link ${attributes.join(" ")}>`;
-    }).join("");
-    if (page_config.router || page_config.hydrate) {
-      head += Array.from(modulepreloads).map((dep) => `
+  }).join("");
+  if (page_config.router || page_config.hydrate) {
+    head += Array.from(modulepreloads).map((dep) => `
 	<link rel="modulepreload" href="${options.prefix + dep}">`).join("");
-      const attributes = ['type="module"', `data-hydrate="${target}"`];
-      csp.add_script(init_app);
-      if (csp.script_needs_nonce) {
-        attributes.push(`nonce="${csp.nonce}"`);
-      }
-      body += `
-		<script ${attributes.join(" ")}>${init_app}<\/script>`;
-      body += serialized_data.map(({ url, body: body2, response }) => render_json_payload_script({ type: "data", url, body: typeof body2 === "string" ? hash(body2) : void 0 }, response)).join("\n	");
-      if (shadow_props) {
-        body += render_json_payload_script({ type: "props" }, shadow_props);
-      }
+    const attributes = ['type="module"', `data-sveltekit-hydrate="${target}"`];
+    csp.add_script(init_app);
+    if (csp.script_needs_nonce) {
+      attributes.push(`nonce="${csp.nonce}"`);
     }
-    if (options.service_worker) {
-      csp.add_script(init_service_worker);
-      head += `
-				<script${csp.script_needs_nonce ? ` nonce="${csp.nonce}"` : ""}>${init_service_worker}<\/script>`;
+    body += `
+		<script ${attributes.join(" ")}>${init_app}<\/script>`;
+    body += serialized_data.map(({ url, body: body2, response }) => render_json_payload_script({ type: "data", url, body: typeof body2 === "string" ? hash(body2) : void 0 }, response)).join("\n	");
+    if (shadow_props) {
+      body += render_json_payload_script({ type: "props" }, shadow_props);
     }
   }
-  if (state.prerender && !options.amp) {
+  if (options.service_worker) {
+    csp.add_script(init_service_worker);
+    head += `
+			<script${csp.script_needs_nonce ? ` nonce="${csp.nonce}"` : ""}>${init_service_worker}<\/script>`;
+  }
+  if (state.prerendering) {
     const http_equiv = [];
     const csp_headers = csp.get_meta();
     if (csp_headers) {
@@ -997,7 +967,7 @@ ${rendered.css.code}`;
   if (!options.floc) {
     headers.set("permissions-policy", "interest-cohort=()");
   }
-  if (!state.prerender) {
+  if (!state.prerendering) {
     const csp_header = csp.get_header();
     if (csp_header) {
       headers.set("content-security-policy", csp_header);
@@ -1339,24 +1309,15 @@ function normalize(loaded) {
   }
   if (loaded.redirect) {
     if (!loaded.status || Math.floor(loaded.status / 100) !== 3) {
-      return {
-        status: 500,
-        error: new Error('"redirect" property returned from load() must be accompanied by a 3xx status code')
-      };
+      throw new Error('"redirect" property returned from load() must be accompanied by a 3xx status code');
     }
     if (typeof loaded.redirect !== "string") {
-      return {
-        status: 500,
-        error: new Error('"redirect" property returned from load() must be a string')
-      };
+      throw new Error('"redirect" property returned from load() must be a string');
     }
   }
   if (loaded.dependencies) {
     if (!Array.isArray(loaded.dependencies) || loaded.dependencies.some((dep) => typeof dep !== "string")) {
-      return {
-        status: 500,
-        error: new Error('"dependencies" property returned from load() must be of type string[]')
-      };
+      throw new Error('"dependencies" property returned from load() must be of type string[]');
     }
   }
   if (loaded.context) {
@@ -1437,7 +1398,8 @@ async function load_node({
   const cookies = parse_1(event.request.headers.get("cookie") || "");
   const new_cookies = [];
   let loaded;
-  const shadow = is_leaf ? await load_shadow_data(route, event, options, !!state.prerender) : {};
+  const should_prerender = node.module.prerender ?? options.prerender.default;
+  const shadow = is_leaf ? await load_shadow_data(route, event, options, should_prerender) : {};
   if (shadow.cookies) {
     shadow.cookies.forEach((header) => {
       new_cookies.push(parseString_1(header));
@@ -1455,11 +1417,14 @@ async function load_node({
     };
   } else if (module.load) {
     const load_input = {
-      url: state.prerender ? create_prerendering_url_proxy(event.url) : event.url,
+      url: state.prerendering ? create_prerendering_url_proxy(event.url) : event.url,
       params: event.params,
       props: shadow.body || {},
       routeId: event.routeId,
       get session() {
+        if (node.module.prerender ?? options.prerender.default) {
+          throw Error("Attempted to access session from a prerendered page. Session would never be populated.");
+        }
         uses_credentials = true;
         return $session;
       },
@@ -1531,9 +1496,9 @@ async function load_node({
           response = await respond(new Request(new URL(requested, event.url).href, __spreadProps(__spreadValues({}, opts), { credentials: void 0 })), options, __spreadProps(__spreadValues({}, state), {
             initiator: route
           }));
-          if (state.prerender) {
+          if (state.prerendering) {
             dependency = { response, body: null };
-            state.prerender.dependencies.set(resolved, dependency);
+            state.prerendering.dependencies.set(resolved, dependency);
           }
         } else {
           if (resolved.startsWith("//")) {
@@ -1627,13 +1592,13 @@ async function load_node({
   } else {
     loaded = {};
   }
-  if (shadow.body && state.prerender) {
+  if (shadow.body && state.prerendering) {
     const pathname = `${event.url.pathname.replace(/\/$/, "")}/__data.json`;
     const dependency = {
       response: new Response(void 0),
       body: JSON.stringify(shadow.body)
     };
-    state.prerender.dependencies.set(pathname, dependency);
+    state.prerendering.dependencies.set(pathname, dependency);
   }
   return {
     node,
@@ -1836,8 +1801,8 @@ async function respond$1(opts) {
   }
   const leaf = nodes[nodes.length - 1].module;
   let page_config = get_page_config(leaf, options);
-  if (state.prerender) {
-    const should_prerender = leaf.prerender ?? state.prerender.default;
+  if (state.prerendering) {
+    const should_prerender = leaf.prerender ?? options.prerender.default;
     if (!should_prerender) {
       return new Response(void 0, {
         status: 204
@@ -2043,7 +2008,7 @@ function exec(match, names, types, matchers) {
 const DATA_SUFFIX = "/__data.json";
 const default_transform = ({ html }) => html;
 async function respond(request, options, state) {
-  var _a, _b, _c;
+  var _a, _b, _c, _d;
   let url = new URL(request.url);
   const { parameter, allowed } = options.method_override;
   const method_override = (_a = url.searchParams.get(parameter)) == null ? void 0 : _a.toUpperCase();
@@ -2071,7 +2036,7 @@ async function respond(request, options, state) {
   let decoded = decodeURI(url.pathname);
   let route = null;
   let params = {};
-  if (options.paths.base && !((_b = state.prerender) == null ? void 0 : _b.fallback)) {
+  if (options.paths.base && !((_b = state.prerendering) == null ? void 0 : _b.fallback)) {
     if (!decoded.startsWith(options.paths.base)) {
       return new Response(void 0, { status: 404 });
     }
@@ -2080,10 +2045,9 @@ async function respond(request, options, state) {
   const is_data_request = decoded.endsWith(DATA_SUFFIX);
   if (is_data_request) {
     decoded = decoded.slice(0, -DATA_SUFFIX.length) || "/";
-    const normalized = normalize_path(url.pathname.slice(0, -DATA_SUFFIX.length), options.trailing_slash);
-    url = new URL(url.origin + normalized + url.search);
+    url = new URL(url.origin + url.pathname.slice(0, -DATA_SUFFIX.length) + url.search);
   }
-  if (!state.prerender || !state.prerender.fallback) {
+  if (!((_c = state.prerendering) == null ? void 0 : _c.fallback)) {
     const matchers = await options.manifest._.matchers();
     for (const candidate of options.manifest._.routes) {
       const match = candidate.pattern.exec(decoded);
@@ -2099,10 +2063,11 @@ async function respond(request, options, state) {
   }
   if ((route == null ? void 0 : route.type) === "page") {
     const normalized = normalize_path(url.pathname, options.trailing_slash);
-    if (normalized !== url.pathname && !((_c = state.prerender) == null ? void 0 : _c.fallback)) {
+    if (normalized !== url.pathname && !((_d = state.prerendering) == null ? void 0 : _d.fallback)) {
       return new Response(void 0, {
         status: 301,
         headers: {
+          "x-sveltekit-normalize": "1",
           location: (normalized.startsWith("//") ? url.origin + normalized : normalized) + (url.search === "?" ? "" : url.search)
         }
       });
@@ -2153,13 +2118,14 @@ async function respond(request, options, state) {
     const response = await options.hooks.handle({
       event,
       resolve: async (event2, opts) => {
+        var _a2;
         if (opts) {
           resolve_opts = {
             ssr: opts.ssr !== false,
             transformPage: opts.transformPage || default_transform
           };
         }
-        if (state.prerender && state.prerender.fallback) {
+        if ((_a2 = state.prerendering) == null ? void 0 : _a2.fallback) {
           return await render_response({
             event: event2,
             options,
@@ -2236,7 +2202,7 @@ async function respond(request, options, state) {
             resolve_opts
           });
         }
-        if (state.prerender) {
+        if (state.prerendering) {
           return new Response("not found", { status: 404 });
         }
         return await fetch(request);
@@ -2292,7 +2258,6 @@ function override(settings) {
 class Server {
   constructor(manifest) {
     this.options = {
-      amp: false,
       csp: { "mode": "auto", "directives": { "upgrade-insecure-requests": false, "block-all-mixed-content": false } },
       dev: false,
       floc: false,
@@ -2312,8 +2277,11 @@ class Server {
       manifest,
       method_override: { "parameter": "_method", "allowed": [] },
       paths: { base, assets },
-      prefix: assets + "/_app/",
-      prerender: true,
+      prefix: assets + "/_app/immutable/",
+      prerender: {
+        default: false,
+        enabled: true
+      },
       read,
       root: Root,
       service_worker: null,

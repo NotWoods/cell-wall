@@ -1,7 +1,7 @@
-import './shims-eb608bdd.js';
+import './shims-deaad41a.js';
 import 'fs';
 import 'path';
-export { h as handler } from './handler-edaaddc2.js';
+export { h as handler } from './handler-717c33a1.js';
 import 'url';
 import './server/index.js';
 import './manifest.js';
@@ -12,5 +12,6 @@ import 'node:stream';
 import 'node:util';
 import 'node:url';
 import 'net';
+import 'crypto';
 import 'querystring';
 import 'stream';

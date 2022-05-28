@@ -1,9 +1,9 @@
 import { c as create_ssr_component, e as escape, v as validate_component, q as add_classes } from "../../../chunks/index-07af9b00.js";
-import { S as SubmitButton, F as Form } from "../../../chunks/Form-4d58a7fa.js";
+import { S as SubmitButton, F as Form } from "../../../chunks/Form-30d2fdc9.js";
 import { V as VerticalField } from "../../../chunks/VerticalField-5755d773.js";
 import { f as formDataAsSearchParams } from "../../../chunks/_form-52443b97.js";
 import { L as LinkButton } from "../../../chunks/LinkButton-5c850a00.js";
-import "../../../chunks/snackbar-host-2ba8754b.js";
+import "../../../chunks/snackbar-host-d86d9bd7.js";
 import "../../../chunks/web-9fac8a47.js";
 import "../../../chunks/Label-f2ecd148.js";
 const Card = create_ssr_component(($$result, $$props, $$bindings, slots) => {
@@ -104,6 +104,16 @@ const Presets = create_ssr_component(($$result, $$props, $$bindings, slots) => {
       }, {}, {
         default: () => {
           return `What&#39;s avaliable to drink?`;
+        }
+      })}
+	${validate_component(PresetCard, "PresetCard").$$render($$result, {
+        title: "JSConf",
+        preset: "jsconfbp",
+        large: true,
+        status
+      }, {}, {
+        default: () => {
+          return `Hello conference demo`;
         }
       })}
 	${validate_component(PresetCard, "PresetCard").$$render($$result, {

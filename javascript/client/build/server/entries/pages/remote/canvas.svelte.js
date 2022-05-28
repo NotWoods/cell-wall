@@ -2,9 +2,9 @@ import { c as create_ssr_component, b as add_attribute, a as subscribe, v as val
 import { a as applyScale, s as splitToBuckets } from "../../../chunks/fit-scale-9ea13e5e.js";
 import { L as LinkButton } from "../../../chunks/LinkButton-5c850a00.js";
 import { c as cellCanvas } from "../../../chunks/web-9fac8a47.js";
-import { g as getRemoteContext } from "../../../chunks/__layout-2cd46b02.js";
+import { g as getRemoteContext } from "../../../chunks/__layout-07626631.js";
 import "../../../chunks/TopBar-adef7ba1.js";
-import "../../../chunks/snackbar-host-2ba8754b.js";
+import "../../../chunks/snackbar-host-d86d9bd7.js";
 var RectCanvas_svelte_svelte_type_style_lang = "";
 const css$1 = {
   code: "canvas.svelte-nnt7wc{border-color:#1b5e20;background-color:#429a46}",
