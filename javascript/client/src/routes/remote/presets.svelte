@@ -52,6 +52,9 @@
 	</PresetCard>
 	<PresetCard title="Tea list" preset="tea" large {status}>What's avaliable to drink?</PresetCard>
 	<PresetCard title="JSConf" preset="jsconfbp" large {status}>Hello conference demo</PresetCard>
+	<PresetCard title="Visualizations" preset="visualize" large {status}>
+		Fancy visualizations
+	</PresetCard>
 	<PresetCard title="Actions" button="Launch on devices" formAction="/api/action/launch/" {status}>
 		<LinkButton href="/remote/third_party">SDK Login</LinkButton>
 		<SubmitButton
