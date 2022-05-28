@@ -1,9 +1,9 @@
 export const manifest = {
 	appDir: "_app",
-	assets: new Set(["css/base.css","img/daphne.jpg","img/jsconf.mp4","img/jsconfbp.png","img/tiger.jpg","logo.png","manifest.webmanifest","maskable_icon.png","preset/info.json","preset/jsconfbp.json","preset/tea.json"]),
+	assets: new Set(["css/base.css","img/daphne.jpg","img/jsconf.mp4","img/jsconfbp.png","img/tiger.jpg","logo.png","manifest.webmanifest","maskable_icon.png","preset/info.json","preset/jsconfbp.json","preset/tea.json","preset/visualize.json"]),
 	mimeTypes: {".css":"text/css",".jpg":"image/jpeg",".mp4":"video/mp4",".png":"image/png",".webmanifest":"application/manifest+json",".json":"application/json"},
 	_: {
-		entry: {"file":"start-9ab2e1e8.js","js":["start-9ab2e1e8.js","chunks/index-629ae59a.js","chunks/index-6cd92273.js","chunks/singletons-d1fb5791.js"],"css":[]},
+		entry: {"file":"start-d9fd72c2.js","js":["start-d9fd72c2.js","chunks/index-629ae59a.js","chunks/index-6cd92273.js","chunks/singletons-d1fb5791.js"],"css":[]},
 		nodes: [
 			() => import('./server/nodes/0.js'),
 			() => import('./server/nodes/1.js'),
