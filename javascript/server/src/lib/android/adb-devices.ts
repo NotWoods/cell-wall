@@ -15,22 +15,6 @@ function noDeviceError(err: unknown): err is Error {
 }
 
 /**
- * Synchronous alternative to `ADB.createADB` that copies properties from another ADB object
- * to avoid the asynchronous initialization work.
- */
-function cloneADB(parent: ADB, device: Device) {
-	const adb = new ADB();
-	// Set sdkRoot https://github.com/appium/appium-adb/blob/master/lib/adb.js#L57
-	adb.sdkRoot = parent.sdkRoot;
-	// Set executable https://github.com/appium/appium-adb/blob/master/lib/adb.js#L58
-	adb.executable.path = parent.executable.path;
-
-	adb.setDevice(device);
-
-	return adb;
-}
-
-/**
  * Store containing connected ADB devices.
  * ADB doesn't notify us when devices change, so the list needs to be manually refreshed.
  */
@@ -56,7 +40,11 @@ export function adbDevicesStore(): DevicesStore {
 			}
 
 			const adbDevices = new Map(
-				devices.map((device) => [device.udid as Serial, cloneADB(adb, device)])
+				devices.map((device) => {
+					const clone = adb.clone();
+					clone.setDevice(device);
+					return [device.udid as Serial, clone];
+				})
 			);
 			devicesStore.set(adbDevices);
 		}
