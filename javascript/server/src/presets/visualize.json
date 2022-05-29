@@ -1,9 +1,9 @@
 {
-	"TA880007GH": {
+	"D01EC0A0201512ER": {
 		"type": "WEB",
 		"payload": "https://demos.littleworkshop.fr/infinitown"
 	},
-	"D01EC0A0201512ER": {
+	"TA880007GH": {
 		"type": "WEB",
 		"payload": "https://example.com"
 	},

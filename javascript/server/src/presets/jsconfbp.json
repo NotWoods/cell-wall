@@ -1,7 +1,7 @@
 {
 	"TA880007GH": {
 		"type": "IMAGE",
-		"payload": "/img/jsconfbp.json",
+		"payload": "/img/jsconfbp.png",
 		"scaleType": "FIT_CENTER"
 	},
 	"BH9039X88Z": {
@@ -16,6 +16,6 @@
 	},
 	"4e50f5bd": {
 		"type": "WEB",
-		"payload": "/img/jsconf.mp4"
+		"payload": "https://jsconfbp.com/"
 	}
 }
