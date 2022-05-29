@@ -5,7 +5,7 @@
 
 	export let title: string;
 	export let preset: string | undefined = undefined;
-	export let formAction: string | undefined = undefined;
+	export let formAction: string = '/api/device/preset';
 	export let large = false;
 	export let button = 'Activate';
 

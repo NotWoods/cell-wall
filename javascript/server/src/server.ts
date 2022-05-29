@@ -1,5 +1,6 @@
 import Fastify from 'fastify';
 import middie from 'middie';
+import { urlEncodedPlugin } from './parser/urlencoded';
 import { routesSubsystem } from './routes';
 import { websocketSubsystem } from './websocket';
 
@@ -16,6 +17,7 @@ export async function createServer() {
 		trustProxy: true
 	});
 
+	await urlEncodedPlugin(fastify);
 	await fastify.register(middie);
 	await fastify.register(routesSubsystem).register(websocketSubsystem);
 

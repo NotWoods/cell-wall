@@ -1,0 +1,14 @@
+{
+	"TA880004ZI": {
+		"type": "WEB",
+		"payload": "/page/busy/daphne"
+	},
+	"4e50f5bd": {
+		"type": "WEB",
+		"payload": "/page/busy/tiger"
+	},
+	"D01EC0A0201512ER": {
+		"type": "web",
+		"payload": "https://forecast.io/embed/#lat=49.264728&lon=-123.100472&units=ca"
+	}
+}

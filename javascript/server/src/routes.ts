@@ -1,8 +1,6 @@
 import type { FastifyInstance } from 'fastify';
-import { urlEncodedPlugin } from './parser/urlencoded';
 
 export async function routesSubsystem(fastify: FastifyInstance): Promise<void> {
-	await urlEncodedPlugin(fastify);
 	await fastify
 		.register(import('./routes/api/action/image'))
 		.register(import('./routes/api/action/install'))
