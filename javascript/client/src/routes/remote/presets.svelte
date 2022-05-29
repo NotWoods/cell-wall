@@ -56,6 +56,10 @@
 		Fancy visualizations
 	</PresetCard>
 	<PresetCard title="Actions" button="Launch on devices" formAction="/api/action/launch/" {status}>
+		<label class="block mb-2">
+			<input type="checkbox" name="reverse" />
+			Reverse port
+		</label>
 		<LinkButton href="/remote/third_party">SDK Login</LinkButton>
 		<SubmitButton
 			name="action"

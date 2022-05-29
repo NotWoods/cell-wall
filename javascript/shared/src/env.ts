@@ -1,4 +1,4 @@
-function formatURL(address = '0.0.0.0', port = '3000') {
+function formatURL(address = '127.0.0.1', port = '3000') {
 	let portN = Number(port);
 	if (Number.isNaN(portN)) {
 		portN = 3000;

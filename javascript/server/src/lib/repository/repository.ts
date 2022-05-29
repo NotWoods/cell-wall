@@ -3,11 +3,11 @@ import { derived, get } from 'svelte/store';
 import { AndroidDeviceManager } from '../android/android-device-manager';
 import type { Serial } from '../android/opaque';
 import { cellStateStore } from '../cells/state';
-import { DATABASE_FILENAME, SERVER_ADDRESS } from '../env';
+import { DATABASE_FILENAME, PORT, SERVER_ADDRESS } from '../env';
 import { allSettledMap, filterMap } from '../map/transform';
 import { deriveCellData } from './combine-cell';
 import { addCellInfo, database } from './database';
-import type { Repository } from './interface';
+import type { OpenClientOptions, Repository } from './interface';
 import { webSocketStore } from './socket-store';
 import { logState } from './state-log';
 import { thirdPartyConnectRepository } from './third-party-connect';
@@ -33,12 +33,15 @@ export function repository(): Repository {
 
 	const thirdParty = thirdPartyConnectRepository(db);
 
-	async function openClientOnDevice(serial?: string) {
+	async function openClientOnDevice({ serial, portReverse }: OpenClientOptions = {}) {
 		await deviceManager.refreshed;
 		const $cellData = get(cellData);
 
-		function openOnSingleDevice(cell: CellData, serial: string) {
+		async function openOnSingleDevice(cell: CellData, serial: string) {
 			const { server = SERVER_ADDRESS } = cell.info ?? {};
+			if (portReverse) {
+				await deviceManager.connectOverUsb(serial as Serial, PORT);
+			}
 			return deviceManager.launchClient(serial as Serial, server);
 		}
 

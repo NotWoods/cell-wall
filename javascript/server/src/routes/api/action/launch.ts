@@ -7,11 +7,15 @@ import { repo } from '../../../lib/repository';
 export default async function (fastify: FastifyInstance): Promise<void> {
 	fastify.route<{
 		Reply: Record<string, PromiseSettledResult<void>>;
+		Querystring: { reverse?: boolean };
+		Body: URLSearchParams;
 	}>({
 		method: ['GET', 'POST'],
 		url: '/api/action/launch/',
 		async handler(request, reply) {
-			const results = await repo.openClientOnDevice();
+			const results = await repo.openClientOnDevice({
+				portReverse: Boolean(request.query.reverse || request.body.get('reverse'))
+			});
 			reply.send(Object.fromEntries(results));
 		}
 	});
@@ -24,7 +28,7 @@ export default async function (fastify: FastifyInstance): Promise<void> {
 		url: '/api/action/launch/:serial',
 		async handler(request, reply) {
 			const { serial } = request.params;
-			const results = await repo.openClientOnDevice(serial);
+			const results = await repo.openClientOnDevice({ serial });
 			reply.send(Object.fromEntries(results));
 		}
 	});

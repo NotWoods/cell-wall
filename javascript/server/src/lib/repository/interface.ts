@@ -7,6 +7,11 @@ import type { CellStateStore } from '../cells';
 import type { WebSocketStore } from './socket-store';
 import type { ThirdPartyConnect } from './third-party-connect';
 
+export interface OpenClientOptions {
+	serial?: string;
+	portReverse?: boolean;
+}
+
 export interface Repository {
 	cellData: Readable<ReadonlyMap<string, CellData>>;
 	cellState: CellStateStore;
@@ -24,5 +29,7 @@ export interface Repository {
 		on: boolean
 	): Promise<ReadonlyMap<Serial, PromiseSettledResult<void>>>;
 	registerCell(info: CellInfo): Promise<void>;
-	openClientOnDevice(serial?: string): Promise<ReadonlyMap<string, PromiseSettledResult<void>>>;
+	openClientOnDevice(
+		options?: OpenClientOptions
+	): Promise<ReadonlyMap<string, PromiseSettledResult<void>>>;
 }
