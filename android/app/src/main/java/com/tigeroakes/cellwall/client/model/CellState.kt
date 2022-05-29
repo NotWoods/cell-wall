@@ -14,7 +14,11 @@ import org.w3c.dom.Text
 /**
  * Enum representing different modes for a Cell, along with its associated data.
  */
-sealed class CellState(val type: CellStateType) : Parcelable {
+sealed class CellState(
+  private val type: CellStateType
+) : Parcelable {
+  abstract val payload: String?
+
   final override fun describeContents() = 0
 
   final override fun writeToParcel(dest: Parcel, flags: Int) {
@@ -24,16 +28,21 @@ sealed class CellState(val type: CellStateType) : Parcelable {
 
   open fun writeToBundle(dest: Bundle) {
     dest.putString(CellStateType.TYPE, type.name)
+    dest.putString(CellStateType.PAYLOAD, payload)
   }
 
   /** Empty state */
-  object Blank : CellState(CellStateType.BLANK)
+  object Blank : CellState(CellStateType.BLANK) {
+    override val payload: String? = null
+  }
 
-  data class Web(val url: String) : CellState(CellStateType.WEB) {
-    override fun writeToBundle(dest: Bundle) {
-      super.writeToBundle(dest)
-      dest.putString("url", url)
-    }
+  data class Text(
+    override val payload: String,
+    @ColorInt val backgroundColor: Int = COLOR_ACCENT
+  ) : CellState(CellStateType.TEXT)
+
+  data class Web(override val payload: String) : CellState(CellStateType.WEB) {
+    val url get() = payload
   }
 
   companion object {
@@ -54,8 +63,12 @@ sealed class CellState(val type: CellStateType) : Parcelable {
      */
     private fun from(container: Container): CellState = container.run {
       return when (type) {
+        CellStateType.TEXT -> Text(
+          getString("payload")!!,
+          backgroundColor = getColor("backgroundColor") ?: COLOR_ACCENT
+        )
         CellStateType.WEB -> Web(
-          getString("url")!!,
+          getString("payload")!!,
         )
         else -> Blank
       }

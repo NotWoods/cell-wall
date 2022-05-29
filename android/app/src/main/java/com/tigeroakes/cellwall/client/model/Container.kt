@@ -1,7 +1,9 @@
 package com.tigeroakes.cellwall.client.model
 
+import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
+import androidx.annotation.ColorInt
 import org.json.JSONObject
 import java.util.Locale
 
@@ -15,6 +17,7 @@ enum class CellStateType {
 
   companion object {
     const val TYPE = "type"
+    const val PAYLOAD = "payload"
   }
 }
 
@@ -23,6 +26,10 @@ sealed class Container {
     get() = getEnum<CellStateType>(CellStateType.TYPE)!!
 
   abstract fun getString(name: String): String?
+
+  @ColorInt
+  open fun getColor(name: String): Int? =
+    getString(name)?.let(Color::parseColor)
 
   inline fun <reified T : Enum<T>> getEnum(name: String): T? =
     getString(name)?.uppercase(Locale.ROOT)?.let { enumValueOf<T>(it) }

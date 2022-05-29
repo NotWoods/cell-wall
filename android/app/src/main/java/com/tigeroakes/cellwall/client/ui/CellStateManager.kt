@@ -43,8 +43,12 @@ class CellStateManager(
     }
 
     val directions = when (state) {
+      is CellState.Text -> NavGraphDirections.actionGlobalLargeTextFragment(
+        text = state.payload,
+        backgroundColor = state.backgroundColor
+      )
       is CellState.Web -> NavGraphDirections.actionGlobalWebFragment(
-        url = state.url,
+        url = state.payload,
       )
       else -> NavGraphDirections.actionGlobalSplashFragment()
     }

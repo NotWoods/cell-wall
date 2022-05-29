@@ -3,6 +3,8 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Code/tiger/cell-wall/android/app/src/main/res/layout/activity_main.xml" value="0.15121580547112462" />
+        <entry key="..\:/Code/tiger/cell-wall/android/app/src/main/res/layout/fragment_large_text.xml" value="0.55" />
         <entry key="..\:/Code/tiger/cell-wall/android/app/src/main/res/layout/fragment_splash.xml" value="0.5359375" />
       </map>
     </option>

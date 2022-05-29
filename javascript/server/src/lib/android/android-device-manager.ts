@@ -1,3 +1,4 @@
+import type { CellState } from '@cell-wall/shared';
 import { get } from 'svelte/store';
 import { PACKAGE_NAME, PORT } from '../env';
 import { filterMap, transformMapAsync } from '../map/transform';
@@ -76,5 +77,23 @@ export class AndroidDeviceManager {
 		if (!adb) return;
 
 		await adb.reversePort(devicePort, PORT);
+	}
+
+	async sendDisplayIntent(serial: Serial, state: CellState) {
+		const adb = get(this.devices).get(serial);
+		if (!adb) return;
+
+		const stateUrl = new URL(`cellwall://${state.type.toLowerCase()}`);
+		Object.entries(state)
+			.filter(([key, value]) => key !== 'type' && typeof value === 'string')
+			.forEach(([key, value]) => {
+				stateUrl.searchParams.set(key, value);
+			});
+
+		await startIntent(adb, {
+			action: `${PACKAGE_NAME}.DISPLAY`,
+			dataUri: stateUrl.href,
+			waitForLaunch: true
+		});
 	}
 }

@@ -9,6 +9,9 @@
     android:id="@+id/action_global_splashFragment"
     app:destination="@id/splash" />
   <action
+    android:id="@+id/action_global_largeTextFragment"
+    app:destination="@id/largeTextFragment" />
+  <action
     android:id="@+id/action_global_webFragment"
     app:destination="@id/webFragment" />
 
@@ -16,6 +19,18 @@
     android:id="@+id/splash"
     android:name="com.tigeroakes.cellwall.client.ui.splash.SplashFragment"
     tools:layout="@layout/fragment_splash" />
+
+  <fragment
+    android:id="@+id/largeTextFragment"
+    android:name="com.tigeroakes.cellwall.client.ui.text.LargeTextFragment"
+    tools:layout="@layout/fragment_large_text">
+    <argument
+      android:name="text"
+      app:argType="string" />
+    <argument
+      android:name="backgroundColor"
+      app:argType="integer" />
+  </fragment>
 
   <fragment
     android:id="@+id/webFragment"
