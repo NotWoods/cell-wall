@@ -35,10 +35,10 @@ const cellSocketHandler: WebSocketHandler = {
 			if (state.type === lastState.type) {
 				const { payload = blankBuffer } = state;
 				ws.send(payload);
+			} else {
+				ws.send(JSON.stringify(state));
+				ws.send(state.payload ?? blankBuffer);
 			}
-
-			ws.send(JSON.stringify(state));
-			ws.send(blankBuffer);
 			lastState = state;
 		});
 
