@@ -6,12 +6,12 @@
 	},
 	"BH9039X88Z": {
 		"type": "TEXT",
-		"payload": "Hello",
+		"payload": "Hello JSConf!",
 		"backgroundColor": "#ff6756"
 	},
 	"D01EC0A0201512ER": {
 		"type": "TEXT",
-		"payload": "JSConf!",
+		"payload": "👋",
 		"backgroundColor": "#639"
 	},
 	"4e50f5bd": {
