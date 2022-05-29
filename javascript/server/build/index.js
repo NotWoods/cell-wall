@@ -678,6 +678,20 @@ var init_android_device_manager = __esm({
           return;
         await adb.reversePort(devicePort, PORT);
       }
+      async sendDisplayIntent(serial, state) {
+        const adb = get_store_value(this.devices).get(serial);
+        if (!adb)
+          return;
+        const stateUrl = new URL(`cellwall://${state.type.toLowerCase()}`);
+        Object.entries(state).filter(([key, value]) => key !== "type" && typeof value === "string").forEach(([key, value]) => {
+          stateUrl.searchParams.set(key, value);
+        });
+        await startIntent(adb, {
+          action: `${PACKAGE_NAME}.DISPLAY`,
+          dataUri: stateUrl.href,
+          waitForLaunch: true
+        });
+      }
     };
   }
 });
@@ -1088,11 +1102,14 @@ function repository() {
     webSockets
   });
   const thirdParty = thirdPartyConnectRepository(db);
-  async function openClientOnDevice(serial) {
+  async function openClientOnDevice({ serial, portReverse } = {}) {
     await deviceManager.refreshed;
     const $cellData = get_store_value(cellData);
-    function openOnSingleDevice(cell, serial2) {
+    async function openOnSingleDevice(cell, serial2) {
       const { server = SERVER_ADDRESS } = cell.info ?? {};
+      if (portReverse) {
+        await deviceManager.connectOverUsb(serial2, PORT);
+      }
       return deviceManager.launchClient(serial2, server);
     }
     if (serial) {
@@ -1370,7 +1387,9 @@ async function launch_default(fastify) {
     method: ["GET", "POST"],
     url: "/api/action/launch/",
     async handler(request, reply) {
-      const results = await repo.openClientOnDevice();
+      const results = await repo.openClientOnDevice({
+        portReverse: Boolean(request.query.reverse || request.body.get("reverse"))
+      });
       reply.send(Object.fromEntries(results));
     }
   });
@@ -1379,7 +1398,7 @@ async function launch_default(fastify) {
     url: "/api/action/launch/:serial",
     async handler(request, reply) {
       const { serial } = request.params;
-      const results = await repo.openClientOnDevice(serial);
+      const results = await repo.openClientOnDevice({ serial });
       reply.send(Object.fromEntries(results));
     }
   });
@@ -1782,20 +1801,154 @@ var init_power = __esm({
   }
 });
 
+// src/presets/info.json
+var TA880004ZI, _e50f5bd, D01EC0A0201512ER, info_default2;
+var init_info2 = __esm({
+  "src/presets/info.json"() {
+    TA880004ZI = {
+      type: "WEB",
+      payload: "/page/busy/daphne"
+    };
+    _e50f5bd = {
+      type: "WEB",
+      payload: "/page/busy/tiger"
+    };
+    D01EC0A0201512ER = {
+      type: "web",
+      payload: "https://forecast.io/embed/#lat=49.264728&lon=-123.100472&units=ca"
+    };
+    info_default2 = {
+      TA880004ZI,
+      "4e50f5bd": _e50f5bd,
+      D01EC0A0201512ER
+    };
+  }
+});
+
+// src/presets/jsconfbp.json
+var TA880007GH, BH9039X88Z, D01EC0A0201512ER2, _e50f5bd2, jsconfbp_default;
+var init_jsconfbp = __esm({
+  "src/presets/jsconfbp.json"() {
+    TA880007GH = {
+      type: "IMAGE",
+      payload: "/img/jsconfbp.png",
+      scaleType: "FIT_CENTER"
+    };
+    BH9039X88Z = {
+      type: "TEXT",
+      payload: "Hello JSConf!",
+      backgroundColor: "#ff6756"
+    };
+    D01EC0A0201512ER2 = {
+      type: "TEXT",
+      payload: "\u{1F44B}",
+      backgroundColor: "#639"
+    };
+    _e50f5bd2 = {
+      type: "WEB",
+      payload: "https://jsconfbp.com/"
+    };
+    jsconfbp_default = {
+      TA880007GH,
+      BH9039X88Z,
+      D01EC0A0201512ER: D01EC0A0201512ER2,
+      "4e50f5bd": _e50f5bd2
+    };
+  }
+});
+
+// src/presets/tea.json
+var _3HAY0BJ0G, D01EC0A0201512ER3, _e50f5bd3, TA880007GH2, TA880004ZI2, tea_default;
+var init_tea = __esm({
+  "src/presets/tea.json"() {
+    _3HAY0BJ0G = {
+      type: "TEXT",
+      payload: "Aged Pu-erh",
+      backgroundColor: "#49403E"
+    };
+    D01EC0A0201512ER3 = {
+      type: "TEXT",
+      payload: "Mana Assam, Darjeeling, Lapsang Souchong",
+      backgroundColor: "#B0513F"
+    };
+    _e50f5bd3 = {
+      type: "TEXT",
+      payload: "White Fairy",
+      backgroundColor: "#9DA3B4"
+    };
+    TA880007GH2 = {
+      type: "TEXT",
+      payload: "Kashi Ginger, Elderberry Hibiscus",
+      backgroundColor: "#5072AB"
+    };
+    TA880004ZI2 = {
+      type: "TEXT",
+      payload: "Genmaicha, Jasmine",
+      backgroundColor: "#B9BB66"
+    };
+    tea_default = {
+      "93HAY0BJ0G": _3HAY0BJ0G,
+      D01EC0A0201512ER: D01EC0A0201512ER3,
+      "4e50f5bd": _e50f5bd3,
+      TA880007GH: TA880007GH2,
+      TA880004ZI: TA880004ZI2
+    };
+  }
+});
+
+// src/presets/visualize.json
+var BH9039X88Z2, D01EC0A0201512ER4, _e50f5bd4, visualize_default;
+var init_visualize = __esm({
+  "src/presets/visualize.json"() {
+    BH9039X88Z2 = {
+      type: "WEB",
+      payload: "https://demos.littleworkshop.fr/infinitown"
+    };
+    D01EC0A0201512ER4 = {
+      type: "WEB",
+      payload: "https://example.com"
+    };
+    _e50f5bd4 = {
+      type: "WEB",
+      payload: "https://soundvisualiser.com/#/visualiser"
+    };
+    visualize_default = {
+      BH9039X88Z: BH9039X88Z2,
+      D01EC0A0201512ER: D01EC0A0201512ER4,
+      "4e50f5bd": _e50f5bd4
+    };
+  }
+});
+
+// src/presets/index.ts
+var presets_exports = {};
+__export(presets_exports, {
+  info: () => info_default2,
+  jsconfbp: () => jsconfbp_default,
+  tea: () => tea_default,
+  visualize: () => visualize_default
+});
+var init_presets = __esm({
+  "src/presets/index.ts"() {
+    init_info2();
+    init_jsconfbp();
+    init_tea();
+    init_visualize();
+  }
+});
+
 // src/routes/api/device/preset.ts
 var preset_exports = {};
 __export(preset_exports, {
   default: () => preset_default
 });
-import fetch2 from "node-fetch";
 async function preset_default(fastify) {
   fastify.route({
     method: "POST",
     url: "/api/device/preset",
     async handler(request, reply) {
       const preset = request.body instanceof URLSearchParams ? request.body.get("preset") : request.body.preset;
-      const presetResponse = await fetch2(`${request.protocol}://${request.hostname}/preset/${preset}.json`);
-      const presetStates = await presetResponse.json();
+      const presetStates = presets_exports[preset];
       repo.cellState.setStates(presetStates);
       reply.send(presetStates);
     }
@@ -1804,6 +1957,7 @@ async function preset_default(fastify) {
 var init_preset = __esm({
   "src/routes/api/device/preset.ts"() {
     init_repository2();
+    init_presets();
   }
 });
 
@@ -2142,7 +2296,6 @@ async function urlEncodedPlugin(fastify) {
 
 // src/routes.ts
 async function routesSubsystem(fastify) {
-  await urlEncodedPlugin(fastify);
   await fastify.register(Promise.resolve().then(() => (init_image3(), image_exports))).register(Promise.resolve().then(() => (init_install(), install_exports))).register(Promise.resolve().then(() => (init_launch(), launch_exports))).register(Promise.resolve().then(() => (init_refresh(), refresh_exports))).register(Promise.resolve().then(() => (init_text(), text_exports))).register(Promise.resolve().then(() => (init_info(), info_exports))).register(Promise.resolve().then(() => (init_power(), power_exports))).register(Promise.resolve().then(() => (init_preset(), preset_exports))).register(Promise.resolve().then(() => (init_state_array(), state_array_exports))).register(Promise.resolve().then(() => (init_state2(), state_exports))).register(Promise.resolve().then(() => (init_device(), device_exports))).register(Promise.resolve().then(() => (init_freebusy(), freebusy_exports))).register(Promise.resolve().then(() => (init_third_party(), third_party_exports))).register(Promise.resolve().then(() => (init_cellwall_version(), cellwall_version_exports))).register(Promise.resolve().then(() => (init_routes(), routes_exports))).register(Promise.resolve().then(() => (init_oauth2callback(), oauth2callback_exports)));
 }
 
@@ -2239,6 +2392,7 @@ async function createServer() {
     },
     trustProxy: true
   });
+  await urlEncodedPlugin(fastify);
   await fastify.register(middie);
   await fastify.register(routesSubsystem).register(websocketSubsystem);
   return fastify;

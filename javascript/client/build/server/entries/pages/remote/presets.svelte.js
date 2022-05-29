@@ -16,7 +16,7 @@ const PresetCard = create_ssr_component(($$result, $$props, $$bindings, slots) =
   let selfStatus;
   let { title } = $$props;
   let { preset = void 0 } = $$props;
-  let { formAction = void 0 } = $$props;
+  let { formAction = "/api/device/preset" } = $$props;
   let { large = false } = $$props;
   let { button = "Activate" } = $$props;
   let { status } = $$props;
@@ -134,7 +134,10 @@ const Presets = create_ssr_component(($$result, $$props, $$bindings, slots) => {
         status
       }, {}, {
         default: () => {
-          return `${validate_component(LinkButton, "LinkButton").$$render($$result, { href: "/remote/third_party" }, {}, {
+          return `<label class="${"block mb-2"}"><input type="${"checkbox"}" name="${"reverse"}">
+			Reverse port
+		</label>
+		${validate_component(LinkButton, "LinkButton").$$render($$result, { href: "/remote/third_party" }, {}, {
             default: () => {
               return `SDK Login`;
             }
