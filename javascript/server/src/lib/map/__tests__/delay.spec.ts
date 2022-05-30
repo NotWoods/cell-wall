@@ -10,7 +10,7 @@ describe('asDelay', () => {
 		expect(asDelay('0ms')).toBe(0);
 	});
 
-	it('parses s style values', () => {
+	it('parses style values', () => {
 		expect(asDelay('2s')).toBe(2000);
 		expect(asDelay('0s')).toBe(0);
 	});

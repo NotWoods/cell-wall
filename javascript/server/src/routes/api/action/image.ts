@@ -17,6 +17,10 @@ interface ImageQuerystring extends ResizeOptions {
 	device?: string[] | string;
 }
 
+function toArrayBuffer(buffer: Buffer) {
+	return buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength);
+}
+
 export default async function (fastify: FastifyInstance): Promise<void> {
 	await imagePlugin(fastify);
 	const images = new SplitImageCache();
@@ -53,6 +57,7 @@ export default async function (fastify: FastifyInstance): Promise<void> {
 		},
 		async handler(request, reply) {
 			const image = request.body;
+			console.log('image: parsed image');
 
 			const devices = new Set(
 				Array.isArray(request.query.device) ? request.query.device : [request.query.device]
@@ -69,6 +74,7 @@ export default async function (fastify: FastifyInstance): Promise<void> {
 				x: cell.info?.x ?? 0,
 				y: cell.info?.y ?? 0
 			}));
+			console.log('image: found devices');
 
 			const options: ResizeOptions = {
 				horizontalAlign: request.query.horizontalAlign,
@@ -76,24 +82,21 @@ export default async function (fastify: FastifyInstance): Promise<void> {
 				resize: request.query.resize
 			};
 
-			images.clear();
 			await images.insert(image, rects, options);
+			console.log('image: inserted images');
 
 			const imageStates = await transformMapAsync(
 				rects,
 				async (_, serial): Promise<CellStateImage> => {
 					const buffer = await images.get(serial)!.getBufferAsync(image.getMIME());
-					const arrayBuffer = buffer.buffer.slice(
-						buffer.byteOffset,
-						buffer.byteOffset + buffer.byteLength
-					);
 
 					return {
 						type: 'IMAGE',
-						payload: arrayBuffer
+						payload: toArrayBuffer(buffer)
 					};
 				}
 			);
+			console.log('image: loaded image states');
 
 			repo.cellState.setStates(imageStates);
 
