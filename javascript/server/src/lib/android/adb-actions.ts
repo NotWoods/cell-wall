@@ -110,8 +110,10 @@ export async function startIntent(adb: ADB, options: StartIntentOptions): Promis
 
 	let res: string;
 	try {
+		console.log(`adb -s ${adb.curDeviceId} ${args.join(' ')}`);
 		res = await adb.shell(args);
 	} catch (err) {
+		console.error(adb.curDeviceId, err);
 		throw new StartIntentError(`Error attempting to start intent. Original error: ${err}`);
 	}
 	if (res.toLowerCase().includes('unable to resolve intent')) {

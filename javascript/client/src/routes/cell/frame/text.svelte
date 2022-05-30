@@ -7,7 +7,7 @@
 	const { state } = getFrameContext();
 	$: textState = filterState('TEXT', state);
 
-	$: text = $textState?.payload || 'CellWall';
+	$: text = $textState?.payload || '';
 	$: backgroundColor = $textState?.backgroundColor || randomDefaultColor;
 </script>
 

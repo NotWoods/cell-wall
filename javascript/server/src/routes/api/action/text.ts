@@ -2,9 +2,9 @@ import { RandomColor, textState, type CellStateText } from '@cell-wall/shared';
 import type { FastifyInstance } from 'fastify';
 import { derived, get as getState } from 'svelte/store';
 import { asDelay, setStatesWithDelay } from '../../../lib/map/delay';
-import { transformMap } from '../../../lib/map/transform';
+import { filterMap, transformMap } from '../../../lib/map/transform';
 import { repo } from '../../../lib/repository';
-import { distributeText } from '../../../lib/text/distribute';
+import { sortDevicesByPosition } from '../../../lib/text/sort';
 import { updateRemainingCells, type RemainingBehaviour } from './_remaining';
 
 const cellInfo = derived(repo.cellData, (devices) =>
@@ -38,8 +38,9 @@ export default async function (fastify: FastifyInstance): Promise<void> {
 			rest?: RemainingBehaviour;
 			delay?: string;
 			wait?: unknown;
+			device?: string[] | string;
 		};
-		Reply: Record<string, CellStateText> | Error;
+		Reply: CellStateText[] | Error;
 	}>({
 		method: 'POST',
 		url: '/api/action/text',
@@ -47,12 +48,16 @@ export default async function (fastify: FastifyInstance): Promise<void> {
 			const lines = parseLines(request.body);
 			const devices = getState(cellInfo);
 
-			// Put text into buckets for each device
-			const deviceToText = distributeText(devices, lines);
+			const deviceIds = new Set(
+				Array.isArray(request.query.device) ? request.query.device : [request.query.device]
+			);
+			const sortedDeviceIds = sortDevicesByPosition(
+				filterMap(devices, (_, id) => deviceIds.has(id))
+			);
 
 			const colors = new RandomColor();
-			const textStates = transformMap(deviceToText, (lines) =>
-				textState(lines.join(', '), request.query.backgroundColor ?? colors.next())
+			const textStates = lines.map((line) =>
+				textState(line, request.query.backgroundColor ?? colors.next())
 			);
 
 			let delay: number;
@@ -63,25 +68,19 @@ export default async function (fastify: FastifyInstance): Promise<void> {
 				return;
 			}
 
-			repo.cellState.setStates(textStates);
-			const jobDone = setStatesWithDelay(
-				repo.cellState,
-				Array.from(textStates.values()),
-				Array.from(textStates.keys()),
-				delay
-			).then(async () => {
-				if (request.query.rest) {
-					const remaining = Array.from(devices.keys()).filter(
-						(serial) => !deviceToText.has(serial)
-					);
-					await updateRemainingCells(remaining, request.query.rest || 'ignore');
+			const jobDone = setStatesWithDelay(repo.cellState, textStates, sortedDeviceIds, delay).then(
+				async () => {
+					if (request.query.rest) {
+						const remaining = Array.from(devices.keys()).filter((serial) => !deviceIds.has(serial));
+						await updateRemainingCells(remaining, request.query.rest || 'ignore');
+					}
 				}
-			});
+			);
 
 			if (request.query.wait || delay === 0) {
 				await jobDone;
 			}
-			reply.send(Object.fromEntries(textStates));
+			reply.send(textStates);
 		}
 	});
 }

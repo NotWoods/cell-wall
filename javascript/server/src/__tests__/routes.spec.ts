@@ -23,7 +23,6 @@ describe('routes subsystem', () => {
 		const routeFiles = actualFiles
 			.filter((path) => {
 				const { name, ext } = parse(path);
-				console.log(name);
 				return !name.startsWith('_') && ext === '.ts';
 			})
 			.map((path) => relative(srcFolder, path))

@@ -9,6 +9,10 @@
 	},
 	"4e50f5bd": {
 		"type": "WEB",
-		"payload": "https://soundvisualiser.com/#/visualiser"
+		"payload": "https://demos.littleworkshop.fr/infinitown"
+	},
+	"TA880007GH": {
+		"type": "CLOCK",
+		"payload": "Europe/Budapest"
 	}
 }

@@ -18,6 +18,9 @@
 		}
 		action.searchParams.set('rest', data.get('rest') as string);
 		action.searchParams.set('delay', data.get('delay') as string);
+		data.getAll('device').forEach((deviceId) => {
+			action.searchParams.append('device', deviceId as string);
+		});
 
 		try {
 			const res = await fetch(action.toString(), {
