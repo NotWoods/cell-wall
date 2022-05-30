@@ -15,6 +15,9 @@ async function submit(data, action) {
   }
   action.searchParams.set("rest", data.get("rest"));
   action.searchParams.set("delay", data.get("delay"));
+  data.getAll("device").forEach((deviceId) => {
+    action.searchParams.append("device", deviceId);
+  });
   try {
     const res = await fetch(action.toString(), {
       method: "post",

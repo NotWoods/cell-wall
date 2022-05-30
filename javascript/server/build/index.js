@@ -441,8 +441,10 @@ async function startIntent(adb, options) {
   }
   let res;
   try {
+    console.log(`adb -s ${adb.curDeviceId} ${args.join(" ")}`);
     res = await adb.shell(args);
   } catch (err) {
+    console.error(adb.curDeviceId, err);
     throw new StartIntentError(`Error attempting to start intent. Original error: ${err}`);
   }
   if (res.toLowerCase().includes("unable to resolve intent")) {
@@ -1523,36 +1525,6 @@ var init_sort = __esm({
   }
 });
 
-// src/lib/text/distribute.ts
-function distributeText(devices, lines) {
-  const deviceIds = sortDevicesByPosition(devices);
-  const biggestToSmallest = sortDevicesBySize(devices);
-  const smallestBucketSize = Math.floor(lines.length / deviceIds.length);
-  let remainderBucketSize = lines.length % deviceIds.length;
-  const bucketSizes = new Map(biggestToSmallest.map((id) => [id, smallestBucketSize]));
-  for (const [id, size] of bucketSizes.entries()) {
-    bucketSizes.set(id, size + 1);
-    remainderBucketSize--;
-    if (remainderBucketSize <= 0) {
-      break;
-    }
-  }
-  const deviceToText = /* @__PURE__ */ new Map();
-  let i = 0;
-  for (const id of deviceIds) {
-    const bucketSize = bucketSizes.get(id) ?? 0;
-    const text = lines.slice(i, i + bucketSize);
-    i += bucketSize;
-    deviceToText.set(id, text);
-  }
-  return deviceToText;
-}
-var init_distribute = __esm({
-  "src/lib/text/distribute.ts"() {
-    init_sort();
-  }
-});
-
 // src/routes/api/action/text.ts
 var text_exports = {};
 __export(text_exports, {
@@ -1579,9 +1551,10 @@ async function text_default(fastify) {
     async handler(request, reply) {
       const lines = parseLines(request.body);
       const devices = get_store_value(cellInfo);
-      const deviceToText = distributeText(devices, lines);
+      const deviceIds = new Set(Array.isArray(request.query.device) ? request.query.device : [request.query.device]);
+      const sortedDeviceIds = sortDevicesByPosition(filterMap(devices, (_, id) => deviceIds.has(id)));
       const colors = new RandomColor();
-      const textStates = transformMap(deviceToText, (lines2) => textState(lines2.join(", "), request.query.backgroundColor ?? colors.next()));
+      const textStates = lines.map((line) => textState(line, request.query.backgroundColor ?? colors.next()));
       let delay;
       try {
         delay = asDelay(request.query.delay) ?? 0;
@@ -1589,17 +1562,16 @@ async function text_default(fastify) {
         reply.status(400).send(new Error(`Invalid delay ${request.query.delay}`));
         return;
       }
-      repo.cellState.setStates(textStates);
-      const jobDone = setStatesWithDelay(repo.cellState, Array.from(textStates.values()), Array.from(textStates.keys()), delay).then(async () => {
+      const jobDone = setStatesWithDelay(repo.cellState, textStates, sortedDeviceIds, delay).then(async () => {
         if (request.query.rest) {
-          const remaining = Array.from(devices.keys()).filter((serial) => !deviceToText.has(serial));
+          const remaining = Array.from(devices.keys()).filter((serial) => !deviceIds.has(serial));
           await updateRemainingCells(remaining, request.query.rest || "ignore");
         }
       });
       if (request.query.wait || delay === 0) {
         await jobDone;
       }
-      reply.send(Object.fromEntries(textStates));
+      reply.send(textStates);
     }
   });
 }
@@ -1610,7 +1582,7 @@ var init_text = __esm({
     init_delay();
     init_transform();
     init_repository2();
-    init_distribute();
+    init_sort();
     init_remaining();
     cellInfo = derived(repo.cellData, (devices) => transformMap(devices, (device) => device.info));
   }
@@ -1897,7 +1869,7 @@ var init_tea = __esm({
 });
 
 // src/presets/visualize.json
-var BH9039X88Z2, D01EC0A0201512ER4, _e50f5bd4, visualize_default;
+var BH9039X88Z2, D01EC0A0201512ER4, _e50f5bd4, TA880007GH3, visualize_default;
 var init_visualize = __esm({
   "src/presets/visualize.json"() {
     BH9039X88Z2 = {
@@ -1910,12 +1882,17 @@ var init_visualize = __esm({
     };
     _e50f5bd4 = {
       type: "WEB",
-      payload: "https://soundvisualiser.com/#/visualiser"
+      payload: "https://demos.littleworkshop.fr/infinitown"
+    };
+    TA880007GH3 = {
+      type: "CLOCK",
+      payload: "Europe/Budapest"
     };
     visualize_default = {
       BH9039X88Z: BH9039X88Z2,
       D01EC0A0201512ER: D01EC0A0201512ER4,
-      "4e50f5bd": _e50f5bd4
+      "4e50f5bd": _e50f5bd4,
+      TA880007GH: TA880007GH3
     };
   }
 });

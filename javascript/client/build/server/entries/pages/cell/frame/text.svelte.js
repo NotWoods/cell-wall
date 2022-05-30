@@ -19,7 +19,7 @@ const Text = create_ssr_component(($$result, $$props, $$bindings, slots) => {
   const { state } = getFrameContext();
   $$result.css.add(css);
   $$subscribe_textState(textState = filterState("TEXT", state));
-  text = ($textState == null ? void 0 : $textState.payload) || "CellWall";
+  text = ($textState == null ? void 0 : $textState.payload) || "";
   backgroundColor = ($textState == null ? void 0 : $textState.backgroundColor) || randomDefaultColor;
   $$unsubscribe_textState();
   return `<main class="${"fill center svelte-cak7yr"}" style="${"background: " + escape(backgroundColor) + ";"}"><h1 class="${"headline-1 svelte-cak7yr"}">${escape(text)}</h1>
