@@ -2,12 +2,6 @@
 	"name": "@cell-wall/conf-demos",
 	"version": "1.0.0",
 	"type": "module",
-	"scripts": {
-		"check": "tsc --project .",
-		"check:watch": "tsc --project . --watch",
-		"lint": "prettier --check . --ignore-path ../.prettierignore && eslint --ignore-path ../.prettierignore .",
-		"format": "prettier --write . --ignore-path ../.prettierignore"
-	},
 	"dependencies": {
 		"appium-adb": "^9.6.1",
 		"ts-extras": "^0.10.2"
