@@ -1242,6 +1242,9 @@ __export(image_exports, {
 import {
   validRectWithPos
 } from "@cell-wall/shared";
+function toArrayBuffer(buffer) {
+  return buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength);
+}
 async function image_default(fastify) {
   await imagePlugin(fastify);
   const images = new SplitImageCache();
@@ -1273,6 +1276,7 @@ async function image_default(fastify) {
     },
     async handler(request, reply) {
       const image = request.body;
+      console.log("image: parsed image");
       const devices = new Set(Array.isArray(request.query.device) ? request.query.device : [request.query.device]);
       const includes = devices.size > 0 ? devices.has.bind(devices) : () => true;
       const cellData = get_store_value(repo.cellData);
@@ -1286,21 +1290,22 @@ async function image_default(fastify) {
           y: ((_d = cell.info) == null ? void 0 : _d.y) ?? 0
         };
       });
+      console.log("image: found devices");
       const options = {
         horizontalAlign: request.query.horizontalAlign,
         verticalAlign: request.query.verticalAlign,
         resize: request.query.resize
       };
-      images.clear();
       await images.insert(image, rects, options);
+      console.log("image: inserted images");
       const imageStates = await transformMapAsync(rects, async (_, serial) => {
         const buffer = await images.get(serial).getBufferAsync(image.getMIME());
-        const arrayBuffer = buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength);
         return {
           type: "IMAGE",
-          payload: arrayBuffer
+          payload: toArrayBuffer(buffer)
         };
       });
+      console.log("image: loaded image states");
       repo.cellState.setStates(imageStates);
       if (request.query.rest) {
         const remaining = Array.from(cellData.keys()).filter((serial) => !rects.has(serial));
@@ -1798,10 +1803,10 @@ var init_info2 = __esm({
 });
 
 // src/presets/jsconfbp.json
-var TA880007GH, BH9039X88Z, D01EC0A0201512ER2, _e50f5bd2, jsconfbp_default;
+var iOS, BH9039X88Z, D01EC0A0201512ER2, _e50f5bd2, jsconfbp_default;
 var init_jsconfbp = __esm({
   "src/presets/jsconfbp.json"() {
-    TA880007GH = {
+    iOS = {
       type: "IMAGE",
       payload: "/img/jsconfbp.png",
       scaleType: "FIT_CENTER"
@@ -1821,7 +1826,7 @@ var init_jsconfbp = __esm({
       payload: "https://jsconfbp.com/"
     };
     jsconfbp_default = {
-      TA880007GH,
+      iOS,
       BH9039X88Z,
       D01EC0A0201512ER: D01EC0A0201512ER2,
       "4e50f5bd": _e50f5bd2
@@ -1830,7 +1835,7 @@ var init_jsconfbp = __esm({
 });
 
 // src/presets/tea.json
-var _3HAY0BJ0G, D01EC0A0201512ER3, _e50f5bd3, TA880007GH2, TA880004ZI2, tea_default;
+var _3HAY0BJ0G, D01EC0A0201512ER3, _e50f5bd3, TA880007GH, TA880004ZI2, tea_default;
 var init_tea = __esm({
   "src/presets/tea.json"() {
     _3HAY0BJ0G = {
@@ -1848,7 +1853,7 @@ var init_tea = __esm({
       payload: "White Fairy",
       backgroundColor: "#9DA3B4"
     };
-    TA880007GH2 = {
+    TA880007GH = {
       type: "TEXT",
       payload: "Kashi Ginger, Elderberry Hibiscus",
       backgroundColor: "#5072AB"
@@ -1862,14 +1867,14 @@ var init_tea = __esm({
       "93HAY0BJ0G": _3HAY0BJ0G,
       D01EC0A0201512ER: D01EC0A0201512ER3,
       "4e50f5bd": _e50f5bd3,
-      TA880007GH: TA880007GH2,
+      TA880007GH,
       TA880004ZI: TA880004ZI2
     };
   }
 });
 
 // src/presets/visualize.json
-var BH9039X88Z2, D01EC0A0201512ER4, _e50f5bd4, TA880007GH3, visualize_default;
+var BH9039X88Z2, D01EC0A0201512ER4, _e50f5bd4, TA880007GH2, visualize_default;
 var init_visualize = __esm({
   "src/presets/visualize.json"() {
     BH9039X88Z2 = {
@@ -1884,7 +1889,7 @@ var init_visualize = __esm({
       type: "WEB",
       payload: "https://demos.littleworkshop.fr/infinitown"
     };
-    TA880007GH3 = {
+    TA880007GH2 = {
       type: "CLOCK",
       payload: "Europe/Budapest"
     };
@@ -1892,7 +1897,7 @@ var init_visualize = __esm({
       BH9039X88Z: BH9039X88Z2,
       D01EC0A0201512ER: D01EC0A0201512ER4,
       "4e50f5bd": _e50f5bd4,
-      TA880007GH: TA880007GH3
+      TA880007GH: TA880007GH2
     };
   }
 });
