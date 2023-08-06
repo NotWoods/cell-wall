@@ -1,16 +1,3 @@
-<script lang="ts" context="module">
-	import type { Load } from '@sveltejs/kit';
-
-	export const load: Load = async ({ url }) => {
-		return {
-			props: {
-				id: url.searchParams.get('id') || '',
-				autoJoin: url.searchParams.has('autojoin')
-			}
-		};
-	};
-</script>
-
 <script lang="ts">
 	import { browser } from '$app/env';
 	import { goto, prefetchRoutes } from '$app/navigation';
@@ -19,9 +6,9 @@
 	import { onMount } from 'svelte';
 	import { cellStateTypes } from '@cell-wall/shared';
 
-	export let id = '';
-	export let autoJoin = false;
+  export let data: import('./$types').PageData;
 
+  let id = data.id || '';
 	onMount(() => {
 		// Load previous ID from local storage, if not set by the URL
 		if (!id) {
@@ -51,7 +38,7 @@
 	}
 
 	$: {
-		if (autoJoin && browser) {
+		if (data.autoJoin && browser) {
 			submit();
 		}
 	}

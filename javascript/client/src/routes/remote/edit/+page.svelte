@@ -6,9 +6,9 @@
 	import Form from '$lib/components/Form.svelte';
 	import { storeEntries, storeKeys } from '$lib/connection/remote-socket';
 	import type { CellInfo } from '@cell-wall/shared';
-	import PowerButtons from './custom/_PowerButtons.svelte';
-	import { post } from './_form';
-	import { getRemoteContext } from './__layout.svelte';
+	import PowerButtons from '../custom/_PowerButtons.svelte';
+	import { post } from '../_form';
+	import { getRemoteContext } from '../+layout.svelte';
 
 	const { state: remoteState } = getRemoteContext();
 	const devices = storeEntries(remoteState);

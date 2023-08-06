@@ -1,13 +1,11 @@
-<script context="module">
-	export const prerender = true;
-</script>
+
 
 <script lang="ts">
 	import Card from '$lib/components/Card.svelte';
 	import Form from '$lib/components/Form.svelte';
 	import VerticalField from '$lib/components/Field/VerticalField.svelte';
-	import { formDataAsSearchParams } from './_form';
-	import PresetCard from './_PresetCard.svelte';
+	import { formDataAsSearchParams } from '../_form';
+	import PresetCard from '../_PresetCard.svelte';
 	import SubmitButton from '$lib/components/Button/SubmitButton.svelte';
 	import LinkButton from '$lib/components/Button/LinkButton.svelte';
 

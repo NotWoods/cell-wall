@@ -5,7 +5,7 @@
 	import VerticalField from '$lib/components/Field/VerticalField.svelte';
 	import Form from '$lib/components/Form.svelte';
 	import { storeEntries, storeKeys } from '$lib/connection/remote-socket';
-	import { getRemoteContext } from './__layout.svelte';
+	import { getRemoteContext } from '../+layout.svelte';
 
 	const { state: remoteState } = getRemoteContext();
 	const devices = storeEntries(remoteState);

@@ -1,14 +1,4 @@
-<script context="module" lang="ts">
-	import type { Load } from '@sveltejs/kit';
 
-	export const load: Load = async ({ url }) => {
-		return {
-			props: {
-				defaultSerial: url.searchParams.get('id') || ''
-			}
-		};
-	};
-</script>
 
 <script lang="ts">
 	import ResetSubmit from '$lib/components/Button/ResetSubmit.svelte';
@@ -18,13 +8,13 @@
 	import Tabs from '$lib/components/Tabs/Tabs.svelte';
 	import { storeEntries } from '$lib/connection/remote-socket';
 	import { allCellStateSchemas } from '@cell-wall/shared';
-	import ControllerFields from './custom/_ControllerFields.svelte';
-	import PowerButtons from './custom/_PowerButtons.svelte';
-	import TypeTab from './custom/_TypeTab.svelte';
-	import { post } from './_form';
-	import { getRemoteContext } from './__layout.svelte';
+	import ControllerFields from '../custom/_ControllerFields.svelte';
+	import PowerButtons from '../custom/_PowerButtons.svelte';
+	import TypeTab from '../custom/_TypeTab.svelte';
+	import { post } from '../_form';
+	import { getRemoteContext } from '../+layout.svelte';
 
-	export let defaultSerial: string;
+	export let data: import('./$types').PageData;
 
 	const { state: remoteState } = getRemoteContext();
 	const devices = storeEntries(remoteState);
@@ -32,11 +22,7 @@
 	// Selected schema type
 	let selectedType = 'BLANK';
 	// serial from selected device
-	let selectedDeviceSerial = defaultSerial || '';
-
-	$: {
-		selectedDeviceSerial = defaultSerial;
-	}
+	let selectedDeviceSerial = data.defaultSerial || '';
 
 	$: selectedDevice = $remoteState.get(selectedDeviceSerial);
 	$: activeSchema = allCellStateSchemas.find(

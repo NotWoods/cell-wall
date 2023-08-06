@@ -17,10 +17,10 @@
 	import FormattedTime from '$lib/components/Frame/FormattedTime.svelte';
 	import { filterState } from '$lib/filter-state';
 	import { onMount } from 'svelte';
-	import BusyWorker from '../../../workers/busy-worker?worker';
-	import type { BusyState } from '../../../workers/busy-worker';
-	import { messages } from '../../../workers/store';
-	import { getFrameContext } from './__layout.svelte';
+	import BusyWorker from '../../../../workers/busy-worker?worker';
+	import type { BusyState } from '../../../../workers/busy-worker';
+	import { messages } from '../../../../workers/store';
+	import { getFrameContext } from '../+layout.svelte';
 
 	const { state } = getFrameContext();
 	$: busyState = filterState('BUSY', state);

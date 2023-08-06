@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { filterState } from '$lib/filter-state';
-	import { getFrameContext } from './__layout.svelte';
+	import { getFrameContext } from '../+layout.svelte';
 
 	const { state } = getFrameContext();
 

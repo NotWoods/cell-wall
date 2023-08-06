@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { filterState } from '$lib/filter-state';
 	import { RAINBOW_COLORS, randomItem } from '@cell-wall/shared';
-	import { getFrameContext } from './__layout.svelte';
+	import { getFrameContext } from '../+layout.svelte';
 
 	const randomDefaultColor = randomItem(RAINBOW_COLORS);
 	const { state } = getFrameContext();

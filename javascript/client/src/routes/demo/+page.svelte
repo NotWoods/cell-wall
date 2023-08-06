@@ -2,7 +2,7 @@
 	import RemoteFrame from '$lib/components/RemoteFrame.svelte';
 	import TopBar from '$lib/components/TopBar/TopBar.svelte';
 	import { onMount } from 'svelte';
-	import { post } from './remote/_form';
+	import { post } from '../remote/_form';
 
 	const demoEntries: readonly string[] = ['demo1', 'demo2', 'demo3', 'demo4'];
 
