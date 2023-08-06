@@ -1,8 +1,9 @@
 import '@testing-library/jest-dom';
-import { describe, it } from '@jest/globals';
+import { describe, test } from 'vitest';
 import { render, act } from '@testing-library/svelte';
 
 import SubmitButton from '../SubmitButton.svelte';
+
 class Deferred<T> implements PromiseLike<T> {
 	private promise: Promise<T>;
 	resolve!: (value: T | PromiseLike<T>) => void;
@@ -24,7 +25,7 @@ class Deferred<T> implements PromiseLike<T> {
 }
 
 describe('SubmitButton', () => {
-	it('looks normal when promise is resolved', async () => {
+	test('looks normal when promise is resolved', async () => {
 		const loading = Promise.resolve();
 		const { getByRole } = render(SubmitButton, { loading });
 		await act();
@@ -33,7 +34,7 @@ describe('SubmitButton', () => {
 		expect(getByRole('button')).toHaveTextContent('Submit');
 	});
 
-	it('shows loading status when promise is unresolved', async () => {
+	test('shows loading status when promise is unresolved', async () => {
 		const loading = new Deferred<void>();
 		const { getByRole } = render(SubmitButton, { loading });
 		await act();
@@ -46,7 +47,7 @@ describe('SubmitButton', () => {
 		expect(getByRole('button')).not.toHaveTextContent('Loading');
 	});
 
-	it('shows danger status when promise is rejected', async () => {
+	test('shows danger status when promise is rejected', async () => {
 		const loading = Promise.reject();
 		const { getByRole } = render(SubmitButton, { loading });
 		await act();

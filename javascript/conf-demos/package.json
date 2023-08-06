@@ -4,11 +4,11 @@
 	"type": "module",
 	"dependencies": {
 		"appium-adb": "^9.6.1",
-		"ts-extras": "^0.10.2"
+		"ts-extras": "^0.11.0"
 	},
 	"devDependencies": {
 		"@types/appium-adb": "9.4.0",
-		"@types/node": "^16.11.26",
+		"@types/node": "^16.18.39",
 		"tslib": "^2.6.1",
 		"typescript": "^5.1.6"
 	}

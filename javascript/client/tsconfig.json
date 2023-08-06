@@ -13,5 +13,5 @@
 		"importHelpers": true
 	},
 	"references": [{ "path": "../shared" }],
-	"include": ["src/**/*.d.ts", "src/**/*.ts", "src/**/*.svelte", "jest.setup.ts"]
+	"include": ["src/**/*.d.ts", "src/**/*.ts", "src/**/*.svelte"]
 }

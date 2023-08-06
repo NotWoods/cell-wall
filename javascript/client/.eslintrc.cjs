@@ -2,11 +2,14 @@
 const config = {
 	root: true,
 	extends: ['plugin:svelte/recommended', 'plugin:svelte/prettier', '../.eslintrc.cjs'],
-	parserOptions: {
-		project: require.resolve('./tsconfig.json'),
-		extraFileExtensions: ['.svelte']
-	},
 	overrides: [
+		{
+			files: ['*.ts', '*.svelte'],
+			parserOptions: {
+				project: require.resolve('./tsconfig.json'),
+				extraFileExtensions: ['.svelte']
+			},
+		},
 		{
 			files: ['*.svelte'],
 			parser: 'svelte-eslint-parser',

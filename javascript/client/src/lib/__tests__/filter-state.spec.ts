@@ -1,10 +1,10 @@
 import type { CellState } from '@cell-wall/shared';
-import { describe, expect, it } from '@jest/globals';
+import { describe, expect, test } from 'vitest';
 import { get, writable } from 'svelte/store';
 import { filterState } from '../filter-state';
 
 describe('filterState', () => {
-	it('filters WEB', () => {
+	test('filters WEB', () => {
 		const state = writable<CellState>({ type: 'TEXT', payload: 'Hello' });
 		const filtered = filterState('WEB', state);
 
@@ -14,7 +14,7 @@ describe('filterState', () => {
 		expect(get(filtered)).toEqual({ type: 'WEB', payload: 'https://example.com' });
 	});
 
-	it('preserves last valid state', () => {
+	test('preserves last valid state', () => {
 		const state = writable<CellState>({ type: 'WEB', payload: 'https://example.com' });
 		const filtered = filterState('TEXT', state);
 
