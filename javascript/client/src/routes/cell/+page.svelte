@@ -6,9 +6,9 @@
 	import { onMount } from 'svelte';
 	import { cellStateTypes } from '@cell-wall/shared';
 
-  export let data: import('./$types').PageData;
+	export let data: import('./$types').PageData;
 
-  let id = data.id || '';
+	let id = data.id || '';
 	onMount(() => {
 		// Load previous ID from local storage, if not set by the URL
 		if (!id) {

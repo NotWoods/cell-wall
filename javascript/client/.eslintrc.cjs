@@ -1,11 +1,20 @@
 /** @type {import('eslint').Linter.Config} */
 const config = {
 	root: true,
-	extends: '../.eslintrc.cjs',
-	plugins: ['svelte3', '@typescript-eslint'],
-	overrides: [{ files: ['*.svelte'], processor: 'svelte3/svelte3' }],
+	extends: ['plugin:svelte/recommended', 'plugin:svelte/prettier', '../.eslintrc.cjs'],
+	parserOptions: {
+		project: require.resolve('./tsconfig.json'),
+		extraFileExtensions: ['.svelte']
+	},
+	overrides: [
+		{
+			files: ['*.svelte'],
+			parser: 'svelte-eslint-parser',
+			parserOptions: { parser: '@typescript-eslint/parser' }
+		}
+	],
 	settings: {
-		'svelte3/typescript': () => require('typescript')
+		'svelte/typescript': () => require('typescript')
 	}
 };
 

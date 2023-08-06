@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { page } from '$app/stores';
+	import { page } from '$app/stores';
 	import RemoteFrame from '$lib/components/RemoteFrame.svelte';
 	import TopBar from '$lib/components/TopBar/TopBar.svelte';
 </script>

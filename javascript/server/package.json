@@ -40,7 +40,7 @@
 		"esbuild": "^0.14.38",
 		"esbuild-jest": "^0.5.0",
 		"jest": "^28.1.0",
-		"svelte": "^3.48.0",
+		"svelte": "^4.1.2",
 		"tslib": "^2.6.1",
 		"typescript": "^5.1.6"
 	}

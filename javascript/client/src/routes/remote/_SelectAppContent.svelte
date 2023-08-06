@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { blankState, type CellInfo,type CellState } from '@cell-wall/shared';
+	import { blankState, type CellInfo, type CellState } from '@cell-wall/shared';
 	import startCase from 'lodash.startcase';
 
 	export let info: CellInfo;

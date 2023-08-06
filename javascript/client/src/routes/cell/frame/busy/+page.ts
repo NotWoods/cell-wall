@@ -1,4 +1,3 @@
-
 const knownPeople = new Map(
 	Object.entries({
 		'tigeroakes@gmail.com': {

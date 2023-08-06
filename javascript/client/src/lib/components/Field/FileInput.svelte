@@ -9,7 +9,7 @@
 	/>
 	<div class="relative flex pointer-events-none cursor-pointer">
 		<span
-			class="inline-flex items-center px-3 rounded-l-md border-r border-gray-300 bg-gray-50 text-gray-500 text-sm "
+			class="inline-flex items-center px-3 rounded-l-md border-r border-gray-300 bg-gray-50 text-gray-500 text-sm"
 			aria-hidden="true"
 		>
 			<svg class="fill-current mr-1" width="24" height="24" viewBox="4 3 18 17">

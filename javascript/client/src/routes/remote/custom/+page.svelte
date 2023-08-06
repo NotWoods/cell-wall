@@ -1,5 +1,3 @@
-
-
 <script lang="ts">
 	import ResetSubmit from '$lib/components/Button/ResetSubmit.svelte';
 	import DeviceOptions from '$lib/components/Field/DeviceOptions.svelte';

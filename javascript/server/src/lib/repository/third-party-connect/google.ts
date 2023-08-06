@@ -14,7 +14,10 @@ export class GoogleClient {
 	 * Set up Google API client
 	 * @param credentials Saved Google credentials, if any
 	 */
-	private constructor(private readonly db: DatabaseStore, credentials: Credentials | undefined) {
+	private constructor(
+		private readonly db: DatabaseStore,
+		credentials: Credentials | undefined
+	) {
 		this.client = new auth.OAuth2(
 			GOOGLE_CLIENT_ID,
 			GOOGLE_CLIENT_SECRET,

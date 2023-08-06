@@ -1,4 +1,3 @@
-
 export const load: import('./$types').PageLoad = async ({ url }) => {
 	return {
 		id: url.searchParams.get('id') || '',

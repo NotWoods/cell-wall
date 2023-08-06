@@ -7,10 +7,10 @@
 			"$lib/*": ["./src/lib/*"]
 		},
 		"types": ["@sveltejs/kit"],
-    "strict": true,
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "importHelpers": true
+		"strict": true,
+		"esModuleInterop": true,
+		"forceConsistentCasingInFileNames": true,
+		"importHelpers": true
 	},
 	"references": [{ "path": "../shared" }],
 	"include": ["src/**/*.d.ts", "src/**/*.ts", "src/**/*.svelte", "jest.setup.ts"]
