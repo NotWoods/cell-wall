@@ -1,4 +1,4 @@
-import { browser } from '$app/env';
+import { browser } from '$app/environment';
 import type { CellData } from '@cell-wall/shared';
 import { derived, readable, type Readable } from 'svelte/store';
 

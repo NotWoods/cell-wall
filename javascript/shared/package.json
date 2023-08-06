@@ -17,11 +17,11 @@
 		"test": "tsc --project test && node --experimental-vm-modules node_modules/jest/bin/jest.js"
 	},
 	"dependencies": {
-		"tslib": "^2.4.0"
+		"tslib": "^2.6.1"
 	},
 	"devDependencies": {
 		"@jest/globals": "^28.1.0",
 		"jest": "^28.1.0",
-		"typescript": "^4.7.2"
+		"typescript": "^5.1.6"
 	}
 }

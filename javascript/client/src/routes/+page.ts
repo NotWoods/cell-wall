@@ -1,7 +1,5 @@
 import { redirect } from '@sveltejs/kit';
 
-import type { PageLoad } from '@sveltejs/kit';
-
-export const load: PageLoad = async () => {
+export const load: import('./$types').PageLoad = async () => {
 	throw redirect(301, '/remote');
 };

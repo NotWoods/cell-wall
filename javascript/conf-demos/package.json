@@ -9,7 +9,7 @@
 	"devDependencies": {
 		"@types/appium-adb": "9.4.0",
 		"@types/node": "^16.11.26",
-		"tslib": "^2.4.0",
-		"typescript": "^4.7.2"
+		"tslib": "^2.6.1",
+		"typescript": "^5.1.6"
 	}
 }

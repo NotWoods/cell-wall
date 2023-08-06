@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { browser } from '$app/env';
-	import { goto, prefetchRoutes } from '$app/navigation';
+	import { browser } from '$app/environment';
+	import { goto, preloadCode } from '$app/navigation';
 	import { frameUrl } from '$lib/connection/state-socket';
 	import { requestFullScreen, requestWakeLock } from '$lib/wakelock';
 	import { onMount } from 'svelte';
@@ -25,8 +25,8 @@
 		requestFullScreen();
 		requestWakeLock();
 
-		const routePrefetchJob = prefetchRoutes(
-			Array.from(cellStateTypes, (type) => frameUrl(type, id))
+		const routePrefetchJob = preloadCode(
+			...Array.from(cellStateTypes, (type) => frameUrl(type, id))
 		);
 
 		await goto(frameUrl('BLANK', id), { replaceState: false });

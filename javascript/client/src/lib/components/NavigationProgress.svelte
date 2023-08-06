@@ -8,7 +8,7 @@
 		role="progressbar"
 		aria-valuemin={0}
 		aria-valuemax={1}
-		aria-valuetext="Loading {$navigating?.to?.pathname}"
+		aria-valuetext="Loading {$navigating?.to?.url.pathname}"
 	>
 		<div class="progress-bar-value w-full h-full bg-gray-200" />
 	</div>

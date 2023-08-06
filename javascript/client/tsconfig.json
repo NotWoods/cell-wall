@@ -1,11 +1,16 @@
 {
-	"extends": "../tsconfig.base.json",
+	// "extends": ["./.svelte-kit/tsconfig.json", "../tsconfig.base.json"],
+	"extends": "./.svelte-kit/tsconfig.json",
 	"compilerOptions": {
 		"paths": {
 			"$lib": ["./src/lib"],
 			"$lib/*": ["./src/lib/*"]
 		},
-		"types": ["@sveltejs/kit"]
+		"types": ["@sveltejs/kit"],
+    "strict": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "importHelpers": true
 	},
 	"references": [{ "path": "../shared" }],
 	"include": ["src/**/*.d.ts", "src/**/*.ts", "src/**/*.svelte", "jest.setup.ts"]

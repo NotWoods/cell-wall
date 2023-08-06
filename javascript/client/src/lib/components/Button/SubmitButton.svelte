@@ -10,7 +10,7 @@
 	import LoadingSpinner from '../LoadingSpinner.svelte';
 	import Button from './Button.svelte';
 
-	export let loading: Promise<void>;
+	export let loading: PromiseLike<void>;
 	let className = '';
 	export { className as class };
 	export let colors: Partial<typeof DEFAULT_COLORS> = {};

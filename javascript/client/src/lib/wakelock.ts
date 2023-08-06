@@ -1,36 +1,5 @@
 import { derived, writable, type Readable } from 'svelte/store';
 
-declare global {
-	type WakeLockType = 'screen';
-
-	interface WakeLockSentinel extends EventTarget {
-		readonly released: boolean;
-		readonly type: WakeLockType;
-
-		release(): Promise<void>;
-
-		onrelease: ((this: WakeLockSentinel, ev: Event) => any) | null;
-		addEventListener(
-			type: 'release',
-			listener: (this: WakeLockSentinel, ev: Event) => any,
-			options?: boolean | AddEventListenerOptions
-		): void;
-		addEventListener(
-			type: string,
-			listener: EventListenerOrEventListenerObject,
-			options?: boolean | AddEventListenerOptions
-		): void;
-	}
-
-	interface WakeLock {
-		request(type: WakeLockType): Promise<WakeLockSentinel>;
-	}
-
-	interface Navigator {
-		readonly wakeLock: WakeLock;
-	}
-}
-
 interface Lock {
 	active: Readable<boolean>;
 	error: Readable<Error | undefined>;

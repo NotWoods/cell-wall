@@ -1,5 +1,5 @@
 import type { CellState, CellStateMap, CellStateType } from '@cell-wall/shared';
-import { derived, Readable } from 'svelte/store';
+import { derived, type Readable } from 'svelte/store';
 
 export function filterState<Type extends CellStateType>(
 	type: Type,

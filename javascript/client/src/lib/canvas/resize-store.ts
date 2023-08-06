@@ -1,5 +1,5 @@
 import type { Rectangle } from '@cell-wall/shared';
-import { derived, Readable, readable } from 'svelte/store';
+import { derived, type Readable, readable } from 'svelte/store';
 
 function resizeObserverStore(element: Element | undefined) {
 	if (element) {
