@@ -30,9 +30,9 @@
 	import { getFrameContext } from '../+layout.svelte';
 
 	const { state } = getFrameContext();
-	$: clockState = filterState('CLOCK', state);
+	const clockState = filterState('CLOCK', state);
 
-	$: time = intervalClock();
+	const time = intervalClock();
 </script>
 
 <main class="fill center">

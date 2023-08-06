@@ -28,7 +28,7 @@
 		</div>
 		<span class="text-transparent" aria-hidden="true"><slot>Submit</slot></span>
 	</Button>
-{:then _}
+{:then}
 	<Button
 		{...$$restProps}
 		type="submit"
@@ -37,7 +37,7 @@
 	>
 		<slot>Submit</slot>
 	</Button>
-{:catch _}
+{:catch}
 	<Button
 		{...$$restProps}
 		type="submit"

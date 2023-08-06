@@ -18,13 +18,13 @@
 	}
 
 	const { state } = getFrameContext();
-	$: imageState = filterState('IMAGE', state);
+	const imageState = filterState('IMAGE', state);
 
 	$: src = $imageState ? createBlobUrl($imageState.payload) : undefined;
 	$: fit = objectFit($imageState?.scaleType);
 </script>
 
-<img class="fill" {src} alt="" style={`object-fit: ${fit}`} />
+<img class="fill" {src} alt="" style="object-fit: {fit}" />
 
 <style>
 	img {

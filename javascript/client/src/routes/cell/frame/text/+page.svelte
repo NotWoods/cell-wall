@@ -5,7 +5,7 @@
 
 	const randomDefaultColor = randomItem(RAINBOW_COLORS);
 	const { state } = getFrameContext();
-	$: textState = filterState('TEXT', state);
+	const textState = filterState('TEXT', state);
 
 	$: text = $textState?.payload || '';
 	$: backgroundColor = $textState?.backgroundColor || randomDefaultColor;

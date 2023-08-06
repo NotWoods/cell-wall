@@ -3,10 +3,9 @@
 	import { getFrameContext } from '../+layout.svelte';
 
 	const { state } = getFrameContext();
+	const webState = filterState('WEB', state);
 
 	let frame: HTMLIFrameElement | undefined;
-
-	$: webState = filterState('WEB', state);
 
 	$: url = $webState?.payload || 'about:blank';
 	$: {

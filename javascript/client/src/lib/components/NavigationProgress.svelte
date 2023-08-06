@@ -14,7 +14,7 @@
 	</div>
 {/if}
 
-<style lang="postcss">
+<style>
 	.progress-bar-value {
 		transform-origin: 0% 50%;
 		animation: indeterminateAnimation 1s infinite linear;

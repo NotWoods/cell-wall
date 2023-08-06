@@ -23,7 +23,7 @@
 	import { getFrameContext } from '../+layout.svelte';
 
 	const { state } = getFrameContext();
-	$: busyState = filterState('BUSY', state);
+	const busyState = filterState('BUSY', state);
 	$: calendarId = $busyState?.payload;
 
 	let worker: Worker | undefined;

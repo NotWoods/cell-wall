@@ -62,7 +62,7 @@ export function requestFullScreen(): Lock {
  * Returns undefined if wake lock is not supported.
  */
 export function requestWakeLock(): Lock | undefined {
-	/* eslint-disable no-inner-declarations */
+	/* eslint-disable no-inner-declarations, svelte/no-inner-declarations */
 	if ('wakeLock' in navigator) {
 		const controller = new AbortController();
 		let wakeLock: WakeLockSentinel | undefined;
