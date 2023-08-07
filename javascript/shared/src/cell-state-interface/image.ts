@@ -2,7 +2,7 @@ import { buildSchema } from './_schema.js';
 
 export interface CellStateImage {
 	readonly type: 'IMAGE';
-	readonly payload: string | ArrayBuffer | Blob;
+	readonly payload: string | ArrayBuffer;
 	readonly scaleType?: 'FIT_CENTER' | 'FIT_XY' | 'CENTER_INSIDE';
 }
 

@@ -1,5 +1,5 @@
 import type { CellData } from '@cell-wall/shared';
-import { derived, Readable } from 'svelte/store';
+import { derived, type Readable } from 'svelte/store';
 import type { AndroidProperties } from '../android/android-properties';
 import { transformMap } from '../map/transform';
 

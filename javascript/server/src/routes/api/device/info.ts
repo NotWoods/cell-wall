@@ -1,4 +1,4 @@
-import { CellInfo, cellInfoSchema } from '@cell-wall/shared';
+import { cellInfoSchema, type CellInfo } from '@cell-wall/shared';
 import type { FastifyInstance } from 'fastify';
 import { derived, get as getState } from 'svelte/store';
 import { transformMap, transformMapAsync } from '../../../lib/map/transform';

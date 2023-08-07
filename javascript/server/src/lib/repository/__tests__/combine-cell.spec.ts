@@ -1,4 +1,4 @@
-import { blankState, CellInfo, CellState } from '@cell-wall/shared';
+import { blankState, type CellInfo, type CellState } from '@cell-wall/shared';
 import { describe, expect, it } from '@jest/globals';
 import { get, writable } from 'svelte/store';
 import type { AndroidProperties } from '../../android/android-properties';

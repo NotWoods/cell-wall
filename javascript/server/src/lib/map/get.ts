@@ -1,6 +1,7 @@
 export function asArray<T>(items: T | T[]): T[];
 export function asArray<T>(items: T | readonly T[]): readonly T[];
 export function asArray<T>(items: T | readonly T[]): readonly T[] {
+	// @ts-expect-error isArray doesn't handle readonly arrays properly
 	return Array.isArray(items) ? items : [items];
 }
 

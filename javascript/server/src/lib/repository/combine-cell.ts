@@ -1,6 +1,6 @@
-import { blankState, CellData, CellInfo, CellState, ConnectionType } from '@cell-wall/shared';
-import type { Readable } from 'svelte/store';
-import { derived } from 'svelte/store';
+import type { CellData, CellInfo, CellState, ConnectionType } from '@cell-wall/shared';
+import { blankState } from '@cell-wall/shared';
+import { derived, type Readable } from 'svelte/store';
 import type { AndroidProperties } from '../android/android-properties';
 import { transformMap } from '../map/transform';
 import { withLastState } from '../store/changes';

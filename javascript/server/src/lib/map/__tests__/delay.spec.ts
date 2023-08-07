@@ -1,5 +1,5 @@
 import { textState } from '@cell-wall/shared';
-import { describe, expect, it } from '@jest/globals';
+import { jest, describe, expect, it } from '@jest/globals';
 import type { CellStateStore } from '../../cells';
 import { asDelay, setStatesWithDelay } from '../delay';
 

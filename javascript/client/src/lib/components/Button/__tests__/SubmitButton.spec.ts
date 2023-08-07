@@ -1,5 +1,4 @@
-import '@testing-library/jest-dom';
-import { describe, test } from 'vitest';
+import { describe, test, expect } from 'vitest';
 import { render, act } from '@testing-library/svelte';
 
 import SubmitButton from '../SubmitButton.svelte';
@@ -30,8 +29,8 @@ describe('SubmitButton', () => {
 		const { getByRole } = render(SubmitButton, { loading });
 		await act();
 
-		expect(getByRole('button')).toHaveClass('hover:bg-green-600');
-		expect(getByRole('button')).toHaveTextContent('Submit');
+		expect(getByRole('button').className).toContain('hover:bg-green-600');
+		expect(getByRole('button').textContent).toBe('Submit');
 	});
 
 	test('shows loading status when promise is unresolved', async () => {
@@ -39,12 +38,12 @@ describe('SubmitButton', () => {
 		const { getByRole } = render(SubmitButton, { loading });
 		await act();
 
-		expect(getByRole('button')).toHaveClass('bg-green-500');
-		expect(getByRole('button')).toHaveTextContent('Loading');
+		expect(getByRole('button').className).toContain('bg-green-500');
+		expect(getByRole('button').textContent).toBe('Loading');
 
 		await act(() => loading.resolve());
 
-		expect(getByRole('button')).not.toHaveTextContent('Loading');
+		expect(getByRole('button').textContent).not.toBe('Loading');
 	});
 
 	test('shows danger status when promise is rejected', async () => {
@@ -52,8 +51,8 @@ describe('SubmitButton', () => {
 		const { getByRole } = render(SubmitButton, { loading });
 		await act();
 
-		expect(getByRole('button')).toHaveClass('bg-red-500');
-		expect(getByRole('button')).toHaveTextContent('Submit');
+		expect(getByRole('button').className).toContain('bg-red-500');
+		expect(getByRole('button').textContent).toBe('Submit');
 
 		// await so we don't have an unhandled rejection
 		await loading.catch(() => '');

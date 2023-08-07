@@ -1,6 +1,6 @@
 import type { CellInfo } from '@cell-wall/shared';
-import type { Adapter } from 'lowdb';
-import { JSONFile, Low, Memory } from 'lowdb';
+import { Low, Memory, type Adapter } from 'lowdb';
+import { JSONFile } from 'lowdb/node';
 import { get, writable, type Updater, type Writable } from 'svelte/store';
 import type { Credentials } from './third-party-connect/google';
 
@@ -27,12 +27,12 @@ export interface DatabaseStore extends Writable<LowData> {
 
 export function database(filename?: string): DatabaseStore {
 	const adapter: Adapter<LowData> = filename ? new JSONFile(filename) : new Memory();
-	const db = new Low(adapter);
+	const defaultData: LowData = { cells: {} };
+	const db = new Low(adapter, defaultData);
 
-	const store = writable<LowData>({ cells: {} });
+	const store = writable<LowData>(defaultData);
 
 	const init = db.read().then(() => {
-		db.data ||= { cells: {} };
 		store.set(db.data);
 	});
 

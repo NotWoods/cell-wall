@@ -1,5 +1,5 @@
-import { CellData, CellInfo, memo } from '@cell-wall/shared';
-import { derived, Readable } from 'svelte/store';
+import { memo, type CellData, type CellInfo } from '@cell-wall/shared';
+import { derived, type Readable } from 'svelte/store';
 import { transformMap } from '../map/transform';
 import { sortDevicesByPosition, sortDevicesBySize } from './sort';
 

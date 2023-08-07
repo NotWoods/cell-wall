@@ -1,4 +1,4 @@
-import { derived, Readable } from 'svelte/store';
+import { derived, type Readable } from 'svelte/store';
 
 /**
  * Transforms an array store into a map containing the array's elements,

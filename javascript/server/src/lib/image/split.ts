@@ -2,7 +2,7 @@ import type { RectangleWithPosition } from '@cell-wall/shared';
 import { cellCanvas, shiftCell } from '@cell-wall/shared';
 import Jimp from 'jimp';
 import { transformMapAsync } from '../map/transform';
-import { crop, resize, ResizeOptions } from './manipulate';
+import { crop, resize, type ResizeOptions } from './manipulate';
 
 interface SplitImageResult {
 	info: RectangleWithPosition;
