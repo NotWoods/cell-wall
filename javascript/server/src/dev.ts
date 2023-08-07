@@ -34,7 +34,7 @@ async function main() {
 
 	CLIENT_ROUTES.forEach((path) => fastify.get(path, proxy));
 
-	const address = await fastify.listen(PORT, '0.0.0.0');
+	const address = await fastify.listen({ port: PORT, host: '0.0.0.0' });
 	console.log(`Dev mode: Listening on ${address}`);
 	console.log(`IP is ${SERVER_ADDRESS}`);
 }

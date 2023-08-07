@@ -73,8 +73,8 @@ gradlew build
 Test locally in development environment by spinning up two servers: client & server.
 
 ```shell
-pnpm run dev --filter server
-pnpm run dev --filter client
+pnpm --filter server run dev
+pnpm --filter client run dev
 ```
 
 ### Deployment
@@ -84,15 +84,15 @@ The server communicates with phones over ADB. ADB should be installed and the ph
 Run the server by compiling the TypeScript code and launching it with node:
 
 ```shell
-pnpm run build -r
-pnpm start -w
+pnpm -r run build
+pnpm -w start
 ```
 
 A production build is available on the `pi-deploy` branch. It can be started by running:
 
 ```shell
 pnpm install --frozen-lockfile --prod
-node javascript/server/build/index.js
+pnpm -w start
 ```
 
 ### Environment variables

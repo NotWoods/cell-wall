@@ -8,7 +8,7 @@ async function main() {
 	// use built client code
 	fastify.use(handler);
 
-	const address = await fastify.listen(PORT, '0.0.0.0');
+	const address = await fastify.listen({ port: PORT, host: '0.0.0.0' });
 	console.log(`Listening on ${address}`);
 	console.log(`IP is ${SERVER_ADDRESS}`);
 }
