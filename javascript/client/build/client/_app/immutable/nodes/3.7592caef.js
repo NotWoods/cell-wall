@@ -1,0 +1,1 @@
+import{e as r}from"../chunks/index.5e2a9a64.js";import{L as l}from"../chunks/_layout.2ffef5ca.js";const t=async({url:o})=>{const e=o.searchParams.get("id");if(!e)throw r(400,"Missing ID");return{serial:e}},s=Object.freeze(Object.defineProperty({__proto__:null,load:t},Symbol.toStringTag,{value:"Module"}));export{l as component,s as universal};

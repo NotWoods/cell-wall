@@ -61,7 +61,7 @@ var init_env = __esm({
   }
 });
 
-// ../../node_modules/.pnpm/svelte@3.48.0/node_modules/svelte/internal/index.mjs
+// ../../node_modules/.pnpm/svelte@4.1.2/node_modules/svelte/src/runtime/internal/utils.js
 function noop() {
 }
 function run(fn) {
@@ -74,13 +74,13 @@ function is_function(thing) {
   return typeof thing === "function";
 }
 function safe_not_equal(a, b) {
-  return a != a ? b == b : a !== b || (a && typeof a === "object" || typeof a === "function");
-}
-function is_empty(obj) {
-  return Object.keys(obj).length === 0;
+  return a != a ? b == b : a !== b || a && typeof a === "object" || typeof a === "function";
 }
 function subscribe(store, ...callbacks) {
   if (store == null) {
+    for (const callback of callbacks) {
+      callback(void 0);
+    }
     return noop;
   }
   const unsub = store.subscribe(...callbacks);
@@ -91,65 +91,441 @@ function get_store_value(store) {
   subscribe(store, (_) => value = _)();
   return value;
 }
-function destroy_component(component, detaching) {
-  const $$ = component.$$;
-  if ($$.fragment !== null) {
-    run_all($$.on_destroy);
-    $$.fragment && $$.fragment.d(detaching);
-    $$.on_destroy = $$.fragment = null;
-    $$.ctx = [];
+var init_utils = __esm({
+  "../../node_modules/.pnpm/svelte@4.1.2/node_modules/svelte/src/runtime/internal/utils.js"() {
+  }
+});
+
+// ../../node_modules/.pnpm/svelte@4.1.2/node_modules/svelte/src/runtime/internal/environment.js
+var init_environment = __esm({
+  "../../node_modules/.pnpm/svelte@4.1.2/node_modules/svelte/src/runtime/internal/environment.js"() {
+    init_utils();
+  }
+});
+
+// ../../node_modules/.pnpm/svelte@4.1.2/node_modules/svelte/src/runtime/internal/loop.js
+var init_loop = __esm({
+  "../../node_modules/.pnpm/svelte@4.1.2/node_modules/svelte/src/runtime/internal/loop.js"() {
+    init_environment();
+  }
+});
+
+// ../../node_modules/.pnpm/svelte@4.1.2/node_modules/svelte/src/runtime/internal/globals.js
+var globals;
+var init_globals = __esm({
+  "../../node_modules/.pnpm/svelte@4.1.2/node_modules/svelte/src/runtime/internal/globals.js"() {
+    globals = typeof window !== "undefined" ? window : typeof globalThis !== "undefined" ? globalThis : global;
+  }
+});
+
+// ../../node_modules/.pnpm/svelte@4.1.2/node_modules/svelte/src/runtime/internal/ResizeObserverSingleton.js
+var ResizeObserverSingleton;
+var init_ResizeObserverSingleton = __esm({
+  "../../node_modules/.pnpm/svelte@4.1.2/node_modules/svelte/src/runtime/internal/ResizeObserverSingleton.js"() {
+    init_globals();
+    ResizeObserverSingleton = class {
+      _listeners = "WeakMap" in globals ? /* @__PURE__ */ new WeakMap() : void 0;
+      _observer = void 0;
+      options;
+      constructor(options) {
+        this.options = options;
+      }
+      observe(element2, listener) {
+        this._listeners.set(element2, listener);
+        this._getObserver().observe(element2, this.options);
+        return () => {
+          this._listeners.delete(element2);
+          this._observer.unobserve(element2);
+        };
+      }
+      _getObserver() {
+        return this._observer ?? (this._observer = new ResizeObserver((entries) => {
+          var _a;
+          for (const entry of entries) {
+            ResizeObserverSingleton.entries.set(entry.target, entry);
+            (_a = this._listeners.get(entry.target)) == null ? void 0 : _a(entry);
+          }
+        }));
+      }
+    };
+    ResizeObserverSingleton.entries = "WeakMap" in globals ? /* @__PURE__ */ new WeakMap() : void 0;
+  }
+});
+
+// ../../node_modules/.pnpm/svelte@4.1.2/node_modules/svelte/src/runtime/internal/dom.js
+function insert(target, node, anchor) {
+  target.insertBefore(node, anchor || null);
+}
+function detach(node) {
+  if (node.parentNode) {
+    node.parentNode.removeChild(node);
   }
 }
-var resolved_promise, globals, SvelteElement;
-var init_internal = __esm({
-  "../../node_modules/.pnpm/svelte@3.48.0/node_modules/svelte/internal/index.mjs"() {
-    resolved_promise = Promise.resolve();
-    globals = typeof window !== "undefined" ? window : typeof globalThis !== "undefined" ? globalThis : global;
+function element(name) {
+  return document.createElement(name);
+}
+function attr(node, attribute, value) {
+  if (value == null)
+    node.removeAttribute(attribute);
+  else if (node.getAttribute(attribute) !== value)
+    node.setAttribute(attribute, value);
+}
+function get_custom_elements_slots(element2) {
+  const result = {};
+  element2.childNodes.forEach((node) => {
+    result[node.slot || "default"] = true;
+  });
+  return result;
+}
+var init_dom = __esm({
+  "../../node_modules/.pnpm/svelte@4.1.2/node_modules/svelte/src/runtime/internal/dom.js"() {
+    init_ResizeObserverSingleton();
+    init_utils();
+  }
+});
+
+// ../../node_modules/.pnpm/svelte@4.1.2/node_modules/svelte/src/runtime/internal/style_manager.js
+var init_style_manager = __esm({
+  "../../node_modules/.pnpm/svelte@4.1.2/node_modules/svelte/src/runtime/internal/style_manager.js"() {
+    init_dom();
+    init_environment();
+  }
+});
+
+// ../../node_modules/.pnpm/svelte@4.1.2/node_modules/svelte/src/runtime/internal/animations.js
+var init_animations = __esm({
+  "../../node_modules/.pnpm/svelte@4.1.2/node_modules/svelte/src/runtime/internal/animations.js"() {
+    init_utils();
+    init_environment();
+    init_loop();
+    init_style_manager();
+  }
+});
+
+// ../../node_modules/.pnpm/svelte@4.1.2/node_modules/svelte/src/runtime/internal/lifecycle.js
+var init_lifecycle = __esm({
+  "../../node_modules/.pnpm/svelte@4.1.2/node_modules/svelte/src/runtime/internal/lifecycle.js"() {
+    init_dom();
+  }
+});
+
+// ../../node_modules/.pnpm/svelte@4.1.2/node_modules/svelte/src/runtime/internal/scheduler.js
+var init_scheduler = __esm({
+  "../../node_modules/.pnpm/svelte@4.1.2/node_modules/svelte/src/runtime/internal/scheduler.js"() {
+    init_utils();
+    init_lifecycle();
+  }
+});
+
+// ../../node_modules/.pnpm/svelte@4.1.2/node_modules/svelte/src/runtime/internal/transitions.js
+var init_transitions = __esm({
+  "../../node_modules/.pnpm/svelte@4.1.2/node_modules/svelte/src/runtime/internal/transitions.js"() {
+    init_utils();
+    init_environment();
+    init_loop();
+    init_style_manager();
+    init_dom();
+    init_scheduler();
+  }
+});
+
+// ../../node_modules/.pnpm/svelte@4.1.2/node_modules/svelte/src/runtime/internal/await_block.js
+var init_await_block = __esm({
+  "../../node_modules/.pnpm/svelte@4.1.2/node_modules/svelte/src/runtime/internal/await_block.js"() {
+    init_utils();
+    init_transitions();
+    init_scheduler();
+    init_lifecycle();
+  }
+});
+
+// ../../node_modules/.pnpm/svelte@4.1.2/node_modules/svelte/src/runtime/internal/each.js
+var init_each = __esm({
+  "../../node_modules/.pnpm/svelte@4.1.2/node_modules/svelte/src/runtime/internal/each.js"() {
+    init_transitions();
+    init_utils();
+  }
+});
+
+// ../../node_modules/.pnpm/svelte@4.1.2/node_modules/svelte/src/runtime/internal/spread.js
+var init_spread = __esm({
+  "../../node_modules/.pnpm/svelte@4.1.2/node_modules/svelte/src/runtime/internal/spread.js"() {
+  }
+});
+
+// ../../node_modules/.pnpm/svelte@4.1.2/node_modules/svelte/src/shared/boolean_attributes.js
+var _boolean_attributes, boolean_attributes;
+var init_boolean_attributes = __esm({
+  "../../node_modules/.pnpm/svelte@4.1.2/node_modules/svelte/src/shared/boolean_attributes.js"() {
+    _boolean_attributes = [
+      "allowfullscreen",
+      "allowpaymentrequest",
+      "async",
+      "autofocus",
+      "autoplay",
+      "checked",
+      "controls",
+      "default",
+      "defer",
+      "disabled",
+      "formnovalidate",
+      "hidden",
+      "inert",
+      "ismap",
+      "loop",
+      "multiple",
+      "muted",
+      "nomodule",
+      "novalidate",
+      "open",
+      "playsinline",
+      "readonly",
+      "required",
+      "reversed",
+      "selected"
+    ];
+    boolean_attributes = /* @__PURE__ */ new Set([..._boolean_attributes]);
+  }
+});
+
+// ../../node_modules/.pnpm/svelte@4.1.2/node_modules/svelte/src/shared/utils/names.js
+var init_names = __esm({
+  "../../node_modules/.pnpm/svelte@4.1.2/node_modules/svelte/src/shared/utils/names.js"() {
+  }
+});
+
+// ../../node_modules/.pnpm/svelte@4.1.2/node_modules/svelte/src/runtime/internal/ssr.js
+var init_ssr = __esm({
+  "../../node_modules/.pnpm/svelte@4.1.2/node_modules/svelte/src/runtime/internal/ssr.js"() {
+    init_lifecycle();
+    init_utils();
+    init_boolean_attributes();
+    init_each();
+    init_names();
+  }
+});
+
+// ../../node_modules/.pnpm/svelte@4.1.2/node_modules/svelte/src/runtime/internal/Component.js
+function get_custom_element_value(prop, value, props_definition, transform) {
+  var _a;
+  const type = (_a = props_definition[prop]) == null ? void 0 : _a.type;
+  value = type === "Boolean" && typeof value !== "boolean" ? value != null : value;
+  if (!transform || !props_definition[prop]) {
+    return value;
+  } else if (transform === "toAttribute") {
+    switch (type) {
+      case "Object":
+      case "Array":
+        return value == null ? null : JSON.stringify(value);
+      case "Boolean":
+        return value ? "" : null;
+      case "Number":
+        return value == null ? null : value;
+      default:
+        return value;
+    }
+  } else {
+    switch (type) {
+      case "Object":
+      case "Array":
+        return value && JSON.parse(value);
+      case "Boolean":
+        return value;
+      case "Number":
+        return value != null ? +value : value;
+      default:
+        return value;
+    }
+  }
+}
+var SvelteElement;
+var init_Component = __esm({
+  "../../node_modules/.pnpm/svelte@4.1.2/node_modules/svelte/src/runtime/internal/Component.js"() {
+    init_scheduler();
+    init_lifecycle();
+    init_utils();
+    init_dom();
+    init_transitions();
     if (typeof HTMLElement === "function") {
       SvelteElement = class extends HTMLElement {
-        constructor() {
+        $$ctor;
+        $$s;
+        $$c;
+        $$cn = false;
+        $$d = {};
+        $$r = false;
+        $$p_d = {};
+        $$l = {};
+        $$l_u = /* @__PURE__ */ new Map();
+        constructor($$componentCtor, $$slots, use_shadow_dom) {
           super();
-          this.attachShadow({ mode: "open" });
-        }
-        connectedCallback() {
-          const { on_mount } = this.$$;
-          this.$$.on_disconnect = on_mount.map(run).filter(is_function);
-          for (const key in this.$$.slotted) {
-            this.appendChild(this.$$.slotted[key]);
+          this.$$ctor = $$componentCtor;
+          this.$$s = $$slots;
+          if (use_shadow_dom) {
+            this.attachShadow({ mode: "open" });
           }
         }
-        attributeChangedCallback(attr, _oldValue, newValue) {
-          this[attr] = newValue;
+        addEventListener(type, listener, options) {
+          this.$$l[type] = this.$$l[type] || [];
+          this.$$l[type].push(listener);
+          if (this.$$c) {
+            const unsub = this.$$c.$on(type, listener);
+            this.$$l_u.set(listener, unsub);
+          }
+          super.addEventListener(type, listener, options);
+        }
+        removeEventListener(type, listener, options) {
+          super.removeEventListener(type, listener, options);
+          if (this.$$c) {
+            const unsub = this.$$l_u.get(listener);
+            if (unsub) {
+              unsub();
+              this.$$l_u.delete(listener);
+            }
+          }
+        }
+        async connectedCallback() {
+          this.$$cn = true;
+          if (!this.$$c) {
+            let create_slot = function(name) {
+              return () => {
+                let node;
+                const obj = {
+                  c: function create() {
+                    node = element("slot");
+                    if (name !== "default") {
+                      attr(node, "name", name);
+                    }
+                  },
+                  m: function mount(target, anchor) {
+                    insert(target, node, anchor);
+                  },
+                  d: function destroy(detaching) {
+                    if (detaching) {
+                      detach(node);
+                    }
+                  }
+                };
+                return obj;
+              };
+            };
+            await Promise.resolve();
+            if (!this.$$cn) {
+              return;
+            }
+            const $$slots = {};
+            const existing_slots = get_custom_elements_slots(this);
+            for (const name of this.$$s) {
+              if (name in existing_slots) {
+                $$slots[name] = [create_slot(name)];
+              }
+            }
+            for (const attribute of this.attributes) {
+              const name = this.$$g_p(attribute.name);
+              if (!(name in this.$$d)) {
+                this.$$d[name] = get_custom_element_value(name, attribute.value, this.$$p_d, "toProp");
+              }
+            }
+            this.$$c = new this.$$ctor({
+              target: this.shadowRoot || this,
+              props: __spreadProps(__spreadValues({}, this.$$d), {
+                $$slots,
+                $$scope: {
+                  ctx: []
+                }
+              })
+            });
+            const reflect_attributes = () => {
+              this.$$r = true;
+              for (const key in this.$$p_d) {
+                this.$$d[key] = this.$$c.$$.ctx[this.$$c.$$.props[key]];
+                if (this.$$p_d[key].reflect) {
+                  const attribute_value = get_custom_element_value(key, this.$$d[key], this.$$p_d, "toAttribute");
+                  if (attribute_value == null) {
+                    this.removeAttribute(key);
+                  } else {
+                    this.setAttribute(this.$$p_d[key].attribute || key, attribute_value);
+                  }
+                }
+              }
+              this.$$r = false;
+            };
+            this.$$c.$$.after_update.push(reflect_attributes);
+            reflect_attributes();
+            for (const type in this.$$l) {
+              for (const listener of this.$$l[type]) {
+                const unsub = this.$$c.$on(type, listener);
+                this.$$l_u.set(listener, unsub);
+              }
+            }
+            this.$$l = {};
+          }
+        }
+        attributeChangedCallback(attr2, _oldValue, newValue) {
+          var _a;
+          if (this.$$r)
+            return;
+          attr2 = this.$$g_p(attr2);
+          this.$$d[attr2] = get_custom_element_value(attr2, newValue, this.$$p_d, "toProp");
+          (_a = this.$$c) == null ? void 0 : _a.$set({ [attr2]: this.$$d[attr2] });
         }
         disconnectedCallback() {
-          run_all(this.$$.on_disconnect);
+          this.$$cn = false;
+          Promise.resolve().then(() => {
+            if (!this.$$cn) {
+              this.$$c.$destroy();
+              this.$$c = void 0;
+            }
+          });
         }
-        $destroy() {
-          destroy_component(this, 1);
-          this.$destroy = noop;
-        }
-        $on(type, callback) {
-          const callbacks = this.$$.callbacks[type] || (this.$$.callbacks[type] = []);
-          callbacks.push(callback);
-          return () => {
-            const index = callbacks.indexOf(callback);
-            if (index !== -1)
-              callbacks.splice(index, 1);
-          };
-        }
-        $set($$props) {
-          if (this.$$set && !is_empty($$props)) {
-            this.$$.skip_bound = true;
-            this.$$set($$props);
-            this.$$.skip_bound = false;
-          }
+        $$g_p(attribute_name) {
+          return Object.keys(this.$$p_d).find((key) => this.$$p_d[key].attribute === attribute_name || !this.$$p_d[key].attribute && key.toLowerCase() === attribute_name) || attribute_name;
         }
       };
     }
   }
 });
 
-// ../../node_modules/.pnpm/svelte@3.48.0/node_modules/svelte/store/index.mjs
+// ../../node_modules/.pnpm/svelte@4.1.2/node_modules/svelte/src/shared/version.js
+var init_version = __esm({
+  "../../node_modules/.pnpm/svelte@4.1.2/node_modules/svelte/src/shared/version.js"() {
+  }
+});
+
+// ../../node_modules/.pnpm/svelte@4.1.2/node_modules/svelte/src/runtime/internal/dev.js
+var init_dev = __esm({
+  "../../node_modules/.pnpm/svelte@4.1.2/node_modules/svelte/src/runtime/internal/dev.js"() {
+    init_dom();
+    init_Component();
+    init_names();
+    init_version();
+    init_utils();
+    init_each();
+  }
+});
+
+// ../../node_modules/.pnpm/svelte@4.1.2/node_modules/svelte/src/runtime/internal/index.js
+var init_internal = __esm({
+  "../../node_modules/.pnpm/svelte@4.1.2/node_modules/svelte/src/runtime/internal/index.js"() {
+    init_animations();
+    init_await_block();
+    init_dom();
+    init_environment();
+    init_globals();
+    init_each();
+    init_lifecycle();
+    init_loop();
+    init_scheduler();
+    init_spread();
+    init_ssr();
+    init_transitions();
+    init_utils();
+    init_Component();
+    init_dev();
+  }
+});
+
+// ../../node_modules/.pnpm/svelte@4.1.2/node_modules/svelte/src/runtime/store/index.js
 function readable(value, start) {
   return {
     subscribe: writable(value, start).subscribe
@@ -183,12 +559,12 @@ function writable(value, start = noop) {
     const subscriber = [run2, invalidate];
     subscribers.add(subscriber);
     if (subscribers.size === 1) {
-      stop = start(set) || noop;
+      stop = start(set, update) || noop;
     }
     run2(value);
     return () => {
       subscribers.delete(subscriber);
-      if (subscribers.size === 0) {
+      if (subscribers.size === 0 && stop) {
         stop();
         stop = null;
       }
@@ -199,9 +575,12 @@ function writable(value, start = noop) {
 function derived(stores, fn, initial_value) {
   const single = !Array.isArray(stores);
   const stores_array = single ? [stores] : stores;
+  if (!stores_array.every(Boolean)) {
+    throw new Error("derived() expects stores as input, got a falsy value");
+  }
   const auto = fn.length < 2;
-  return readable(initial_value, (set) => {
-    let inited = false;
+  return readable(initial_value, (set, update) => {
+    let started = false;
     const values = [];
     let pending = 0;
     let cleanup = noop;
@@ -210,7 +589,7 @@ function derived(stores, fn, initial_value) {
         return;
       }
       cleanup();
-      const result = fn(single ? values[0] : values, set);
+      const result = fn(single ? values[0] : values, set, update);
       if (auto) {
         set(result);
       } else {
@@ -220,24 +599,24 @@ function derived(stores, fn, initial_value) {
     const unsubscribers = stores_array.map((store, i) => subscribe(store, (value) => {
       values[i] = value;
       pending &= ~(1 << i);
-      if (inited) {
+      if (started) {
         sync();
       }
     }, () => {
       pending |= 1 << i;
     }));
-    inited = true;
+    started = true;
     sync();
     return function stop() {
       run_all(unsubscribers);
       cleanup();
+      started = false;
     };
   });
 }
 var subscriber_queue;
 var init_store = __esm({
-  "../../node_modules/.pnpm/svelte@3.48.0/node_modules/svelte/store/index.mjs"() {
-    init_internal();
+  "../../node_modules/.pnpm/svelte@4.1.2/node_modules/svelte/src/runtime/store/index.js"() {
     init_internal();
     subscriber_queue = [];
   }
@@ -876,13 +1255,14 @@ var init_combine_cell = __esm({
 });
 
 // src/lib/repository/database.ts
-import { JSONFile, Low, Memory } from "lowdb";
+import { Low, Memory } from "lowdb";
+import { JSONFile } from "lowdb/node";
 function database(filename) {
   const adapter = filename ? new JSONFile(filename) : new Memory();
-  const db = new Low(adapter);
-  const store = writable({ cells: {} });
+  const defaultData = { cells: {} };
+  const db = new Low(adapter, defaultData);
+  const store = writable(defaultData);
   const init = db.read().then(() => {
-    db.data ||= { cells: {} };
     store.set(db.data);
   });
   async function update(updater) {
@@ -2262,7 +2642,7 @@ import { handler } from "@cell-wall/client";
 
 // src/server.ts
 import Fastify from "fastify";
-import middie from "middie";
+import middie from "@fastify/middie";
 
 // src/parser/urlencoded.ts
 async function urlEncodedPlugin(fastify) {
@@ -2366,11 +2746,14 @@ async function websocketSubsystem(fastify) {
 async function createServer() {
   const fastify = Fastify({
     logger: {
-      prettyPrint: {
-        translateTime: "yyyy-mm-dd HH:MM:ss.l",
-        levelFirst: true,
-        ignore: "pid,hostname,reqId,responseTime,req,res",
-        messageFormat: "{msg} [id={reqId} {req.method} {req.url}]"
+      transport: {
+        target: "pino-pretty",
+        options: {
+          translateTime: "yyyy-mm-dd HH:MM:ss.l",
+          levelFirst: true,
+          ignore: "pid,hostname,reqId,responseTime,req,res",
+          messageFormat: "{msg} [id={reqId} {req.method} {req.url}]"
+        }
       }
     },
     trustProxy: true
@@ -2385,7 +2768,7 @@ async function createServer() {
 async function main() {
   const fastify = await createServer();
   fastify.use(handler);
-  const address = await fastify.listen(PORT, "0.0.0.0");
+  const address = await fastify.listen({ port: PORT, host: "0.0.0.0" });
   console.log(`Listening on ${address}`);
   console.log(`IP is ${SERVER_ADDRESS}`);
 }

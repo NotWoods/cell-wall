@@ -1,221 +1,152 @@
-export const manifest = {
+const manifest = (() => {
+function __memo(fn) {
+	let value;
+	return () => value ??= (value = fn());
+}
+
+return {
 	appDir: "_app",
+	appPath: "_app",
 	assets: new Set(["css/base.css","img/daphne.jpg","img/jsconf.mp4","img/jsconfbp.png","img/tiger.jpg","logo.png","manifest.webmanifest","maskable_icon.png"]),
 	mimeTypes: {".css":"text/css",".jpg":"image/jpeg",".mp4":"video/mp4",".png":"image/png",".webmanifest":"application/manifest+json"},
 	_: {
-		entry: {"file":"start-91ef7a6d.js","js":["start-91ef7a6d.js","chunks/index-629ae59a.js","chunks/index-6cd92273.js","chunks/singletons-d1fb5791.js"],"css":[]},
+		client: {"start":"_app/immutable/entry/start.7c33ac23.js","app":"_app/immutable/entry/app.3e3372d1.js","imports":["_app/immutable/entry/start.7c33ac23.js","_app/immutable/chunks/scheduler.fd4d87b3.js","_app/immutable/chunks/singletons.b467ccca.js","_app/immutable/chunks/index.5159c792.js","_app/immutable/chunks/control.f5b05b5f.js","_app/immutable/entry/app.3e3372d1.js","_app/immutable/chunks/scheduler.fd4d87b3.js","_app/immutable/chunks/index.64515c27.js"],"stylesheets":[],"fonts":[]},
 		nodes: [
-			() => import('./nodes/0.js'),
-			() => import('./nodes/1.js'),
-			() => import('./nodes/14.js'),
-			() => import('./nodes/2.js'),
-			() => import('./nodes/12.js'),
-			() => import('./nodes/13.js'),
-			() => import('./nodes/4.js'),
-			() => import('./nodes/19.js'),
-			() => import('./nodes/5.js'),
-			() => import('./nodes/15.js'),
-			() => import('./nodes/16.js'),
-			() => import('./nodes/17.js'),
-			() => import('./nodes/18.js'),
-			() => import('./nodes/20.js'),
-			() => import('./nodes/21.js'),
-			() => import('./nodes/22.js'),
-			() => import('./nodes/3.js'),
-			() => import('./nodes/6.js'),
-			() => import('./nodes/7.js'),
-			() => import('./nodes/8.js'),
-			() => import('./nodes/9.js'),
-			() => import('./nodes/10.js'),
-			() => import('./nodes/11.js')
+			__memo(() => import('./chunks/0-58e53900.js')),
+			__memo(() => import('./chunks/1-717ae083.js')),
+			__memo(() => import('./chunks/2-ee9f2bcf.js')),
+			__memo(() => import('./chunks/3-e2c206d8.js')),
+			__memo(() => import('./chunks/4-8a531a90.js')),
+			__memo(() => import('./chunks/5-b243115c.js')),
+			__memo(() => import('./chunks/6-937cfe0a.js')),
+			__memo(() => import('./chunks/7-bfc30dc6.js')),
+			__memo(() => import('./chunks/8-5a811392.js')),
+			__memo(() => import('./chunks/9-7e44d38e.js')),
+			__memo(() => import('./chunks/10-0753f138.js')),
+			__memo(() => import('./chunks/11-eb213ebd.js')),
+			__memo(() => import('./chunks/12-f175c716.js')),
+			__memo(() => import('./chunks/13-f91bf1f1.js')),
+			__memo(() => import('./chunks/14-e519b935.js')),
+			__memo(() => import('./chunks/15-f089413f.js')),
+			__memo(() => import('./chunks/16-8b3fb590.js')),
+			__memo(() => import('./chunks/17-06bfad91.js')),
+			__memo(() => import('./chunks/18-af93cf95.js')),
+			__memo(() => import('./chunks/19-5616ef56.js')),
+			__memo(() => import('./chunks/21-964161d3.js')),
+			__memo(() => import('./chunks/22-bbb5e906.js'))
 		],
 		routes: [
 			{
-				type: 'page',
-				id: "",
+				id: "/",
 				pattern: /^\/$/,
-				names: [],
-				types: [],
-				path: "/",
-				shadow: null,
-				a: [0,2],
-				b: [1]
+				params: [],
+				page: { layouts: [0,], errors: [1,], leaf: 6 },
+				endpoint: null
 			},
 			{
-				type: 'page',
-				id: "cell",
+				id: "/cell",
 				pattern: /^\/cell\/?$/,
-				names: [],
-				types: [],
-				path: "/cell",
-				shadow: null,
-				a: [0,3,4],
-				b: [1]
+				params: [],
+				page: { layouts: [0,2,], errors: [1,,], leaf: 7 },
+				endpoint: null
 			},
 			{
-				type: 'page',
-				id: "demo",
-				pattern: /^\/demo\/?$/,
-				names: [],
-				types: [],
-				path: "/demo",
-				shadow: null,
-				a: [0,5],
-				b: [1]
-			},
-			{
-				type: 'page',
-				id: "remote",
-				pattern: /^\/remote\/?$/,
-				names: [],
-				types: [],
-				path: "/remote",
-				shadow: null,
-				a: [0,6,7],
-				b: [1,8]
-			},
-			{
-				type: 'page',
-				id: "remote/canvas",
-				pattern: /^\/remote\/canvas\/?$/,
-				names: [],
-				types: [],
-				path: "/remote/canvas",
-				shadow: null,
-				a: [0,6,9],
-				b: [1,8]
-			},
-			{
-				type: 'page',
-				id: "remote/custom",
-				pattern: /^\/remote\/custom\/?$/,
-				names: [],
-				types: [],
-				path: "/remote/custom",
-				shadow: null,
-				a: [0,6,10],
-				b: [1,8]
-			},
-			{
-				type: 'page',
-				id: "remote/edit",
-				pattern: /^\/remote\/edit\/?$/,
-				names: [],
-				types: [],
-				path: "/remote/edit",
-				shadow: null,
-				a: [0,6,11],
-				b: [1,8]
-			},
-			{
-				type: 'page',
-				id: "remote/image",
-				pattern: /^\/remote\/image\/?$/,
-				names: [],
-				types: [],
-				path: "/remote/image",
-				shadow: null,
-				a: [0,6,12],
-				b: [1,8]
-			},
-			{
-				type: 'page',
-				id: "remote/presets",
-				pattern: /^\/remote\/presets\/?$/,
-				names: [],
-				types: [],
-				path: "/remote/presets",
-				shadow: null,
-				a: [0,6,13],
-				b: [1,8]
-			},
-			{
-				type: 'page',
-				id: "remote/text",
-				pattern: /^\/remote\/text\/?$/,
-				names: [],
-				types: [],
-				path: "/remote/text",
-				shadow: null,
-				a: [0,6,14],
-				b: [1,8]
-			},
-			{
-				type: 'page',
-				id: "remote/third_party",
-				pattern: /^\/remote\/third_party\/?$/,
-				names: [],
-				types: [],
-				path: "/remote/third_party",
-				shadow: null,
-				a: [0,6,15],
-				b: [1,8]
-			},
-			{
-				type: 'page',
-				id: "cell/frame/blank",
+				id: "/cell/frame/blank",
 				pattern: /^\/cell\/frame\/blank\/?$/,
-				names: [],
-				types: [],
-				path: "/cell/frame/blank",
-				shadow: null,
-				a: [0,3,16,17],
-				b: [1]
+				params: [],
+				page: { layouts: [0,2,3,], errors: [1,,,], leaf: 8 },
+				endpoint: null
 			},
 			{
-				type: 'page',
-				id: "cell/frame/busy",
+				id: "/cell/frame/busy",
 				pattern: /^\/cell\/frame\/busy\/?$/,
-				names: [],
-				types: [],
-				path: "/cell/frame/busy",
-				shadow: null,
-				a: [0,3,16,18],
-				b: [1]
+				params: [],
+				page: { layouts: [0,2,3,], errors: [1,,,], leaf: 9 },
+				endpoint: null
 			},
 			{
-				type: 'page',
-				id: "cell/frame/clock",
+				id: "/cell/frame/clock",
 				pattern: /^\/cell\/frame\/clock\/?$/,
-				names: [],
-				types: [],
-				path: "/cell/frame/clock",
-				shadow: null,
-				a: [0,3,16,19],
-				b: [1]
+				params: [],
+				page: { layouts: [0,2,3,], errors: [1,,,], leaf: 10 },
+				endpoint: null
 			},
 			{
-				type: 'page',
-				id: "cell/frame/image",
+				id: "/cell/frame/image",
 				pattern: /^\/cell\/frame\/image\/?$/,
-				names: [],
-				types: [],
-				path: "/cell/frame/image",
-				shadow: null,
-				a: [0,3,16,20],
-				b: [1]
+				params: [],
+				page: { layouts: [0,2,3,], errors: [1,,,], leaf: 11 },
+				endpoint: null
 			},
 			{
-				type: 'page',
-				id: "cell/frame/text",
+				id: "/cell/frame/text",
 				pattern: /^\/cell\/frame\/text\/?$/,
-				names: [],
-				types: [],
-				path: "/cell/frame/text",
-				shadow: null,
-				a: [0,3,16,21],
-				b: [1]
+				params: [],
+				page: { layouts: [0,2,3,], errors: [1,,,], leaf: 12 },
+				endpoint: null
 			},
 			{
-				type: 'page',
-				id: "cell/frame/web",
+				id: "/cell/frame/web",
 				pattern: /^\/cell\/frame\/web\/?$/,
-				names: [],
-				types: [],
-				path: "/cell/frame/web",
-				shadow: null,
-				a: [0,3,16,22],
-				b: [1]
+				params: [],
+				page: { layouts: [0,2,3,], errors: [1,,,], leaf: 13 },
+				endpoint: null
+			},
+			{
+				id: "/demo",
+				pattern: /^\/demo\/?$/,
+				params: [],
+				page: { layouts: [0,], errors: [1,], leaf: 14 },
+				endpoint: null
+			},
+			{
+				id: "/remote",
+				pattern: /^\/remote\/?$/,
+				params: [],
+				page: { layouts: [0,4,], errors: [1,5,], leaf: 15 },
+				endpoint: null
+			},
+			{
+				id: "/remote/canvas",
+				pattern: /^\/remote\/canvas\/?$/,
+				params: [],
+				page: { layouts: [0,4,], errors: [1,5,], leaf: 16 },
+				endpoint: null
+			},
+			{
+				id: "/remote/custom",
+				pattern: /^\/remote\/custom\/?$/,
+				params: [],
+				page: { layouts: [0,4,], errors: [1,5,], leaf: 17 },
+				endpoint: null
+			},
+			{
+				id: "/remote/edit",
+				pattern: /^\/remote\/edit\/?$/,
+				params: [],
+				page: { layouts: [0,4,], errors: [1,5,], leaf: 18 },
+				endpoint: null
+			},
+			{
+				id: "/remote/image",
+				pattern: /^\/remote\/image\/?$/,
+				params: [],
+				page: { layouts: [0,4,], errors: [1,5,], leaf: 19 },
+				endpoint: null
+			},
+			{
+				id: "/remote/text",
+				pattern: /^\/remote\/text\/?$/,
+				params: [],
+				page: { layouts: [0,4,], errors: [1,5,], leaf: 20 },
+				endpoint: null
+			},
+			{
+				id: "/remote/third_party",
+				pattern: /^\/remote\/third_party\/?$/,
+				params: [],
+				page: { layouts: [0,4,], errors: [1,5,], leaf: 21 },
+				endpoint: null
 			}
 		],
 		matchers: async () => {
@@ -223,4 +154,10 @@ export const manifest = {
 			return {  };
 		}
 	}
-};
+}
+})();
+
+const prerendered = new Set(["/remote/presets"]);
+
+export { manifest, prerendered };
+//# sourceMappingURL=manifest.js.map
