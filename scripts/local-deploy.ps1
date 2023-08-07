@@ -1,4 +1,4 @@
-pnpm run build -w
+pnpm -r run build
 
 Remove-Item -Path "..\cell-wall@pi-deploy\javascript\client\build\" -Recurse
 Copy-Item -Path "javascript\client\build" -Destination "..\cell-wall@pi-deploy\javascript\client" -Recurse

@@ -8,7 +8,7 @@ const config = {
 			parserOptions: {
 				project: require.resolve('./tsconfig.json'),
 				extraFileExtensions: ['.svelte']
-			},
+			}
 		},
 		{
 			files: ['*.svelte'],
