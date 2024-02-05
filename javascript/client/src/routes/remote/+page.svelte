@@ -5,9 +5,9 @@
 	import { cellCanvas } from '@cell-wall/shared';
 	import SelectAppCard from './_SelectAppCard.svelte';
 	import SelectAppContent from './_SelectAppContent.svelte';
-	import { getRemoteContext } from './+layout.svelte';
+	import { remoteContext } from './context';
 
-	const { state: remoteState } = getRemoteContext();
+	const remoteState = remoteContext.state;
 
 	let container: HTMLElement | undefined;
 

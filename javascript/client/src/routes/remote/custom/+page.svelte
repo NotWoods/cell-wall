@@ -10,11 +10,12 @@
 	import PowerButtons from '../custom/_PowerButtons.svelte';
 	import TypeTab from '../custom/_TypeTab.svelte';
 	import { post } from '../_form';
-	import { getRemoteContext } from '../+layout.svelte';
+	import { remoteContext } from '../context';
+
+	const remoteState = remoteContext.state;
 
 	export let data: import('./$types').PageData;
 
-	const { state: remoteState } = getRemoteContext();
 	const devices = storeEntries(remoteState);
 
 	// Selected schema type

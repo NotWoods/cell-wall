@@ -1,13 +1,3 @@
-<script context="module" lang="ts">
-	import type { CellState } from '@cell-wall/shared';
-	import { getContext, setContext } from 'svelte';
-	import type { Readable } from 'svelte/store';
-
-	export function getFrameContext() {
-		return getContext('frame') as { socket: WebSocket; state: Readable<CellState> };
-	}
-</script>
-
 <script lang="ts">
 	import { browser } from '$app/environment';
 	import { goto } from '$app/navigation';
@@ -15,6 +5,7 @@
 	import { cellState, connect, frameUrl, sendResizeEvents } from '$lib/connection/state-socket';
 	import { onMount } from 'svelte';
 	import PageTransition from '../_PageTransition.svelte';
+	import { frameContext } from './context';
 
 	export let data: import('./$types').LayoutData;
 
@@ -25,7 +16,8 @@
 		sendResizeEvents(socket);
 	});
 
-	setContext('frame', { socket, state });
+	frameContext.socket = socket;
+	frameContext.state = state
 
 	$: url = frameUrl($state.type, data.serial);
 	$: {

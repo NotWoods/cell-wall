@@ -2,9 +2,9 @@
 	import { splitToBuckets } from '$lib/canvas/buckets';
 	import LinkButton from '$lib/components/Button/LinkButton.svelte';
 	import RectCanvas from '$lib/components/RectCanvas.svelte';
-	import { getRemoteContext } from '../+layout.svelte';
+	import { remoteContext } from '../context';
 
-	const { state: remoteState } = getRemoteContext();
+	const remoteState = remoteContext.state;
 
 	$: buckets = splitToBuckets($remoteState);
 </script>

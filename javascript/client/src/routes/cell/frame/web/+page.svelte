@@ -1,9 +1,8 @@
 <script lang="ts">
 	import { filterState } from '$lib/filter-state';
-	import { getFrameContext } from '../+layout.svelte';
+	import { frameContext } from '../context';
 
-	const { state } = getFrameContext();
-	const webState = filterState('WEB', state);
+	const webState = filterState('WEB', frameContext.state);
 
 	let frame: HTMLIFrameElement | undefined;
 

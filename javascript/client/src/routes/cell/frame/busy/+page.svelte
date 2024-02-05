@@ -20,10 +20,9 @@
 	import BusyWorker from '../../../../workers/busy-worker?worker';
 	import type { BusyState } from '../../../../workers/busy-worker';
 	import { messages } from '../../../../workers/store';
-	import { getFrameContext } from '../+layout.svelte';
+	import { frameContext } from '../context';
 
-	const { state } = getFrameContext();
-	const busyState = filterState('BUSY', state);
+	const busyState = filterState('BUSY', frameContext.state);
 	$: calendarId = $busyState?.payload;
 
 	let worker: Worker | undefined;

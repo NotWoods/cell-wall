@@ -2,7 +2,7 @@
 	import { createBlobUrlFactory } from '$lib/blob';
 	import { filterState } from '$lib/filter-state';
 	import type { CellStateImage } from '@cell-wall/shared';
-	import { getFrameContext } from '../+layout.svelte';
+	import { frameContext } from '../context';
 
 	const createBlobUrl = createBlobUrlFactory();
 	function objectFit(fit: CellStateImage['scaleType']) {
@@ -17,8 +17,7 @@
 		}
 	}
 
-	const { state } = getFrameContext();
-	const imageState = filterState('IMAGE', state);
+	const imageState = filterState('IMAGE', frameContext.state);
 
 	$: src = $imageState ? createBlobUrl($imageState.payload) : undefined;
 	$: fit = objectFit($imageState?.scaleType);

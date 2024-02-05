@@ -27,10 +27,9 @@
 <script lang="ts">
 	import FormattedTime from '$lib/components/Frame/FormattedTime.svelte';
 	import { filterState } from '$lib/filter-state';
-	import { getFrameContext } from '../+layout.svelte';
+	import { frameContext } from '../context';
 
-	const { state } = getFrameContext();
-	const clockState = filterState('CLOCK', state);
+	const clockState = filterState('CLOCK', frameContext.state);
 
 	const time = intervalClock();
 </script>

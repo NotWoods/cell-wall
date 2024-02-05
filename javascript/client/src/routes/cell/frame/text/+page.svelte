@@ -1,11 +1,10 @@
 <script lang="ts">
 	import { filterState } from '$lib/filter-state';
 	import { RAINBOW_COLORS, randomItem } from '@cell-wall/shared';
-	import { getFrameContext } from '../+layout.svelte';
+	import { frameContext } from '../context';
 
 	const randomDefaultColor = randomItem(RAINBOW_COLORS);
-	const { state } = getFrameContext();
-	const textState = filterState('TEXT', state);
+	const textState = filterState('TEXT', frameContext.state);
 
 	$: text = $textState?.payload || '';
 	$: backgroundColor = $textState?.backgroundColor || randomDefaultColor;

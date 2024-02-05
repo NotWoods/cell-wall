@@ -8,9 +8,9 @@
 	import type { CellInfo } from '@cell-wall/shared';
 	import PowerButtons from '../custom/_PowerButtons.svelte';
 	import { post } from '../_form';
-	import { getRemoteContext } from '../+layout.svelte';
+	import { remoteContext } from '../context';
 
-	const { state: remoteState } = getRemoteContext();
+	const remoteState = remoteContext.state;
 	const devices = storeEntries(remoteState);
 	const devicesIds = storeKeys(remoteState);
 
