@@ -1,5 +1,5 @@
 import { textState } from '@cell-wall/shared';
-import { jest, describe, expect, it } from '@jest/globals';
+import { vi, describe, expect, it } from 'vitest';
 import type { CellStateStore } from '../../cells';
 import { asDelay, setStatesWithDelay } from '../delay';
 
@@ -26,7 +26,7 @@ describe('asDelay', () => {
 
 describe('setStatesWithDelay', () => {
 	it('text states with no delay', async () => {
-		const store = { setState: jest.fn(), setStates: jest.fn() };
+		const store = { setState: vi.fn(), setStates: vi.fn() };
 
 		await setStatesWithDelay(
 			store as unknown as CellStateStore,
@@ -44,7 +44,7 @@ describe('setStatesWithDelay', () => {
 	});
 
 	it('text states no delay and fewer IDs', async () => {
-		const store = { setState: jest.fn(), setStates: jest.fn() };
+		const store = { setState: vi.fn(), setStates: vi.fn() };
 
 		await setStatesWithDelay(
 			store as unknown as CellStateStore,
@@ -59,7 +59,7 @@ describe('setStatesWithDelay', () => {
 	});
 
 	it('text states with delay', async () => {
-		const store = { setState: jest.fn(), setStates: jest.fn() };
+		const store = { setState: vi.fn(), setStates: vi.fn() };
 
 		await setStatesWithDelay(
 			store as unknown as CellStateStore,
@@ -74,7 +74,7 @@ describe('setStatesWithDelay', () => {
 	});
 
 	it('text states with delay and fewer IDs', async () => {
-		const store = { setState: jest.fn(), setStates: jest.fn() };
+		const store = { setState: vi.fn(), setStates: vi.fn() };
 
 		await setStatesWithDelay(
 			store as unknown as CellStateStore,

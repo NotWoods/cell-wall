@@ -1,5 +1,5 @@
 import { blankState, type CellInfo, type CellState } from '@cell-wall/shared';
-import { describe, expect, it } from '@jest/globals';
+import { describe, expect, it } from 'vitest';
 import { get, writable } from 'svelte/store';
 import type { AndroidProperties } from '../../android/android-properties';
 import { deriveCellData } from '../combine-cell';
@@ -20,7 +20,7 @@ function mockDevice(model: string, manufacturer: string) {
 	};
 }
 
-describe('deriveCellData', () => {
+describe.concurrent('deriveCellData', () => {
 	it('works with blank data', async () => {
 		const stores = createStores();
 		const derived = get(deriveCellData(stores));

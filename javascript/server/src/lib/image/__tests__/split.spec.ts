@@ -1,5 +1,5 @@
 import type { RectangleWithPosition } from '@cell-wall/shared';
-import { describe, expect, it } from '@jest/globals';
+import { describe, expect, it } from 'vitest';
 import Jimp from 'jimp';
 import { splitImage } from '../split';
 

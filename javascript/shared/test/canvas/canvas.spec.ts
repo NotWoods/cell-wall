@@ -1,4 +1,4 @@
-import { describe, expect, it } from '@jest/globals';
+import { describe, expect, test } from 'vitest';
 import { cellCanvas, shiftCell } from '../../src/canvas/canvas';
 
 const pixel = {
@@ -25,7 +25,7 @@ const polaroid = {
 };
 
 describe('cellCanvas', () => {
-	it('', async () => {
+	test('canvas matches input', async () => {
 		const canvas1 = cellCanvas([pixel.info]);
 		expect(canvas1).toEqual({ x: 0, y: 0, width: 392, height: 791 });
 
@@ -38,7 +38,7 @@ describe('cellCanvas', () => {
 });
 
 describe('shiftCell', () => {
-	it('', async () => {
+	test('shift expected amount', async () => {
 		const canvas = cellCanvas([polaroid.info]);
 		const shifted = shiftCell(canvas, polaroid.info);
 		expect(shifted).toEqual({

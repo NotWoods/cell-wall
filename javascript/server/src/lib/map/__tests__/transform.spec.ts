@@ -1,8 +1,8 @@
-import { describe, expect, it } from '@jest/globals';
+import { describe, expect, it } from 'vitest';
 import { transformMap, transformMapAsync } from '../transform';
 
-describe('transformMapAsync', () => {
-	it('', async () => {
+describe.concurrent('transformMap', () => {
+	it('transforms values', async () => {
 		const input = new Map(
 			Object.entries({
 				foo: 'bar',
@@ -19,8 +19,8 @@ describe('transformMapAsync', () => {
 	});
 });
 
-describe('transformMapAsync', () => {
-	it('', async () => {
+describe.concurrent('transformMapAsync', () => {
+	it('transforms values', async () => {
 		const input = new Map(
 			Object.entries({
 				foo: 'bar',

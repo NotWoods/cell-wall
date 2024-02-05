@@ -1,7 +1,7 @@
 {
 	"extends": "../tsconfig.json",
 	"compilerOptions": {
-		"types": ["jest"]
+		"noEmit": true
 	},
 	"include": ["**/*.ts"],
 	"references": [{ "path": "../tsconfig.json" }]

@@ -1,4 +1,4 @@
-import { describe, expect, it } from '@jest/globals';
+import { describe, expect, it } from 'vitest';
 import { readdir, readFile, stat } from 'fs/promises';
 import { parse, posix, relative, resolve, win32 } from 'path';
 

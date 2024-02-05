@@ -1,8 +1,8 @@
-import { afterEach, describe, expect, it, jest } from '@jest/globals';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { checkIfOn, getWakefulness, startIntent } from '../adb-actions';
 
 describe('startIntent', () => {
-	const shell = jest.fn().mockReturnValue('');
+	const shell = vi.fn().mockReturnValue('');
 	const adb = { shell } as any;
 
 	afterEach(() => {
@@ -26,7 +26,7 @@ describe('startIntent', () => {
 describe('startIntent', () => {
 	it('check cmd output', async () => {
 		const adb = {
-			shell: jest.fn().mockReturnValue(`Power Manager State:
+			shell: vi.fn().mockReturnValue(`Power Manager State:
       Settings power_manager_constants:
         no_cached_wake_locks=true
       mDirty=0x0

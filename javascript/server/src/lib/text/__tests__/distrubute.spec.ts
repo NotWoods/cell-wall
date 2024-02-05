@@ -1,5 +1,5 @@
 import type { CellInfo } from '@cell-wall/shared';
-import { describe, it, expect } from '@jest/globals';
+import { describe, it, expect } from 'vitest';
 import { distributeText } from '../distribute';
 
 const demoDevices: ReadonlyMap<string, CellInfo | undefined> = new Map<
