@@ -1,6 +1,6 @@
 import type { ADB } from 'appium-adb';
 import { derived, type Readable } from 'svelte/store';
-import { transformMapAsync } from '../map/transform';
+import { transformMapAsync } from '@notwoods/webish';
 import { setWhenDone } from '../store/promise';
 import type { Serial } from './opaque';
 

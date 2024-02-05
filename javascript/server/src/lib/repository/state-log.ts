@@ -1,7 +1,7 @@
 import type { CellData } from '@cell-wall/shared';
 import { derived, type Readable } from 'svelte/store';
 import type { AndroidProperties } from '../android/android-properties';
-import { transformMap } from '../map/transform';
+import { transformMap } from '@notwoods/webish';
 
 export function logState(
 	cellData: Readable<ReadonlyMap<string, CellData>>,

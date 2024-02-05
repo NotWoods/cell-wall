@@ -7,7 +7,7 @@ import type { FastifyInstance } from 'fastify';
 import type Jimp from 'jimp';
 import { get as getState } from 'svelte/store';
 import { RESIZE, SplitImageCache, type ResizeOptions } from '../../../lib/image';
-import { filterMap, transformMap, transformMapAsync } from '../../../lib/map/transform';
+import { filterMap, transformMap, transformMapAsync } from '@notwoods/webish';
 import { repo } from '../../../lib/repository';
 import { imagePlugin } from '../../../parser/image';
 import { updateRemainingCells, type RemainingBehaviour } from './_remaining';

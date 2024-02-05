@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { filterState } from '$lib/stores/filter-state';
-	import { RAINBOW_COLORS, randomItem } from '@cell-wall/shared';
+	import { randomItem } from '@notwoods/webish';
+	import { RAINBOW_COLORS } from '@cell-wall/shared';
 	import { frameContext } from '../context';
 
 	const randomDefaultColor = randomItem(RAINBOW_COLORS);

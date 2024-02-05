@@ -4,7 +4,7 @@ import { AndroidDeviceManager } from '../android/android-device-manager';
 import type { Serial } from '../android/opaque';
 import { cellStateStore } from '../cells/state';
 import { DATABASE_FILENAME, PORT, SERVER_ADDRESS } from '../env';
-import { allSettledMap, filterMap } from '../map/transform';
+import { allSettledMap, filterMap } from '@notwoods/webish';
 import { deriveCellData } from './combine-cell';
 import { addCellInfo, database } from './database';
 import type { OpenClientOptions, Repository } from './interface';

@@ -2,7 +2,7 @@ import { blankState, cellStateTypes, type CellState } from '@cell-wall/shared';
 import type { FastifyInstance } from 'fastify';
 import { get as getState } from 'svelte/store';
 import { setHas } from 'ts-extras';
-import { transformMap } from '../../../lib/map/transform';
+import { transformMap } from '@notwoods/webish';
 import { repo } from '../../../lib/repository';
 
 function isObject(maybe: unknown): maybe is object {

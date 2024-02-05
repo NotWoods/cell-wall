@@ -1,4 +1,4 @@
-import { randomIndex } from './random.js';
+import { randomInteger } from '@notwoods/webish';
 
 // Corresponds to 900 level colors from Tailwind
 export const RAINBOW_COLORS = [
@@ -45,7 +45,7 @@ export class RandomColor {
 			return color;
 		}
 
-		const index = randomIndex(this.unusedColors);
+		const index = randomInteger(0, this.unusedColors.length - 1);
 		const color = this.unusedColors[index];
 
 		// Remove the color from the list of unused colors

@@ -1,6 +1,6 @@
-import { memo, type CellData, type CellInfo } from '@cell-wall/shared';
+import type { CellData, CellInfo } from '@cell-wall/shared';
+import { memoize, transformMap } from '@notwoods/webish';
 import { derived, type Readable } from 'svelte/store';
-import { transformMap } from '../map/transform';
 import { sortDevicesByPosition, sortDevicesBySize } from './sort';
 
 function equalMaps<Key, Value>(a: ReadonlyMap<Key, Value>, b: ReadonlyMap<Key, Value>): boolean {
@@ -39,4 +39,4 @@ function _deriveSortedInfo(cellData: Readable<ReadonlyMap<string, CellData>>) {
 	};
 }
 
-export const deriveSortedInfo = memo(_deriveSortedInfo);
+export const deriveSortedInfo = memoize(_deriveSortedInfo);

@@ -1,7 +1,6 @@
 import type ADB from 'appium-adb';
 import { get, writable, type Readable, type Updater, type Writable } from 'svelte/store';
-import { findChangeSet } from '../map/changes';
-import { allSettledMap } from '../map/transform';
+import { allSettledMap, findChangeSet } from '@notwoods/webish';
 import { setWhenDone } from '../store/promise';
 import { getWakefulness } from './adb-actions';
 import type { Serial } from './opaque';

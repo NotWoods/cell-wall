@@ -1,7 +1,7 @@
 import type { CellState } from '@cell-wall/shared';
 import { get } from 'svelte/store';
 import { PACKAGE_NAME, PORT } from '../env';
-import { filterMap, transformMapAsync } from '../map/transform';
+import { filterMap, transformMapAsync } from '@notwoods/webish';
 import { startIntent } from './adb-actions';
 import { adbDevicesStore } from './adb-devices';
 import { androidPowered } from './android-powered';

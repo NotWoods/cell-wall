@@ -2,7 +2,7 @@ import { RandomColor, textState, type CellStateText } from '@cell-wall/shared';
 import type { FastifyInstance } from 'fastify';
 import { derived, get as getState } from 'svelte/store';
 import { asDelay, setStatesWithDelay } from '../../../lib/map/delay';
-import { filterMap, transformMap } from '../../../lib/map/transform';
+import { filterMap, transformMap } from '@notwoods/webish';
 import { repo } from '../../../lib/repository';
 import { sortDevicesByPosition } from '../../../lib/text/sort';
 import { updateRemainingCells, type RemainingBehaviour } from './_remaining';

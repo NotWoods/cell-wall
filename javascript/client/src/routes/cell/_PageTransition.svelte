@@ -27,7 +27,7 @@
 </script>
 
 <script lang="ts">
-	import { randomItem } from '@cell-wall/shared';
+	import { randomItem } from '@notwoods/webish';
 	import { fade } from 'svelte/transition';
 
 	const pageTransitionDuration = 500;

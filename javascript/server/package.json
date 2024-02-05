@@ -32,6 +32,7 @@
 	},
 	"devDependencies": {
 		"@fastify/reply-from": "^9.4.0",
+		"@notwoods/webish": "^0.1.1",
 		"@types/appium-adb": "9.4.0",
 		"@types/node": "^16.18.39",
 		"@types/semver": "^7.5.0",

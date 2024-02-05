@@ -1,7 +1,7 @@
 import type { RectangleWithPosition } from '@cell-wall/shared';
 import { cellCanvas, shiftCell } from '@cell-wall/shared';
 import Jimp from 'jimp';
-import { transformMapAsync } from '../map/transform';
+import { transformMapAsync } from '@notwoods/webish';
 import { crop, resize, type ResizeOptions } from './manipulate';
 
 interface SplitImageResult {

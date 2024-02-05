@@ -1,7 +1,7 @@
 import { cellInfoSchema, type CellInfo } from '@cell-wall/shared';
 import type { FastifyInstance } from 'fastify';
 import { derived, get as getState } from 'svelte/store';
-import { transformMap, transformMapAsync } from '../../../lib/map/transform';
+import { transformMap, transformMapAsync } from '@notwoods/webish';
 import { repo } from '../../../lib/repository';
 
 export default async function (fastify: FastifyInstance): Promise<void> {

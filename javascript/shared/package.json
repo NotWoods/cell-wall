@@ -17,6 +17,7 @@
 		"test": "vitest"
 	},
 	"dependencies": {
+		"@notwoods/webish": "^0.1.1",
 		"tslib": "^2.6.1"
 	},
 	"devDependencies": {

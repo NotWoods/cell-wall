@@ -1,9 +1,9 @@
-import { memo } from '@cell-wall/shared';
+import { memoize } from '@notwoods/webish';
 import { Octokit } from '@octokit/core';
-import { createWriteStream, promises as fs } from 'fs';
-import { tmpdir } from 'os';
-import { join } from 'path';
-import { pipeline } from 'stream/promises';
+import { createWriteStream, promises as fs } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { pipeline } from 'node:stream/promises';
 import { GITHUB_TOKEN } from '../../env';
 
 declare global {
@@ -12,7 +12,7 @@ declare global {
 	}
 }
 
-const buildTempDir = memo(() => fs.mkdtemp(join(tmpdir(), 'apk-')));
+const buildTempDir = memoize(() => fs.mkdtemp(join(tmpdir(), 'apk-')));
 
 export class GithubClient {
 	private readonly octokit: Octokit;

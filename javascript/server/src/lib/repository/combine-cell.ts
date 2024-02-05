@@ -2,7 +2,7 @@ import type { CellData, CellInfo, CellState, ConnectionType } from '@cell-wall/s
 import { blankState } from '@cell-wall/shared';
 import { derived, type Readable } from 'svelte/store';
 import type { AndroidProperties } from '../android/android-properties';
-import { transformMap } from '../map/transform';
+import { transformMap } from '@notwoods/webish';
 import { withLastState } from '../store/changes';
 import { computeInfo } from './known';
 import type { WebSocketInfo } from './socket-store';

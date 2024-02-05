@@ -1,6 +1,6 @@
 import type { RectangleWithPosition } from '@cell-wall/shared';
 import type Jimp from 'jimp';
-import { transformMap } from '../map/transform';
+import { transformMap } from '@notwoods/webish';
 import type { ResizeOptions } from './manipulate';
 import { splitImage } from './split';
 
