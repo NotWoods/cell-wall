@@ -89,7 +89,7 @@ export function requestWakeLock(): Lock | undefined {
 			}
 		}
 
-		function handleVisiblityChange() {
+		function handleVisibilityChange() {
 			if (wakeLock !== null && document.visibilityState === 'visible') {
 				requestNewLock();
 			}
@@ -97,8 +97,8 @@ export function requestWakeLock(): Lock | undefined {
 
 		requestNewLock();
 
-		document.addEventListener('visibilitychange', handleVisiblityChange, controller);
-		document.addEventListener('fullscreenchange', handleVisiblityChange, controller);
+		document.addEventListener('visibilitychange', handleVisibilityChange, controller);
+		document.addEventListener('fullscreenchange', handleVisibilityChange, controller);
 
 		return {
 			...stores,

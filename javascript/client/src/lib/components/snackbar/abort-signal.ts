@@ -1,5 +1,6 @@
 /**
- * AbortSignal that fires after any given abort signal fires
+ * Polyfill for `AbortSignal.any` method.
+ * @returns A AbortSignal that is aborted when any of the given signals are aborted.
  */
 export function abortSignalAny(...items: (AbortSignal | undefined)[]): AbortSignal | undefined {
 	const signals = items.filter((item): item is AbortSignal => item != undefined);

@@ -8,7 +8,7 @@
 
 <script lang="ts">
 	import { getContext } from 'svelte';
-	import { SnackbarDuration, SnackbarHostState } from '../snackbar-host';
+	import { SnackbarDuration, SnackbarHostState } from './snackbar/snackbar-host';
 
 	const snackbarHostState = getContext(SnackbarHostState) as SnackbarHostState;
 

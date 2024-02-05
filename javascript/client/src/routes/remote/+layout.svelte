@@ -1,10 +1,10 @@
 <script lang="ts">
 	import NavigationProgress from '$lib/components/NavigationProgress.svelte';
 	import RemoteFrame from '$lib/components/RemoteFrame.svelte';
-	import Snackbar from '$lib/components/Snackbar.svelte';
+	import Snackbar from '$lib/components/snackbar/Snackbar.svelte';
 	import TopBar from '$lib/components/TopBar/TopBar.svelte';
 	import { connectRemote, remoteState } from '$lib/connection/remote-socket';
-	import { SnackbarHostState } from '$lib/snackbar-host';
+	import { SnackbarHostState } from '$lib/components/snackbar/snackbar-host';
 	import { remoteContext } from './context';
 
 	const socket = connectRemote();

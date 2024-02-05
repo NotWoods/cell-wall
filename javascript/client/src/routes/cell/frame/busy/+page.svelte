@@ -15,7 +15,7 @@
 
 <script lang="ts">
 	import FormattedTime from '$lib/components/Frame/FormattedTime.svelte';
-	import { filterState } from '$lib/filter-state';
+	import { filterState } from '$lib/stores/filter-state';
 	import { onMount } from 'svelte';
 	import BusyWorker from '../../../../workers/busy-worker?worker';
 	import type { BusyState } from '../../../../workers/busy-worker';

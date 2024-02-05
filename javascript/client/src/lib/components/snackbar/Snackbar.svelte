@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { fly } from 'svelte/transition';
-	import type { SnackbarData } from '../snackbar-host';
+	import type { SnackbarData } from './snackbar-host';
 
 	export let data: SnackbarData | undefined;
 </script>

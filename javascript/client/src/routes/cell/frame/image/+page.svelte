@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { createBlobUrlFactory } from '$lib/blob';
-	import { filterState } from '$lib/filter-state';
+	import { filterState } from '$lib/stores/filter-state';
 	import type { CellStateImage } from '@cell-wall/shared';
 	import { frameContext } from '../context';
 

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { filterState } from '$lib/filter-state';
+	import { filterState } from '$lib/stores/filter-state';
 	import { RAINBOW_COLORS, randomItem } from '@cell-wall/shared';
 	import { frameContext } from '../context';
 

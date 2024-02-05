@@ -1,6 +1,6 @@
-import { abortSignalAny } from '$lib/timer';
 import { setTimeout } from '@cell-wall/shared';
 import { writable, type Readable } from 'svelte/store';
+import { abortSignalAny } from './abort-signal';
 
 export enum SnackbarDuration {
 	SHORT = 1500,

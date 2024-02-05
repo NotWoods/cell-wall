@@ -2,7 +2,7 @@
 	import { browser } from '$app/environment';
 	import { goto, preloadCode } from '$app/navigation';
 	import { frameUrl } from '$lib/connection/state-socket';
-	import { requestFullScreen, requestWakeLock } from '$lib/wakelock';
+	import { requestFullScreen, requestWakeLock } from '$lib/stores/wakelock';
 	import { onMount } from 'svelte';
 	import { cellStateTypes } from '@cell-wall/shared';
 
@@ -25,8 +25,8 @@
 		requestFullScreen();
 		requestWakeLock();
 
-		const routePrefetchJob = preloadCode(
-			...Array.from(cellStateTypes, (type) => frameUrl(type, id))
+		const routePrefetchJob = Promise.all(
+			Array.from(cellStateTypes, (type) => preloadCode(frameUrl(type, id)))
 		);
 
 		await goto(frameUrl('BLANK', id), { replaceState: false });

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { filterState } from '$lib/filter-state';
+	import { filterState } from '$lib/stores/filter-state';
 	import { frameContext } from '../context';
 
 	const webState = filterState('WEB', frameContext.state);
