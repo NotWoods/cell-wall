@@ -1,7 +1,7 @@
 import type { Device } from 'appium-adb';
 import { ADB } from 'appium-adb';
 import { writable, type Readable } from 'svelte/store';
-import type { Serial } from './opaque';
+import type { Serial } from './opaque.js';
 
 export interface DevicesStore extends Readable<ReadonlyMap<Serial, ADB>> {
 	/**

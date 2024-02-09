@@ -1,6 +1,6 @@
 import type { CellData } from '@cell-wall/shared';
 import { derived, type Readable } from 'svelte/store';
-import type { AndroidProperties } from '../android/android-properties';
+import type { AndroidProperties } from '@cell-wall/android-device-manager';
 import { transformMap } from '@notwoods/webish';
 
 export function logState(

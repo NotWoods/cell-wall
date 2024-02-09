@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { checkIfOn, getWakefulness, startIntent } from '../adb-actions';
+import { checkIfOn, getWakefulness, startIntent } from '../adb-actions.js';
 
 describe('startIntent', () => {
 	const shell = vi.fn().mockReturnValue('');

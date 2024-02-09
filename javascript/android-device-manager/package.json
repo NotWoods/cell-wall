@@ -1,13 +1,16 @@
 {
-	"name": "@cell-wall/server",
+	"name": "@cell-wall/android-device-manager",
 	"version": "5.0.0",
 	"type": "module",
-	"exports": "./build/index.js",
-	"module": "./build/index.js",
+	"exports": {
+		".": {
+			"import": "./src/index.js",
+			"types": "./src/index.d.ts"
+		}
+	},
+	"module": "./src/index.js",
+	"types": "./src/index.d.ts",
 	"scripts": {
-		"dev": "node esbuild.config.js --dev && node build/dev.js",
-		"build": "tsc --project . && node esbuild.config.js",
-		"preview": "node build/index.js",
 		"check": "tsc --project .",
 		"check:watch": "tsc --project . --watch",
 		"lint": "prettier --check . --ignore-path ../.prettierignore && eslint --ignore-path ../.prettierignore .",
@@ -15,30 +18,22 @@
 		"test": "vitest"
 	},
 	"dependencies": {
-		"@cell-wall/android-device-manager": "workspace:*",
-		"@cell-wall/client": "workspace:*",
 		"@cell-wall/shared": "workspace:*",
-		"@fastify/middie": "^8.3.0",
-		"@googleapis/calendar": "^9.1.0",
-		"@js-temporal/polyfill": "^0.4.4",
-		"@octokit/core": "^5.0.0",
 		"appium-adb": "^9.6.1",
 		"dotenv": "^16.3.1",
-		"fastify": "^4.21.0",
 		"jimp": "^0.22.10",
 		"lowdb": "^6.0.1",
 		"pino-pretty": "^10.2.0",
+		"svelte": "^4.2.9",
 		"ts-extras": "^0.11.0",
 		"ws": "^8.13.0"
 	},
 	"devDependencies": {
-		"@fastify/reply-from": "^9.4.0",
 		"@notwoods/webish": "^0.1.1",
+		"@types/appium-adb": "9.4.0",
 		"@types/node": "^20.11.17",
 		"@types/semver": "^7.5.0",
 		"@types/ws": "^8.5.5",
-		"esbuild": "^0.14.38",
-		"svelte": "^4.2.9",
 		"tslib": "^2.6.1",
 		"typescript": "^5.1.6",
 		"vitest": "^1.2.2"

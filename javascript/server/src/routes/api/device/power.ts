@@ -1,7 +1,7 @@
 import type { FastifyInstance } from 'fastify';
 import { derived, get as getState } from 'svelte/store';
 import { setHas } from 'ts-extras';
-import type { Serial } from '../../../lib/android/opaque';
+import type { Serial } from '@cell-wall/android-device-manager';
 import { repo } from '../../../lib/repository';
 
 function asPower(primitive: unknown): boolean | undefined {

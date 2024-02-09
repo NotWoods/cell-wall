@@ -1,4 +1,4 @@
-import { SnackbarHostState } from '$lib/snackbar-host';
+import { SnackbarHostState } from '$lib/components/snackbar/snackbar-host';
 import type { CellData } from '@cell-wall/shared';
 import { getContext, setContext } from 'svelte';
 import type { Readable } from 'svelte/store';

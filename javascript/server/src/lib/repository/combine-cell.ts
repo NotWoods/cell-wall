@@ -1,7 +1,7 @@
 import type { CellData, CellInfo, CellState, ConnectionType } from '@cell-wall/shared';
 import { blankState } from '@cell-wall/shared';
 import { derived, type Readable } from 'svelte/store';
-import type { AndroidProperties } from '../android/android-properties';
+import type { AndroidProperties } from '@cell-wall/android-device-manager';
 import { transformMap } from '@notwoods/webish';
 import { withLastState } from '../store/changes';
 import { computeInfo } from './known';

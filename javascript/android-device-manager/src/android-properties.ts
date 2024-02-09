@@ -1,8 +1,8 @@
 import type { ADB } from 'appium-adb';
 import { derived, type Readable } from 'svelte/store';
 import { transformMapAsync } from '@notwoods/webish';
-import { setWhenDone } from '../store/promise';
-import type { Serial } from './opaque';
+import { setWhenDone } from './store/promise.js';
+import type { Serial } from './opaque.js';
 
 export interface AndroidProperties {
 	model: string;

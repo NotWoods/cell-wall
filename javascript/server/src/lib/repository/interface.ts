@@ -1,8 +1,10 @@
 import type { CellData, CellInfo } from '@cell-wall/shared';
-import type { InstallOrUpgradeResult } from 'appium-adb';
 import type { Readable } from 'svelte/store';
-import type { AndroidPoweredStore } from '../android/android-powered';
-import type { Serial } from '../android/opaque';
+import type {
+	AndroidPoweredStore,
+	InstallOrUpgradeResult,
+	Serial
+} from '@cell-wall/android-device-manager';
 import type { CellStateStore } from '../cells';
 import type { WebSocketStore } from './socket-store';
 import type { ThirdPartyConnect } from './third-party-connect';

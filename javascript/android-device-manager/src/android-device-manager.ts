@@ -1,12 +1,11 @@
 import type { CellState } from '@cell-wall/shared';
 import { get } from 'svelte/store';
-import { PACKAGE_NAME, PORT } from '../env';
 import { filterMap, transformMapAsync } from '@notwoods/webish';
-import { startIntent } from './adb-actions';
-import { adbDevicesStore } from './adb-devices';
-import { androidPowered } from './android-powered';
-import { androidProperties } from './android-properties';
-import type { Serial } from './opaque';
+import { startIntent } from './adb-actions.js';
+import { adbDevicesStore } from './adb-devices.js';
+import { androidPowered } from './android-powered.js';
+import { androidProperties } from './android-properties.js';
+import type { Serial } from './opaque.js';
 
 export class AndroidDeviceManager {
 	readonly devices = adbDevicesStore();
@@ -18,7 +17,14 @@ export class AndroidDeviceManager {
 	 */
 	refreshed!: Promise<void>;
 
-	constructor() {
+	/**
+	 * @param packageName Java package name of the CellWall Android client app.
+	 * @param systemPort Port on the server to forward to.
+	 */
+	constructor(
+		private readonly packageName: string,
+		private readonly systemPort: number
+	) {
 		this.refreshDevices();
 	}
 
@@ -43,7 +49,7 @@ export class AndroidDeviceManager {
 		if (!adb) return;
 
 		await startIntent(adb, {
-			action: `${PACKAGE_NAME}.DISPLAY`,
+			action: `${this.packageName}.DISPLAY`,
 			dataUri: new URL(`/cell?id=${serial}&autojoin`, host),
 			waitForLaunch: true
 		});
@@ -62,7 +68,7 @@ export class AndroidDeviceManager {
 			: $devices;
 
 		return transformMapAsync(devicesToUpdate, (adb) =>
-			adb.installOrUpgrade(apkPath, PACKAGE_NAME, { enforceCurrentBuild: true })
+			adb.installOrUpgrade(apkPath, this.packageName, { enforceCurrentBuild: true })
 		);
 	}
 
@@ -72,11 +78,11 @@ export class AndroidDeviceManager {
 	 * @param serial ID of the device to modify.
 	 * @param devicePort Port on the device to forward to. Defaults to server port.
 	 */
-	async connectOverUsb(serial: Serial, devicePort: number = PORT) {
+	async connectOverUsb(serial: Serial, devicePort: number = this.systemPort) {
 		const adb = get(this.devices).get(serial);
 		if (!adb) return;
 
-		await adb.reversePort(devicePort, PORT);
+		await adb.reversePort(devicePort, this.systemPort);
 	}
 
 	async sendDisplayIntent(serial: Serial, state: CellState) {
@@ -91,7 +97,7 @@ export class AndroidDeviceManager {
 			});
 
 		await startIntent(adb, {
-			action: `${PACKAGE_NAME}.DISPLAY`,
+			action: `${this.packageName}.DISPLAY`,
 			dataUri: stateUrl.href,
 			waitForLaunch: true
 		});

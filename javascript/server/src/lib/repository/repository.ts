@@ -1,9 +1,8 @@
 import type { CellData } from '@cell-wall/shared';
 import { derived, get } from 'svelte/store';
-import { AndroidDeviceManager } from '../android/android-device-manager';
-import type { Serial } from '../android/opaque';
+import { AndroidDeviceManager, type Serial } from '@cell-wall/android-device-manager';
 import { cellStateStore } from '../cells/state';
-import { DATABASE_FILENAME, PORT, SERVER_ADDRESS } from '../env';
+import { DATABASE_FILENAME, PACKAGE_NAME, PORT, SERVER_ADDRESS } from '../env';
 import { allSettledMap, filterMap } from '@notwoods/webish';
 import { deriveCellData } from './combine-cell';
 import { addCellInfo, database } from './database';
@@ -21,7 +20,7 @@ export function repository(): Repository {
 	const cellState = cellStateStore();
 	const webSockets = webSocketStore();
 
-	const deviceManager = new AndroidDeviceManager();
+	const deviceManager = new AndroidDeviceManager(PACKAGE_NAME, PORT);
 
 	// Send intents whenever cell state changes
 	const cellData = deriveCellData({

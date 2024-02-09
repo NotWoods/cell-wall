@@ -1,7 +1,7 @@
 import { blankState, type CellInfo, type CellState } from '@cell-wall/shared';
 import { describe, expect, it } from 'vitest';
 import { get, writable } from 'svelte/store';
-import type { AndroidProperties } from '../../android/android-properties';
+import type { AndroidProperties } from '@cell-wall/android-device-manager';
 import { deriveCellData } from '../combine-cell';
 import type { WebSocketInfo } from '../socket-store';
 

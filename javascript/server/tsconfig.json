@@ -3,6 +3,6 @@
 	"compilerOptions": {
 		"noEmit": true
 	},
-	"references": [{ "path": "../shared" }],
+	"references": [{ "path": "../android-device-manager" }, { "path": "../shared" }],
 	"include": ["src/**/*.d.ts", "src/**/*.ts", "test.setup.ts"]
 }
