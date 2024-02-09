@@ -93,7 +93,7 @@ export class AndroidDeviceManager {
 		Object.entries(state)
 			.filter(([key, value]) => key !== 'type' && typeof value === 'string')
 			.forEach(([key, value]) => {
-				stateUrl.searchParams.set(key, value);
+				stateUrl.searchParams.set(key, value as string);
 			});
 
 		await startIntent(adb, {
