@@ -15,4 +15,4 @@ export const CellDataSchema = v.object({
  * Contains all the information related to a Cell,
  * including state, static info, and connection status.
  */
-export type CellData = ReadonlyDeep<v.Input<typeof CellDataSchema>>;
+export type CellData = ReadonlyDeep<v.InferInput<typeof CellDataSchema>>;

@@ -7,7 +7,7 @@ export const CellStateTextSchema = v.object({
 	backgroundColor: v.optional(v.string())
 });
 
-export type CellStateText = Readonly<v.Input<typeof CellStateTextSchema>>;
+export type CellStateText = Readonly<v.InferInput<typeof CellStateTextSchema>>;
 
 export function textState(text: string, backgroundColor?: string): CellStateText {
 	return { type: 'TEXT', payload: text, backgroundColor };

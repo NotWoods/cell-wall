@@ -6,4 +6,4 @@ export const CellStateClockSchema = v.object({
 	payload: v.optional(v.string())
 });
 
-export type CellStateClock = Readonly<v.Input<typeof CellStateClockSchema>>;
+export type CellStateClock = Readonly<v.InferInput<typeof CellStateClockSchema>>;

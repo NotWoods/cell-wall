@@ -20,7 +20,7 @@
 		"@notwoods/webish": "^0.1.1",
 		"tslib": "^2.6.1",
 		"type-fest": "4.10.2",
-		"valibot": "^0.28.1"
+		"valibot": "^0.33.3"
 	},
 	"devDependencies": {
 		"typescript": "^5.1.6",

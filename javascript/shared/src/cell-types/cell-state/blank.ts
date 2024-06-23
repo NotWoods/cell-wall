@@ -5,7 +5,7 @@ export const CellStateBlankSchema = v.object({
 	payload: v.optional(v.literal(''))
 });
 
-export type CellStateBlank = Readonly<v.Input<typeof CellStateBlankSchema>>;
+export type CellStateBlank = Readonly<v.InferInput<typeof CellStateBlankSchema>>;
 
 export const blankBuffer = new ArrayBuffer(0);
 

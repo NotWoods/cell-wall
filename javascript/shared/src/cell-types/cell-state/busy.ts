@@ -9,4 +9,4 @@ export const CellStateBusySchema = v.object({
 	payload: v.string()
 });
 
-export type CellStateBusy = Readonly<v.Input<typeof CellStateBusySchema>>;
+export type CellStateBusy = Readonly<v.InferInput<typeof CellStateBusySchema>>;
