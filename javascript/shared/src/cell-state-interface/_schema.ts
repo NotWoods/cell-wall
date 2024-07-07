@@ -1,12 +1,12 @@
 type JsonSchemaType<Type extends string | number | boolean | object> = Type extends string
 	? 'string'
 	: Type extends number
-	? 'number'
-	: Type extends boolean
-	? 'boolean'
-	: Type extends object
-	? 'object'
-	: never;
+		? 'number'
+		: Type extends boolean
+			? 'boolean'
+			: Type extends object
+				? 'object'
+				: never;
 
 interface BaseJsonSchemaProperty<Type extends string | number | boolean | object> {
 	type: JsonSchemaType<Type>;

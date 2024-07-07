@@ -17,7 +17,7 @@
 	});
 
 	frameContext.socket = socket;
-	frameContext.state = state
+	frameContext.state = state;
 
 	$: url = frameUrl($state.type, data.serial);
 	$: {
