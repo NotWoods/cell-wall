@@ -1,4 +1,4 @@
-import type ADB from 'appium-adb';
+import type { ADB } from 'appium-adb';
 import { get, writable, type Readable, type Updater, type Writable } from 'svelte/store';
 import { allSettledMap, findChangeSet } from '@notwoods/webish';
 import { setWhenDone } from './store/promise.js';

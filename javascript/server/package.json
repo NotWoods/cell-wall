@@ -22,7 +22,7 @@
 		"@googleapis/calendar": "^9.1.0",
 		"@js-temporal/polyfill": "^0.4.4",
 		"@octokit/core": "^5.0.0",
-		"appium-adb": "^9.6.1",
+		"appium-adb": "^12.4.8",
 		"dotenv": "^16.3.1",
 		"fastify": "^4.21.0",
 		"jimp": "^0.22.10",

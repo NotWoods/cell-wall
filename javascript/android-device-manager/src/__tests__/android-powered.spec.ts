@@ -1,5 +1,5 @@
 import { describe, expect, it, vi, type MockedFunction } from 'vitest';
-import type ADB from 'appium-adb';
+import type { ADB } from 'appium-adb';
 import { writable } from 'svelte/store';
 import { androidPowered } from '../android-powered.js';
 
