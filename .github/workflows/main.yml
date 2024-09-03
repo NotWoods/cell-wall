@@ -79,7 +79,7 @@ jobs:
 
       # Update files to latest build
       - run: rm -rf javascript
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4.1.7
         with:
           name: javascript-build
       - run: mv deploy.gitignore .gitignore
