@@ -38,7 +38,7 @@
 		"@types/semver": "^7.5.0",
 		"@types/ws": "^8.5.5",
 		"esbuild": "^0.14.38",
-		"svelte": "^4.2.9",
+		"svelte": "^4.2.19",
 		"tslib": "^2.6.1",
 		"typescript": "^5.1.6",
 		"vitest": "^1.2.2"
